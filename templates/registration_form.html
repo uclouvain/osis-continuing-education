@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+* OSIS stands for Open Student Information System. It's an application
+* designed to manage the core business of higher education institutions,
+* such as universities, faculties, institutes and professional schools.
+* The core business involves the administration of students, teachers,
+* courses, programs and so on.
+*
+* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* A copy of this license - GNU General Public License - is available
+* at the root of the source code of this program.  If not,
+* see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
+    <li class="active">{% trans 'registration' %}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        {% if admission_id %}
+        <button type="submit" form="form" class="btn btn-default pull-right">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'save' %}
+        </button>
+        {% endif %}
+        <h2>{% trans 'admission' %}</h2>
+    </div>
+
+    <div class="panel panel-default">
+            <form id="form" method="POST" class="post-form">
+                {% csrf_token %}
+                <div class="panel-heading">{% trans 'billing' %}</div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field form.registration_type form_group_class="form-group col-md-4" label=_("registration_type") %}
+                        <div class="form-group col-md-6">
+                            {% bootstrap_label content="&nbsp;" label_class="show" %}
+                            <button id="copy_address_billing" class="btn btn-default" type="button">
+                                {% trans 'use_address_for_billing' %}
+                            </button>
+                        </div>
+                    </div>
+                     <div class="row">
+                        {% bootstrap_field form.billing_location form_group_class="form-group col-md-4" label=_("location") %}
+                        {% bootstrap_field form.billing_postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
+                        {% bootstrap_field form.billing_city form_group_class="form-group col-md-3" label=_("city") %}
+                        {% bootstrap_field form.billing_country form_group_class="form-group col-md-3" label=_("country") %}
+                    </div>
+                     <div class="row">
+                        {% bootstrap_field form.head_office_name form_group_class="form-group col-md-4" label=_("head_office_name") %}
+                        {% bootstrap_field form.company_number form_group_class="form-group col-md-4" label=_("company_number") %}
+                        {% bootstrap_field form.vat_number form_group_class="form-group col-md-4" label=_("vat_number") %}
+                    </div>
+                </div>
+
+                <div class="panel-heading">{% trans 'registration' %}</div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4" label=_("national_registry_number") %}
+                        {% bootstrap_field form.id_card_number form_group_class="form-group col-md-4" label=_("id_card_number") %}
+                        {% bootstrap_field form.passport_number form_group_class="form-group col-md-4" label=_("passport_number") %}
+                    </div>
+                    <div class="row">
+                        {% bootstrap_field form.marital_status form_group_class="form-group col-md-3" label=_("marital_status") %}
+                        {% bootstrap_field form.spouse_name form_group_class="form-group col-md-6" label=_("spouse_name") %}
+                        {% bootstrap_field form.children_number form_group_class="form-group col-md-3" label=_("children_number") %}
+                    </div>
+                    <div class="row">
+                        {% bootstrap_field form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("previous_ucl_registration") %}
+                        {% bootstrap_field form.previous_noma form_group_class="form-group col-md-5" label=_("previous_noma") %}
+                    </div>
+                </div>
+
+                <div class="panel-heading">{% trans 'post' %}</div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field form.residence_phone form_group_class="form-group col-md-4" label=_("residence_phone") %}
+                        <div class="form-group col-md-6">
+                            {% bootstrap_label content="&nbsp;" label_class="show" %}
+                            <button id="copy_address_residence" class="btn btn-default" type="button">
+                                {% trans 'use_address_for_post' %}
+                            </button>
+                        </div>
+                    </div>
+                     <div class="row">
+                        {% bootstrap_field form.residence_location form_group_class="form-group col-md-4" label=_("location") %}
+                        {% bootstrap_field form.residence_postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
+                        {% bootstrap_field form.residence_city form_group_class="form-group col-md-3" label=_("city") %}
+                        {% bootstrap_field form.residence_country form_group_class="form-group col-md-3" label=_("country") %}
+                    </div>
+                </div>
+
+                <div class="panel-heading">{% trans 'student_sheet' %}</div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field form.registration_complete form_group_class="form-group col-md-3" label=_("registration_complete") %}
+                        {% bootstrap_field form.noma form_group_class="form-group col-md-3" label=_("noma") %}
+                        {% bootstrap_field form.payment_complete form_group_class="form-group col-md-3" label=_("payment_complete") %}
+                    </div>
+                    <div class="row">
+                        {% bootstrap_field form.formation_spreading form_group_class="form-group col-md-3" label=_("formation_spreading") %}
+                        {% bootstrap_field form.prior_experience_validation form_group_class="form-group col-md-6" label=_("prior_experience_validation") %}
+                    </div>
+                    <div class="row">
+                        {% bootstrap_field form.assessment_presented form_group_class="form-group col-md-3" label=_("assessment_presented") %}
+                        {% bootstrap_field form.assessment_succeded form_group_class="form-group col-md-6" label=_("assessment_succeeded") %}
+                    </div>
+                </div>
+
+                <div class="panel panel-body">
+                    <button type="submit" class="btn btn-primary" title="{%trans 'submit' %}">
+                        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'submit' %}
+                    </button>
+                    <a class="btn btn-default" id="" href="{% url 'registration' %}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'cancel' %}
+                    </a>
+                </div>
+            </form>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        let address = {
+            location: "{{admission.location | escapejs}}",
+            postal_code: "{{admission.postal_code | escapejs}}",
+            city: "{{admission.city | escapejs}}",
+            country: "{{admission.country_id | escapejs}}",
+        }
+
+        $("#copy_address_billing").click(()=>{
+            copy_address("billing");
+        });
+
+        $("#copy_address_residence").click(()=>{
+            copy_address("residence")
+        });
+
+        function copy_address(e){
+            $("#id_"+e+"_location").val(address.location);
+            $("#id_"+e+"_postal_code").val(address.postal_code);
+            $("#id_"+e+"_city").val(address.city);
+            $("#id_"+e+"_country").val(address.country);
+        }
+    </script>
+{% endblock %}
