@@ -28,24 +28,27 @@
 
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
-    <li class="active">{% trans 'continuing_education' %}</li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
+    <li class="active">{% trans 'administrator' %}</li>
 {% endblock %}
 
 {% block content %}
     <div class="page-header">
-        <h2>{% trans 'continuing_education' %}</h2>
+        <h2 class="text-capitalize">{% trans 'administrator' %}</h2>
     </div>
-
     <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+        </div>
         <div class="panel panel-body">
             <div class="row">
-                <div class="col-md-1"><i class="fa fa-user" style="font-size: 400%; color: #6699FF;"></i></div>
+                <div class="col-md-1"><i class="fa fa-file-text" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
-                    <h4 class="media-heading text-capitalize"><a href="{% url 'continuing_education_admin' %}">{% trans 'administrator' %}</a></h4>
+                    <h4 class="media-heading"><a href="{% url 'admission' %}">{% trans 'admission' %}</a></h4>
                 </div>
-                <div class="col-md-1"><i class="fa fa-graduation-cap" style="font-size: 400%; color: #6699FF;"></i></div>
+                <div class="col-md-1"><i class="fa fa-pencil-square" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
-                    <h4 class="media-heading text-capitalize"><a href="{% url 'continuing_education_student' %}">{% trans 'student' %}</a></h4>
+                    <h4 class="media-heading"><a href="{% url 'registration' %}">{% trans 'registration' %}</a></h4>
                 </div>
             </div>
             <br>

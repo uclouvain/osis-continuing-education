@@ -31,6 +31,9 @@ msgstr "Admission"
 msgid "admission_view"
 msgstr "Admission view"
 
+msgid "administrator"
+msgstr "Administrator"
+
 msgid "awareness"
 msgstr "How did you hear about the program ?"
 

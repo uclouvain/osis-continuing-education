@@ -29,6 +29,8 @@ from continuing_education.views import (home, admission, registration)
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
+    url(r'^admin/$', home.admin_view, name='continuing_education_admin'),
+    url(r'^student/$', home.student_view, name='continuing_education_student'),
     url(r'^admission/', include([
         url(r'^$', admission.list_admissions, name='admission'),
         url(r'^new/$', admission.admission_new, name='admission_new'),

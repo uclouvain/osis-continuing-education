@@ -29,3 +29,11 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def main_view(request):
     return render(request, "continuing_education/home.html")
+
+@login_required
+def admin_view(request):
+    return render(request, "continuing_education/admin_home.html")
+
+@login_required
+def student_view(request):
+    return render(request, "continuing_education/student_home.html", locals())

@@ -50,6 +50,14 @@ class UrlsTestCase(TestCase):
                 pattern_name='continuing_education',
             ),
             dict(
+                url_path='/continuing_education/student/',
+                pattern_name='continuing_education_student',
+            ),
+            dict(
+                url_path='/continuing_education/admin/',
+                pattern_name='continuing_education_admin',
+            ),
+            dict(
                 url_path = "/continuing_education/admission/",
                 pattern_name="admission",
             ),
