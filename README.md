@@ -1,6 +1,6 @@
 # OSIS Continuing Education
 
-OSIS Internship is a web application to manage the continuing education programmes
+OSIS Continuing Education is a web application to manage the continuing education programmes
 intended for people active in the working world and pursuing the goal of progressing
 by acquiring knowledge or changing professions.
 
