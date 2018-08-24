@@ -25,10 +25,9 @@
 ##############################################################################
 import datetime
 import random
-import factory.fuzzy
+import factory
 
 from reference.tests.factories.country import CountryFactory
-from reference.models import country
 
 
 class AdmissionFactory(factory.DjangoModelFactory):
@@ -65,7 +64,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
 
     # Professional Background
     professional_status = random.choice(['EMPLOYEE','SELF_EMPLOYED','JOB_SEEKER','PUBLIC_SERVANT'])
-    current_occupation = factory.Faker('job')
+    current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
     activity_sector = "activity sector"
     past_professional_activities = "past activities"
