@@ -23,7 +23,7 @@ class Admission(models.Model):
     #Identification
     first_name = models.CharField(max_length=50, blank=True, null=True, db_index=True)
     last_name = models.CharField(max_length=50, blank=True, null=True, db_index=True)
-    birth_date = models.DateField(blank=True)
+    birth_date = models.DateField(blank=True, null=True)
     birth_location =  models.CharField(max_length=255, blank=True, null=True)
     birth_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='birth_country')
     citizenship = models.ForeignKey('reference.Country', blank=True, null=True, related_name='citizenship')
@@ -40,12 +40,12 @@ class Admission(models.Model):
     country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='address_country')
 
     #Education
-    high_school_diploma = models.BooleanField()
-    high_school_graduation_year = models.DateField(blank=True)
+    high_school_diploma = models.BooleanField(default=False)
+    high_school_graduation_year = models.DateField(blank=True, null=True)
     last_degree_level = models.CharField(max_length=50, blank=True, null=True)
     last_degree_field = models.CharField(max_length=50, blank=True, null=True)
     last_degree_institution = models.CharField(max_length=50, blank=True, null=True)
-    last_degree_graduation_year = models.DateField(blank=True)
+    last_degree_graduation_year = models.DateField(blank=True, null=True)
     other_educational_background = models.TextField(blank=True, null=True)
 
     #Professional Background
@@ -67,20 +67,20 @@ class Admission(models.Model):
     formation_administrator = models.CharField(max_length=50, blank=True, null=True)
 
     #Awareness
-    ucl_website = models.BooleanField()
-    formation_website = models.BooleanField()
-    press = models.BooleanField()
-    facebook = models.BooleanField()
-    linkedin = models.BooleanField()
-    customized_mail = models.BooleanField()
-    emailing = models.BooleanField()
+    ucl_website = models.BooleanField(default=False)
+    formation_website = models.BooleanField(default=False)
+    press = models.BooleanField(default=False)
+    facebook = models.BooleanField(default=False)
+    linkedin = models.BooleanField(default=False)
+    customized_mail = models.BooleanField(default=False)
+    emailing = models.BooleanField(default=False)
 
     #State
     state = models.CharField(max_length=50, blank=True, null=True)
 
     #Billing
     registration_type = models.CharField(max_length=50, blank=True, null=True)
-    use_address_for_billing = models.BooleanField()
+    use_address_for_billing = models.BooleanField(default=False)
     billing_location = models.CharField(max_length=255, blank=True, null=True)
     billing_postal_code = models.CharField(max_length=20, blank=True, null=True)
     billing_city = models.CharField(max_length=255, blank=True, null=True)
@@ -96,11 +96,11 @@ class Admission(models.Model):
     marital_status = models.CharField(max_length=255, blank=True, null=True)
     spouse_name = models.CharField(max_length=255, blank=True, null=True)
     children_number = models.SmallIntegerField(blank=True, null=True)
-    previous_ucl_registration = models.BooleanField()
+    previous_ucl_registration = models.BooleanField(default=False)
     previous_noma = models.CharField(max_length=255, blank=True, null=True)
 
     #Post
-    use_address_for_post = models.BooleanField()
+    use_address_for_post = models.BooleanField(default=False)
     residence_location = models.CharField(max_length=255, blank=True, null=True)
     residence_postal_code = models.CharField(max_length=20, blank=True, null=True)
     residence_city = models.CharField(max_length=255, blank=True, null=True)
@@ -108,13 +108,13 @@ class Admission(models.Model):
     residence_phone = models.CharField(max_length=30, blank=True, null=True)
 
     #Student Sheet
-    registration_complete = models.BooleanField()
+    registration_complete = models.BooleanField(default=False)
     noma = models.CharField(max_length=255, blank=True, null=True)
-    payment_complete = models.BooleanField()
-    formation_spreading = models.BooleanField()
-    prior_experience_validation = models.BooleanField()
-    assessment_presented = models.BooleanField()
-    assessment_succeded = models.BooleanField()
+    payment_complete = models.BooleanField(default=False)
+    formation_spreading = models.BooleanField(default=False)
+    prior_experience_validation = models.BooleanField(default=False)
+    assessment_presented = models.BooleanField(default=False)
+    assessment_succeded = models.BooleanField(default=False)
     #ajouter dates sessions cours suivies
     sessions = models.CharField(max_length=255, blank=True, null=True)
 

@@ -26,11 +26,16 @@
 from django.conf.urls import url, include
 
 from continuing_education.views import (home, admission, registration)
+from continuing_education.views.student import admission as student_admission
+
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
     url(r'^admin/$', home.admin_view, name='continuing_education_admin'),
-    url(r'^student/$', home.student_view, name='continuing_education_student'),
+    url(r'^student/', include ([
+        url(r'^$', home.student_view, name='continuing_education_student'),
+        url(r'^admission_new/', student_admission.admission_new, name='student_admission_new'),
+    ])),
     url(r'^admission/', include([
         url(r'^$', admission.list_admissions, name='admission'),
         url(r'^new/$', admission.admission_new, name='admission_new'),
