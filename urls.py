@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^student/', include ([
         url(r'^$', home.student_view, name='continuing_education_student'),
         url(r'^admission_new/', student_admission.admission_new, name='student_admission_new'),
+        url(r'^admission_detail/(?P<admission_id>[0-9]+)$', student_admission.admission_detail, name='student_admission_detail'),
     ])),
     url(r'^admission/', include([
         url(r'^$', admission.list_admissions, name='admission'),
