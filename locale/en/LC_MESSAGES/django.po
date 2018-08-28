@@ -154,6 +154,15 @@ msgstr "National registry number"
 msgid "new_admission"
 msgstr "New admission"
 
+msgid "no_admission_yet"
+msgstr "You have no admission form submitted"
+
+msgid "no_document_available"
+msgstr "No document available"
+
+msgid "no_registration_yet"
+msgstr "There is no registration form yet available"
+
 msgid "other_educational_background"
 msgstr "Other educational background"
 

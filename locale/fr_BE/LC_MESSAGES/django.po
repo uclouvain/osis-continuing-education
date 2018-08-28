@@ -154,6 +154,15 @@ msgstr "Numéro de registre national belge"
 msgid "new_admission"
 msgstr "Nouvelle admission"
 
+msgid "no_admission_yet"
+msgstr "Vous n'avez pas soumis de formulaire d'admission"
+
+msgid "no_document_available"
+msgstr "Pas de document disponible"
+
+msgid "no_registration_yet"
+msgstr "Pas de formulaire d'inscription disponible"
+
 msgid "other_educational_background"
 msgstr "Autres formations"
 
