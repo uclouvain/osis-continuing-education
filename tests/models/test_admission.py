@@ -39,3 +39,12 @@ class TestAdmission(TestCase):
 
         nonexistent_admission = admission.find_by_id(0)
         self.assertIsNone(nonexistent_admission)
+
+    # to be changed with student id
+    def test_find_by_student(self):
+        an_admission = self.admission
+        persisted_admission = admission.find_by_student(an_admission.first_name, an_admission.last_name)
+        self.assertTrue(persisted_admission.exists())
+
+        nonexistent_admission = admission.find_by_student("first_name", "last_name")
+        self.assertFalse(nonexistent_admission.exists())

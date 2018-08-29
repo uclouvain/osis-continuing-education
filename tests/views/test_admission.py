@@ -74,6 +74,15 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('admission'))
 
+    def test_admission_save_with_error(self):
+        admission = AdmissionFactory()
+        admission_dict = admission.__dict__
+        convert_dates(admission_dict)
+        admission_dict["birth_date"] = "no valid date"
+        response = self.client.post(reverse('admission_new'), data=admission_dict)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'admission_form.html')
+
     def test_admission_edit_not_found(self):
         response = self.client.get(reverse('admission_edit', kwargs={
             'admission_id': 0,
@@ -97,9 +106,9 @@ class ViewAdmissionTestCase(TestCase):
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
         self.admission.refresh_from_db()
 
+        # verifying that fields are correctly updated
         for key in form.cleaned_data.keys():
             field_value = self.admission.__getattribute__(key)
             if type(field_value) is datetime.date:
                 field_value = field_value.strftime('%Y-%m-%d')
             self.assertEqual(field_value, admission[key])
-

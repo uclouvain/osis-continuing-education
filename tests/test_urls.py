@@ -89,6 +89,30 @@ class UrlsTestCase(TestCase):
                 pattern_name='registration_detail',
                 kwargs={'admission_id': 1}
             ),
+            dict(
+                url_path="/continuing_education/student/admission_new/",
+                pattern_name='student_admission_new',
+            ),
+            dict(
+                url_path="/continuing_education/student/admission_edit/1",
+                pattern_name='student_admission_edit',
+                kwargs={'admission_id': 1}
+            ),
+            dict(
+                url_path="/continuing_education/student/admission_detail/1",
+                pattern_name='student_admission_detail',
+                kwargs={'admission_id': 1}
+            ),
+            dict(
+                url_path="/continuing_education/student/registration_edit/1",
+                pattern_name='student_registration_edit',
+                kwargs={'admission_id': 1}
+            ),
+            dict(
+                url_path="/continuing_education/student/registration_detail/1",
+                pattern_name='student_registration_detail',
+                kwargs={'admission_id': 1}
+            ),
         ]
 
         for url_name, pattern in test_paths(routes_to_test):

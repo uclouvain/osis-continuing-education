@@ -87,6 +87,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertRedirects(response, reverse('registration_detail', args=[self.admission_accepted.id]))
         self.admission_accepted.refresh_from_db()
 
+        # verifying that fields are correctly updated
         for key in form.cleaned_data.keys():
             field_value = self.admission_accepted.__getattribute__(key)
             self.assertEqual(field_value, admission[key])
