@@ -27,45 +27,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
-from continuing_education.forms.admission import AdmissionForm
+from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import display_errors
 
-
 @login_required
-def list_admissions(request):
-    admissions = Admission.objects.all()
-    return render(request, "admissions.html", locals())
-
-@login_required
-def admission_detail(request, admission_id):
+def registration_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    return render(request, "admission_detail.html", locals())
+    return render(request, "student/registration_detail.html", locals())
 
 @login_required
-def admission_new(request):
-    form = AdmissionForm(request.POST or None)
+def registration_edit(request, admission_id):
+    registration = get_object_or_404(Admission, pk=admission_id)
+
+    form = RegistrationForm(request.POST or None, instance=registration)
     errors = []
     if form.is_valid():
-        admission = form.save()
-        return redirect(reverse('admission'))
+        registration = form.save()
+        return redirect(reverse('student_registration_detail', kwargs={'admission_id':admission_id}))
     else:
         errors.append(form.errors)
         display_errors(request, errors)
 
-    return render(request, 'admission_form.html', locals())
-
-@login_required
-def admission_edit(request, admission_id):
-    admission = get_object_or_404(Admission, pk=admission_id)
-
-    form = AdmissionForm(request.POST or None, instance=admission)
-    errors = []
-    if form.is_valid():
-        admission = form.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id':admission_id}))
-    else:
-        errors.append(form.errors)
-        display_errors(request, errors)
-
-    return render(request, 'admission_form.html', locals())
+    return render(request, 'student/registration_form.html', locals())

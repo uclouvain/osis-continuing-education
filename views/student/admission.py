@@ -42,9 +42,8 @@ def admission_new(request):
     errors = []
     if form.is_valid():
         admission = form.save()
-        return redirect(reverse('admission'))
+        return redirect(reverse('continuing_education_student'))
     else:
-        print(form.errors)
         errors.append(form.errors)
         display_errors(request, errors)
 
@@ -58,7 +57,7 @@ def admission_edit(request, admission_id):
     errors = []
     if form.is_valid():
         admission = form.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id':admission_id}))
+        return redirect(reverse('student_admission_detail', kwargs={'admission_id':admission_id}))
     else:
         errors.append(form.errors)
         display_errors(request, errors)

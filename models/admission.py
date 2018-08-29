@@ -127,7 +127,4 @@ def find_by_id(a_id):
 
 #à modifier lors du lien avec une table student
 def find_by_student(first_name, last_name):
-    try:
         return Admission.objects.filter(first_name=first_name, last_name=last_name)
-    except ObjectDoesNotExist:
-        return None

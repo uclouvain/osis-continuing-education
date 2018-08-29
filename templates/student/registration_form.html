@@ -31,7 +31,7 @@
     <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
     <li><a class="text-capitalize" href="{% url 'continuing_education_student' %}">{% trans 'student' %}</a></li>
-    <li class="active">{% trans 'admission' %}</li>
+    <li class="active">{% trans 'registration' %}</li>
 {% endblock %}
 
 {% block content %}
@@ -41,7 +41,7 @@
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'save' %}
         </button>
         {% endif %}
-        <h2>{% trans 'admission' %}</h2>
+        <h2>{% trans 'registration' %}</h2>
     </div>
 
     <div class="panel panel-default">
@@ -65,10 +65,49 @@
 
 {% block script %}
     <script>
-        let diploma_obtained = $('#id_high_school_diploma').find(":selected").val();
-        $('.high_school_graduation_year').toggle(diploma_obtained == "True");
-        $('#id_high_school_diploma').on('change', function() {
-            $('.high_school_graduation_year').toggle($(this).find(":selected").val());
+        let address = {
+            location: "{{registration.location | escapejs}}",
+            postal_code: "{{registration.postal_code | escapejs}}",
+            city: "{{registration.city | escapejs}}",
+            country: "{{registration.country_id | escapejs}}",
+        }
+
+        $("#id_use_address_for_billing:checkbox").change(function(){
+            if(this.checked){
+                copy_address("billing");
+            } else {
+                empty_address("billing");
+            }
         });
+
+        $("#id_use_address_for_post").change(function(){
+            if(this.checked){
+                copy_address("residence");
+            } else {
+                empty_address("residence");
+            }
+        });
+
+        function copy_address(e){
+            $("#id_"+e+"_location").val(address.location);
+            $("#id_"+e+"_location").prop("readonly", true);
+            $("#id_"+e+"_postal_code").val(address.postal_code);
+            $("#id_"+e+"_postal_code").prop("readonly", true);
+            $("#id_"+e+"_city").val(address.city);
+            $("#id_"+e+"_city").prop("readonly", true);
+            $("#id_"+e+"_country").val(address.country);
+            $("#id_"+e+"_country").prop("readonly", true);
+        }
+
+        function empty_address(e){
+            $("#id_"+e+"_location").val('');
+            $("#id_"+e+"_location").prop("readonly", false);
+            $("#id_"+e+"_postal_code").val('');
+            $("#id_"+e+"_postal_code").prop("readonly", false);
+            $("#id_"+e+"_city").val('');
+            $("#id_"+e+"_city").prop("readonly", false);
+            $("#id_"+e+"_country").val('');
+            $("#id_"+e+"_country").prop("readonly", false);
+        }
     </script>
 {% endblock %}
