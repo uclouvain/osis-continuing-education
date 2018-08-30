@@ -1,6 +1,5 @@
 from django.forms import ModelForm
 
-from base.forms.bootstrap import BootstrapModelForm
 from continuing_education.models.admission import Admission
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -51,13 +50,16 @@ class AdmissionForm(ModelForm):
             'faculty',
             'formation_administrator',
             # Awareness
-            'ucl_website',
-            'formation_website',
-            'press',
-            'facebook',
-            'linkedin',
-            'customized_mail',
-            'emailing',
+            'awareness_ucl_website',
+            'awareness_formation_website',
+            'awareness_press',
+            'awareness_facebook',
+            'awareness_linkedin',
+            'awareness_customized_mail',
+            'awareness_emailing',
             # State
             'state',
         ]
+        labels = {}
+        for field in fields:
+            labels[field] = _(field)

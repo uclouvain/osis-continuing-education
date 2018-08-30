@@ -40,6 +40,14 @@ class RegistrationForm(ModelForm):
             'formation_spreading',
             'prior_experience_validation',
             'assessment_presented',
-            'assessment_succeded',
+            'assessment_succeeded',
             'sessions'
         ]
+        labels = {}
+        for field in fields:
+            labels[field] = _(field)
+            if "billing_" in field:
+                labels[field] = _(field.replace("billing_",''))
+            if "residence_" in field:
+                labels[field] = _(field.replace("residence_",''))
+
