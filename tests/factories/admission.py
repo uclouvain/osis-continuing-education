@@ -82,13 +82,13 @@ class AdmissionFactory(factory.DjangoModelFactory):
     formation_administrator = factory.Faker('name_female')
 
     # Awareness
-    ucl_website = random.choice([True, False])
-    formation_website = random.choice([True, False])
-    press = random.choice([True, False])
-    facebook = random.choice([True, False])
-    linkedin = random.choice([True, False])
-    customized_mail = random.choice([True, False])
-    emailing = random.choice([True, False])
+    awareness_ucl_website = random.choice([True, False])
+    awareness_formation_website = random.choice([True, False])
+    awareness_press = random.choice([True, False])
+    awareness_facebook = random.choice([True, False])
+    awareness_linkedin = random.choice([True, False])
+    awareness_customized_mail = random.choice([True, False])
+    awareness_emailing = random.choice([True, False])
 
     # State
     state = random.choice(Admission.STATE_CHOICES)[0]
