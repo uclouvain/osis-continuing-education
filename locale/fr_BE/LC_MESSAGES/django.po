@@ -122,7 +122,7 @@ msgid "head_office_name"
 msgstr "Nom du siège social"
 
 msgid "high_school_diploma"
-msgstr "Diplôme d'étude secondaire ?"
+msgstr "Diplôme d'études secondaires"
 
 msgid "high_school_graduation_year"
 msgstr "Année d'obtention (secondaire)"
@@ -189,6 +189,9 @@ msgstr "Précédent NOMA"
 
 msgid "prior_experience_validation"
 msgstr "Valorisation des Acquis d'Experience"
+
+msgid "private"
+msgstr "Privé"
 
 msgid "professional_background"
 msgstr "Parcours professionnel"

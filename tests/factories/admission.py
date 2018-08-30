@@ -27,6 +27,7 @@ import datetime
 import random
 import factory
 
+from continuing_education.models.admission import Admission
 from reference.tests.factories.country import CountryFactory
 
 
@@ -41,7 +42,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     birth_location = factory.Faker('city')
     birth_country = factory.SubFactory(CountryFactory)
     citizenship = factory.SubFactory(CountryFactory)
-    gender = random.choice(['F','M','U'])
+    gender = random.choice(Admission.GENDER_CHOICES)[0]
 
     # Contact
     phone_mobile = factory.Faker('phone_number')
@@ -63,10 +64,10 @@ class AdmissionFactory(factory.DjangoModelFactory):
     other_educational_background = "other background"
 
     # Professional Background
-    professional_status = random.choice(['EMPLOYEE','SELF_EMPLOYED','JOB_SEEKER','PUBLIC_SERVANT'])
+    professional_status = random.choice(Admission.STATUS_CHOICES)[0]
     current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
-    activity_sector = "activity sector"
+    activity_sector = random.choice(Admission.SECTOR_CHOICES)[0]
     past_professional_activities = "past activities"
 
     # Motivation
@@ -90,10 +91,10 @@ class AdmissionFactory(factory.DjangoModelFactory):
     emailing = random.choice([True, False])
 
     # State
-    state = random.choice(["waiting", "rejected", "accepted"])
+    state = random.choice(Admission.STATE_CHOICES)[0]
 
     # Billing
-    registration_type = random.choice(["professional", "particular"])
+    registration_type =  random.choice(Admission.REGISTRATION_TITLE_CHOICES)[0]
     use_address_for_billing = random.choice([True, False])
     billing_location = factory.Faker('street_name')
     billing_postal_code = factory.Faker('zipcode')
@@ -107,8 +108,8 @@ class AdmissionFactory(factory.DjangoModelFactory):
     national_registry_number = factory.Faker('ssn')
     id_card_number = factory.Faker('ssn')
     passport_number = factory.Faker('isbn13')
-    marital_status = random.choice(["married", "single", "divorced", "widowed"])
-    spouse_name = factory.Faker('name_female')
+    marital_status = random.choice(Admission.MARITAL_STATUS_CHOICES)[0]
+    spouse_name = factory.Faker('name')
     children_number = random.randint(0,10)
     previous_ucl_registration = random.choice([True, False])
     previous_noma = factory.Faker('isbn10')
@@ -128,6 +129,6 @@ class AdmissionFactory(factory.DjangoModelFactory):
     formation_spreading = random.choice([True, False])
     prior_experience_validation = random.choice([True, False])
     assessment_presented = random.choice([True, False])
-    assessment_succeded = random.choice([True, False])
+    assessment_succeeded = random.choice([True, False])
     # ajouter dates sessions cours suivies
     sessions = "sessions"

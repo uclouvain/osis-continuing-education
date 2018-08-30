@@ -122,7 +122,7 @@ msgid "head_office_name"
 msgstr "Head office name"
 
 msgid "high_school_diploma"
-msgstr "High school diploma obtained ?"
+msgstr "High school diploma"
 
 msgid "high_school_graduation_year"
 msgstr "Graduation year (high school)"
@@ -183,6 +183,9 @@ msgstr "Post"
 
 msgid "previous_ucl_registration"
 msgstr "Have you previously been registered at UCL ?"
+
+msgid "private"
+msgstr "Private"
 
 msgid "previous_noma"
 msgstr "Previous NOMA"

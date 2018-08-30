@@ -61,86 +61,86 @@
                 <div class="panel-heading">{% trans 'identification' %}</div>
                 <div class="panel panel-body">
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("first_name") %} <br/> {{ admission.first_name }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("last_name") %} <br/> {{ admission.last_name }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("gender") %} <br/> {{ admission.gender }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("citizenship") %} <br/> {{ admission.citizenship }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("first_name") %} <br/> {{ admission.first_name | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("last_name") %} <br/> {{ admission.last_name | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("gender") %} <br/> {{ admission.gender | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("citizenship") %} <br/> {{ admission.citizenship | default_if_none:"-" }} </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("birth_date") %} <br/> {{ admission.birth_date }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("birth_location") %} <br/> {{ admission.birth_location }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("birth_country") %} <br/> {{ admission.birth_country }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("birth_date") %} <br/> {{ admission.birth_date | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("birth_location") %} <br/> {{ admission.birth_location | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("birth_country") %} <br/> {{ admission.birth_country | default_if_none:"-" }} </div>
                     </div>
                 </div>
 
                 <div class="panel-heading">{% trans 'contact' %}</div>
                 <div class="panel panel-body">
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("phone_mobile") %} <br/> {{ admission.phone_mobile }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("email") %} <br/> {{ admission.email }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("phone_mobile") %} <br/> {{ admission.phone_mobile | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("email") %} <br/> {{ admission.email | default_if_none:"-" }} </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("location") %} <br/> {{ admission.location }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("postal_code") %} <br/> {{ admission.postal_code }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("city") %} <br/> {{ admission.city }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("country") %} <br/> {{ admission.country }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("location") %} <br/> {{ admission.location | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("postal_code") %} <br/> {{ admission.postal_code | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("city") %} <br/> {{ admission.city | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("country") %} <br/> {{ admission.country | default_if_none:"-" }} </div>
                     </div>
                 </div>
 
                         <div class="panel-heading">{% trans 'education' %}</div>
                         <div class="panel panel-body">
                             <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("high_school_diploma") %} <br/> {{ admission.high_school_diploma }} </div>
-                                <div class="col-md-4">{% bootstrap_label _("high_school_graduation_year") %} <br/> {{ admission.high_school_graduation_year }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("high_school_diploma") %} <br/> {{ admission.high_school_diploma | yesno }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("high_school_graduation_year") %} <br/> {{ admission.high_school_graduation_year | default_if_none:"-" }} </div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("last_degree_level") %} <br/> {{ admission.last_degree_level }} </div>
-                                <div class="col-md-4">{% bootstrap_label _("last_degree_field") %} <br/> {{ admission.last_degree_field }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("last_degree_level") %} <br/> {{ admission.last_degree_level | default_if_none:"-" }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("last_degree_field") %} <br/> {{ admission.last_degree_field | default_if_none:"-" }} </div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("last_degree_institution") %} <br/> {{ admission.last_degree_institution }} </div>
-                                <div class="col-md-4">{% bootstrap_label _("last_degree_graduation_year") %} <br/> {{ admission.last_degree_graduation_year }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("last_degree_institution") %} <br/> {{ admission.last_degree_institution | default_if_none:"-" }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("last_degree_graduation_year") %} <br/> {{ admission.last_degree_graduation_year | default_if_none:"-" }} </div>
                             </div>
                             <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("other_educational_background") %} <br/> {{ admission.other_educational_background }} </div>
+                                <div class="col-md-4">{% bootstrap_label _("other_educational_background") %} <br/> {{ admission.other_educational_background | default_if_none:"-" }} </div>
                             </div>
                         </div>
 
                     <div class="panel-heading">{% trans 'professional_background' %}</div>
                     <div class="panel panel-body">
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("professional_status") %} <br/> {{ admission.professional_status }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("professional_status") %} <br/> {{ admission.professional_status | default_if_none:"-" }} </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("current_occupation") %} <br/> {{ admission.current_occupation }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("current_occupation") %} <br/> {{ admission.current_occupation | default_if_none:"-" }} </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("current_employer") %} <br/> {{ admission.current_employer }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("activity_sector") %} <br/> {{ admission.activity_sector }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("current_employer") %} <br/> {{ admission.current_employer | default_if_none:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("activity_sector") %} <br/> {{ admission.activity_sector | default_if_none:"-" }} </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("past_professional_activities") %} <br/> {{ admission.past_professional_activities }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("past_professional_activities") %} <br/> {{ admission.past_professional_activities | default_if_none:"-" }} </div>
                         </div>
                     </div>
 
                 <div class="panel-heading">{% trans 'motivation' %}</div>
                     <div class="panel panel-body">
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("motivation") %} <br/> {{ admission.motivation }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("professional_impact") %} <br/> {{ admission.professional_impact }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("motivation") %} <br/> {{ admission.motivation | default_if_none:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("professional_impact") %} <br/> {{ admission.professional_impact | default_if_none:"-" }} </div>
                         </div>
                 </div>
 
                 <div class="panel-heading">{% trans 'formation' %}</div>
                     <div class="panel panel-body">
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("formation_title") %} <br/> {{ admission.formation_title }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("courses_formula") %} <br/> {{ admission.courses_formula }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("program_code") %} <br/> {{ admission.program_code }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("formation_title") %} <br/> {{ admission.formation_title | default_if_none:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("courses_formula") %} <br/> {{ admission.courses_formula | default_if_none:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("program_code") %} <br/> {{ admission.program_code | default_if_none:"-" }} </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("faculty") %} <br/> {{ admission.faculty }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("formation_administrator") %} <br/> {{ admission.formation_administrator }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("faculty") %} <br/> {{ admission.faculty | default_if_none:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("formation_administrator") %} <br/> {{ admission.formation_administrator | default_if_none:"-" }} </div>
                         </div>
                 </div>
 

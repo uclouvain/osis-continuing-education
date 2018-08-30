@@ -11,15 +11,44 @@ class Admission(models.Model):
     GENDER_CHOICES = (
         ('F', _('female')),
         ('M', _('male')),
-        ('U', _('unknown'))
     )
 
     STATUS_CHOICES = (
         ('EMPLOYEE', _('employee')),
         ('SELF_EMPLOYED', _('self_employed')),
         ('JOB_SEEKER', _('job_seeker')),
-        ('PUBLIC_SERVANT', _('public_servant'))
+        ('PUBLIC_SERVANT', _('public_servant')),
+        ('OTHER', _('other')),
     )
+
+    SECTOR_CHOICES = (
+        ('PRIVATE', _('private')),
+        ('PUBLIC', _('public')),
+        ('ASSOCIATIVE', _('associative')),
+        ('HEALTH', _('health')),
+        ('OTHER', _('other')),
+    )
+
+    REGISTRATION_TITLE_CHOICES = (
+        ('PRIVATE', _('private')),
+        ('PROFESSIONAL', _('professional')),
+    )
+
+    MARITAL_STATUS_CHOICES = (
+        ('SINGLE', _('single')),
+        ('MARRIED', _('married')),
+        ('WIDOWED', _('widowed')),
+        ('DIVORCED', _('divorced')),
+        ('SEPARATED', _('separated')),
+        ('LEGAL_COHABITANT', _('legal_cohabitant')),
+    )
+
+    STATE_CHOICES = (
+        ('accepted', _('accepted')),
+        ('rejected', _('rejected')),
+        ('waiting', _('waiting')),
+    )
+
     #Identification
     first_name = models.CharField(max_length=50, blank=True, null=True, db_index=True)
     last_name = models.CharField(max_length=50, blank=True, null=True, db_index=True)
@@ -27,7 +56,7 @@ class Admission(models.Model):
     birth_location =  models.CharField(max_length=255, blank=True, null=True)
     birth_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='birth_country')
     citizenship = models.ForeignKey('reference.Country', blank=True, null=True, related_name='citizenship')
-    gender = models.CharField(max_length=1, blank=True, null=True, choices=GENDER_CHOICES, default='U')
+    gender = models.CharField(max_length=1, blank=True, null=True, choices=GENDER_CHOICES, default='F')
 
     #Contact
     phone_mobile = models.CharField(max_length=30, blank=True, null=True)
@@ -52,7 +81,7 @@ class Admission(models.Model):
     professional_status = models.CharField(max_length=50, blank=True, null=True, choices=STATUS_CHOICES)
     current_occupation = models.CharField(max_length=50, blank=True, null=True)
     current_employer = models.CharField(max_length=50, blank=True, null=True)
-    activity_sector = models.CharField(max_length=50, blank=True, null=True)
+    activity_sector = models.CharField(max_length=50, blank=True, null=True, choices=SECTOR_CHOICES)
     past_professional_activities = models.TextField(blank=True, null=True)
 
     #Motivation
@@ -67,19 +96,19 @@ class Admission(models.Model):
     formation_administrator = models.CharField(max_length=50, blank=True, null=True)
 
     #Awareness
-    ucl_website = models.BooleanField(default=False)
-    formation_website = models.BooleanField(default=False)
-    press = models.BooleanField(default=False)
-    facebook = models.BooleanField(default=False)
-    linkedin = models.BooleanField(default=False)
-    customized_mail = models.BooleanField(default=False)
-    emailing = models.BooleanField(default=False)
+    awareness_ucl_website = models.BooleanField(default=False)
+    awareness_formation_website = models.BooleanField(default=False)
+    awareness_press = models.BooleanField(default=False)
+    awareness_facebook = models.BooleanField(default=False)
+    awareness_linkedin = models.BooleanField(default=False)
+    awareness_customized_mail = models.BooleanField(default=False)
+    awareness_emailing = models.BooleanField(default=False)
 
     #State
-    state = models.CharField(max_length=50, blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True,  choices=STATE_CHOICES)
 
     #Billing
-    registration_type = models.CharField(max_length=50, blank=True, null=True)
+    registration_type = models.CharField(max_length=50, blank=True, null=True, choices=REGISTRATION_TITLE_CHOICES)
     use_address_for_billing = models.BooleanField(default=False)
     billing_location = models.CharField(max_length=255, blank=True, null=True)
     billing_postal_code = models.CharField(max_length=20, blank=True, null=True)
@@ -93,7 +122,7 @@ class Admission(models.Model):
     national_registry_number = models.CharField(max_length=255, blank=True, null=True)
     id_card_number = models.CharField(max_length=255, blank=True, null=True)
     passport_number = models.CharField(max_length=255, blank=True, null=True)
-    marital_status = models.CharField(max_length=255, blank=True, null=True)
+    marital_status = models.CharField(max_length=255, blank=True, null=True, choices=MARITAL_STATUS_CHOICES)
     spouse_name = models.CharField(max_length=255, blank=True, null=True)
     children_number = models.SmallIntegerField(blank=True, null=True)
     previous_ucl_registration = models.BooleanField(default=False)
@@ -114,10 +143,9 @@ class Admission(models.Model):
     formation_spreading = models.BooleanField(default=False)
     prior_experience_validation = models.BooleanField(default=False)
     assessment_presented = models.BooleanField(default=False)
-    assessment_succeded = models.BooleanField(default=False)
+    assessment_succeeded = models.BooleanField(default=False)
     #ajouter dates sessions cours suivies
     sessions = models.CharField(max_length=255, blank=True, null=True)
-
 
 def find_by_id(a_id):
     try:

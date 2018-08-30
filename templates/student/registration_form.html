@@ -48,7 +48,39 @@
             <form id="form" method="POST" class="post-form">
                 {% csrf_token %}
                 <div class="panel panel-body">
-                    {% bootstrap_form form exclude='state' %}
+                    {% bootstrap_field form.registration_type %}
+                    {% bootstrap_field form.use_address_for_billing %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{% trans 'billing' %}</div>
+                            <div class="panel panel-body">
+                            {% bootstrap_field form.billing_location %}
+                            {% bootstrap_field form.billing_postal_code %}
+                            {% bootstrap_field form.billing_city %}
+                            {% bootstrap_field form.billing_country %}
+                            </div>
+                    </div>
+                    {% bootstrap_field form.head_office_name %}
+                    {% bootstrap_field form.company_number %}
+                    {% bootstrap_field form.vat_number %}
+                    {% bootstrap_field form.national_registry_number %}
+                    {% bootstrap_field form.id_card_number %}
+                    {% bootstrap_field form.passport_number %}
+                    {% bootstrap_field form.marital_status %}
+                    {% bootstrap_field form.spouse_name %}
+                    {% bootstrap_field form.children_number %}
+                    {% bootstrap_field form.previous_ucl_registration %}
+                    {% bootstrap_field form.previous_noma %}
+                    {% bootstrap_field form.use_address_for_post %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{% trans 'post' %}</div>
+                            <div class="panel panel-body">
+                    {% bootstrap_field form.residence_location %}
+                    {% bootstrap_field form.residence_postal_code %}
+                    {% bootstrap_field form.residence_city %}
+                    {% bootstrap_field form.residence_country %}
+                        </div>
+                    </div>
+                    {% bootstrap_field form.residence_phone %}
                 </div>
                 <div class="panel panel-body">
                     <button type="submit" class="btn btn-primary" title="{%trans 'submit' %}">
@@ -65,6 +97,7 @@
 
 {% block script %}
     <script>
+        //reuse address
         let address = {
             location: "{{registration.location | escapejs}}",
             postal_code: "{{registration.postal_code | escapejs}}",
@@ -79,35 +112,41 @@
                 empty_address("billing");
             }
         });
+        //check when page is loaded
+        $("#id_use_address_for_billing:checkbox").prop('checked')?copy_address("billing"):empty_address(("billing"));
 
-        $("#id_use_address_for_post").change(function(){
+        $("#id_use_address_for_post:checkbox").change(function(){
             if(this.checked){
                 copy_address("residence");
             } else {
                 empty_address("residence");
             }
         });
+        //check when page is loaded
+        $("#id_use_address_for_post:checkbox").prop('checked')?copy_address("residence"):empty_address(("residence"));
+
+        //re-enable disabled field on form submit
+        $( "#form" ).submit(function( event ) {
+            $("#id_billing_country").prop( "disabled", false );
+            $("#id_residence_country").prop( "disabled", false );
+        });
 
         function copy_address(e){
-            $("#id_"+e+"_location").val(address.location);
-            $("#id_"+e+"_location").prop("readonly", true);
-            $("#id_"+e+"_postal_code").val(address.postal_code);
-            $("#id_"+e+"_postal_code").prop("readonly", true);
-            $("#id_"+e+"_city").val(address.city);
-            $("#id_"+e+"_city").prop("readonly", true);
+            ["location", "postal_code", "city"].forEach((field) => {
+                $("#id_"+e+"_"+field).val(address[field]);
+                $("#id_"+e+"_"+field).prop("readonly", true);
+            });
             $("#id_"+e+"_country").val(address.country);
-            $("#id_"+e+"_country").prop("readonly", true);
+            $("#id_"+e+"_country").prop("disabled", true);
         }
 
         function empty_address(e){
-            $("#id_"+e+"_location").val('');
-            $("#id_"+e+"_location").prop("readonly", false);
-            $("#id_"+e+"_postal_code").val('');
-            $("#id_"+e+"_postal_code").prop("readonly", false);
-            $("#id_"+e+"_city").val('');
-            $("#id_"+e+"_city").prop("readonly", false);
+            ["location", "postal_code", "city"].forEach((field) => {
+                $("#id_"+e+"_"+field).val('');
+                $("#id_"+e+"_"+field).prop("readonly", false);
+            });
             $("#id_"+e+"_country").val('');
-            $("#id_"+e+"_country").prop("readonly", false);
+            $("#id_"+e+"_country").prop("disabled", false);
         }
     </script>
 {% endblock %}
