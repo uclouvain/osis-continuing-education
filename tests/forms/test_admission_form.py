@@ -26,6 +26,7 @@
 import factory
 from django.test import TestCase
 
+from base.models import offer_year
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
 from reference.models import country
@@ -44,6 +45,9 @@ def convert_countries(admission):
     admission['citizenship'] = country.find_by_id(admission["citizenship_id"])
     admission['billing_country'] = country.find_by_id(admission["billing_country_id"])
     admission['residence_country'] = country.find_by_id(admission["residence_country_id"])
+
+def convert_offer(admission):
+    admission['formation_title'] = offer_year.find_by_id(admission['formation_title_id'])
 
 def convert_dates(admission):
     admission['birth_date'] = admission['birth_date'].strftime('%Y-%m-%d')

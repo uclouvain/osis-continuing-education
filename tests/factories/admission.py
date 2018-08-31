@@ -27,6 +27,7 @@ import datetime
 import random
 import factory
 
+from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.models.admission import Admission
 from reference.tests.factories.country import CountryFactory
 
@@ -75,7 +76,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     professional_impact = "professional impact"
 
     # Formation
-    formation_title = "title"
+    formation_title = factory.SubFactory(OfferYearFactory)
     courses_formula = "formula"
     program_code = "ABC123"
     faculty = "faculty"

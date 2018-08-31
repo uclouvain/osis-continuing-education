@@ -1,12 +1,23 @@
 from django.forms import ModelForm
 
+from base.models import offer_year
 from continuing_education.models.admission import Admission
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 
+class FormationTitleChoiceField(forms.ModelChoiceField):
+    def label_from_instance(obj):
+        return "{} - {}".format(obj.acronym, obj.title)
+
 class AdmissionForm(ModelForm):
     high_school_diploma = forms.TypedChoiceField(coerce=lambda x: x =='True',
-                                   choices=((False, _('No')), (True, _('Yes'))))
+                                   choices=((False, _('No')), (True, _('Yes'))), label=_("high_school_diploma"))
+
+    def __init__(self, *args, **kwargs):
+        super(AdmissionForm, self).__init__(*args, **kwargs)
+        self.fields['formation_title'].label_from_instance = FormationTitleChoiceField.label_from_instance
+        # avoid adding META ordering in OfferYear model
+        self.fields['formation_title'].queryset = self.fields['formation_title'].queryset.all().order_by('acronym')
 
     class Meta:
         model = Admission
@@ -60,6 +71,5 @@ class AdmissionForm(ModelForm):
             # State
             'state',
         ]
-        labels = {}
-        for field in fields:
-            labels[field] = _(field)
+        #automatic translation of field names
+        labels = {field : _(field) for field in fields}

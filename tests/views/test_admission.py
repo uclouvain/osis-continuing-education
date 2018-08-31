@@ -30,16 +30,17 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries
-from reference.models.country import Country
+from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries, convert_offer
 
 
 class ViewAdmissionTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
         self.client.force_login(self.user)
+        self.offer = OfferYearFactory()
         self.admission = AdmissionFactory()
 
     def test_list_admissions(self):
@@ -99,6 +100,7 @@ class ViewAdmissionTestCase(TestCase):
         admission = AdmissionFactory().__dict__
         convert_dates(admission)
         convert_countries(admission)
+        convert_offer(admission)
         url = reverse('admission_edit', args=[self.admission.id])
         form = AdmissionForm(admission)
         form.is_valid()

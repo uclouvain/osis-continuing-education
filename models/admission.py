@@ -3,10 +3,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from base.models.academic_year import current_academic_years
+
+
 class AdmissionAdmin(ModelAdmin):
     list_display = ('last_name', 'first_name','country','formation_title', 'program_code')
 
 class Admission(models.Model):
+
+    CONTINUING_EDUCATION_TYPE = 8
+    NULLABLE_FIELD = dict(blank=True, null=True)
+
 
     GENDER_CHOICES = (
         ('F', _('female')),
@@ -50,50 +57,55 @@ class Admission(models.Model):
     )
 
     #Identification
-    first_name = models.CharField(max_length=50, blank=True, null=True, db_index=True)
-    last_name = models.CharField(max_length=50, blank=True, null=True, db_index=True)
-    birth_date = models.DateField(blank=True, null=True)
-    birth_location =  models.CharField(max_length=255, blank=True, null=True)
-    birth_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='birth_country')
-    citizenship = models.ForeignKey('reference.Country', blank=True, null=True, related_name='citizenship')
-    gender = models.CharField(max_length=1, blank=True, null=True, choices=GENDER_CHOICES, default='F')
+    first_name = models.CharField(max_length=50, **NULLABLE_FIELD, db_index=True)
+    last_name = models.CharField(max_length=50, **NULLABLE_FIELD, db_index=True)
+    birth_date = models.DateField(**NULLABLE_FIELD)
+    birth_location =  models.CharField(max_length=255, **NULLABLE_FIELD)
+    birth_country = models.ForeignKey('reference.Country', **NULLABLE_FIELD, related_name='birth_country')
+    citizenship = models.ForeignKey('reference.Country', **NULLABLE_FIELD, related_name='citizenship')
+    gender = models.CharField(max_length=1, **NULLABLE_FIELD, choices=GENDER_CHOICES, default='F')
 
     #Contact
-    phone_mobile = models.CharField(max_length=30, blank=True, null=True)
-    email = models.EmailField(max_length=255, blank=True, null=True)
+    phone_mobile = models.CharField(max_length=30, **NULLABLE_FIELD)
+    email = models.EmailField(max_length=255, **NULLABLE_FIELD)
 
     #Address
-    location = models.CharField(max_length=255, blank=True, null=True)
-    postal_code = models.CharField(max_length=20, blank=True, null=True)
-    city = models.CharField(max_length=255, blank=True, null=True)
-    country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='address_country')
+    location = models.CharField(max_length=255, **NULLABLE_FIELD)
+    postal_code = models.CharField(max_length=20, **NULLABLE_FIELD)
+    city = models.CharField(max_length=255, **NULLABLE_FIELD)
+    country = models.ForeignKey('reference.Country', **NULLABLE_FIELD, related_name='address_country')
 
     #Education
     high_school_diploma = models.BooleanField(default=False)
-    high_school_graduation_year = models.DateField(blank=True, null=True)
-    last_degree_level = models.CharField(max_length=50, blank=True, null=True)
-    last_degree_field = models.CharField(max_length=50, blank=True, null=True)
-    last_degree_institution = models.CharField(max_length=50, blank=True, null=True)
-    last_degree_graduation_year = models.DateField(blank=True, null=True)
-    other_educational_background = models.TextField(blank=True, null=True)
+    high_school_graduation_year = models.DateField(**NULLABLE_FIELD)
+    last_degree_level = models.CharField(max_length=50, **NULLABLE_FIELD)
+    last_degree_field = models.CharField(max_length=50, **NULLABLE_FIELD)
+    last_degree_institution = models.CharField(max_length=50, **NULLABLE_FIELD)
+    last_degree_graduation_year = models.DateField(**NULLABLE_FIELD)
+    other_educational_background = models.TextField(**NULLABLE_FIELD)
 
     #Professional Background
-    professional_status = models.CharField(max_length=50, blank=True, null=True, choices=STATUS_CHOICES)
-    current_occupation = models.CharField(max_length=50, blank=True, null=True)
-    current_employer = models.CharField(max_length=50, blank=True, null=True)
-    activity_sector = models.CharField(max_length=50, blank=True, null=True, choices=SECTOR_CHOICES)
-    past_professional_activities = models.TextField(blank=True, null=True)
+    professional_status = models.CharField(max_length=50, **NULLABLE_FIELD, choices=STATUS_CHOICES)
+    current_occupation = models.CharField(max_length=50, **NULLABLE_FIELD)
+    current_employer = models.CharField(max_length=50, **NULLABLE_FIELD)
+    activity_sector = models.CharField(max_length=50, **NULLABLE_FIELD, choices=SECTOR_CHOICES)
+    past_professional_activities = models.TextField(**NULLABLE_FIELD)
 
     #Motivation
-    motivation = models.TextField(blank=True, null=True)
-    professional_impact = models.TextField(blank=True, null=True)
+    motivation = models.TextField(**NULLABLE_FIELD)
+    professional_impact = models.TextField(**NULLABLE_FIELD)
 
     #Formation
-    formation_title = models.CharField(max_length=50, blank=True, null=True)
-    courses_formula = models.CharField(max_length=50, blank=True, null=True)
-    program_code = models.CharField(max_length=50, blank=True, null=True)
-    faculty = models.CharField(max_length=50, blank=True, null=True)
-    formation_administrator = models.CharField(max_length=50, blank=True, null=True)
+    formation_title = models.ForeignKey('base.OfferYear',
+                                        limit_choices_to={
+                                            'offer_type_id': CONTINUING_EDUCATION_TYPE,
+                                            'academic_year_id': current_academic_years()
+                                        },
+                                        **NULLABLE_FIELD)
+    courses_formula = models.CharField(max_length=50, **NULLABLE_FIELD)
+    program_code = models.CharField(max_length=50, **NULLABLE_FIELD)
+    faculty = models.CharField(max_length=50, **NULLABLE_FIELD)
+    formation_administrator = models.CharField(max_length=50, **NULLABLE_FIELD)
 
     #Awareness
     awareness_ucl_website = models.BooleanField(default=False)
@@ -105,47 +117,47 @@ class Admission(models.Model):
     awareness_emailing = models.BooleanField(default=False)
 
     #State
-    state = models.CharField(max_length=50, blank=True, null=True,  choices=STATE_CHOICES)
+    state = models.CharField(max_length=50, **NULLABLE_FIELD,  choices=STATE_CHOICES)
 
     #Billing
-    registration_type = models.CharField(max_length=50, blank=True, null=True, choices=REGISTRATION_TITLE_CHOICES)
+    registration_type = models.CharField(max_length=50, **NULLABLE_FIELD, choices=REGISTRATION_TITLE_CHOICES)
     use_address_for_billing = models.BooleanField(default=False)
-    billing_location = models.CharField(max_length=255, blank=True, null=True)
-    billing_postal_code = models.CharField(max_length=20, blank=True, null=True)
-    billing_city = models.CharField(max_length=255, blank=True, null=True)
-    billing_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='billing_country')
-    head_office_name = models.CharField(max_length=255, blank=True, null=True)
-    company_number = models.CharField(max_length=255, blank=True, null=True)
-    vat_number = models.CharField(max_length=255, blank=True, null=True)
+    billing_location = models.CharField(max_length=255, **NULLABLE_FIELD)
+    billing_postal_code = models.CharField(max_length=20, **NULLABLE_FIELD)
+    billing_city = models.CharField(max_length=255, **NULLABLE_FIELD)
+    billing_country = models.ForeignKey('reference.Country', **NULLABLE_FIELD, related_name='billing_country')
+    head_office_name = models.CharField(max_length=255, **NULLABLE_FIELD)
+    company_number = models.CharField(max_length=255, **NULLABLE_FIELD)
+    vat_number = models.CharField(max_length=255, **NULLABLE_FIELD)
 
     #Registration
-    national_registry_number = models.CharField(max_length=255, blank=True, null=True)
-    id_card_number = models.CharField(max_length=255, blank=True, null=True)
-    passport_number = models.CharField(max_length=255, blank=True, null=True)
-    marital_status = models.CharField(max_length=255, blank=True, null=True, choices=MARITAL_STATUS_CHOICES)
-    spouse_name = models.CharField(max_length=255, blank=True, null=True)
-    children_number = models.SmallIntegerField(blank=True, null=True)
+    national_registry_number = models.CharField(max_length=255, **NULLABLE_FIELD)
+    id_card_number = models.CharField(max_length=255, **NULLABLE_FIELD)
+    passport_number = models.CharField(max_length=255, **NULLABLE_FIELD)
+    marital_status = models.CharField(max_length=255, **NULLABLE_FIELD, choices=MARITAL_STATUS_CHOICES)
+    spouse_name = models.CharField(max_length=255, **NULLABLE_FIELD)
+    children_number = models.SmallIntegerField(**NULLABLE_FIELD)
     previous_ucl_registration = models.BooleanField(default=False)
-    previous_noma = models.CharField(max_length=255, blank=True, null=True)
+    previous_noma = models.CharField(max_length=255, **NULLABLE_FIELD)
 
     #Post
     use_address_for_post = models.BooleanField(default=False)
-    residence_location = models.CharField(max_length=255, blank=True, null=True)
-    residence_postal_code = models.CharField(max_length=20, blank=True, null=True)
-    residence_city = models.CharField(max_length=255, blank=True, null=True)
-    residence_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='residence_country')
-    residence_phone = models.CharField(max_length=30, blank=True, null=True)
+    residence_location = models.CharField(max_length=255, **NULLABLE_FIELD)
+    residence_postal_code = models.CharField(max_length=20, **NULLABLE_FIELD)
+    residence_city = models.CharField(max_length=255, **NULLABLE_FIELD)
+    residence_country = models.ForeignKey('reference.Country', **NULLABLE_FIELD, related_name='residence_country')
+    residence_phone = models.CharField(max_length=30, **NULLABLE_FIELD)
 
     #Student Sheet
     registration_complete = models.BooleanField(default=False)
-    noma = models.CharField(max_length=255, blank=True, null=True)
+    noma = models.CharField(max_length=255, **NULLABLE_FIELD)
     payment_complete = models.BooleanField(default=False)
     formation_spreading = models.BooleanField(default=False)
     prior_experience_validation = models.BooleanField(default=False)
     assessment_presented = models.BooleanField(default=False)
     assessment_succeeded = models.BooleanField(default=False)
     #ajouter dates sessions cours suivies
-    sessions = models.CharField(max_length=255, blank=True, null=True)
+    sessions = models.CharField(max_length=255, **NULLABLE_FIELD)
 
 def find_by_id(a_id):
     try:
