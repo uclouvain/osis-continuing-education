@@ -47,7 +47,7 @@ def convert_countries(admission):
     admission['residence_country'] = country.find_by_id(admission["residence_country_id"])
 
 def convert_offer(admission):
-    admission['formation_title'] = offer_year.find_by_id(admission['formation_title_id'])
+    admission['formation'] = offer_year.find_by_id(admission['formation_id'])
 
 def convert_dates(admission):
     admission['birth_date'] = admission['birth_date'].strftime('%Y-%m-%d')

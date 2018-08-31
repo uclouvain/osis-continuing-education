@@ -76,7 +76,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     professional_impact = "professional impact"
 
     # Formation
-    formation_title = factory.SubFactory(OfferYearFactory)
+    formation = factory.SubFactory(OfferYearFactory)
     courses_formula = "formula"
     program_code = "ABC123"
     faculty = "faculty"

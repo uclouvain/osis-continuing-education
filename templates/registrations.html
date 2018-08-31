@@ -50,7 +50,7 @@
                         <th class="searchable">{% trans 'name'|capfirst %}</th>
                         <th class="searchable">{% trans 'first_name' %}</th>
                         <th class="searchable">{% trans 'email' %}</th>
-                        <th class="searchable">{% trans 'formation_title' %}</th>
+                        <th class="searchable">{% trans 'formation' %}</th>
                         <th class="searchable">{% trans 'registered' %}</th>
                         <th class="searchable">{% trans 'paid' %}</th>
                     </tr>
@@ -60,7 +60,7 @@
                         <td><a href="{% url 'registration_detail' admission_id=admission.id %}">{{ admission.last_name }}</a></td>
                         <td>{{ admission.first_name }}</td>
                         <td>{{ admission.email }}</td>
-                        <td>{{ admission.formation_title }}</td>
+                        <td>{{ admission.formation }}</td>
                         <td style="vertical-align: middle;">
                         {% if admission.registration_complete %}
                                 <span class="label label-success show">{% trans 'Yes' %}</span>

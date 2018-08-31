@@ -63,8 +63,8 @@
                         </thead>
                         {% for admission in admissions %}
                             <tr>
-                                <td><a href="{% url 'student_admission_detail' admission_id=admission.id %}">{{ admission.program_code }}</a></td>
-                                <td>{{ admission.formation_title }}</td>
+                                <td><a href="{% url 'student_admission_detail' admission_id=admission.id %}">{{ admission.formation.acronym }}</a></td>
+                                <td>{{ admission.formation.title }}</td>
                                 <td>{{ admission.faculty }}</td>
                                 <td style="vertical-align: middle;">
                                     {% if admission.state == "waiting" %}
@@ -94,7 +94,7 @@
                         <thead>
                             <tr>
                                 <th class="searchable">{% trans 'program_code' %}</th>
-                                <th class="searchable">{% trans 'formation_title' %}</th>
+                                <th class="searchable">{% trans 'formation' %}</th>
                                 <th class="searchable">{% trans 'faculty' %}</th>
                                 <th class="searchable">{% trans 'registered' %}</th>
                             </tr>
@@ -102,7 +102,7 @@
                         {% for registration in registrations %}
                             <tr>
                                 <td><a href="{% url 'student_registration_detail' admission_id=registration.id %}">{{ registration.program_code }}</a></td>
-                                <td>{{ registration.formation_title }}</td>
+                                <td>{{ registration.formation.title }}</td>
                                 <td>{{ registration.faculty }}</td>
                                 <td style="vertical-align: middle;">
                                 {% if registration.registration_complete %}

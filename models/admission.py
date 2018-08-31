@@ -7,7 +7,7 @@ from base.models.academic_year import current_academic_years
 
 
 class AdmissionAdmin(ModelAdmin):
-    list_display = ('last_name', 'first_name','country','formation_title', 'program_code')
+    list_display = ('last_name', 'first_name','country','formation', 'program_code')
 
 class Admission(models.Model):
 
@@ -96,7 +96,7 @@ class Admission(models.Model):
     professional_impact = models.TextField(**NULLABLE_FIELD)
 
     #Formation
-    formation_title = models.ForeignKey('base.OfferYear',
+    formation = models.ForeignKey('base.OfferYear',
                                         limit_choices_to={
                                             'offer_type_id': CONTINUING_EDUCATION_TYPE,
                                             'academic_year_id': current_academic_years()
