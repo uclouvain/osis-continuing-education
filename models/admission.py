@@ -134,7 +134,7 @@ class Admission(models.Model):
     passport_number = models.CharField(max_length=255, blank=True)
     marital_status = models.CharField(max_length=255, blank=True, choices=MARITAL_STATUS_CHOICES)
     spouse_name = models.CharField(max_length=255, blank=True)
-    children_number = models.SmallIntegerField(blank=True)
+    children_number = models.SmallIntegerField(blank=True, default=0)
     previous_ucl_registration = models.BooleanField(default=False)
     previous_noma = models.CharField(max_length=255, blank=True)
 
