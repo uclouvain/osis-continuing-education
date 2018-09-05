@@ -40,7 +40,28 @@
 
     <div class="panel panel-default">
         <div class="panel panel-body">
-            <a class="btn btn-primary pull-right" href="{% url 'admission'%}">
+            <form style="display: inline;" action="" method="get" class="">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="filter_faculty">{% trans 'faculty' %}</label>
+                            <select name="faculty" id="filter_faculty" class="form-control">
+                                <option value="0">{% trans 'all' %}</option>
+                                {% for faculty in faculties %}
+                                    <option value="{{ faculty.id }}" {% if active_faculty == faculty.id %}selected{% endif %}>
+                                        {{ faculty.acronym }} - {{ faculty.title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-default" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            {% trans 'search' %}
+                        </button>
+                    </div>
+            </form>
+            <a class="btn btn-primary pull-right" href="{% url 'admission'%}" style="margin-top: 26px;">
                 {% trans 'admission_view' %}
             </a>
         </div>
