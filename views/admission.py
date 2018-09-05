@@ -38,7 +38,7 @@ from continuing_education.views.common import display_errors
 
 @login_required
 def list_admissions(request):
-    faculty_filter = int(request.GET.get("faculty"))
+    faculty_filter = int(request.GET.get("faculty",0))
     if faculty_filter:
         admission_list = Admission.objects.filter(faculty=faculty_filter).order_by('last_name')
     else:
