@@ -65,7 +65,7 @@
                             <tr>
                                 <td><a href="{% url 'student_admission_detail' admission_id=admission.id %}">{{ admission.formation.acronym }}</a></td>
                                 <td>{{ admission.formation.title }}</td>
-                                <td>{{ admission.faculty }}</td>
+                                <td>{{ admission.faculty.acronym }} - {{ admission.faculty.title }}</td>
                                 <td style="vertical-align: middle;">
                                     {% if admission.state == "waiting" %}
                                         <span class="label label-primary show">{% trans admission.state %}</span>
@@ -103,7 +103,7 @@
                             <tr>
                                 <td><a href="{% url 'student_registration_detail' admission_id=registration.id %}">{{ registration.program_code }}</a></td>
                                 <td>{{ registration.formation.title }}</td>
-                                <td>{{ registration.faculty }}</td>
+                                <td>{{ registration.faculty.acronym }} - {{ registration.faculty.title }}</td>
                                 <td style="vertical-align: middle;">
                                 {% if registration.registration_complete %}
                                         <span class="label label-success show">{% trans 'Yes' %}</span>

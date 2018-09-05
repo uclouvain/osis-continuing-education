@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from base.models.academic_year import current_academic_years
+from base.models.enums import entity_type
 
 
 class AdmissionAdmin(ModelAdmin):
@@ -57,7 +60,7 @@ class Admission(models.Model):
     #Identification
     first_name = models.CharField(max_length=50, blank=True, db_index=True)
     last_name = models.CharField(max_length=50, blank=True, db_index=True)
-    birth_date = models.DateField(blank=True)
+    birth_date = models.DateField(blank=True, default=datetime.now)
     birth_location =  models.CharField(max_length=255, blank=True)
     birth_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='birth_country')
     citizenship = models.ForeignKey('reference.Country', blank=True, null=True, related_name='citizenship')
@@ -75,11 +78,11 @@ class Admission(models.Model):
 
     #Education
     high_school_diploma = models.BooleanField(default=False)
-    high_school_graduation_year = models.DateField(blank=True)
+    high_school_graduation_year = models.DateField(blank=True, default=datetime.now)
     last_degree_level = models.CharField(max_length=50, blank=True)
     last_degree_field = models.CharField(max_length=50, blank=True)
     last_degree_institution = models.CharField(max_length=50, blank=True)
-    last_degree_graduation_year = models.DateField(blank=True)
+    last_degree_graduation_year = models.DateField(blank=True, default=datetime.now)
     other_educational_background = models.TextField(blank=True)
 
     #Professional Background
@@ -102,7 +105,11 @@ class Admission(models.Model):
                                         blank=True, null=True)
     courses_formula = models.CharField(max_length=50, blank=True)
     program_code = models.CharField(max_length=50, blank=True)
-    faculty = models.CharField(max_length=50, blank=True)
+    faculty = models.ForeignKey('base.EntityVersion',
+                                        limit_choices_to={
+                                            'entity_type': entity_type.FACULTY,
+                                        },
+                                        blank=True, null=True)
     formation_administrator = models.CharField(max_length=50, blank=True)
 
     #Awareness

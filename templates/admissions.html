@@ -40,10 +40,31 @@
 
     <div class="panel panel-default">
         <div class="panel panel-body">
-            <a class="btn btn-default" href="{% url 'admission_new'%}">
+            <a class="btn btn-default" href="{% url 'admission_new'%}" style="margin-top: 26px;">
                 {% trans 'new_admission' %}
             </a>
-            <a class="btn btn-primary pull-right" href="{% url 'registration'%}">
+            <form style="display: inline;" action="" method="get" class="">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="filter_faculty">{% trans 'faculty' %}</label>
+                                <select name="faculty" id="filter_faculty" class="form-control">
+                                    <option value="0">{% trans 'all' %}</option>
+                                    {% for faculty in faculties %}
+                                        <option value="{{ faculty.id }}" {% if active_faculty == faculty.id %}selected{% endif %}>
+                                            {{ faculty.acronym }} - {{ faculty.title }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-default" style="margin-top: 26px;">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                {% trans 'search' %}
+                            </button>
+                        </div>
+                </form>
+            <a class="btn btn-primary pull-right" href="{% url 'registration'%}" style="margin-top: 26px;">
                 {% trans 'registration_view' %}
             </a>
         </div>
@@ -72,7 +93,7 @@
                         <td>{{ admission.first_name }}</td>
                         <td>{{ admission.email }}</td>
                         <td>{{ admission.formation }}</td>
-                        <td>{{ admission.faculty }}</td>
+                        <td>{{ admission.faculty.acronym }} - {{ admission.faculty.title }}</td>
                         <td style="vertical-align: middle;">
                             {% if admission.state == "waiting" %}
                                 <span class="label label-primary show">{% trans admission.state %}</span>

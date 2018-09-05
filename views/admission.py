@@ -23,18 +23,27 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from datetime import datetime
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
+from base.models import entity_version
+from base.models.enums import entity_type
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import display_errors
 
 @login_required
 def list_admissions(request):
-    admission_list = Admission.objects.all()
+    faculty_filter = int(request.GET.get("faculty"))
+    if faculty_filter:
+        admission_list = Admission.objects.filter(faculty=faculty_filter).order_by('last_name')
+    else:
+        admission_list = Admission.objects.all().order_by('last_name')
+    faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
     try:
@@ -43,7 +52,11 @@ def list_admissions(request):
         admissions = paginator.page(1)
     except EmptyPage:
         admissions = paginator.page(paginator.num_pages)
-    return render(request, "admissions.html", {'admissions': admissions})
+    return render(request, "admissions.html", {
+        'admissions': admissions,
+        'faculties': faculties,
+        'active_faculty': faculty_filter
+    })
 
 @login_required
 def admission_detail(request, admission_id):
