@@ -30,10 +30,13 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from base.models.enums import entity_type
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries, convert_offer
+from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries, convert_offer, \
+    convert_faculty
 
 
 class ViewAdmissionTestCase(TestCase):
@@ -42,10 +45,24 @@ class ViewAdmissionTestCase(TestCase):
         self.client.force_login(self.user)
         self.offer = OfferYearFactory()
         self.admission = AdmissionFactory()
+        self.faculty = EntityVersionFactory(entity_type=entity_type.FACULTY)
 
     def test_list_admissions(self):
         url = reverse('admission')
         response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'admissions.html')
+
+    def test_list_admissions_filtered_by_faculty(self):
+        url = reverse('admission')
+        response = self.client.get(url, {'faculty': self.faculty.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['active_faculty'], self.faculty.id)
+        self.assertTemplateUsed(response, 'admissions.html')
+
+    def test_list_admissions_pagination_empty_page(self):
+        url = reverse('admission')
+        response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'admissions.html')
 
@@ -101,6 +118,7 @@ class ViewAdmissionTestCase(TestCase):
         convert_dates(admission)
         convert_countries(admission)
         convert_offer(admission)
+        convert_faculty(admission)
         url = reverse('admission_edit', args=[self.admission.id])
         form = AdmissionForm(admission)
         form.is_valid()

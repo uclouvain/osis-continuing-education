@@ -30,6 +30,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from base.models.enums import entity_type
+from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries
@@ -43,6 +45,7 @@ class ViewRegistrationTestCase(TestCase):
         self.client.force_login(self.user)
         self.admission_accepted = AdmissionFactory(state="accepted")
         self.admission_rejected = AdmissionFactory(state="rejected")
+        self.faculty = EntityVersionFactory(entity_type=entity_type.FACULTY)
 
     def test_list_registrations(self):
         url = reverse('registration')
@@ -50,6 +53,19 @@ class ViewRegistrationTestCase(TestCase):
         admissions = response.context['admissions']
         for admission in admissions:
             self.assertEqual(admission.state, "accepted")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registrations.html')
+
+    def test_list_registrations_filtered_by_faculty(self):
+        url = reverse('registration')
+        response = self.client.get(url, {'faculty': self.faculty.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['active_faculty'], self.faculty.id)
+        self.assertTemplateUsed(response, 'registrations.html')
+
+    def test_list_registrations_pagination_empty_page(self):
+        url = reverse('registration')
+        response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
 

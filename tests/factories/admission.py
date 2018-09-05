@@ -30,6 +30,8 @@ import factory
 import reference
 
 from functools import partial
+
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.models.admission import Admission
 from reference.tests.factories.country import CountryFactory
@@ -100,7 +102,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     formation = factory.SubFactory(OfferYearFactory)
     courses_formula = "formula"
     program_code = "ABC123"
-    faculty = "faculty"
+    faculty = factory.SubFactory(EntityVersionFactory)
     formation_administrator = factory.Faker('name_female')
 
     # Awareness

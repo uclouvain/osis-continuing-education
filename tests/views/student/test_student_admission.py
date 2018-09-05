@@ -32,7 +32,8 @@ from django.test import TestCase
 
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries, convert_offer
+from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries, convert_offer, \
+    convert_faculty
 
 
 class ViewStudentAdmissionTestCase(TestCase):
@@ -93,6 +94,7 @@ class ViewStudentAdmissionTestCase(TestCase):
         convert_dates(admission)
         convert_countries(admission)
         convert_offer(admission)
+        convert_faculty(admission)
         url = reverse('student_admission_edit', args=[self.admission.id])
         form = AdmissionForm(admission)
         form.is_valid()
