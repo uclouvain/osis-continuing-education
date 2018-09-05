@@ -64,7 +64,7 @@
                             </button>
                         </div>
                 </form>
-            <a class="btn btn-primary pull-right" href="{% url 'registration'%}" style="margin-top: 26px;">
+            <a class="btn btn-primary pull-right" href="{% url 'registration' %}?faculty={{active_faculty}}" style="margin-top: 26px;">
                 {% trans 'registration_view' %}
             </a>
         </div>
@@ -92,8 +92,8 @@
                         <td><a href="{% url 'admission_detail' admission_id=admission.id %}">{{ admission.last_name }}</a></td>
                         <td>{{ admission.first_name }}</td>
                         <td>{{ admission.email }}</td>
-                        <td>{{ admission.formation }}</td>
-                        <td>{{ admission.faculty.acronym }} - {{ admission.faculty.title }}</td>
+                        <td title="{{admission.formation.title}}">{{ admission.formation }}</td>
+                        <td title="{{admission.faculty.title}}">{{ admission.faculty.acronym }}</td>
                         <td style="vertical-align: middle;">
                             {% if admission.state == "waiting" %}
                                 <span class="label label-primary show">{% trans admission.state %}</span>
