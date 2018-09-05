@@ -31,11 +31,17 @@ import reference
 
 from functools import partial
 
+from base.models import entity_version, offer_year
+from base.models.academic_year import current_academic_years
+from base.models.entity_version import EntityVersion
+from base.models.enums import entity_type
+from base.models.offer_year import OfferYear
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.models.admission import Admission
 from reference.tests.factories.country import CountryFactory
 
+CONTINUING_EDUCATION_TYPE = 8
 
 def _get_random_choices(type):
     return [x[0] for x in type]
@@ -45,14 +51,18 @@ class AdmissionFactory(factory.DjangoModelFactory):
         model = 'continuing_education.admission'
 
     @staticmethod
-    def create_with_country(country_id):
+    def populate(country_id):
         country = reference.models.country.find_by_id(country_id)
+        formation = OfferYear.objects.filter(offer_type_id=CONTINUING_EDUCATION_TYPE, academic_year_id=current_academic_years()).order_by('?').first()
+        faculty = entity_version.find_latest_version(datetime.datetime.now()).filter(entity_type=entity_type.FACULTY).order_by('?').first()
         AdmissionFactory.create(
             birth_country = country,
             country = country,
             citizenship = country,
             billing_country = country,
-            residence_country = country
+            residence_country = country,
+            formation = formation,
+            faculty = faculty
         )
 
     # Identification
