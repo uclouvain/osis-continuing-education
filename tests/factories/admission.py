@@ -27,15 +27,32 @@ import datetime
 import random
 import factory
 
+import reference
+
+from functools import partial
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.models.admission import Admission
 from reference.tests.factories.country import CountryFactory
 
 
+def _get_random_choices(type):
+    return [x[0] for x in type]
+
 class AdmissionFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.admission'
-        
+
+    @staticmethod
+    def create_with_country(country_id):
+        country = reference.models.country.find_by_id(country_id)
+        AdmissionFactory.create(
+            birth_country = country,
+            country = country,
+            citizenship = country,
+            billing_country = country,
+            residence_country = country
+        )
+
     # Identification
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
@@ -43,7 +60,8 @@ class AdmissionFactory(factory.DjangoModelFactory):
     birth_location = factory.Faker('city')
     birth_country = factory.SubFactory(CountryFactory)
     citizenship = factory.SubFactory(CountryFactory)
-    gender = random.choice(Admission.GENDER_CHOICES)[0]
+
+    gender = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.GENDER_CHOICES))
 
     # Contact
     phone_mobile = factory.Faker('phone_number')
@@ -56,7 +74,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     country = factory.SubFactory(CountryFactory)
 
     # Education
-    high_school_diploma = random.choice([True, False])
+    high_school_diploma = factory.fuzzy.FuzzyChoice([True, False])
     high_school_graduation_year = factory.LazyFunction(datetime.datetime.now)
     last_degree_level = "level"
     last_degree_field = "field"
@@ -65,10 +83,13 @@ class AdmissionFactory(factory.DjangoModelFactory):
     other_educational_background = "other background"
 
     # Professional Background
-    professional_status = random.choice(Admission.STATUS_CHOICES)[0]
+    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.STATUS_CHOICES))
+
     current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
-    activity_sector = random.choice(Admission.SECTOR_CHOICES)[0]
+
+    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.SECTOR_CHOICES))
+
     past_professional_activities = "past activities"
 
     # Motivation
@@ -83,20 +104,21 @@ class AdmissionFactory(factory.DjangoModelFactory):
     formation_administrator = factory.Faker('name_female')
 
     # Awareness
-    awareness_ucl_website = random.choice([True, False])
-    awareness_formation_website = random.choice([True, False])
-    awareness_press = random.choice([True, False])
-    awareness_facebook = random.choice([True, False])
-    awareness_linkedin = random.choice([True, False])
-    awareness_customized_mail = random.choice([True, False])
-    awareness_emailing = random.choice([True, False])
+    awareness_ucl_website = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_formation_website = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_press = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_facebook = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_linkedin = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_customized_mail = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_emailing = factory.fuzzy.FuzzyChoice([True, False])
 
     # State
-    state = random.choice(Admission.STATE_CHOICES)[0]
+    state = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.STATE_CHOICES))
 
     # Billing
-    registration_type =  random.choice(Admission.REGISTRATION_TITLE_CHOICES)[0]
-    use_address_for_billing = random.choice([True, False])
+    registration_type = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.REGISTRATION_TITLE_CHOICES))
+
+    use_address_for_billing = factory.fuzzy.FuzzyChoice([True, False])
     billing_location = factory.Faker('street_name')
     billing_postal_code = factory.Faker('zipcode')
     billing_city = factory.Faker('city')
@@ -109,14 +131,16 @@ class AdmissionFactory(factory.DjangoModelFactory):
     national_registry_number = factory.Faker('ssn')
     id_card_number = factory.Faker('ssn')
     passport_number = factory.Faker('isbn13')
-    marital_status = random.choice(Admission.MARITAL_STATUS_CHOICES)[0]
+
+    marital_status = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.MARITAL_STATUS_CHOICES))
+
     spouse_name = factory.Faker('name')
     children_number = random.randint(0,10)
-    previous_ucl_registration = random.choice([True, False])
+    previous_ucl_registration = factory.fuzzy.FuzzyChoice([True, False])
     previous_noma = factory.Faker('isbn10')
 
     # Post
-    use_address_for_post = random.choice([True, False])
+    use_address_for_post = factory.fuzzy.FuzzyChoice([True, False])
     residence_location = factory.Faker('street_name')
     residence_postal_code = factory.Faker('zipcode')
     residence_city = factory.Faker('city')
@@ -124,12 +148,12 @@ class AdmissionFactory(factory.DjangoModelFactory):
     residence_phone = factory.Faker('phone_number')
 
     # Student Sheet
-    registration_complete = random.choice([True, False])
+    registration_complete = factory.fuzzy.FuzzyChoice([True, False])
     noma = factory.Faker('isbn10')
-    payment_complete = random.choice([True, False])
-    formation_spreading = random.choice([True, False])
-    prior_experience_validation = random.choice([True, False])
-    assessment_presented = random.choice([True, False])
-    assessment_succeeded = random.choice([True, False])
+    payment_complete = factory.fuzzy.FuzzyChoice([True, False])
+    formation_spreading = factory.fuzzy.FuzzyChoice([True, False])
+    prior_experience_validation = factory.fuzzy.FuzzyChoice([True, False])
+    assessment_presented = factory.fuzzy.FuzzyChoice([True, False])
+    assessment_succeeded = factory.fuzzy.FuzzyChoice([True, False])
     # ajouter dates sessions cours suivies
     sessions = "sessions"

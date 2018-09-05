@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% load staticfiles %}
 {% load i18n %}
+{% load bootstrap3 %}
 
 {% comment "License" %}
 * OSIS stands for Open Student Information System. It's an application
@@ -58,6 +59,13 @@
                         <th class="searchable">{% trans 'state' %}</th>
                     </tr>
                 </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">
+                            {% bootstrap_pagination admissions extra=request.GET.urlencode %}
+                        </td>
+                    </tr>
+                </tfoot>
                 {% for admission in admissions %}
                     <tr>
                         <td><a href="{% url 'admission_detail' admission_id=admission.id %}">{{ admission.last_name }}</a></td>

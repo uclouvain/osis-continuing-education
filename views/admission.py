@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -31,11 +32,18 @@ from continuing_education.forms.admission import AdmissionForm
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import display_errors
 
-
 @login_required
 def list_admissions(request):
-    admissions = Admission.objects.all()
-    return render(request, "admissions.html", locals())
+    admission_list = Admission.objects.all()
+    paginator = Paginator(admission_list, 10)
+    page = request.GET.get('page')
+    try:
+        admissions = paginator.page(page)
+    except PageNotAnInteger:
+        admissions = paginator.page(1)
+    except EmptyPage:
+        admissions = paginator.page(paginator.num_pages)
+    return render(request, "admissions.html", {'admissions': admissions})
 
 @login_required
 def admission_detail(request, admission_id):
