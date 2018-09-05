@@ -106,6 +106,12 @@ msgstr "Gestion des étudiants pour la formation continue."
 msgid "education"
 msgstr "Education"
 
+msgid "faculty"
+msgstr "Faculty"
+
+msgid "first_name"
+msgstr "Prénom"
+
 msgid "formation"
 msgstr "Formation"
 

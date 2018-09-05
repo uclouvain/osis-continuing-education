@@ -106,6 +106,12 @@ msgstr "This process controls continuing education offers."
 msgid "education"
 msgstr "Education"
 
+msgid "faculty"
+msgstr "Faculty"
+
+msgid "first_name"
+msgstr "First name"
+
 msgid "formation"
 msgstr "Formation"
 
