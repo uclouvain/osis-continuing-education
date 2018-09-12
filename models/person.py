@@ -40,7 +40,7 @@ class Person(models.Model):
     citizenship = models.ForeignKey('reference.Country', blank=True, null=True, related_name='citizenship')
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES, default='F')
 
-    #Contact4
+    #Contact
     address = models.ForeignKey('continuing_education.Address', blank=True, null=True)
     phone_mobile = models.CharField(max_length=30, blank=True)
     email = models.EmailField(max_length=255, blank=True)
