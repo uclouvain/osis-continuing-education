@@ -57,11 +57,11 @@
                             </button>
                         </div>
                     </div>
-                     <div class="row">
-                        {% bootstrap_field form.billing_location form_group_class="form-group col-md-4" label=_("location") %}
-                        {% bootstrap_field form.billing_postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
-                        {% bootstrap_field form.billing_city form_group_class="form-group col-md-3" label=_("city") %}
-                        {% bootstrap_field form.billing_country form_group_class="form-group col-md-3" label=_("country") %}
+                     <div id="billing_address" class="row">
+                        {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-4" label=_("location") %}
+                        {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
+                        {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" label=_("city") %}
+                        {% bootstrap_field billing_address_form.country form_group_class="form-group col-md-3" label=_("country") %}
                     </div>
                      <div class="row">
                         {% bootstrap_field form.head_office_name form_group_class="form-group col-md-4" label=_("head_office_name") %}
@@ -99,11 +99,11 @@
                             </button>
                         </div>
                     </div>
-                     <div class="row">
-                        {% bootstrap_field form.residence_location form_group_class="form-group col-md-4" label=_("location") %}
-                        {% bootstrap_field form.residence_postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
-                        {% bootstrap_field form.residence_city form_group_class="form-group col-md-3" label=_("city") %}
-                        {% bootstrap_field form.residence_country form_group_class="form-group col-md-3" label=_("country") %}
+                     <div id="residence_address"  class="row">
+                        {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-4" label=_("location") %}
+                        {% bootstrap_field residence_address_form.postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
+                        {% bootstrap_field residence_address_form.city form_group_class="form-group col-md-3" label=_("city") %}
+                        {% bootstrap_field residence_address_form.country form_group_class="form-group col-md-3" label=_("country") %}
                     </div>
                 </div>
 
@@ -139,10 +139,10 @@
 {% block script %}
     <script>
         let address = {
-            location: "{{admission.location | escapejs}}",
-            postal_code: "{{admission.postal_code | escapejs}}",
-            city: "{{admission.city | escapejs}}",
-            country: "{{admission.country_id | escapejs}}",
+            location: "{{admission.person.address.location | escapejs}}",
+            postal_code: "{{admission.person.address.postal_code | escapejs}}",
+            city: "{{admission.person.address.city | escapejs}}",
+            country: "{{admission.person.address.country_id | escapejs}}",
         }
 
         $("#copy_address_billing").click(()=>{
@@ -154,10 +154,10 @@
         });
 
         function copy_address(e){
-            $("#id_"+e+"_location").val(address.location);
-            $("#id_"+e+"_postal_code").val(address.postal_code);
-            $("#id_"+e+"_city").val(address.city);
-            $("#id_"+e+"_country").val(address.country);
+            $("#id_"+e+"-location").val(address.location);
+            $("#id_"+e+"-postal_code").val(address.postal_code);
+            $("#id_"+e+"-city").val(address.city);
+            $("#id_"+e+"-country").val(address.country);
         }
     </script>
 {% endblock %}

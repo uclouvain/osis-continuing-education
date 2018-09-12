@@ -31,7 +31,7 @@
     <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
     <li><a href="{% url 'registration' %}">{% trans 'registration' %}</a></li>
-    <li class="active">{% trans admission.last_name %}, {% trans admission.first_name %}</li>
+    <li class="active">{% trans admission.person.last_name %}, {% trans admission.person.first_name %}</li>
 {% endblock %}
 
 {% block content %}
@@ -50,36 +50,36 @@
                 <div class="panel-heading">{% trans 'billing' %}</div>
                 <div class="panel panel-body">
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("registration_type") %} <br/> {{ admission.registration_type | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("registration_type") %} <br/> {{ admission.registration_type | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("location") %} <br/> {{ admission.billing_location | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("postal_code") %} <br/> {{ admission.billing_postal_code | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("city") %} <br/> {{ admission.billing_city | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("country") %} <br/> {{ admission.billing_country | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("location") %} <br/> {{ admission.billing_address.location | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("postal_code") %} <br/> {{ admission.billing_address.postal_code | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("city") %} <br/> {{ admission.billing_address.city | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("country") %} <br/> {{ admission.billing_address.country | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("head_office_name") %} <br/> {{ admission.head_office_name | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("company_number") %} <br/> {{ admission.company_number | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("vat_number") %} <br/> {{ admission.vat_number | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("head_office_name") %} <br/> {{ admission.head_office_name | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("company_number") %} <br/> {{ admission.company_number | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("vat_number") %} <br/> {{ admission.vat_number | default:"-" }} </div>
                     </div>
                 </div>
 
                 <div class="panel-heading">{% trans 'registration' %}</div>
                 <div class="panel panel-body">
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("national_registry_number") %} <br/> {{ admission.national_registry_number | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("id_card_number") %} <br/> {{ admission.id_card_number | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("passport_number") %} <br/> {{ admission.passport_number | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("national_registry_number") %} <br/> {{ admission.national_registry_number | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("id_card_number") %} <br/> {{ admission.id_card_number | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("passport_number") %} <br/> {{ admission.passport_number | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("marital_status") %} <br/> {{ admission.marital_status | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("spouse_name") %} <br/> {{ admission.spouse_name | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("children_number") %} <br/> {{ admission.children_number | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("marital_status") %} <br/> {{ admission.marital_status | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("spouse_name") %} <br/> {{ admission.spouse_name | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("children_number") %} <br/> {{ admission.children_number | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
                         <div class="col-md-6">{% bootstrap_label _("previous_ucl_registration") %} <br/> {{ admission.previous_ucl_registration | yesno }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("previous_noma") %} <br/> {{ admission.previous_noma | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("previous_noma") %} <br/> {{ admission.previous_noma | default:"-" }} </div>
                     </div>
 
                 </div>
@@ -87,13 +87,13 @@
                 <div class="panel-heading">{% trans 'post' %}</div>
                 <div class="panel panel-body">
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("location") %} <br/> {{ admission.residence_location | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("postal_code") %} <br/> {{ admission.residence_postal_code | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("city") %} <br/> {{ admission.residence_city | default_if_none:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("country") %} <br/> {{ admission.residence_country | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("location") %} <br/> {{ admission.residence_address.location | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("postal_code") %} <br/> {{ admission.residence_address.postal_code | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("city") %} <br/> {{ admission.residence_address.city | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("country") %} <br/> {{ admission.residence_address.country | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col-md-4">{% bootstrap_label _("residence_phone") %} <br/> {{ admission.residence_phone | default_if_none:"-" }} </div>
+                        <div class="col-md-4">{% bootstrap_label _("residence_phone") %} <br/> {{ admission.residence_phone | default:"-" }} </div>
                     </div>
                 </div>
 
@@ -101,7 +101,7 @@
                 <div class="panel panel-body">
                     <div class="row form-group">
                         <div class="col-md-3">{% bootstrap_label _("registration_complete") %} <br/> {{ admission.registration_complete | yesno }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("noma") %} <br/> {{ admission.noma | default_if_none:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("noma") %} <br/> {{ admission.noma | default:"-" }} </div>
                         <div class="col-md-3">{% bootstrap_label _("payment_complete") %} <br/> {{ admission.payment_complete | yesno }} </div>
                     </div>
                     <div class="row form-group">

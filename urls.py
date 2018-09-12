@@ -44,7 +44,7 @@ urlpatterns = [
     url(r'^admission/', include([
         url(r'^$', admission.list_admissions, name='admission'),
         url(r'^new/$', admission.admission_new, name='admission_new'),
-        url(r'^edit/(?P<admission_id>[0-9]+)$', admission.admission_edit, name='admission_edit'),
+        url(r'^edit/(?P<admission_id>[0-9]+)/', admission.admission_edit, name='admission_edit'),
         url(r'^(?P<admission_id>[0-9]+)/', include([
             url(r'^$', admission.admission_detail, name='admission_detail'),
         ]))

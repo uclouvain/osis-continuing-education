@@ -10,32 +10,11 @@ from base.models.enums import entity_type
 
 
 class AdmissionAdmin(ModelAdmin):
-    list_display = ('last_name', 'first_name','country','formation', 'program_code')
+    list_display = ('person', 'formation')
 
 class Admission(models.Model):
 
     CONTINUING_EDUCATION_TYPE = 8
-
-    GENDER_CHOICES = (
-        ('F', _('female')),
-        ('M', _('male')),
-    )
-
-    STATUS_CHOICES = (
-        ('EMPLOYEE', _('employee')),
-        ('SELF_EMPLOYED', _('self_employed')),
-        ('JOB_SEEKER', _('job_seeker')),
-        ('PUBLIC_SERVANT', _('public_servant')),
-        ('OTHER', _('other')),
-    )
-
-    SECTOR_CHOICES = (
-        ('PRIVATE', _('private')),
-        ('PUBLIC', _('public')),
-        ('ASSOCIATIVE', _('associative')),
-        ('HEALTH', _('health')),
-        ('OTHER', _('other')),
-    )
 
     REGISTRATION_TITLE_CHOICES = (
         ('PRIVATE', _('private')),
@@ -57,40 +36,7 @@ class Admission(models.Model):
         ('waiting', _('waiting')),
     )
 
-    #Identification
-    first_name = models.CharField(max_length=50, blank=True, db_index=True)
-    last_name = models.CharField(max_length=50, blank=True, db_index=True)
-    birth_date = models.DateField(blank=True, default=datetime.now)
-    birth_location =  models.CharField(max_length=255, blank=True)
-    birth_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='birth_country')
-    citizenship = models.ForeignKey('reference.Country', blank=True, null=True, related_name='citizenship')
-    gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES, default='F')
-
-    #Contact
-    phone_mobile = models.CharField(max_length=30, blank=True)
-    email = models.EmailField(max_length=255, blank=True)
-
-    #Address
-    location = models.CharField(max_length=255, blank=True)
-    postal_code = models.CharField(max_length=20, blank=True)
-    city = models.CharField(max_length=255, blank=True)
-    country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='address_country')
-
-    #Education
-    high_school_diploma = models.BooleanField(default=False)
-    high_school_graduation_year = models.DateField(blank=True, default=datetime.now)
-    last_degree_level = models.CharField(max_length=50, blank=True)
-    last_degree_field = models.CharField(max_length=50, blank=True)
-    last_degree_institution = models.CharField(max_length=50, blank=True)
-    last_degree_graduation_year = models.DateField(blank=True, default=datetime.now)
-    other_educational_background = models.TextField(blank=True)
-
-    #Professional Background
-    professional_status = models.CharField(max_length=50, blank=True, choices=STATUS_CHOICES)
-    current_occupation = models.CharField(max_length=50, blank=True)
-    current_employer = models.CharField(max_length=50, blank=True)
-    activity_sector = models.CharField(max_length=50, blank=True, choices=SECTOR_CHOICES)
-    past_professional_activities = models.TextField(blank=True)
+    person = models.ForeignKey('continuing_education.Person', blank=True, null=True)
 
     #Motivation
     motivation = models.TextField(blank=True)
@@ -103,14 +49,11 @@ class Admission(models.Model):
                                             'academic_year_id': current_academic_years()
                                         },
                                         blank=True, null=True)
-    courses_formula = models.CharField(max_length=50, blank=True)
-    program_code = models.CharField(max_length=50, blank=True)
     faculty = models.ForeignKey('base.EntityVersion',
                                         limit_choices_to={
                                             'entity_type': entity_type.FACULTY,
                                         },
                                         blank=True, null=True)
-    formation_administrator = models.CharField(max_length=50, blank=True)
 
     #Awareness
     awareness_ucl_website = models.BooleanField(default=False)
@@ -127,10 +70,8 @@ class Admission(models.Model):
     #Billing
     registration_type = models.CharField(max_length=50, blank=True, choices=REGISTRATION_TITLE_CHOICES)
     use_address_for_billing = models.BooleanField(default=False)
-    billing_location = models.CharField(max_length=255, blank=True)
-    billing_postal_code = models.CharField(max_length=20, blank=True)
-    billing_city = models.CharField(max_length=255, blank=True)
-    billing_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='billing_country')
+    billing_address = models.ForeignKey('continuing_education.Address', blank=True, null=True, related_name="billing_address")
+
     head_office_name = models.CharField(max_length=255, blank=True)
     company_number = models.CharField(max_length=255, blank=True)
     vat_number = models.CharField(max_length=255, blank=True)
@@ -147,10 +88,8 @@ class Admission(models.Model):
 
     #Post
     use_address_for_post = models.BooleanField(default=False)
-    residence_location = models.CharField(max_length=255, blank=True)
-    residence_postal_code = models.CharField(max_length=20, blank=True)
-    residence_city = models.CharField(max_length=255, blank=True)
-    residence_country = models.ForeignKey('reference.Country', blank=True, null=True, related_name='residence_country')
+    residence_address = models.ForeignKey('continuing_education.Address', blank=True, null=True, related_name="residence_address")
+
     residence_phone = models.CharField(max_length=30, blank=True)
 
     #Student Sheet

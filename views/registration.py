@@ -29,10 +29,13 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.forms import formset_factory
 
 from base.models import entity_version
 from base.models.enums import entity_type
+from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
+from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import display_errors
 
@@ -40,9 +43,9 @@ from continuing_education.views.common import display_errors
 def list_registrations(request):
     faculty_filter = int(request.GET.get("faculty",0))
     if faculty_filter:
-        admission_list = Admission.objects.filter(faculty=faculty_filter, state="accepted").order_by('last_name')
+        admission_list = Admission.objects.filter(faculty=faculty_filter, state="accepted").order_by('person')
     else:
-        admission_list = Admission.objects.filter(state="accepted").order_by('last_name')
+        admission_list = Admission.objects.filter(state="accepted").order_by('person')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
@@ -66,11 +69,17 @@ def registration_detail(request, admission_id):
 @login_required
 def registration_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-
     form = RegistrationForm(request.POST or None, instance=admission)
+    billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
+    residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
     errors = []
-    if form.is_valid():
-        admission = form.save()
+    if form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
+        billing_address, created = Address.objects.get_or_create(**billing_address_form.cleaned_data)
+        residence_address, created = Address.objects.get_or_create(**residence_address_form.cleaned_data)
+        admission = form.save(commit=False)
+        admission.billing_address = billing_address
+        admission.residence_address = residence_address
+        admission.save()
         return redirect(reverse('registration_detail', kwargs={'admission_id':admission_id}))
     else:
         errors.append(form.errors)

@@ -86,9 +86,9 @@
                 </tfoot>
                 {% for admission in admissions %}
                     <tr>
-                        <td><a href="{% url 'registration_detail' admission_id=admission.id %}">{{ admission.last_name }}</a></td>
-                        <td>{{ admission.first_name }}</td>
-                        <td>{{ admission.email }}</td>
+                        <td><a href="{% url 'registration_detail' admission_id=admission.id %}">{{ admission.person.last_name }}</a></td>
+                        <td>{{ admission.person.first_name }}</td>
+                        <td>{{ admission.person.email }}</td>
                         <td>{{ admission.formation }}</td>
                         <td style="vertical-align: middle;">
                         {% if admission.registration_complete %}
