@@ -63,11 +63,11 @@ class PersonFactory(factory.DjangoModelFactory):
     other_educational_background = "other background"
 
     # Professional Background
-    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.STATUS_CHOICES))
+    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(Person.STATUS_CHOICES))
 
     current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
 
-    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.SECTOR_CHOICES))
+    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(Person.SECTOR_CHOICES))
 
     past_professional_activities = "past activities"

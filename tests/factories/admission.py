@@ -29,8 +29,6 @@ import factory
 
 import reference
 
-from functools import partial
-
 from base.models import entity_version
 from base.models.academic_year import current_academic_years
 from base.models.enums import entity_type
