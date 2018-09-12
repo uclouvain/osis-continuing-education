@@ -31,20 +31,18 @@ import reference
 
 from functools import partial
 
-from base.models import entity_version, offer_year
+from base.models import entity_version
 from base.models.academic_year import current_academic_years
-from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from base.models.offer_year import OfferYear
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.models.admission import Admission
-from reference.tests.factories.country import CountryFactory
+from continuing_education.tests.factories.address import AddressFactory
+from continuing_education.tests.factories.person import PersonFactory
+from continuing_education.tests.utils.utils import _get_random_choices
 
 CONTINUING_EDUCATION_TYPE = 8
-
-def _get_random_choices(type):
-    return [x[0] for x in type]
 
 class AdmissionFactory(factory.DjangoModelFactory):
     class Meta:
@@ -65,44 +63,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
             faculty = faculty
         )
 
-    # Identification
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    birth_date = factory.LazyFunction(datetime.datetime.now)
-    birth_location = factory.Faker('city')
-    birth_country = factory.SubFactory(CountryFactory)
-    citizenship = factory.SubFactory(CountryFactory)
-
-    gender = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.GENDER_CHOICES))
-
-    # Contact
-    phone_mobile = factory.Faker('phone_number')
-    email = factory.Faker('email')
-
-    # Address
-    location = factory.Faker('street_name')
-    postal_code = factory.Faker('zipcode')
-    city = factory.Faker('city')
-    country = factory.SubFactory(CountryFactory)
-
-    # Education
-    high_school_diploma = factory.fuzzy.FuzzyChoice([True, False])
-    high_school_graduation_year = factory.LazyFunction(datetime.datetime.now)
-    last_degree_level = "level"
-    last_degree_field = "field"
-    last_degree_institution = "institution"
-    last_degree_graduation_year = factory.LazyFunction(datetime.datetime.now)
-    other_educational_background = "other background"
-
-    # Professional Background
-    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.STATUS_CHOICES))
-
-    current_occupation = factory.Faker('text', max_nb_chars=50)
-    current_employer = factory.Faker('company')
-
-    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.SECTOR_CHOICES))
-
-    past_professional_activities = "past activities"
+    person = factory.SubFactory(PersonFactory)
 
     # Motivation
     motivation = "motivation"
@@ -131,10 +92,8 @@ class AdmissionFactory(factory.DjangoModelFactory):
     registration_type = factory.fuzzy.FuzzyChoice(_get_random_choices(Admission.REGISTRATION_TITLE_CHOICES))
 
     use_address_for_billing = factory.fuzzy.FuzzyChoice([True, False])
-    billing_location = factory.Faker('street_name')
-    billing_postal_code = factory.Faker('zipcode')
-    billing_city = factory.Faker('city')
-    billing_country = factory.SubFactory(CountryFactory)
+    billing_address = factory.SubFactory(AddressFactory)
+
     head_office_name = factory.Faker('company')
     company_number = factory.Faker('isbn10')
     vat_number = factory.Faker('ssn')
@@ -153,10 +112,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
 
     # Post
     use_address_for_post = factory.fuzzy.FuzzyChoice([True, False])
-    residence_location = factory.Faker('street_name')
-    residence_postal_code = factory.Faker('zipcode')
-    residence_city = factory.Faker('city')
-    residence_country = factory.SubFactory(CountryFactory)
+    residence_address = factory.SubFactory(AddressFactory)
     residence_phone = factory.Faker('phone_number')
 
     # Student Sheet
