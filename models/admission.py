@@ -110,5 +110,5 @@ def find_by_id(a_id):
         return None
 
 #à modifier lors du lien avec une table student
-def find_by_student(first_name, last_name):
-        return Admission.objects.filter(first_name=first_name, last_name=last_name)
+def find_by_person(person):
+        return Admission.objects.filter(person=person)
