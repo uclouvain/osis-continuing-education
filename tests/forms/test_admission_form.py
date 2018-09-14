@@ -29,30 +29,24 @@ from django.test import TestCase
 from base.models import offer_year, entity_version
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.person import PersonFactory
 from reference.models import country
 
 
 class TestAdmissionForm(TestCase):
 
     def test_valid_form(self):
-        admission = AdmissionFactory()
+        person = PersonFactory()
+        admission = AdmissionFactory(person=person)
         form = AdmissionForm(admission.__dict__)
         self.assertTrue(form.is_valid(), form.errors)
 
-def convert_countries(admission):
-    admission['country'] = country.find_by_id(admission["country_id"])
-    admission['birth_country'] = country.find_by_id(admission["birth_country_id"])
-    admission['citizenship'] = country.find_by_id(admission["citizenship_id"])
-    admission['billing_country'] = country.find_by_id(admission["billing_country_id"])
-    admission['residence_country'] = country.find_by_id(admission["residence_country_id"])
+def convert_countries(person):
+    # person['address']['country'] = country.find_by_id(person["country_id"])
+    person['birth_country'] = country.find_by_id(person["birth_country_id"])
+    person['citizenship'] = country.find_by_id(person["citizenship_id"])
 
-def convert_offer(admission):
-    admission['formation'] = offer_year.find_by_id(admission['formation_id'])
-
-def convert_faculty(admission):
-    admission['faculty'] = entity_version.find_by_id(admission['faculty_id'])
-
-def convert_dates(admission):
-    admission['birth_date'] = admission['birth_date'].strftime('%Y-%m-%d')
-    admission['high_school_graduation_year'] = admission['high_school_graduation_year'].strftime('%Y-%m-%d')
-    admission['last_degree_graduation_year'] = admission['last_degree_graduation_year'].strftime('%Y-%m-%d')
+def convert_dates(person):
+    person['birth_date'] = person['birth_date'].strftime('%Y-%m-%d')
+    person['high_school_graduation_year'] = person['high_school_graduation_year'].strftime('%Y-%m-%d')
+    person['last_degree_graduation_year'] = person['last_degree_graduation_year'].strftime('%Y-%m-%d')

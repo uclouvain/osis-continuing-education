@@ -23,8 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from datetime import datetime
-
+import datetime
 import factory
 
 from continuing_education.models.person import Person

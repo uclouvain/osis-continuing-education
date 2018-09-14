@@ -69,10 +69,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
 
     # Formation
     formation = factory.SubFactory(OfferYearFactory)
-    courses_formula = "formula"
-    program_code = "ABC123"
     faculty = factory.SubFactory(EntityVersionFactory)
-    formation_administrator = factory.Faker('name_female')
 
     # Awareness
     awareness_ucl_website = factory.fuzzy.FuzzyChoice([True, False])

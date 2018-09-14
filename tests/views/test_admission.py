@@ -30,14 +30,16 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
+from base.models.offer_year import OfferYear
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.forms.admission import AdmissionForm
+from continuing_education.models import person
+from continuing_education.models.person import Person
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries, convert_offer, \
-    convert_faculty
-
+from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries
 
 class ViewAdmissionTestCase(TestCase):
     def setUp(self):
@@ -86,18 +88,19 @@ class ViewAdmissionTestCase(TestCase):
 
     def test_admission_new_save(self):
         admission = AdmissionFactory()
+        person_dict = admission.person.__dict__
+        convert_dates(person_dict)
         admission_dict = admission.__dict__
-        convert_dates(admission_dict)
         response = self.client.post(reverse('admission_new'), data=admission_dict)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('admission'))
 
     def test_admission_save_with_error(self):
         admission = AdmissionFactory()
-        admission_dict = admission.__dict__
-        convert_dates(admission_dict)
-        admission_dict["birth_date"] = "no valid date"
-        response = self.client.post(reverse('admission_new'), data=admission_dict)
+        person_dict = admission.person.__dict__
+        convert_dates(person_dict)
+        person_dict["birth_date"] = "no valid date"
+        response = self.client.post(reverse('admission_new'), data=person_dict)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'admission_form.html')
 
@@ -114,13 +117,16 @@ class ViewAdmissionTestCase(TestCase):
         self.assertTemplateUsed(response, 'admission_form.html')
 
     def test_edit_post_admission_found(self):
-        admission = AdmissionFactory().__dict__
-        convert_dates(admission)
-        convert_countries(admission)
-        convert_offer(admission)
-        convert_faculty(admission)
+        admission = AdmissionFactory()
+        admission_dict = admission.__dict__
+        person_dict = admission.person.__dict__
+        convert_dates(person_dict)
+        convert_countries(person_dict)
+        admission_dict['person'] = Person.objects.get(pk=admission_dict['person_id'])
+        admission_dict['formation'] = OfferYear.objects.get(pk=admission_dict['formation_id'])
+        admission_dict['faculty'] = EntityVersion.objects.get(pk=admission_dict['faculty_id'])
         url = reverse('admission_edit', args=[self.admission.id])
-        form = AdmissionForm(admission)
+        form = AdmissionForm(admission_dict)
         form.is_valid()
         response = self.client.post(url, data=form.cleaned_data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
@@ -131,4 +137,4 @@ class ViewAdmissionTestCase(TestCase):
             field_value = self.admission.__getattribute__(key)
             if type(field_value) is datetime.date:
                 field_value = field_value.strftime('%Y-%m-%d')
-            self.assertEqual(field_value, admission[key])
+            self.assertEqual(field_value, admission_dict[key])
