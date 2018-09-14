@@ -10,8 +10,6 @@ class TitleChoiceField(forms.ModelChoiceField):
         return "{} - {}".format(obj.acronym, obj.title)
 
 class AdmissionForm(ModelForm):
-    high_school_diploma = forms.TypedChoiceField(coerce=lambda x: x =='True',
-                                   choices=((False, _('No')), (True, _('Yes'))), label=_("high_school_diploma"))
 
     def __init__(self, *args, **kwargs):
         super(AdmissionForm, self).__init__(*args, **kwargs)

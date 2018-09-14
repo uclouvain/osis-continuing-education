@@ -7,7 +7,7 @@ from continuing_education.models.person import Person
 
 
 class PersonForm(ModelForm):
-    high_school_diploma = forms.TypedChoiceField(coerce=lambda x: x =='True',
+    high_school_diploma = forms.TypedChoiceField(coerce=lambda x: x =='True', required=False,
                                    choices=((False, _('No')), (True, _('Yes'))), label=_("high_school_diploma"))
 
     class Meta:
