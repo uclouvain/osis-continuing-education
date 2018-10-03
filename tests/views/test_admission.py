@@ -36,8 +36,8 @@ from base.models.offer_year import OfferYear
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.offer_year import OfferYearFactory
 from continuing_education.forms.admission import AdmissionForm
-from continuing_education.models import person
-from continuing_education.models.person import Person
+from continuing_education.models import continuing_education_person
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries
 
@@ -122,7 +122,7 @@ class ViewAdmissionTestCase(TestCase):
         person_dict = admission.person.__dict__
         convert_dates(person_dict)
         convert_countries(person_dict)
-        admission_dict['person'] = Person.objects.get(pk=admission_dict['person_id'])
+        admission_dict['person'] = ContinuingEducationPerson.objects.get(pk=admission_dict['person_id'])
         admission_dict['formation'] = OfferYear.objects.get(pk=admission_dict['formation_id'])
         admission_dict['faculty'] = EntityVersion.objects.get(pk=admission_dict['faculty_id'])
         url = reverse('admission_edit', args=[self.admission.id])

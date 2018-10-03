@@ -37,7 +37,7 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.models.person import Person
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.views.common import display_errors
 
 @login_required
@@ -69,7 +69,7 @@ def admission_detail(request, admission_id):
 
 @login_required
 def admission_new(request):
-    person = get_object_or_404(Person, pk=request.GET['person']) if 'person' in request.GET else None
+    person = get_object_or_404(ContinuingEducationPerson, pk=request.GET['person']) if 'person' in request.GET else None
     address = person.address if person else None
     admission_form = AdmissionForm(request.POST or None)
     person_form = PersonForm(request.POST or None, instance=person)
@@ -95,7 +95,7 @@ def admission_new(request):
 @login_required
 def admission_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    person = get_object_or_404(Person, pk=request.GET['person']) if 'person' in request.GET else admission.person
+    person = get_object_or_404(ContinuingEducationPerson, pk=request.GET['person']) if 'person' in request.GET else admission.person
     admission_form = AdmissionForm(request.POST or None, instance=admission)
     person_form = PersonForm(request.POST or None, instance=person)
     address_form = AddressForm(request.POST or None, instance=person.address)

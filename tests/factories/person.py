@@ -26,7 +26,7 @@
 import datetime
 import factory
 
-from continuing_education.models.person import Person
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.utils.utils import _get_random_choices
 from reference.tests.factories.country import CountryFactory
@@ -44,7 +44,7 @@ class PersonFactory(factory.DjangoModelFactory):
     birth_country = factory.SubFactory(CountryFactory)
     citizenship = factory.SubFactory(CountryFactory)
 
-    gender = factory.fuzzy.FuzzyChoice(_get_random_choices(Person.GENDER_CHOICES))
+    gender = factory.fuzzy.FuzzyChoice(_get_random_choices(ContinuingEducationPerson.GENDER_CHOICES))
 
     # Contact
     phone_mobile = factory.Faker('phone_number')
@@ -62,11 +62,11 @@ class PersonFactory(factory.DjangoModelFactory):
     other_educational_background = "other background"
 
     # Professional Background
-    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(Person.STATUS_CHOICES))
+    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(ContinuingEducationPerson.STATUS_CHOICES))
 
     current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
 
-    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(Person.SECTOR_CHOICES))
+    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(ContinuingEducationPerson.SECTOR_CHOICES))
 
     past_professional_activities = "past activities"
