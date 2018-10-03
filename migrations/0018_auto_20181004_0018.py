@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             name='ContinuingEducationPerson',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('uuid', models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)),
+                ('uuid', models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, null=True)),
                 ('birth_date', models.DateField(blank=True, default=datetime.datetime.now, verbose_name='birth_date')),
                 ('birth_location', models.CharField(blank=True, max_length=255, verbose_name='birth_location')),
                 ('phone_mobile', models.CharField(blank=True, max_length=30, verbose_name='phone_mobile')),
@@ -66,12 +66,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='address',
             name='uuid',
-            field=models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True),
+            field=models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, null=True),
         ),
         migrations.AddField(
             model_name='admission',
             name='uuid',
-            field=models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True),
+            field=models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, null=True),
         ),
         migrations.AlterField(
             model_name='address',
