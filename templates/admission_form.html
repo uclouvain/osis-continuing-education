@@ -62,13 +62,13 @@
                 <div class="panel panel-body">
                     {% if admission_id is None %}
                     <div class="row">
-                        {% bootstrap_field admission_form.person form_group_class="form-group col-md-12" label=_("person") %}
+                        {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("person") %}
                     </div>
                     {% endif %}
                     <div class="row">
-                        {% bootstrap_field person_form.first_name form_group_class="form-group col-md-4" label=_("first_name") %}
-                        {% bootstrap_field person_form.last_name form_group_class="form-group col-md-4" label=_("last_name") %}
-                        {% bootstrap_field person_form.gender form_group_class="form-group col-md-2" label=_("gender") %}
+                        {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("first_name") %}
+                        {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("last_name") %}
+                        {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-2" label=_("gender") %}
                         {% bootstrap_field person_form.citizenship form_group_class="form-group col-md-2" label=_("citizenship") %}
                     </div>
                     <div class="row">
@@ -81,8 +81,8 @@
                 <div class="panel-heading">{% trans 'contact' %}</div>
                 <div class="panel panel-body">
                     <div class="row">
-                        {% bootstrap_field person_form.phone_mobile form_group_class="form-group col-md-4" label=_("phone_mobile") %}
-                        {% bootstrap_field person_form.email form_group_class="form-group col-md-5" label=_("email") %}
+                        {% bootstrap_field base_person_form.phone_mobile form_group_class="form-group col-md-4" label=_("phone_mobile") %}
+                        {% bootstrap_field base_person_form.email form_group_class="form-group col-md-5" label=_("email") %}
                     </div>
                     <div class="row">
                         {% bootstrap_field address_form.location form_group_class="form-group col-md-4" label=_("location") %}
@@ -145,9 +145,6 @@
                     <div class="panel panel-body">
                         <div class="row">
                             {% bootstrap_field admission_form.formation form_group_class="form-group col-md-4" label=_("formation") %}
-                        </div>
-                        <div class="row">
-                            {% bootstrap_field admission_form.faculty form_group_class="form-group col-md-4" label=_("faculty") %}
                         </div>
                 </div>
 
