@@ -27,13 +27,13 @@ from django.test import TestCase
 
 from continuing_education.models import admission
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.person import PersonFactory, ContinuingEducationPersonFactory
 
 
 class TestAdmission(TestCase):
     def setUp(self):
         self.admission = AdmissionFactory()
-        self.person = PersonFactory()
+        self.person = ContinuingEducationPersonFactory()
 
     def test_find_by_id(self):
         an_admission = self.admission
@@ -43,10 +43,9 @@ class TestAdmission(TestCase):
         nonexistent_admission = admission.find_by_id(0)
         self.assertIsNone(nonexistent_admission)
 
-    # to be changed with student id
-    def test_find_by_student(self):
+    def test_find_by_person(self):
         an_admission = self.admission
-        persisted_admission = admission.find_by_person(an_admission.person)
+        persisted_admission = admission.find_by_person(an_admission.person_information)
         self.assertTrue(persisted_admission.exists())
 
         nonexistent_admission = admission.find_by_person(self.person)

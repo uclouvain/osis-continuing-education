@@ -24,27 +24,26 @@
 #
 ##############################################################################
 import datetime
+
 import factory
 
-from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from base.tests.factories.person import PersonFactory
+from continuing_education.models.enums.enums import STATUS_CHOICES, SECTOR_CHOICES
 from continuing_education.tests.factories.address import AddressFactory
-from continuing_education.tests.utils.utils import _get_random_choices
+from continuing_education.tests.utils.utils import _get_enum_keys
 from reference.tests.factories.country import CountryFactory
 
 
-class PersonFactory(factory.DjangoModelFactory):
+class ContinuingEducationPersonFactory(factory.DjangoModelFactory):
     class Meta:
-        model = 'continuing_education.person'
+        model = 'continuing_education.ContinuingEducationPerson'
+
+    person = factory.SubFactory(PersonFactory)
 
    # Identification
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    birth_date = factory.LazyFunction(datetime.datetime.now)
     birth_location = factory.Faker('city')
     birth_country = factory.SubFactory(CountryFactory)
     citizenship = factory.SubFactory(CountryFactory)
-
-    gender = factory.fuzzy.FuzzyChoice(_get_random_choices(ContinuingEducationPerson.GENDER_CHOICES))
 
     # Contact
     phone_mobile = factory.Faker('phone_number')
@@ -62,11 +61,11 @@ class PersonFactory(factory.DjangoModelFactory):
     other_educational_background = "other background"
 
     # Professional Background
-    professional_status = factory.fuzzy.FuzzyChoice(_get_random_choices(ContinuingEducationPerson.STATUS_CHOICES))
+    professional_status = factory.fuzzy.FuzzyChoice(_get_enum_keys(STATUS_CHOICES))
 
     current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
 
-    activity_sector = factory.fuzzy.FuzzyChoice(_get_random_choices(ContinuingEducationPerson.SECTOR_CHOICES))
+    activity_sector = factory.fuzzy.FuzzyChoice(_get_enum_keys(SECTOR_CHOICES))
 
     past_professional_activities = "past activities"

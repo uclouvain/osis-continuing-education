@@ -46,7 +46,6 @@ class ViewRegistrationTestCase(TestCase):
         self.client.force_login(self.user)
         self.admission_accepted = AdmissionFactory(state="accepted")
         self.admission_rejected = AdmissionFactory(state="rejected")
-        self.faculty = EntityVersionFactory(entity_type=entity_type.FACULTY)
 
     def test_list_registrations(self):
         url = reverse('registration')
@@ -55,13 +54,6 @@ class ViewRegistrationTestCase(TestCase):
         for admission in admissions:
             self.assertEqual(admission.state, "accepted")
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registrations.html')
-
-    def test_list_registrations_filtered_by_faculty(self):
-        url = reverse('registration')
-        response = self.client.get(url, {'faculty': self.faculty.id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['active_faculty'], self.faculty.id)
         self.assertTemplateUsed(response, 'registrations.html')
 
     def test_list_registrations_pagination_empty_page(self):

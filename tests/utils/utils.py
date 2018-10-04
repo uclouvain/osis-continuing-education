@@ -1,2 +1,2 @@
-def _get_random_choices(type):
-    return [x[0] for x in type]
+def _get_enum_keys(enum):
+    return [x[0] for x in enum]

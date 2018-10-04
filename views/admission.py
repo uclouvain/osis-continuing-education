@@ -75,7 +75,7 @@ def admission_detail(request, admission_id):
 @login_required
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
-    base_person = admission.person_information.person or None
+    base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)
     address = person_information.address if person_information else None
@@ -86,8 +86,9 @@ def admission_form(request, admission_id=None):
         address, created = Address.objects.get_or_create(**address_form.cleaned_data)
         person = person_form.save(commit=False)
         person.address = address
-        person.person_id = base_person.pk
-        person.save()
+        if base_person:
+            person.person_id = base_person.pk
+            person.save()
         admission = admission_form.save(commit=False)
         admission.person = person
         admission.save()
