@@ -43,9 +43,9 @@ from continuing_education.views.common import display_errors
 def list_registrations(request):
     faculty_filter = int(request.GET.get("faculty",0))
     if faculty_filter:
-        admission_list = Admission.objects.filter(faculty=faculty_filter, state="accepted").order_by('person')
+        admission_list = Admission.objects.filter(faculty=faculty_filter, state="accepted").order_by('person_information')
     else:
-        admission_list = Admission.objects.filter(state="accepted").order_by('person')
+        admission_list = Admission.objects.filter(state="accepted").order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
