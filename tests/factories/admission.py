@@ -36,7 +36,7 @@ from base.models.offer_year import OfferYear
 from continuing_education.models.enums.enums import STATE_CHOICES, REGISTRATION_TITLE_CHOICES, MARITAL_STATUS_CHOICES
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
-from continuing_education.tests.utils.utils import _get_enum_keys
+from continuing_education.tests.utils.utils import get_enum_keys
 
 CONTINUING_EDUCATION_TYPE = 8
 
@@ -78,10 +78,10 @@ class AdmissionFactory(factory.DjangoModelFactory):
     awareness_emailing = factory.fuzzy.FuzzyChoice([True, False])
 
     # State
-    state = factory.fuzzy.FuzzyChoice(_get_enum_keys(STATE_CHOICES))
+    state = factory.fuzzy.FuzzyChoice(get_enum_keys(STATE_CHOICES))
 
     # Billing
-    registration_type = factory.fuzzy.FuzzyChoice(_get_enum_keys(REGISTRATION_TITLE_CHOICES))
+    registration_type = factory.fuzzy.FuzzyChoice(get_enum_keys(REGISTRATION_TITLE_CHOICES))
 
     use_address_for_billing = factory.fuzzy.FuzzyChoice([True, False])
     billing_address = factory.SubFactory(AddressFactory)
@@ -95,7 +95,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     id_card_number = factory.Faker('ssn')
     passport_number = factory.Faker('isbn13')
 
-    marital_status = factory.fuzzy.FuzzyChoice(_get_enum_keys(MARITAL_STATUS_CHOICES))
+    marital_status = factory.fuzzy.FuzzyChoice(get_enum_keys(MARITAL_STATUS_CHOICES))
 
     spouse_name = factory.Faker('name')
     children_number = random.randint(0,10)

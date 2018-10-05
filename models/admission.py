@@ -35,7 +35,7 @@ class Admission(SerializableModel):
     awareness_emailing = models.BooleanField(default=False, verbose_name=_("awareness_emailing"))
 
     #State
-    state = models.CharField(max_length=50, blank=True,  choices=STATE_CHOICES, verbose_name=_("state"))
+    state = models.CharField(max_length=50, blank=True, null=True, choices=STATE_CHOICES, verbose_name=_("state"))
 
     #Billing
     registration_type = models.CharField(max_length=50, blank=True, choices=REGISTRATION_TITLE_CHOICES,
