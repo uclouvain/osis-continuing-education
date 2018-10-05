@@ -39,12 +39,6 @@ class ViewHomeTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'continuing_education/home.html')
 
-    def test_student_view(self):
-        url = reverse('continuing_education_student')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'continuing_education/student_home.html')
-
     def test_admin_view(self):
         url = reverse('continuing_education_admin')
         response = self.client.get(url)

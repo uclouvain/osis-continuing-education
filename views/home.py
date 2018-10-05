@@ -27,7 +27,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from continuing_education.models.admission import find_by_person, Admission
-from continuing_education.models.person import Person
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
 @login_required
@@ -40,7 +40,7 @@ def admin_view(request):
 
 @login_required
 def student_view(request):
-    person = Person.objects.filter(first_name=request.user.first_name, last_name=request.user.last_name)
+    person = ContinuingEducationPerson.objects.filter(first_name=request.user.first_name, last_name=request.user.last_name)
     admissions = find_by_person(person)
     registrations = Admission.objects.filter(
         person=person,

@@ -1,13 +1,13 @@
+from django import forms
 from django.forms import ModelForm
 
-from base.forms.bootstrap import BootstrapModelForm
 from continuing_education.models.admission import Admission
-from django.utils.translation import ugettext_lazy as _
-from django import forms
+from continuing_education.models.enums.enums import YES_NO_CHOICES
+
 
 class RegistrationForm(ModelForm):
-    previous_ucl_registration = forms.TypedChoiceField(coerce=lambda x: x =='True',
-                                   choices=((False, _('No')), (True, _('Yes'))))
+    previous_ucl_registration = forms.TypedChoiceField(coerce=lambda x: x =='True', choices=YES_NO_CHOICES)
+
     class Meta:
         model = Admission
         fields = [
@@ -37,11 +37,3 @@ class RegistrationForm(ModelForm):
             'assessment_succeeded',
             'sessions'
         ]
-        labels = {}
-        for field in fields:
-            labels[field] = _(field)
-            if "billing_" in field:
-                labels[field] = _(field.replace("billing_",''))
-            if "residence_" in field:
-                labels[field] = _(field.replace("residence_",''))
-
