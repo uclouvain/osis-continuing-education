@@ -30,7 +30,7 @@ import factory
 from base.tests.factories.person import PersonFactory
 from continuing_education.models.enums.enums import STATUS_CHOICES, SECTOR_CHOICES
 from continuing_education.tests.factories.address import AddressFactory
-from continuing_education.tests.utils.utils import _get_enum_keys
+from continuing_education.tests.utils.utils import get_enum_keys
 from reference.tests.factories.country import CountryFactory
 
 
@@ -61,11 +61,11 @@ class ContinuingEducationPersonFactory(factory.DjangoModelFactory):
     other_educational_background = "other background"
 
     # Professional Background
-    professional_status = factory.fuzzy.FuzzyChoice(_get_enum_keys(STATUS_CHOICES))
+    professional_status = factory.fuzzy.FuzzyChoice(get_enum_keys(STATUS_CHOICES))
 
     current_occupation = factory.Faker('text', max_nb_chars=50)
     current_employer = factory.Faker('company')
 
-    activity_sector = factory.fuzzy.FuzzyChoice(_get_enum_keys(SECTOR_CHOICES))
+    activity_sector = factory.fuzzy.FuzzyChoice(get_enum_keys(SECTOR_CHOICES))
 
     past_professional_activities = "past activities"
