@@ -86,11 +86,13 @@ def admission_form(request, admission_id=None):
         address, created = Address.objects.get_or_create(**address_form.cleaned_data)
         person = person_form.save(commit=False)
         person.address = address
-        if base_person:
-            person.person_id = base_person.pk
-            person.save()
+        if not base_person:
+            base_person = base_person_form.save()
+        person.person_id = base_person.pk
+        person.save()
         admission = admission_form.save(commit=False)
-        admission.person = person
+        if not admission.person_information:
+            admission.person_information = person
         admission.save()
         return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
     else:
