@@ -104,8 +104,10 @@
                                 <span class="label label-success show">{% trans admission.state %}</span>
                             {% elif admission.state == "rejected" %}
                                 <span class="label label-danger show">{% trans admission.state %}</span>
-                            {% else %}
-                                -
+                            {% elif admission.state == "submitted" %}
+                                <span class="label label-info show">{% trans admission.state %}</span>
+                            {% elif admission.state == "draft" %}
+                                <span class="label label-default show">{% trans admission.state %}</span>
                             {% endif %}
                         </td>
                     </tr>
