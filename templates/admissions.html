@@ -27,6 +27,10 @@
 * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/continuing_education_style.css' %}">
+{% endblock %}
+
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
@@ -97,7 +101,7 @@
                         <td>{{ admission.person_information.person.email }}</td>
                         <td title="{{admission.formation.title}}">{{ admission.formation }}</td>
                         <td title="{{admission.faculty.title}}">{{ admission.faculty.acronym }}</td>
-                        <td style="vertical-align: middle;">
+                        <td style="vertical-align: middle;" class="admission-state">
                             {% if admission.state == "waiting" %}
                                 <span class="label label-primary show">{% trans admission.state %}</span>
                             {% elif admission.state == "accepted" %}
