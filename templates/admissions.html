@@ -92,6 +92,7 @@
                     </tr>
                 </tfoot>
                 {% for admission in admissions %}
+                    {% if admission.state != "draft" %}
                     <tr>
                         <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
                             {{ admission.person_information.person.last_name }}
@@ -115,6 +116,7 @@
                             {% endif %}
                         </td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
             </table>
         </div>
