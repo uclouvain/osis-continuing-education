@@ -238,6 +238,9 @@ msgstr "Fiche de l'étudiant"
 msgid "submit"
 msgstr "Soumettre"
 
+msgid "submitted"
+msgstr "Soumis"
+
 msgid "use_address_for_billing"
 msgstr "Utiliser l'adresse enregistrée pour la facturation"
 
