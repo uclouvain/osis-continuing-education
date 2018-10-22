@@ -23,14 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import datetime
 
 import factory
 
 from base.tests.factories.person import PersonFactory
-from continuing_education.models.enums.enums import STATUS_CHOICES, SECTOR_CHOICES
-from continuing_education.tests.factories.address import AddressFactory
-from continuing_education.tests.utils.utils import get_enum_keys
 from reference.tests.factories.country import CountryFactory
 
 
@@ -40,32 +36,6 @@ class ContinuingEducationPersonFactory(factory.DjangoModelFactory):
 
     person = factory.SubFactory(PersonFactory)
 
-   # Identification
+    # Identification
     birth_location = factory.Faker('city')
     birth_country = factory.SubFactory(CountryFactory)
-    citizenship = factory.SubFactory(CountryFactory)
-
-    # Contact
-    phone_mobile = factory.Faker('phone_number')
-    email = factory.Faker('email')
-
-    address = factory.SubFactory(AddressFactory)
-
-    # Education
-    high_school_diploma = factory.fuzzy.FuzzyChoice([True, False])
-    high_school_graduation_year = factory.LazyFunction(datetime.datetime.now)
-    last_degree_level = "level"
-    last_degree_field = "field"
-    last_degree_institution = "institution"
-    last_degree_graduation_year = factory.LazyFunction(datetime.datetime.now)
-    other_educational_background = "other background"
-
-    # Professional Background
-    professional_status = factory.fuzzy.FuzzyChoice(get_enum_keys(STATUS_CHOICES))
-
-    current_occupation = factory.Faker('text', max_nb_chars=50)
-    current_employer = factory.Faker('company')
-
-    activity_sector = factory.fuzzy.FuzzyChoice(get_enum_keys(SECTOR_CHOICES))
-
-    past_professional_activities = "past activities"

@@ -23,18 +23,26 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import display_errors
 
+
 @login_required
 def registration_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    return render(request, "student/registration_detail.html", locals())
+    return render(
+        request,
+        "student/registration_detail.html",
+        {
+            'admission': admission,
+        }
+    )
+
 
 @login_required
 def registration_edit(request, admission_id):
@@ -49,4 +57,8 @@ def registration_edit(request, admission_id):
         errors.append(form.errors)
         display_errors(request, errors)
 
-    return render(request, 'student/registration_form.html', locals())
+    return render(
+        request,
+        'student/registration_form.html',
+        locals()
+    )

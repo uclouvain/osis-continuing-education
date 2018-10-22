@@ -19,19 +19,6 @@ MARITAL_STATUS_CHOICES = (
     ('LEGAL_COHABITANT', _('legal_cohabitant')),
 )
 
-ADMIN_STATE_CHOICES = (
-    ('accepted', _('accepted')),
-    ('rejected', _('rejected')),
-    ('waiting', _('waiting')),
-)
-
-STUDENT_STATE_CHOICES = (
-    ('draft', _('draft')),
-    ('submitted', _('submitted')),
-)
-
-STATE_CHOICES =  ADMIN_STATE_CHOICES + STUDENT_STATE_CHOICES
-
 GENDER_CHOICES = (
     ('F', _('female')),
     ('M', _('male')),

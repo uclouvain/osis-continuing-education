@@ -69,7 +69,7 @@
                         {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("first_name") %}
                         {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("last_name") %}
                         {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-2" label=_("gender") %}
-                        {% bootstrap_field person_form.citizenship form_group_class="form-group col-md-2" label=_("citizenship") %}
+                        {% bootstrap_field admission_form.citizenship form_group_class="form-group col-md-2" label=_("citizenship") %}
                     </div>
                     <div class="row">
                         {% bootstrap_field person_form.birth_date form_group_class="form-group col-md-4" label=_("birth_date") %}
@@ -81,8 +81,8 @@
                 <div class="panel-heading">{% trans 'contact' %}</div>
                 <div class="panel panel-body">
                     <div class="row">
-                        {% bootstrap_field base_person_form.phone_mobile form_group_class="form-group col-md-4" label=_("phone_mobile") %}
-                        {% bootstrap_field base_person_form.email form_group_class="form-group col-md-5" label=_("email") %}
+                        {% bootstrap_field admission_form.phone_mobile form_group_class="form-group col-md-4" label=_("phone_mobile") %}
+                        {% bootstrap_field admission_form.email form_group_class="form-group col-md-5" label=_("email") %}
                     </div>
                     <div class="row">
                         {% bootstrap_field address_form.location form_group_class="form-group col-md-4" label=_("location") %}
@@ -97,19 +97,19 @@
                         <div class="panel-heading">{% trans 'education' %}</div>
                         <div class="panel panel-body">
                             <div class="row">
-                                {% bootstrap_field person_form.high_school_diploma form_group_class="form-group col-md-6" label=_("high_school_diploma") %}
-                                {% bootstrap_field person_form.high_school_graduation_year form_group_class="high_school_graduation_year form-group col-md-6" label=_("high_school_graduation_year") %}
+                                {% bootstrap_field admission_form.high_school_diploma form_group_class="form-group col-md-6" label=_("high_school_diploma") %}
+                                {% bootstrap_field admission_form.high_school_graduation_year form_group_class="high_school_graduation_year form-group col-md-6" label=_("high_school_graduation_year") %}
                             </div>
                             <div class="row">
-                                {% bootstrap_field person_form.last_degree_level form_group_class="form-group col-md-6" label=_("last_degree_level") %}
-                                {% bootstrap_field person_form.last_degree_field form_group_class="form-group col-md-6" label=_("last_degree_field") %}
+                                {% bootstrap_field admission_form.last_degree_level form_group_class="form-group col-md-6" label=_("last_degree_level") %}
+                                {% bootstrap_field admission_form.last_degree_field form_group_class="form-group col-md-6" label=_("last_degree_field") %}
                             </div>
                             <div class="row">
-                                {% bootstrap_field person_form.last_degree_institution form_group_class="form-group col-md-6" label=_("last_degree_institution") %}
-                                {% bootstrap_field person_form.last_degree_graduation_year form_group_class="form-group col-md-6" label=_("last_degree_graduation_year") %}
+                                {% bootstrap_field admission_form.last_degree_institution form_group_class="form-group col-md-6" label=_("last_degree_institution") %}
+                                {% bootstrap_field admission_form.last_degree_graduation_year form_group_class="form-group col-md-6" label=_("last_degree_graduation_year") %}
                             </div>
                             <div class="row">
-                                {% bootstrap_field person_form.other_educational_background form_group_class="form-group col-md-12" label=_("other_educational_background") %}
+                                {% bootstrap_field admission_form.other_educational_background form_group_class="form-group col-md-12" label=_("other_educational_background") %}
                             </div>
                         </div>
                     </div>
@@ -117,17 +117,17 @@
                     <div class="panel-heading">{% trans 'professional_background' %}</div>
                     <div class="panel panel-body">
                         <div class="row">
-                            {% bootstrap_field person_form.professional_status form_group_class="form-group col-md-6" label=_("professional_status") %}
+                            {% bootstrap_field admission_form.professional_status form_group_class="form-group col-md-6" label=_("professional_status") %}
                         </div>
                         <div class="row">
-                            {% bootstrap_field person_form.current_occupation form_group_class="form-group col-md-6" label=_("current_occupation") %}
+                            {% bootstrap_field admission_form.current_occupation form_group_class="form-group col-md-6" label=_("current_occupation") %}
                         </div>
                         <div class="row">
-                            {% bootstrap_field person_form.current_employer form_group_class="form-group col-md-6" label=_("current_employer") %}
-                            {% bootstrap_field person_form.activity_sector form_group_class="form-group col-md-6" label=_("activity_sector") %}
+                            {% bootstrap_field admission_form.current_employer form_group_class="form-group col-md-6" label=_("current_employer") %}
+                            {% bootstrap_field admission_form.activity_sector form_group_class="form-group col-md-6" label=_("activity_sector") %}
                         </div>
                         <div class="row">
-                            {% bootstrap_field person_form.past_professional_activities form_group_class="form-group col-md-12" label=_("past_professional_activities") %}
+                            {% bootstrap_field admission_form.past_professional_activities form_group_class="form-group col-md-12" label=_("past_professional_activities") %}
                         </div>
                     </div>
                     </div>

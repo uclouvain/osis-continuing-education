@@ -23,23 +23,32 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import display_errors
 
+
 @login_required
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    return render(request, "student/admission_detail.html", locals())
+    return render(
+        request,
+        "student/admission_detail.html",
+        {
+            'admission': admission,
+        }
+    )
+
 
 @login_required
 def admission_new(request):
     form = AdmissionForm(request.POST or None)
     errors = []
+
     if form.is_valid():
         admission = form.save()
         return redirect(reverse('continuing_education_student'))
@@ -47,17 +56,22 @@ def admission_new(request):
         errors.append(form.errors)
         display_errors(request, errors)
 
-    return render(request, 'student/admission_form.html', locals())
+    return render(
+        request,
+        'student/admission_form.html',
+        locals()
+    )
+
 
 @login_required
 def admission_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-
     form = AdmissionForm(request.POST or None, instance=admission)
     errors = []
+
     if form.is_valid():
         admission = form.save()
-        return redirect(reverse('student_admission_detail', kwargs={'admission_id':admission_id}))
+        return redirect(reverse('student_admission_detail', kwargs={'admission_id': admission_id}))
     else:
         errors.append(form.errors)
         display_errors(request, errors)
