@@ -75,7 +75,13 @@ def list_registrations(request):
 @login_required
 def registration_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    return render(request, "registration_detail.html", locals())
+    return render(
+        request,
+        "registration_detail.html",
+        {
+            'admission': admission,
+        }
+    )
 
 
 @login_required
@@ -97,4 +103,14 @@ def registration_edit(request, admission_id):
         errors.append(form.errors)
         display_errors(request, errors)
 
-    return render(request, 'registration_form.html', locals())
+    return render(
+        request,
+        'registration_form.html',
+        {
+            'admission': admission,
+            'form': form,
+            'billing_address_form': billing_address_form,
+            'residence_address_form': residence_address_form,
+            'errors': errors,
+        }
+    )

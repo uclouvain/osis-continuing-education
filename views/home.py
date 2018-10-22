@@ -52,4 +52,12 @@ def student_view(request):
         person=person,
         state=admission_state_choices.ACCEPTED,
     )
-    return render(request, "continuing_education/student_home.html", locals())
+    return render(
+        request,
+        "continuing_education/student_home.html",
+        {
+            'person': person,
+            'admissions': admissions,
+            'registrations': registrations,
+        }
+    )

@@ -59,7 +59,10 @@ def admission_new(request):
     return render(
         request,
         'student/admission_form.html',
-        locals()
+        {
+            'form': form,
+            'errors': errors,
+        }
     )
 
 
@@ -76,4 +79,12 @@ def admission_edit(request, admission_id):
         errors.append(form.errors)
         display_errors(request, errors)
 
-    return render(request, 'student/admission_form.html', locals())
+    return render(
+        request,
+        'student/admission_form.html',
+        {
+            'admission': admission,
+            'form': form,
+            'errors': errors,
+        }
+    )

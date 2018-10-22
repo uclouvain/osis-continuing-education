@@ -60,5 +60,9 @@ def registration_edit(request, admission_id):
     return render(
         request,
         'student/registration_form.html',
-        locals()
+        {
+            'registration': registration,
+            'form': form,
+            'errors': errors,
+        }
     )
