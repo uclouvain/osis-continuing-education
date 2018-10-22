@@ -28,6 +28,7 @@ from django.shortcuts import render
 
 from continuing_education.models import admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from continuing_education.models.enums import admission_state_choices
 
 
 @login_required
@@ -42,10 +43,13 @@ def admin_view(request):
 
 @login_required
 def student_view(request):
-    person = ContinuingEducationPerson.objects.filter(first_name=request.user.first_name, last_name=request.user.last_name)
+    person = ContinuingEducationPerson.objects.filter(
+        first_name=request.user.first_name,
+        last_name=request.user.last_name
+    )
     admissions = admission.search(person=person)
     registrations = admission.search(
         person=person,
-        state="accepted",
+        state=admission_state_choices.ACCEPTED,
     )
     return render(request, "continuing_education/student_home.html", locals())

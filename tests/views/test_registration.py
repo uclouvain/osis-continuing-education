@@ -30,6 +30,7 @@ from django.forms import model_to_dict
 from django.test import TestCase
 
 from continuing_education.forms.registration import RegistrationForm
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
@@ -37,15 +38,15 @@ class ViewRegistrationTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
         self.client.force_login(self.user)
-        self.admission_accepted = AdmissionFactory(state="accepted")
-        self.admission_rejected = AdmissionFactory(state="rejected")
+        self.admission_accepted = AdmissionFactory(state=admission_state_choices.ACCEPTED)
+        self.admission_rejected = AdmissionFactory(state=admission_state_choices.REJECTED)
 
     def test_list_registrations(self):
         url = reverse('registration')
         response = self.client.get(url)
         admissions = response.context['admissions']
         for admission in admissions:
-            self.assertEqual(admission.state, "accepted")
+            self.assertEqual(admission.state, admission_state_choices.ACCEPTED)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
 

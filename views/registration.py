@@ -36,6 +36,7 @@ from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors
 
 
@@ -45,13 +46,13 @@ def list_registrations(request):
     if faculty_filter:
         admission_list = Admission.objects.filter(
             faculty=faculty_filter,
-            state="accepted"
+            state=admission_state_choices.ACCEPTED
         ).order_by(
             'person_information'
         )
     else:
         admission_list = Admission.objects.filter(
-            state="accepted"
+            state=admission_state_choices.ACCEPTED
         ).order_by(
             'person_information'
         )
