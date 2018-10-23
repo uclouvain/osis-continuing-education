@@ -33,12 +33,14 @@ from base.models import entity_version
 from base.models.academic_year import current_academic_years
 from base.models.enums import entity_type
 from base.models.offer_year import OfferYear
-from continuing_education.models.enums.enums import STATE_CHOICES, REGISTRATION_TITLE_CHOICES, MARITAL_STATUS_CHOICES
+from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.tests.utils.utils import get_enum_keys
+from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_TYPE = 8
+
 
 class AdmissionFactory(factory.DjangoModelFactory):
     class Meta:
@@ -47,19 +49,54 @@ class AdmissionFactory(factory.DjangoModelFactory):
     @staticmethod
     def populate(country_id):
         country = reference.models.country.find_by_id(country_id)
-        formation = OfferYear.objects.filter(offer_type_id=CONTINUING_EDUCATION_TYPE, academic_year_id=current_academic_years()).order_by('?').first()
-        faculty = entity_version.find_latest_version(datetime.datetime.now()).filter(entity_type=entity_type.FACULTY).order_by('?').first()
+        formation = OfferYear.objects.filter(
+            offer_type_id=CONTINUING_EDUCATION_TYPE,
+            academic_year_id=current_academic_years()
+        ).order_by('?').first()
+        faculty = entity_version.find_latest_version(
+            datetime.datetime.now()).filter(
+            entity_type=entity_type.FACULTY
+        ).order_by('?').first()
+
         AdmissionFactory.create(
-            birth_country = country,
-            country = country,
-            citizenship = country,
-            billing_country = country,
-            residence_country = country,
-            formation = formation,
-            faculty = faculty
+            birth_country=country,
+            country=country,
+            citizenship=country,
+            billing_country=country,
+            residence_country=country,
+            formation=formation,
+            faculty=faculty
         )
 
     person_information = factory.SubFactory(ContinuingEducationPersonFactory)
+
+    # Identification
+    citizenship = factory.SubFactory(CountryFactory)
+
+    # Contact
+    phone_mobile = factory.Faker('phone_number')
+    email = factory.Faker('email')
+
+    address = factory.SubFactory(AddressFactory)
+
+    # Education
+    high_school_diploma = factory.fuzzy.FuzzyChoice([True, False])
+    high_school_graduation_year = factory.fuzzy.FuzzyInteger(1991, 2018)
+    last_degree_level = "level"
+    last_degree_field = "field"
+    last_degree_institution = "institution"
+    last_degree_graduation_year = factory.fuzzy.FuzzyInteger(1991, 2018)
+    other_educational_background = "other background"
+
+    # Professional Background
+    professional_status = factory.fuzzy.FuzzyChoice(get_enum_keys(enums.STATUS_CHOICES))
+
+    current_occupation = factory.Faker('text', max_nb_chars=50)
+    current_employer = factory.Faker('company')
+
+    activity_sector = factory.fuzzy.FuzzyChoice(get_enum_keys(enums.SECTOR_CHOICES))
+
+    past_professional_activities = "past activities"
 
     # Motivation
     motivation = "motivation"
@@ -78,10 +115,10 @@ class AdmissionFactory(factory.DjangoModelFactory):
     awareness_emailing = factory.fuzzy.FuzzyChoice([True, False])
 
     # State
-    state = factory.fuzzy.FuzzyChoice(get_enum_keys(STATE_CHOICES))
+    state = factory.fuzzy.FuzzyChoice(get_enum_keys(admission_state_choices.STUDENT_STATE_CHOICES))
 
     # Billing
-    registration_type = factory.fuzzy.FuzzyChoice(get_enum_keys(REGISTRATION_TITLE_CHOICES))
+    registration_type = factory.fuzzy.FuzzyChoice(get_enum_keys(enums.REGISTRATION_TITLE_CHOICES))
 
     use_address_for_billing = factory.fuzzy.FuzzyChoice([True, False])
     billing_address = factory.SubFactory(AddressFactory)
@@ -95,10 +132,10 @@ class AdmissionFactory(factory.DjangoModelFactory):
     id_card_number = factory.Faker('ssn')
     passport_number = factory.Faker('isbn13')
 
-    marital_status = factory.fuzzy.FuzzyChoice(get_enum_keys(MARITAL_STATUS_CHOICES))
+    marital_status = factory.fuzzy.FuzzyChoice(get_enum_keys(enums.MARITAL_STATUS_CHOICES))
 
     spouse_name = factory.Faker('name')
-    children_number = random.randint(0,10)
+    children_number = random.randint(0, 10)
     previous_ucl_registration = factory.fuzzy.FuzzyChoice([True, False])
     previous_noma = factory.Faker('isbn10')
 

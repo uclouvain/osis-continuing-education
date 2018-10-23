@@ -23,36 +23,30 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import datetime
-import factory
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.forms import model_to_dict
 from django.test import TestCase
 
-from base.models.enums import entity_type
-from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.forms.registration import RegistrationForm
-from continuing_education.models.address import Address
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries
-from reference.models import country
-from reference.models.country import Country
 
 
 class ViewRegistrationTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
         self.client.force_login(self.user)
-        self.admission_accepted = AdmissionFactory(state="accepted")
-        self.admission_rejected = AdmissionFactory(state="rejected")
+        self.admission_accepted = AdmissionFactory(state=admission_state_choices.ACCEPTED)
+        self.admission_rejected = AdmissionFactory(state=admission_state_choices.REJECTED)
 
     def test_list_registrations(self):
         url = reverse('registration')
         response = self.client.get(url)
         admissions = response.context['admissions']
         for admission in admissions:
-            self.assertEqual(admission.state, "accepted")
+            self.assertEqual(admission.state, admission_state_choices.ACCEPTED)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
 
@@ -88,10 +82,12 @@ class ViewRegistrationTestCase(TestCase):
 
     def test_edit_post_registration_found(self):
         admission = AdmissionFactory()
-        admission_dict = admission.__dict__
+        admission_dict = model_to_dict(admission)
+        admission_dict['billing_address'] = admission.billing_address
+        admission_dict['residence_address'] = admission.residence_address
+        admission_dict['citizenship'] = admission.citizenship
+        admission_dict['address'] = admission.address
         url = reverse('registration_edit', args=[self.admission_accepted.id])
-        admission_dict['billing_address'] = Address.objects.get(pk=admission_dict['billing_address_id'])
-        admission_dict['residence_address'] = Address.objects.get(pk=admission_dict['residence_address_id'])
         form = RegistrationForm(admission_dict)
         form.is_valid()
         response = self.client.post(url, data=form.cleaned_data)

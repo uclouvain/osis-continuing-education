@@ -23,16 +23,11 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import random
-
-from django.db import IntegrityError
 from django.test import TestCase
 
 from continuing_education.models import admission
-from continuing_education.models.enums.enums import STATE_CHOICES
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.person import PersonFactory, ContinuingEducationPersonFactory
-from continuing_education.tests.utils.utils import get_enum_keys
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
 class TestAdmission(TestCase):
@@ -40,18 +35,10 @@ class TestAdmission(TestCase):
         self.admission = AdmissionFactory()
         self.person = ContinuingEducationPersonFactory()
 
-    def test_find_by_id(self):
+    def test_search(self):
         an_admission = self.admission
-        persisted_admission = admission.find_by_id(an_admission.id)
-        self.assertEqual(an_admission.id, persisted_admission.id)
-
-        nonexistent_admission = admission.find_by_id(0)
-        self.assertIsNone(nonexistent_admission)
-
-    def test_find_by_person(self):
-        an_admission = self.admission
-        persisted_admission = admission.find_by_person(an_admission.person_information)
+        persisted_admission = admission.search(person=an_admission.person_information)
         self.assertTrue(persisted_admission.exists())
 
-        nonexistent_admission = admission.find_by_person(self.person)
+        nonexistent_admission = admission.search(person=self.person)
         self.assertFalse(nonexistent_admission.exists())

@@ -25,11 +25,10 @@
 ##############################################################################
 from datetime import datetime
 
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.forms import formset_factory
 
 from base.models import entity_version
 from base.models.enums import entity_type
@@ -37,15 +36,26 @@ from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors
+
 
 @login_required
 def list_registrations(request):
-    faculty_filter = int(request.GET.get("faculty",0))
+    faculty_filter = int(request.GET.get("faculty", 0))
     if faculty_filter:
-        admission_list = Admission.objects.filter(faculty=faculty_filter, state="accepted").order_by('person_information')
+        admission_list = Admission.objects.filter(
+            faculty=faculty_filter,
+            state=admission_state_choices.ACCEPTED
+        ).order_by(
+            'person_information'
+        )
     else:
-        admission_list = Admission.objects.filter(state="accepted").order_by('person_information')
+        admission_list = Admission.objects.filter(
+            state=admission_state_choices.ACCEPTED
+        ).order_by(
+            'person_information'
+        )
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
@@ -61,10 +71,18 @@ def list_registrations(request):
         'active_faculty': faculty_filter
     })
 
+
 @login_required
 def registration_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    return render(request, "registration_detail.html", locals())
+    return render(
+        request,
+        "registration_detail.html",
+        {
+            'admission': admission,
+        }
+    )
+
 
 @login_required
 def registration_edit(request, admission_id):
@@ -85,4 +103,14 @@ def registration_edit(request, admission_id):
         errors.append(form.errors)
         display_errors(request, errors)
 
-    return render(request, 'registration_form.html', locals())
+    return render(
+        request,
+        'registration_form.html',
+        {
+            'admission': admission,
+            'form': form,
+            'billing_address_form': billing_address_form,
+            'residence_address_form': residence_address_form,
+            'errors': errors,
+        }
+    )

@@ -15,12 +15,13 @@ class PersonForm(ModelForm):
 
     class Meta:
         model = Person
-        # automatic translation of field names
+
         fields = [
             'first_name',
             'last_name',
             'email',
-            'phone_mobile',
             'gender'
         ]
+
+        # Automatic translation of field names
         labels = {field: _(field) for field in fields}

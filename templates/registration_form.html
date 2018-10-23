@@ -139,10 +139,10 @@
 {% block script %}
     <script>
         let address = {
-            location: "{{admission.person.address.location | escapejs}}",
-            postal_code: "{{admission.person.address.postal_code | escapejs}}",
-            city: "{{admission.person.address.city | escapejs}}",
-            country: "{{admission.person.address.country_id | escapejs}}",
+            location: "{{admission.address.location | escapejs}}",
+            postal_code: "{{admission.address.postal_code | escapejs}}",
+            city: "{{admission.address.city | escapejs}}",
+            country: "{{admission.address.country_id | escapejs}}",
         }
 
         $("#copy_address_billing").click(()=>{
