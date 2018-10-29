@@ -81,7 +81,7 @@ def admission_detail(request, admission_id):
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     base_person = admission.person_information.person if admission else None
-    base_person_form = PersonForm(request.POST or None, instance=base_person)
+    base_person_form = check_base_person(request, base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
@@ -95,6 +95,7 @@ def admission_form(request, admission_id=None):
         else:
             address = Address(**address_form.cleaned_data)
             address.save()
+
         person = person_form.save(commit=False)
         if not base_person:
             base_person = base_person_form.save()
@@ -121,3 +122,13 @@ def admission_form(request, admission_id=None):
             'base_person_form': base_person_form
         }
     )
+
+
+def check_base_person(request, base_person):
+    if base_person:
+        return PersonForm(
+            request.POST or None,
+            instance=base_person,
+        )
+    else:
+        return PersonForm(request.POST or None)
