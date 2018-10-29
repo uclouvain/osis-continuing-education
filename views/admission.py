@@ -84,13 +84,17 @@ def admission_form(request, admission_id=None):
     base_person_form = PersonForm(request.POST or None, instance=base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)
     # TODO :: get last admission address if it exists instead of None
-    address = None
+    address = admission.address if admission else None
     adm_form = AdmissionForm(request.POST or None, instance=admission)
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
 
     if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid():
-        address, created = Address.objects.get_or_create(**address_form.cleaned_data)
+        if address:
+            address = address_form.save()
+        else:
+            address = Address(**address_form.cleaned_data)
+            address.save()
         person = person_form.save(commit=False)
         if not base_person:
             base_person = base_person_form.save()
