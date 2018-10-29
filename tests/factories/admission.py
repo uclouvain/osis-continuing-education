@@ -115,7 +115,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     awareness_emailing = factory.fuzzy.FuzzyChoice([True, False])
 
     # State
-    state = factory.fuzzy.FuzzyChoice(get_enum_keys(admission_state_choices.STUDENT_STATE_CHOICES))
+    state = factory.fuzzy.FuzzyChoice(get_enum_keys(admission_state_choices.ADMIN_STATE_CHOICES))
 
     # Billing
     registration_type = factory.fuzzy.FuzzyChoice(get_enum_keys(enums.REGISTRATION_TITLE_CHOICES))
