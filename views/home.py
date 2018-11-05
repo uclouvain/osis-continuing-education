@@ -26,38 +26,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from continuing_education.models import admission
-from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from continuing_education.models.enums import admission_state_choices
-
-
-@login_required
-def main_view(request):
-    return render(request, "continuing_education/home.html")
-
 
 @login_required
 def admin_view(request):
     return render(request, "continuing_education/admin_home.html")
-
-
-@login_required
-def student_view(request):
-    person = ContinuingEducationPerson.objects.filter(
-        first_name=request.user.first_name,
-        last_name=request.user.last_name
-    )
-    admissions = admission.search(person=person)
-    registrations = admission.search(
-        person=person,
-        state=admission_state_choices.ACCEPTED,
-    )
-    return render(
-        request,
-        "continuing_education/student_home.html",
-        {
-            'person': person,
-            'admissions': admissions,
-            'registrations': registrations,
-        }
-    )

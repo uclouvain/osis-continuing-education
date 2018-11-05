@@ -50,15 +50,7 @@ class UrlsTestCase(TestCase):
                 pattern_name='continuing_education',
             ),
             dict(
-                url_path='/continuing_education/student/',
-                pattern_name='continuing_education_student',
-            ),
-            dict(
-                url_path='/continuing_education/admin/',
-                pattern_name='continuing_education_admin',
-            ),
-            dict(
-                url_path = "/continuing_education/admission/",
+                url_path="/continuing_education/admission/",
                 pattern_name="admission",
             ),
             dict(
@@ -87,30 +79,6 @@ class UrlsTestCase(TestCase):
             dict(
                 url_path="/continuing_education/registration/1/",
                 pattern_name='registration_detail',
-                kwargs={'admission_id': 1}
-            ),
-            dict(
-                url_path="/continuing_education/student/admission_new/",
-                pattern_name='student_admission_new',
-            ),
-            dict(
-                url_path="/continuing_education/student/admission_edit/1",
-                pattern_name='student_admission_edit',
-                kwargs={'admission_id': 1}
-            ),
-            dict(
-                url_path="/continuing_education/student/admission_detail/1",
-                pattern_name='student_admission_detail',
-                kwargs={'admission_id': 1}
-            ),
-            dict(
-                url_path="/continuing_education/student/registration_edit/1",
-                pattern_name='student_registration_edit',
-                kwargs={'admission_id': 1}
-            ),
-            dict(
-                url_path="/continuing_education/student/registration_detail/1",
-                pattern_name='student_registration_detail',
                 kwargs={'admission_id': 1}
             ),
         ]
