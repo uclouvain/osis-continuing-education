@@ -29,7 +29,7 @@ from continuing_education.views import (home, admission, registration)
 
 
 urlpatterns = [
-    url(r'^$', home.admin_view, name='continuing_education'),
+    url(r'^$', home.main_view, name='continuing_education'),
     url(r'^admission/', include([
         url(r'^$', admission.list_admissions, name='admission'),
         url(r'^new/$', admission.admission_form, name='admission_new'),

@@ -28,5 +28,5 @@ from django.shortcuts import render
 
 
 @login_required
-def admin_view(request):
+def main_view(request):
     return render(request, "continuing_education/admin_home.html")
