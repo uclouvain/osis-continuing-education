@@ -50,9 +50,13 @@ def list_admissions(request):
     faculty_filter = int(request.GET.get("faculty", 0))
     if faculty_filter:
         entity = EntityVersion.objects.filter(id=faculty_filter).first().entity
-        formations = EducationGroupYear.objects.filter(management_entity=entity)
+        formations = EducationGroupYear.objects.filter(
+            management_entity=entity
+        )
         formations = [formation.acronym for formation in formations]
-        admission_list = Admission.objects.filter(formation__in=formations).order_by('person_information')
+        admission_list = Admission.objects.filter(
+            formation__in=formations
+        ).order_by('person_information')
     else:
         admission_list = Admission.objects.all().order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
