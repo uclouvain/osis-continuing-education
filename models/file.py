@@ -34,7 +34,7 @@ def admission_directory_path(instance, filename):
         .format(instance.admission.id, filename)
 
 class FileAdmin(ModelAdmin):
-    list_display = ('admission', 'name', 'file',)
+    list_display = ('admission', 'file',)
 
 
 class File(Model):
@@ -44,12 +44,6 @@ class File(Model):
         blank=True,
         null=True,
         verbose_name=_("admision")
-    )
-
-    name = models.CharField(
-        max_length=50,
-        blank=True,
-        verbose_name=_("file_name")
     )
 
     file = models.FileField(

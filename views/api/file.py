@@ -23,21 +23,45 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+from django.core import serializers
+from django.http import HttpResponse
 from rest_framework import views
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.response import Response
 
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
 
 
-class FileUploadView(views.APIView):
-    parser_classes = (FileUploadParser,)
+class FileAPIView(views.APIView):
+    parser_classes = (MultiPartParser,)
 
-    def put(self, request, format='pdf'):
+    def get(self, request):
+        if 'file_path' in request.query_params:
+            file_path = request.query_params['file_path']
+            return _send_file(file_path)
+        elif 'admission_id' in request.query_params:
+            admission_id = request.query_params['admission_id']
+            return _send_documents_list(admission_id)
+        else:
+            return Response(status=404)
+
+    def put(self, request):
+        admission_id = request.data['admission_id']
         file_obj = request.data['file']
-        admission = Admission.objects.get(pk=520)
-        file = File(admission=admission, name="test", file=file_obj)
+        admission = Admission.objects.get(pk=admission_id)
+        file = File(admission=admission, file=file_obj)
         file.save()
         return Response(data="File uploaded sucessfully", status=207)
+
+def _send_file(filename):
+    file = File.objects.get(file=filename)
+    response = HttpResponse(file.file, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    return response
+
+def _send_documents_list(admission_id):
+    admission = Admission.objects.get(pk=admission_id)
+    documents = File.objects.filter(admission=admission)
+    documents_json = serializers.serialize("json", documents)
+    return HttpResponse(documents_json)
