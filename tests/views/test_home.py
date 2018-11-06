@@ -33,14 +33,8 @@ class ViewHomeTestCase(TestCase):
         self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
         self.client.force_login(self.user)
 
-    def test_main_view(self):
-        url = reverse('continuing_education')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'continuing_education/home.html')
-
     def test_admin_view(self):
-        url = reverse('continuing_education_admin')
+        url = reverse('continuing_education')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'continuing_education/admin_home.html')

@@ -32,6 +32,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from base.models import entity_version
+from base.models.entity_version import EntityVersion
+from base.models.education_group_year import EducationGroupYear
 from base.models.enums import entity_type
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
@@ -45,9 +47,16 @@ from continuing_education.views.common import display_errors
 
 @login_required
 def list_admissions(request):
-    faculty_filter = int(request.GET.get("faculty",0))
+    faculty_filter = int(request.GET.get("faculty", 0))
     if faculty_filter:
-        admission_list = Admission.objects.filter(faculty=faculty_filter).order_by('person_information')
+        entity = EntityVersion.objects.filter(id=faculty_filter).first().entity
+        formations = EducationGroupYear.objects.filter(
+            management_entity=entity
+        )
+        formations = [formation.acronym for formation in formations]
+        admission_list = Admission.objects.filter(
+            formation__in=formations
+        ).order_by('person_information')
     else:
         admission_list = Admission.objects.all().order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
