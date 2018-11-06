@@ -24,9 +24,19 @@
 #
 ##############################################################################
 from django.conf.urls import url, include
+from rest_framework import views
+from rest_framework.parsers import FileUploadParser
+from rest_framework.response import Response
 
 from continuing_education.views import (home, admission, registration)
 
+
+class FileUploadView(views.APIView):
+    parser_classes = (FileUploadParser,)
+
+    def put(self, request, format='pdf'):
+        file_obj = request.data['file']
+        return Response(status=204)
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
@@ -45,4 +55,6 @@ urlpatterns = [
             url(r'^$', registration.registration_detail, name='registration_detail'),
         ]))
     ])),
+    url(r'^api-auth/$', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^upload/$', FileUploadView.as_view()),
 ]
