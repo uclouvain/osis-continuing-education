@@ -29,6 +29,7 @@ from django.db import models
 from django.db.models import Model
 from django.utils.translation import ugettext_lazy as _
 
+
 def admission_directory_path(instance, filename):
     return 'continuing_education/admission_{0}/{1}'\
         .format(instance.admission.id, filename)

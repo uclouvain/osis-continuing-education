@@ -53,18 +53,20 @@ class FileAPIView(views.APIView):
         admission_id = request.data['admission_id']
         file_obj = request.data['file']
         admission = Admission.objects.get(pk=admission_id)
-        file = File(admission=admission, name=file_obj.name ,path=file_obj)
+        file = File(admission=admission, name=file_obj.name, path=file_obj)
         file.save()
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED
         )
 
+
 def _send_file(file_path):
     file = File.objects.get(path=file_path)
     response = HttpResponse(file.path, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=%s' % file.name
     return response
+
 
 def _send_documents_list(admission_id):
     admission = Admission.objects.get(pk=admission_id)
