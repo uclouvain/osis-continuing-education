@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import json
+
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import FileField
@@ -35,6 +37,8 @@ from rest_framework.test import APIClient
 from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 
+FILES_COUNT = 5
+FILE_CONTENT = "test-content"
 
 class ViewFileAPITestCase(TestCase):
     def setUp(self):
@@ -63,7 +67,7 @@ class ViewFileAPITestCase(TestCase):
         )
         file = SimpleUploadedFile(
             name='upload_test.pdf',
-            content=b"test-content",
+            content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
         )
         response = self.client.put(
@@ -75,31 +79,36 @@ class ViewFileAPITestCase(TestCase):
             format='multipart'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(File.objects.count(),FILES_COUNT+1)
 
     def test_get_file(self):
         self.client.credentials(
             HTTP_AUTHORIZATION='Token ' + self.token.key
         )
         response = self.client.get(
-            path=self.file_api_url+"?file_path="+self.file.path.name,
+            path=self.file_api_url,
+            data={'file_path': self.file.path.name}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content.decode(), FILE_CONTENT+"0")
 
     def test_get_files_list(self):
         self.client.credentials(
             HTTP_AUTHORIZATION='Token ' + self.token.key
         )
         response = self.client.get(
-            path=self.file_api_url+"?admission_id="+str(self.admission.id),
+            path=self.file_api_url,
+            data={'admission_id': self.admission.id}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(json.loads(response.content)), FILES_COUNT)
 
 
 def add_files_to_db(admission):
-    for i in range(0,5):
+    for i in range(0, FILES_COUNT):
         existing_file = SimpleUploadedFile(
             name=str(i)+'.pdf',
-            content=b"test-content",
+            content=str.encode(FILE_CONTENT+str(i)),
             content_type="application/pdf"
         )
         file = File(
