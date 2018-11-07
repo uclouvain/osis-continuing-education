@@ -103,6 +103,15 @@ class ViewFileAPITestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(json.loads(response.content)), FILES_COUNT)
 
+    def test_get_without_params(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Token ' + self.token.key
+        )
+        response = self.client.get(
+            path=self.file_api_url
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 def add_files_to_db(admission):
     for i in range(0, FILES_COUNT):
