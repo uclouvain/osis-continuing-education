@@ -25,7 +25,7 @@
 ##############################################################################
 from django.core import serializers
 from django.http import HttpResponse
-from rest_framework import views
+from rest_framework import views, status
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.response import Response
 
@@ -44,7 +44,10 @@ class FileAPIView(views.APIView):
             admission_id = request.query_params['admission_id']
             return _send_documents_list(admission_id)
         else:
-            return Response(data="File not found", status=404)
+            return Response(
+                data="File not found",
+                status=status.HTTP_404_NOT_FOUND
+            )
 
     def put(self, request):
         admission_id = request.data['admission_id']
@@ -52,7 +55,10 @@ class FileAPIView(views.APIView):
         admission = Admission.objects.get(pk=admission_id)
         file = File(admission=admission, name=file_obj.name ,path=file_obj)
         file.save()
-        return Response(data="File uploaded sucessfully", status=207)
+        return Response(
+            data="File uploaded sucessfully",
+            status=status.HTTP_201_CREATED
+        )
 
 def _send_file(file_path):
     file = File.objects.get(path=file_path)
