@@ -44,20 +44,20 @@ class FileAPIView(views.APIView):
             admission_id = request.query_params['admission_id']
             return _send_documents_list(admission_id)
         else:
-            return Response(status=404)
+            return Response(data="File not found", status=404)
 
     def put(self, request):
         admission_id = request.data['admission_id']
         file_obj = request.data['file']
         admission = Admission.objects.get(pk=admission_id)
-        file = File(admission=admission, file=file_obj)
+        file = File(admission=admission, name=file_obj.name ,path=file_obj)
         file.save()
         return Response(data="File uploaded sucessfully", status=207)
 
-def _send_file(filename):
-    file = File.objects.get(file=filename)
-    response = HttpResponse(file.file, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+def _send_file(file_path):
+    file = File.objects.get(path=file_path)
+    response = HttpResponse(file.path, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=%s' % file.name
     return response
 
 def _send_documents_list(admission_id):

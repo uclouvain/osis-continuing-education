@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
             name='File',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(blank=True, max_length=50, verbose_name='file_name')),
-                ('file', models.FileField(upload_to=continuing_education.models.file.admission_directory_path)),
+                ('name', models.CharField(default='default', max_length=50, verbose_name='name')),
+                ('path', models.FileField(upload_to=continuing_education.models.file.admission_directory_path, verbose_name='path')),
                 ('admission', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='continuing_education.Admission', verbose_name='admision')),
             ],
         ),

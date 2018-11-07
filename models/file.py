@@ -33,8 +33,9 @@ def admission_directory_path(instance, filename):
     return 'continuing_education/admission_{0}/{1}'\
         .format(instance.admission.id, filename)
 
+
 class FileAdmin(ModelAdmin):
-    list_display = ('admission', 'file',)
+    list_display = ('admission', 'name', 'path',)
 
 
 class File(Model):
@@ -46,6 +47,12 @@ class File(Model):
         verbose_name=_("admision")
     )
 
-    file = models.FileField(
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("name")
+    )
+
+    path = models.FileField(
         upload_to=admission_directory_path,
+        verbose_name=_("path")
     )
