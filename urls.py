@@ -46,5 +46,5 @@ urlpatterns = [
         ]))
     ])),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^files/$', FileAPIView.as_view()),
+    url(r'^files/$', FileAPIView.as_view(), name="file_api"),
 ]
