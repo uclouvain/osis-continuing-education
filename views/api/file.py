@@ -52,7 +52,7 @@ class FileAPIView(views.APIView):
     def put(self, request):
         admission_id = request.data['admission_id']
         file_obj = request.data['file']
-        admission = Admission.objects.get(pk=admission_id)
+        admission = Admission.objects.get(uuid=admission_id)
         file = File(admission=admission, name=file_obj.name, path=file_obj)
         file.save()
         return Response(
@@ -69,7 +69,7 @@ def _send_file(file_path):
 
 
 def _send_documents_list(admission_id):
-    admission = Admission.objects.get(pk=admission_id)
+    admission = Admission.objects.get(uuid=admission_id)
     documents = File.objects.filter(admission=admission)
     documents_json = serializers.serialize("json", documents)
     return HttpResponse(documents_json)
