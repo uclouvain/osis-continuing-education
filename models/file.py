@@ -57,3 +57,11 @@ class File(Model):
         upload_to=admission_directory_path,
         verbose_name=_("path")
     )
+
+    size = models.IntegerField(
+        null=True,
+        verbose_name=_("size")
+    )
+
+    created_date = models.DateTimeField(auto_now_add=True, editable=False)
+
