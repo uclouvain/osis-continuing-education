@@ -13,7 +13,10 @@ class TitleChoiceField(forms.ModelChoiceField):
 
 
 class AdmissionForm(ModelForm):
-    state = ChoiceField(choices=admission_state_choices.ADMIN_STATE_CHOICES, required=False)
+    state = ChoiceField(
+        choices=admission_state_choices.STATE_CHOICES,
+        required=False
+    )
     citizenship = forms.ModelChoiceField(
         queryset=Country.objects.all().order_by('name'),
         label=_("citizenship"),

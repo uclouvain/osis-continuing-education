@@ -97,7 +97,7 @@ def admission_form(request, admission_id=None):
     adm_form = AdmissionForm(request.POST or None, instance=admission)
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
-
+    state = admission.state if admission else None
     if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid():
         if address:
             address = address_form.save()
@@ -128,6 +128,7 @@ def admission_form(request, admission_id=None):
             'admission_form': adm_form,
             'person_form': person_form,
             'address_form': address_form,
-            'base_person_form': base_person_form
+            'base_person_form': base_person_form,
+            'state': state
         }
     )
