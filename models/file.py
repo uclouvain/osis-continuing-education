@@ -31,8 +31,10 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def admission_directory_path(instance, filename):
-    return 'continuing_education/admission_{0}/{1}'\
-        .format(instance.admission.id, filename)
+    return 'continuing_education/admission_{}/{}'.format(
+        instance.admission.id,
+        filename
+    )
 
 
 class FileAdmin(ModelAdmin):
