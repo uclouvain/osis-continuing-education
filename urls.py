@@ -26,7 +26,7 @@
 from django.conf.urls import url, include
 
 from continuing_education.views import (home, admission, registration)
-
+from continuing_education.views.api.file import FileAPIView
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
@@ -45,4 +45,6 @@ urlpatterns = [
             url(r'^$', registration.registration_detail, name='registration_detail'),
         ]))
     ])),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^files/$', FileAPIView.as_view(), name="file_api"),
 ]

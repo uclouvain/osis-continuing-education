@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,7 +24,45 @@
 #
 ##############################################################################
 
-from continuing_education.models import address
-from continuing_education.models import admission
-from continuing_education.models import continuing_education_person
-from continuing_education.models import file
+from django.contrib.admin import ModelAdmin
+from django.db import models
+from django.db.models import Model
+from django.utils.translation import ugettext_lazy as _
+
+
+def admission_directory_path(instance, filename):
+    return 'continuing_education/admission_{}/{}'.format(
+        instance.admission.id,
+        filename
+    )
+
+
+class FileAdmin(ModelAdmin):
+    list_display = ('admission', 'name', 'path',)
+
+
+class File(Model):
+
+    admission = models.ForeignKey(
+        'continuing_education.Admission',
+        blank=True,
+        null=True,
+        verbose_name=_("admision")
+    )
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("name")
+    )
+
+    path = models.FileField(
+        upload_to=admission_directory_path,
+        verbose_name=_("path")
+    )
+
+    size = models.IntegerField(
+        null=True,
+        verbose_name=_("size")
+    )
+
+    created_date = models.DateTimeField(auto_now_add=True, editable=False)
