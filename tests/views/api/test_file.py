@@ -73,7 +73,7 @@ class ViewFileAPITestCase(TestCase):
             path=self.file_api_url,
             data={
                 'file': file,
-                'admission_id': self.admission.id
+                'admission_id': self.admission.uuid
             },
             format='multipart'
         )
@@ -97,7 +97,7 @@ class ViewFileAPITestCase(TestCase):
         )
         response = self.client.get(
             path=self.file_api_url,
-            data={'admission_id': self.admission.id}
+            data={'admission_id': self.admission.uuid}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(json.loads(response.content)), FILES_COUNT)
