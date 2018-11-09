@@ -25,9 +25,7 @@
 ##############################################################################
 
 from django.contrib import admin
-from continuing_education.models import admission, continuing_education_person,\
-    address, file
-
+from continuing_education.models import *
 
 admin.site.register(
     admission.Admission,
