@@ -49,7 +49,7 @@
                             <div class="form-group">
                                 <label for="filter_faculty">{% trans 'Faculty' %}</label>
                                 <select name="faculty" id="filter_faculty" class="form-control">
-                                    <option value="0">{% trans 'all' %}</option>
+                                    <option value="0">{% trans 'All' %}</option>
                                     {% for faculty in faculties %}
                                         <option value="{{ faculty.id }}" {% if active_faculty == faculty.id %}selected{% endif %}>
                                             {{ faculty.acronym }} - {{ faculty.title }}

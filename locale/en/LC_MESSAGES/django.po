@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-13 13:19+0100\n"
+"POT-Creation-Date: 2018-11-13 15:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,16 +15,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: models/enums/enums.py:4 templates/registrations.html:101
-#: templates/registrations.html:108
-msgid "No"
-msgstr ""
-
-#: models/enums/enums.py:5 templates/registrations.html:99
-#: templates/registrations.html:106
-msgid "Yes"
-msgstr ""
 
 #: templates/admission_form.html:51
 msgid "Accepted"
@@ -44,13 +34,10 @@ msgstr ""
 msgid "Administrator"
 msgstr "Administrator"
 
-#: models/file.py:50
-msgid "Admission"
-msgstr "Admission"
-
-#: templates/admission_detail.html:37 templates/admission_detail.html:56
-#: templates/admission_form.html:33 templates/admission_form.html:56
-#: templates/admissions.html:37 templates/admissions.html:42
+#: models/file.py:50 templates/admission_detail.html:37
+#: templates/admission_detail.html:56 templates/admission_form.html:33
+#: templates/admission_form.html:56 templates/admissions.html:37
+#: templates/admissions.html:42
 #: templates/continuing_education/admin_home.html:47
 #: templates/registration_form.html:43
 msgid "Admission"
@@ -82,6 +69,21 @@ msgstr ""
 msgid "Awareness"
 msgstr "How did you hear about the program ?"
 
+#: models/admission.py:168 templates/admission_detail.html:161
+#: templates/admission_form.html:158
+msgid "Awareness Facebook"
+msgstr "Facebook"
+
+#: models/admission.py:172 templates/admission_detail.html:164
+#: templates/admission_form.html:159
+msgid "Awareness LinkedIn"
+msgstr "LinkedIn"
+
+#: models/admission.py:156 templates/admission_detail.html:152
+#: templates/admission_form.html:155
+msgid "Awareness UCL website"
+msgstr "UCL website"
+
 #: models/admission.py:176 templates/admission_detail.html:167
 #: templates/admission_form.html:160
 msgid "Awareness customized mail"
@@ -92,30 +94,15 @@ msgstr "Customized mail"
 msgid "Awareness emailing"
 msgstr "Emailing"
 
-#: models/admission.py:168 templates/admission_detail.html:161
-#: templates/admission_form.html:158
-msgid "Awareness Facebook"
-msgstr "Facebook"
-
 #: models/admission.py:160 templates/admission_detail.html:155
 #: templates/admission_form.html:156
 msgid "Awareness formation website"
 msgstr "Formation website"
 
-#: models/admission.py:172 templates/admission_detail.html:164
-#: templates/admission_form.html:159
-msgid "Awareness LinkedIn"
-msgstr "LinkedIn"
-
 #: models/admission.py:164 templates/admission_detail.html:158
 #: templates/admission_form.html:157
 msgid "Awareness press"
 msgstr "Press"
-
-#: models/admission.py:156 templates/admission_detail.html:152
-#: templates/admission_form.html:155
-msgid "Awareness UCL website"
-msgstr "UCL website"
 
 #: templates/registration_detail.html:50 templates/registration_form.html:49
 msgid "Billing"
@@ -312,7 +299,7 @@ msgid "Last name"
 msgstr "Last name"
 
 #: models/enums/enums.py:19
-msgid "Legal cohabitant "
+msgid "Legal cohabitant"
 msgstr ""
 
 #: models/address.py:15 templates/admission_detail.html:83
@@ -335,11 +322,21 @@ msgstr "Marital status"
 msgid "Married"
 msgstr ""
 
+#: models/admission.py:66 templates/admission_detail.html:79
+#: templates/admission_form.html:85
+msgid "Mobile phone"
+msgstr ""
+
 #: models/admission.py:140 templates/admission_detail.html:126
 #: templates/admission_detail.html:129 templates/admission_form.html:137
 #: templates/admission_form.html:140
 msgid "Motivation"
 msgstr "Motivation"
+
+#: models/admission.py:296 templates/registration_detail.html:104
+#: templates/registration_form.html:114
+msgid "NOMA"
+msgstr ""
 
 #: models/file.py:55 templates/admissions.html:79
 #: templates/registrations.html:72
@@ -355,9 +352,9 @@ msgstr "National registry number"
 msgid "New admission"
 msgstr "New admission"
 
-#: models/admission.py:296 templates/registration_detail.html:104
-#: templates/registration_form.html:114
-msgid "NOMA"
+#: models/enums/enums.py:4 templates/registrations.html:101
+#: templates/registrations.html:108
+msgid "No"
 msgstr ""
 
 #: models/enums/enums.py:32 models/enums/enums.py:40
@@ -398,11 +395,6 @@ msgstr ""
 
 #: models/admission.py:46
 msgid "Person information"
-msgstr ""
-
-#: models/admission.py:66 templates/admission_detail.html:79
-#: templates/admission_form.html:85
-msgid "Mobile phone"
 msgstr ""
 
 #: templates/registration_detail.html:87 templates/registration_form.html:91
@@ -583,4 +575,9 @@ msgstr "Waiting"
 
 #: models/enums/enums.py:16
 msgid "Widowed"
+msgstr ""
+
+#: models/enums/enums.py:5 templates/registrations.html:99
+#: templates/registrations.html:106
+msgid "Yes"
 msgstr ""
