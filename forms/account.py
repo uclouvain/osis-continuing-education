@@ -9,7 +9,7 @@ from reference.models.country import Country
 class ContinuingEducationPersonForm(ModelForm):
     birth_country = forms.ModelChoiceField(
         queryset=Country.objects.all().order_by('name'),
-        label=_("birth_country"),
+        label=_("Birth country"),
         required=False,
     )
 

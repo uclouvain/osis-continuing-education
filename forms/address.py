@@ -9,7 +9,7 @@ from reference.models.country import Country
 class AddressForm(ModelForm):
     country = forms.ModelChoiceField(
         queryset=Country.objects.all().order_by('name'),
-        label=_("country"),
+        label=_("Country"),
         required=False,
     )
 

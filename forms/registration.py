@@ -10,14 +10,14 @@ from reference.models.country import Country
 class RegistrationForm(ModelForm):
     citizenship = forms.ModelChoiceField(
         queryset=Country.objects.all().order_by('name'),
-        label=_("citizenship"),
+        label=_("Citizenship"),
         required=False,
     )
     high_school_diploma = forms.TypedChoiceField(
         coerce=lambda x: x == 'True',
         required=False,
         choices=YES_NO_CHOICES,
-        label=_("high_school_diploma")
+        label=_("High school diploma")
     )
     previous_ucl_registration = forms.TypedChoiceField(
         coerce=lambda x: x == 'True',

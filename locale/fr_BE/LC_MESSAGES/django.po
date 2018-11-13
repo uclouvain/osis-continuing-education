@@ -19,161 +19,152 @@ msgstr ""
 #: models/enums/enums.py:4 templates/registrations.html:101
 #: templates/registrations.html:108
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 #: models/enums/enums.py:5 templates/registrations.html:99
 #: templates/registrations.html:106
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #: templates/admission_form.html:51
-msgid "accepted"
+msgid "Accepted"
 msgstr "Accepté"
 
 #: models/admission.py:130 templates/admission_detail.html:119
 #: templates/admission_form.html:128
-msgid "activity_sector"
+msgid "Activity sector"
 msgstr "Secteur d'activité"
 
 #: models/admission.py:61
-msgid "address"
-msgstr ""
+msgid "Address"
+msgstr "Adresse"
 
 #: templates/continuing_education/admin_home.html:32
 #: templates/continuing_education/admin_home.html:37
-msgid "administrator"
+msgid "Administrator"
 msgstr "Gestionnaire"
 
 #: models/file.py:50
-#, fuzzy
-#| msgid "admission"
-msgid "admision"
-msgstr "Admission"
-
 #: templates/admission_detail.html:37 templates/admission_detail.html:56
 #: templates/admission_form.html:33 templates/admission_form.html:56
 #: templates/admissions.html:37 templates/admissions.html:42
 #: templates/continuing_education/admin_home.html:47
 #: templates/registration_form.html:43
-msgid "admission"
+msgid "Admission"
 msgstr "Admission"
 
 #: templates/registration_detail.html:43 templates/registrations.html:65
-msgid "admission_view"
+msgid "Admission view"
 msgstr "Vue admission"
 
 #: templates/admissions.html:52 templates/registrations.html:48
-msgid "all"
-msgstr ""
+msgid "All"
+msgstr "Toutes"
 
 #: models/admission.py:312 templates/registration_detail.html:112
 #: templates/registration_form.html:122
-msgid "assessment_presented"
+msgid "Assessment presented"
 msgstr "A présenté l'épreuve d'évaluation"
 
 #: models/admission.py:316 templates/registration_detail.html:113
 #: templates/registration_form.html:123
-msgid "assessment_succeeded"
+msgid "Assessment succeeded"
 msgstr "A réussi l'épreuve d'évaluation"
 
 #: models/enums/enums.py:38
-msgid "associative"
-msgstr ""
+msgid "Associative"
+msgstr "Associatif"
 
 #: templates/admission_detail.html:147 templates/admission_form.html:152
-msgid "awareness"
+msgid "Awareness"
 msgstr "Comment avez-vous connu l'existence de ce programme ?"
 
 #: models/admission.py:176 templates/admission_detail.html:167
 #: templates/admission_form.html:160
-msgid "awareness_customized_mail"
+msgid "Awareness customized mail"
 msgstr "Par courrier personnalisé"
 
 #: models/admission.py:180 templates/admission_detail.html:170
 #: templates/admission_form.html:161
-msgid "awareness_emailing"
+msgid "Awareness emailing"
 msgstr "Par un emailing"
 
 #: models/admission.py:168 templates/admission_detail.html:161
 #: templates/admission_form.html:158
-msgid "awareness_facebook"
+msgid "Awareness Facebook"
 msgstr "Sur Facebook"
 
 #: models/admission.py:160 templates/admission_detail.html:155
 #: templates/admission_form.html:156
-msgid "awareness_formation_website"
+msgid "Awareness formation website"
 msgstr "Par le site web de la formation continue"
 
 #: models/admission.py:172 templates/admission_detail.html:164
 #: templates/admission_form.html:159
-msgid "awareness_linkedin"
+msgid "Awareness LinkedIn"
 msgstr "Sur LinkedIn"
 
 #: models/admission.py:164 templates/admission_detail.html:158
 #: templates/admission_form.html:157
-msgid "awareness_press"
+msgid "Awareness press"
 msgstr "Dans la presse"
 
 #: models/admission.py:156 templates/admission_detail.html:152
 #: templates/admission_form.html:155
-msgid "awareness_ucl_website"
+msgid "Awareness UCL website"
 msgstr "Par le site web de l'UCL"
 
 #: templates/registration_detail.html:50 templates/registration_form.html:49
-msgid "billing"
+msgid "Billing"
 msgstr "Facturation"
 
 #: models/admission.py:208
-#, fuzzy
-#| msgid "billing"
-msgid "billing_address"
-msgstr "Facturation"
+msgid "Billing address"
+msgstr "Adresse de facturation"
 
 #: forms/account.py:12 models/continuing_education_person.py:37
 #: templates/admission_detail.html:72 templates/admission_form.html:78
-msgid "birth_country"
+msgid "Birth country"
 msgstr "Pays de naissance"
 
 #: models/continuing_education_person.py:24 templates/admission_detail.html:70
 #: templates/admission_form.html:76
-#, fuzzy
-#| msgid "birth_location"
-msgid "birth_date"
-msgstr "Lieu de naissance"
+msgid "Birth date"
+msgstr "Date de naissance"
 
 #: models/continuing_education_person.py:30 templates/admission_detail.html:71
 #: templates/admission_form.html:77
-msgid "birth_location"
+msgid "Birth location"
 msgstr "Lieu de naissance"
 
 #: templates/admission_form.html:172 templates/registration_form.html:132
-msgid "cancel"
-msgstr ""
+msgid "Cancel"
+msgstr "Annuler"
 
 #: models/admission.py:257 templates/registration_detail.html:78
 #: templates/registration_form.html:83
-msgid "children_number"
+msgid "Children number"
 msgstr "Nombre d'enfants"
 
 #: forms/admission.py:22 forms/registration.py:13 models/admission.py:55
 #: templates/admission_detail.html:67 templates/admission_form.html:73
-msgid "citizenship"
+msgid "Citizenship"
 msgstr "Nationalité"
 
 #: models/address.py:25 templates/admission_detail.html:85
 #: templates/admission_form.html:91 templates/registration_detail.html:58
 #: templates/registration_detail.html:92 templates/registration_form.html:63
 #: templates/registration_form.html:105
-msgid "city"
-msgstr ""
+msgid "City"
+msgstr "Ville"
 
 #: models/admission.py:219 templates/registration_detail.html:63
 #: templates/registration_form.html:68
-msgid "company_number"
+msgid "Company number"
 msgstr "Numéro unique d'entreprise"
 
 #: templates/admission_detail.html:76 templates/admission_form.html:82
-msgid "contact"
+msgid "Contact"
 msgstr "Contact"
 
 #: templates/admission_detail.html:36 templates/admission_form.html:32
@@ -181,312 +172,298 @@ msgstr "Contact"
 #: templates/continuing_education/admin_home.html:31
 #: templates/registration_detail.html:32 templates/registration_form.html:32
 #: templates/registrations.html:32
-msgid "continuing_education"
+msgid "Continuing Education"
 msgstr "Formations Continues"
 
 #: forms/address.py:12 models/address.py:32 templates/admission_detail.html:86
 #: templates/admission_form.html:92 templates/registration_detail.html:59
 #: templates/registration_detail.html:93 templates/registration_form.html:64
 #: templates/registration_form.html:106
-#, fuzzy
-#| msgid "birth_country"
-msgid "country"
-msgstr "Pays de naissance"
+msgid "Country"
+msgstr "Pays"
 
 #: templates/admission_detail.html:138
-msgid "courses_formula"
+msgid "Courses formula"
 msgstr "Formule de cours"
 
 #: models/admission.py:124 templates/admission_detail.html:118
 #: templates/admission_form.html:127
-msgid "current_employer"
+msgid "Current employer"
 msgstr "Employeur actuel"
 
 #: models/admission.py:119 templates/admission_detail.html:115
 #: templates/admission_form.html:124
-msgid "current_occupation"
+msgid "Current occupation"
 msgstr "Fonction actuelle"
 
 #: models/enums/enums.py:17
-msgid "divorced"
-msgstr ""
+msgid "Divorced"
+msgstr "Divorcé"
 
 #: templates/admission_detail.html:45 templates/registration_detail.html:40
-msgid "edit"
-msgstr ""
+msgid "Edit"
+msgstr "Editer"
 
 #: templates/admission_detail.html:90 templates/admission_form.html:98
-msgid "education"
+msgid "Education"
 msgstr "Education"
 
 #: models/admission.py:71 templates/admission_detail.html:80
 #: templates/admission_form.html:86 templates/admissions.html:81
 #: templates/registrations.html:74
-msgid "email"
-msgstr ""
+msgid "Email"
+msgstr "Email"
 
 #: models/enums/enums.py:28
-msgid "employee"
-msgstr ""
+msgid "Employee"
+msgstr "Employé"
 
 #: templates/admission_detail.html:142 templates/admissions.html:50
 #: templates/admissions.html:83 templates/registrations.html:46
-msgid "faculty"
-msgstr "Faculty"
+msgid "Faculty"
+msgstr "Faculté"
 
 #: models/enums/enums.py:23
-msgid "female"
-msgstr ""
+msgid "Female"
+msgstr "Femme"
 
 #: templates/admission_detail.html:64 templates/admission_form.html:70
 #: templates/admissions.html:80 templates/registrations.html:73
-msgid "first_name"
+msgid "First name"
 msgstr "Prénom"
 
 #: models/admission.py:150 templates/admission_detail.html:134
 #: templates/admission_detail.html:137 templates/admission_form.html:145
 #: templates/admission_form.html:148 templates/admissions.html:82
 #: templates/registrations.html:75
-msgid "formation"
+msgid "Formation"
 msgstr "Formation"
 
 #: templates/admission_detail.html:143
-msgid "formation_administrator"
+msgid "Formation administrator"
 msgstr "Gestionnaire de formation"
 
 #: models/admission.py:304 templates/registration_detail.html:108
 #: templates/registration_form.html:118
-msgid "formation_spreading"
+msgid "Formation spreading"
 msgstr "Etalement de la formation"
 
 #: templates/admission_detail.html:66 templates/admission_form.html:72
-msgid "gender"
-msgstr ""
+msgid "Gender"
+msgstr "Genre"
 
 #: models/admission.py:214 templates/registration_detail.html:62
 #: templates/registration_form.html:67
-msgid "head_office_name"
+msgid "Head office name"
 msgstr "Nom du siège social"
 
 #: models/enums/enums.py:39
-msgid "health"
-msgstr ""
+msgid "Health"
+msgstr "Santé"
 
 #: forms/admission.py:29 forms/registration.py:20 models/admission.py:77
 #: templates/admission_detail.html:93 templates/admission_form.html:101
-msgid "high_school_diploma"
+msgid "High school diploma"
 msgstr "Diplôme d'études secondaires"
 
 #: models/admission.py:82 templates/admission_detail.html:94
 #: templates/admission_form.html:102
-msgid "high_school_graduation_year"
+msgid "High school graduation year"
 msgstr "Année d'obtention (secondaire)"
 
 #: models/admission.py:236 templates/registration_detail.html:72
 #: templates/registration_form.html:77
-msgid "id_card_number"
+msgid "ID card number"
 msgstr "Numéro de carte d'identité"
 
 #: templates/admission_detail.html:61 templates/admission_form.html:62
-#, fuzzy
-#| msgid "education"
-msgid "identification"
-msgstr "Education"
+msgid "Identification"
+msgstr "Identification"
 
 #: models/enums/enums.py:30
-msgid "job_seeker"
-msgstr ""
+msgid "Job seeker"
+msgstr "Chercheur d'emploi"
 
 #: models/admission.py:92 templates/admission_detail.html:98
 #: templates/admission_form.html:106
-msgid "last_degree_field"
+msgid "Last degree field"
 msgstr "Domaine d'étude"
 
 #: models/admission.py:102 templates/admission_detail.html:102
 #: templates/admission_form.html:110
-msgid "last_degree_graduation_year"
+msgid "Last degree graduation year"
 msgstr "Année d'obtention"
 
 #: models/admission.py:97 templates/admission_detail.html:101
 #: templates/admission_form.html:109
-msgid "last_degree_institution"
+msgid "Last degree institution"
 msgstr "Institution"
 
 #: models/admission.py:87 templates/admission_detail.html:97
 #: templates/admission_form.html:105
-msgid "last_degree_level"
+msgid "Last degree level"
 msgstr "Niveau du dernier diplôme"
 
 #: templates/admission_detail.html:65 templates/admission_form.html:71
-#, fuzzy
-#| msgid "first_name"
-msgid "last_name"
-msgstr "Prénom"
+msgid "Last name"
+msgstr "Nom"
 
 #: models/enums/enums.py:19
-msgid "legal_cohabitant"
-msgstr ""
+msgid "Legal cohabitant"
+msgstr "Cohabitant légal"
 
 #: models/address.py:15 templates/admission_detail.html:83
 #: templates/admission_form.html:89 templates/registration_detail.html:56
 #: templates/registration_detail.html:90 templates/registration_form.html:61
 #: templates/registration_form.html:103
-#, fuzzy
-#| msgid "birth_location"
-msgid "location"
-msgstr "Lieu de naissance"
+msgid "Location"
+msgstr "Ville"
 
 #: models/enums/enums.py:24
-msgid "male"
-msgstr ""
+msgid "Male"
+msgstr "Homme"
 
 #: models/admission.py:247 templates/registration_detail.html:76
 #: templates/registration_form.html:81
-msgid "marital_status"
+msgid "Marital status"
 msgstr "Etat civil"
 
 #: models/enums/enums.py:15
-msgid "married"
-msgstr ""
+msgid "Married"
+msgstr "Marié"
 
 #: models/admission.py:140 templates/admission_detail.html:126
 #: templates/admission_detail.html:129 templates/admission_form.html:137
 #: templates/admission_form.html:140
-msgid "motivation"
+msgid "Motivation"
 msgstr "Motivation"
 
 #: models/file.py:55 templates/admissions.html:79
 #: templates/registrations.html:72
-msgid "name"
-msgstr ""
+msgid "Name"
+msgstr "Nom"
 
 #: models/admission.py:231 templates/registration_detail.html:71
 #: templates/registration_form.html:76
-msgid "national_registry_number"
+msgid "National registry number"
 msgstr "Numéro de registre national belge"
 
 #: templates/admissions.html:72
-msgid "new_admission"
+msgid "New admission"
 msgstr "Nouvelle admission"
 
 #: models/admission.py:296 templates/registration_detail.html:104
 #: templates/registration_form.html:114
-msgid "noma"
-msgstr ""
+msgid "NOMA"
+msgstr "NOMA"
 
 #: models/enums/enums.py:32 models/enums/enums.py:40
-msgid "other"
-msgstr ""
+msgid "Other"
+msgstr "Autre"
 
 #: models/admission.py:106 templates/admission_detail.html:105
 #: templates/admission_form.html:113
-msgid "other_educational_background"
+msgid "Other educational background"
 msgstr "Autres formations"
 
 #: templates/registrations.html:77
-msgid "paid"
+msgid "Paid"
 msgstr "Payé"
 
 #: models/admission.py:241 templates/registration_detail.html:73
 #: templates/registration_form.html:78
-msgid "passport_number"
+msgid "Passport number"
 msgstr "Numéro de passeport"
 
 #: models/admission.py:134 templates/admission_detail.html:122
 #: templates/admission_form.html:131
-msgid "past_professional_activities"
+msgid "Past professional activities"
 msgstr "Expériences professionnelles passées"
 
 #: models/file.py:60
-msgid "path"
-msgstr ""
+msgid "Path"
+msgstr "Chemin"
 
 #: models/admission.py:300 templates/registration_detail.html:105
 #: templates/registration_form.html:115
-msgid "payment_complete"
+msgid "Payment complete"
 msgstr "En ordre de paiement"
 
 #: templates/admission_form.html:66
-msgid "person"
-msgstr ""
+msgid "Person"
+msgstr "Personne"
 
 #: models/admission.py:46
-#, fuzzy
-#| msgid "formation"
-msgid "person_information"
-msgstr "Formation"
+msgid "Person information"
+msgstr "Informations personnelles"
 
 #: models/admission.py:66 templates/admission_detail.html:79
 #: templates/admission_form.html:85
-msgid "phone_mobile"
-msgstr ""
+msgid "Mobile phone"
+msgstr "GSM"
 
 #: templates/registration_detail.html:87 templates/registration_form.html:91
-msgid "post"
+msgid "Post"
 msgstr "Courrier"
 
 #: models/address.py:20 templates/admission_detail.html:84
 #: templates/admission_form.html:90 templates/registration_detail.html:57
 #: templates/registration_detail.html:91 templates/registration_form.html:62
 #: templates/registration_form.html:104
-#, fuzzy
-#| msgid "program_code"
-msgid "postal_code"
-msgstr "Code de programme"
+msgid "Postal code"
+msgstr "Code postal"
 
 #: models/admission.py:266 templates/registration_detail.html:82
 #: templates/registration_form.html:87
-msgid "previous_noma"
+msgid "Previous NOMA"
 msgstr "Précédent NOMA"
 
 #: models/admission.py:261 templates/registration_detail.html:81
 #: templates/registration_form.html:86
-msgid "previous_ucl_registration"
+msgid "Previous ucl registration"
 msgstr "Avez-vous déjà été inscrit(e) à l'UCL ?"
 
 #: models/admission.py:308 templates/registration_detail.html:109
 #: templates/registration_form.html:119
-msgid "prior_experience_validation"
+msgid "Prior experience validation"
 msgstr "Valorisation des Acquis d'Experience"
 
 #: models/enums/enums.py:9 models/enums/enums.py:36
-msgid "private"
+msgid "Private"
 msgstr "Privé"
 
 #: models/enums/enums.py:10
-#, fuzzy
-#| msgid "professional_status"
-msgid "professional"
-msgstr "Statut professionel"
+msgid "Professional"
+msgstr "Professionel"
 
 #: templates/admission_detail.html:109 templates/admission_form.html:118
-msgid "professional_background"
+msgid "Professional background"
 msgstr "Parcours professionnel"
 
 #: models/admission.py:144 templates/admission_detail.html:130
 #: templates/admission_form.html:141
-msgid "professional_impact"
+msgid "Professional impact"
 msgstr "Impact professionnel de la formation"
 
 #: models/admission.py:114 templates/admission_detail.html:112
 #: templates/admission_form.html:121
-msgid "professional_status"
+msgid "Professional status"
 msgstr "Statut professionel"
 
 #: templates/admission_detail.html:139
-msgid "program_code"
+msgid "Program code"
 msgstr "Code de programme"
 
 #: models/enums/enums.py:37
-msgid "public"
-msgstr ""
+msgid "Public"
+msgstr "Public"
 
 #: models/enums/enums.py:31
-msgid "public_servant"
-msgstr ""
+msgid "Public servant"
+msgstr "Fonctionnaire"
 
 #: templates/registrations.html:76
-msgid "registered"
+msgid "Registered"
 msgstr "Inscrit"
 
 #: templates/continuing_education/admin_home.html:51
@@ -494,81 +471,77 @@ msgstr "Inscrit"
 #: templates/registration_detail.html:68 templates/registration_form.html:33
 #: templates/registration_form.html:73 templates/registrations.html:33
 #: templates/registrations.html:38
-msgid "registration"
+msgid "Registration"
 msgstr "Inscription"
 
 #: models/admission.py:291 templates/registration_detail.html:103
 #: templates/registration_form.html:113
-msgid "registration_complete"
+msgid "Registration complete"
 msgstr "En ordre d'inscription"
 
 #: models/admission.py:197 templates/registration_detail.html:53
 #: templates/registration_form.html:52
-msgid "registration_type"
+msgid "Registration type"
 msgstr "Inscription à titre"
 
 #: templates/admission_detail.html:54 templates/admissions.html:69
-msgid "registration_view"
+msgid "Registration view"
 msgstr "Vue inscription"
 
 #: templates/admission_form.html:52
-msgid "rejected"
+msgid "Rejected"
 msgstr "Refusé"
 
 #: models/admission.py:279
-#, fuzzy
-#| msgid "residence_phone"
-msgid "residence_address"
-msgstr "Téléphone fixe"
+msgid "Residence address"
+msgstr "Adresse"
 
 #: models/admission.py:285 templates/registration_detail.html:96
 #: templates/registration_form.html:94
-msgid "residence_phone"
+msgid "Residence phone"
 msgstr "Téléphone fixe"
 
 #: templates/admission_form.html:40 templates/registration_form.html:40
-msgid "save"
-msgstr ""
+msgid "Save"
+msgstr "Sauver"
 
 #: templates/admissions.html:64 templates/registrations.html:60
-msgid "search"
-msgstr ""
+msgid "Search"
+msgstr "Chercher"
 
 #: models/enums/enums.py:29
-#, fuzzy
-#| msgid "current_employer"
-msgid "self_employed"
-msgstr "Employeur actuel"
+msgid "Self employed"
+msgstr "Indépendant"
 
 #: models/enums/enums.py:18
-msgid "separated"
-msgstr ""
+msgid "Separated"
+msgstr "Séparé"
 
 #: models/admission.py:323
-msgid "sessions"
-msgstr ""
+msgid "Sessions"
+msgstr "Sessions"
 
 #: models/enums/enums.py:14
-msgid "single"
-msgstr ""
+msgid "Single"
+msgstr "Célibataire"
 
 #: models/file.py:65
-msgid "size"
-msgstr ""
+msgid "Size"
+msgstr "Taille"
 
 #: models/admission.py:252 templates/registration_detail.html:77
 #: templates/registration_form.html:82
-msgid "spouse_name"
+msgid "Spouse name"
 msgstr "Nom du conjoint"
 
 #: models/admission.py:189 templates/admission_form.html:44
 #: templates/admission_form.html:47 templates/admission_form.html:165
 #: templates/admissions.html:84
-msgid "state"
-msgstr ""
+msgid "State"
+msgstr "Etat"
 
 #: templates/registration_detail.html:100 templates/registration_form.html:110
-msgid "student_sheet"
+msgid "Student sheet"
 msgstr "Fiche de l'étudiant"
 
 #: templates/admission_detail.html:35 templates/admission_form.html:31
@@ -576,37 +549,35 @@ msgstr "Fiche de l'étudiant"
 #: templates/continuing_education/admin_home.html:30
 #: templates/registration_detail.html:31 templates/registration_form.html:31
 #: templates/registrations.html:31
-#, fuzzy
-#| msgid "student_sheet"
-msgid "studies"
-msgstr "Fiche de l'étudiant"
+msgid "Studies"
+msgstr "Etudes"
 
 #: templates/admission_form.html:168 templates/admission_form.html:169
 #: templates/registration_form.html:128 templates/registration_form.html:129
-msgid "submit"
+msgid "Submit"
 msgstr "Soumettre"
 
 #: templates/admission_form.html:53
-msgid "submitted"
+msgid "Submitted"
 msgstr "Soumis"
 
 #: models/admission.py:201 templates/registration_form.html:56
-msgid "use_address_for_billing"
+msgid "Use address for billing"
 msgstr "Utiliser l'adresse enregistrée pour la facturation"
 
 #: models/admission.py:272 templates/registration_form.html:98
-msgid "use_address_for_post"
+msgid "Use address for post"
 msgstr "Utiliser l'adresse enregistrée pour le courrier"
 
 #: models/admission.py:224 templates/registration_detail.html:64
 #: templates/registration_form.html:69
-msgid "vat_number"
+msgid "VAT number"
 msgstr "Numéro de TVA"
 
 #: templates/admission_form.html:50
-msgid "waiting"
+msgid "Waiting"
 msgstr "En attente"
 
 #: models/enums/enums.py:16
-msgid "widowed"
-msgstr ""
+msgid "Widowed"
+msgstr "Veuf(ve)"

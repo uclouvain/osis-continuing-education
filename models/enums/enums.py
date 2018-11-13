@@ -6,36 +6,36 @@ YES_NO_CHOICES = (
 )
 
 REGISTRATION_TITLE_CHOICES = (
-    ('PRIVATE', _('private')),
-    ('PROFESSIONAL', _('professional')),
+    ('PRIVATE', _('Private')),
+    ('PROFESSIONAL', _('Professional')),
 )
 
 MARITAL_STATUS_CHOICES = (
-    ('SINGLE', _('single')),
-    ('MARRIED', _('married')),
-    ('WIDOWED', _('widowed')),
-    ('DIVORCED', _('divorced')),
-    ('SEPARATED', _('separated')),
-    ('LEGAL_COHABITANT', _('legal_cohabitant')),
+    ('SINGLE', _('Single')),
+    ('MARRIED', _('Married')),
+    ('WIDOWED', _('Widowed')),
+    ('DIVORCED', _('Divorced')),
+    ('SEPARATED', _('Separated')),
+    ('LEGAL_COHABITANT', _('Legal cohabitant')),
 )
 
 GENDER_CHOICES = (
-    ('F', _('female')),
-    ('M', _('male')),
+    ('F', _('Female')),
+    ('M', _('Male')),
 )
 
 STATUS_CHOICES = (
-    ('EMPLOYEE', _('employee')),
-    ('SELF_EMPLOYED', _('self_employed')),
-    ('JOB_SEEKER', _('job_seeker')),
-    ('PUBLIC_SERVANT', _('public_servant')),
-    ('OTHER', _('other')),
+    ('EMPLOYEE', _('Employee')),
+    ('SELF_EMPLOYED', _('Self employed')),
+    ('JOB_SEEKER', _('Job seeker')),
+    ('PUBLIC_SERVANT', _('Public servant')),
+    ('OTHER', _('Other')),
 )
 
 SECTOR_CHOICES = (
-    ('PRIVATE', _('private')),
-    ('PUBLIC', _('public')),
-    ('ASSOCIATIVE', _('associative')),
-    ('HEALTH', _('health')),
-    ('OTHER', _('other')),
+    ('PRIVATE', _('Private')),
+    ('PUBLIC', _('Public')),
+    ('ASSOCIATIVE', _('Associative')),
+    ('HEALTH', _('Health')),
+    ('OTHER', _('Other')),
 )

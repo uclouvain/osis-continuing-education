@@ -47,22 +47,22 @@ class File(Model):
         'continuing_education.Admission',
         blank=True,
         null=True,
-        verbose_name=_("admision")
+        verbose_name=_("Admission")
     )
 
     name = models.CharField(
         max_length=50,
-        verbose_name=_("name")
+        verbose_name=_("Name")
     )
 
     path = models.FileField(
         upload_to=admission_directory_path,
-        verbose_name=_("path")
+        verbose_name=_("Path")
     )
 
     size = models.IntegerField(
         null=True,
-        verbose_name=_("size")
+        verbose_name=_("Size")
     )
 
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
