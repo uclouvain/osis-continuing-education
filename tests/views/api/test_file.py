@@ -100,7 +100,7 @@ class ViewFileAPITestCase(TestCase):
             data={'admission_id': self.admission.uuid}
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content)), FILES_COUNT)
+        self.assertEqual(len(json.loads(response.content.decode("utf-8"))), FILES_COUNT)
 
     def test_get_without_params(self):
         self.client.credentials(
