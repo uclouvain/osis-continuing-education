@@ -62,7 +62,7 @@ def list_admissions(request):
         ).order_by('person_information')
     else:
         admission_list = Admission.objects.filter(
-            state__in = state_to_display
+            state__in=state_to_display
         ).order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
