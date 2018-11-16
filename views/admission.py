@@ -42,6 +42,7 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors
 
 
@@ -88,6 +89,7 @@ def admission_detail(request, admission_id):
 
 @login_required
 def admission_form(request, admission_id=None):
+    states = admission_state_choices.ADMIN_STATE_CHOICES
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
@@ -129,6 +131,7 @@ def admission_form(request, admission_id=None):
             'person_form': person_form,
             'address_form': address_form,
             'base_person_form': base_person_form,
-            'state': state
+            'state': state,
+            'states': states
         }
     )
