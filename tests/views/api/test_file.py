@@ -48,7 +48,7 @@ class ViewFileAPITestCase(TestCase):
             'passtest'
         )
         self.client.force_login(self.user)
-        self.file_api_url = reverse('file_api')
+        self.file_api_url = reverse('continuing_education_api_v1:file_api')
         self.token, created = Token.objects.get_or_create(user=self.user)
         self.admission = AdmissionFactory()
         add_files_to_db(self.admission)
