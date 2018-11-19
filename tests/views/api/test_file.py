@@ -39,6 +39,7 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 FILES_COUNT = 5
 FILE_CONTENT = "test-content"
 
+
 class ViewFileAPITestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -110,6 +111,18 @@ class ViewFileAPITestCase(TestCase):
             path=self.file_api_url
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_file(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Token ' + self.token.key
+        )
+        number_files = len(File.objects.all())
+        response = self.client.delete(
+            path=self.file_api_url + "?file_path=" + self.file.path.name,
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        number_after_delete = len(File.objects.all())
+        self.assertEqual(number_after_delete, number_files-1)
 
 
 def add_files_to_db(admission):
