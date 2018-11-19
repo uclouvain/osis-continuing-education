@@ -25,6 +25,7 @@
 ##############################################################################
 from django.core import serializers
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import views, status
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.response import Response
@@ -63,6 +64,15 @@ class FileAPIView(views.APIView):
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED
+        )
+
+    def delete(self, request):
+        file_path = request.query_params['file_path']
+        file = get_object_or_404(File, path=file_path)
+        file.delete()
+        return Response(
+            data="File deleted",
+            status=status.HTTP_204_NO_CONTENT
         )
 
 
