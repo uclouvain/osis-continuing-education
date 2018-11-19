@@ -89,7 +89,6 @@
                     </tr>
                 </tfoot>
                 {% for admission in admissions %}
-                    {% if admission.state != "Draft" %}
                     <tr>
                         <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
                             {{ admission.person_information.person.last_name }}
@@ -108,12 +107,9 @@
                                 <span class="label label-danger show">{% trans admission.state %}</span>
                             {% elif admission.state == "Submitted" %}
                                 <span class="label label-info show">{% trans admission.state %}</span>
-                            {% elif admission.state == "Draft" %}
-                                <span class="label label-default show">{% trans admission.state %}</span>
                             {% endif %}
                         </td>
                     </tr>
-                    {% endif %}
                 {% endfor %}
             </table>
         </div>

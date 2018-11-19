@@ -323,6 +323,9 @@ class Admission(SerializableModel):
         verbose_name=_("Sessions")
     )
 
+    def is_draft(self):
+        return self.state == admission_state_choices.DRAFT
+
 
 def search(**kwargs):
     qs = Admission.objects
