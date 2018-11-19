@@ -8,14 +8,14 @@ DRAFT = 'Draft'
 SUBMITTED = 'Submitted'
 
 ADMIN_STATE_CHOICES = (
-    (ACCEPTED, _('Accepted')),
-    (REJECTED, _('Rejected')),
-    (WAITING, _('Waiting')),
+    (ACCEPTED, _(ACCEPTED)),
+    (REJECTED, _(REJECTED)),
+    (WAITING, _(WAITING)),
 )
 
 STUDENT_STATE_CHOICES = (
-    (DRAFT, _('Draft')),
-    (SUBMITTED, _('Submitted')),
+    (DRAFT, _(DRAFT)),
+    (SUBMITTED, _(SUBMITTED)),
 )
 
 STATE_CHOICES = ADMIN_STATE_CHOICES + STUDENT_STATE_CHOICES
