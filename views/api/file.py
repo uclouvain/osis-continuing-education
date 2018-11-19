@@ -67,13 +67,19 @@ class FileAPIView(views.APIView):
         )
 
     def delete(self, request):
-        file_path = request.query_params['file_path']
-        file = get_object_or_404(File, path=file_path)
-        file.delete()
-        return Response(
-            data="File deleted",
-            status=status.HTTP_204_NO_CONTENT
-        )
+        if 'file_path' in request.query_params:
+            file_path = request.query_params['file_path']
+            file = get_object_or_404(File, path=file_path)
+            file.delete()
+            return Response(
+                data="File deleted",
+                status=status.HTTP_204_NO_CONTENT
+            )
+        else:
+            return Response(
+                data="File not found",
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 def _send_file(file_path):
