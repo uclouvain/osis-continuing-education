@@ -43,12 +43,14 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING
 from continuing_education.views.common import display_errors
 
 
 @login_required
 def list_admissions(request):
     faculty_filter = int(request.GET.get("faculty", 0))
+    state_to_display = [SUBMITTED, REJECTED, WAITING]
     if faculty_filter:
         entity = EntityVersion.objects.filter(id=faculty_filter).first().entity
         formations = EducationGroupYear.objects.filter(
@@ -56,10 +58,13 @@ def list_admissions(request):
         )
         formations = [formation.acronym for formation in formations]
         admission_list = Admission.objects.filter(
-            formation__in=formations
+            formation__in=formations,
+            state__in=state_to_display
         ).order_by('person_information')
     else:
-        admission_list = Admission.objects.all().order_by('person_information')
+        admission_list = Admission.objects.filter(
+            state__in=state_to_display
+        ).order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
