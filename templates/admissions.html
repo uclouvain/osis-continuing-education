@@ -99,13 +99,11 @@
                         <td title="{{admission.formation.title}}">{{ admission.formation }}</td>
                         <td title="{{admission.faculty.title}}">{{ admission.faculty.acronym }}</td>
                         <td style="vertical-align: middle;" class="admission-state">
-                            {% if admission.state == "Waiting" %}
+                            {% if admission.is_waiting %}
                                 <span class="label label-primary show">{% trans admission.state %}</span>
-                            {% elif admission.state == "Accepted" %}
-                                <span class="label label-success show">{% trans admission.state %}</span>
-                            {% elif admission.state == "Rejected" %}
+                            {% elif admission.is_rejected %}
                                 <span class="label label-danger show">{% trans admission.state %}</span>
-                            {% elif admission.state == "Submitted" %}
+                            {% elif admission.is_submitted %}
                                 <span class="label label-info show">{% trans admission.state %}</span>
                             {% endif %}
                         </td>
