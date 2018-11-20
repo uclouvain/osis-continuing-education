@@ -27,6 +27,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from base.models import academic_year
+from base.models.education_group_year import EducationGroupYear
+from base.models.entity_version import EntityVersion
+from base.models.enums.entity_type import FACULTY
 from continuing_education.models.enums import admission_state_choices, enums
 from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
 
@@ -337,6 +341,20 @@ class Admission(SerializableModel):
 
     def is_waiting(self):
         return self.state == admission_state_choices.WAITING
+
+    def get_faculty(self):
+        education_group_year = EducationGroupYear.objects.filter(
+            acronym=self.formation,
+            academic_year=academic_year.current_academic_year()
+        ).first()
+        management_entity = education_group_year.management_entity
+        entity = EntityVersion.objects.filter(entity=management_entity).first()
+        entity_type = entity.entity_type
+        if entity_type == FACULTY:
+            return management_entity
+        else:
+            faculty = EntityVersion.objects.filter(entity=management_entity).first().parent
+            return faculty
 
 
 def search(**kwargs):

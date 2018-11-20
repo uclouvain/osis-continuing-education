@@ -32,8 +32,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from base.models import entity_version
-from base.models.entity_version import EntityVersion
 from base.models.education_group_year import EducationGroupYear
+from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
