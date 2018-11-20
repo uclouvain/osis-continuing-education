@@ -349,8 +349,7 @@ class Admission(SerializableModel):
         ).first()
         management_entity = education_group_year.management_entity
         entity = EntityVersion.objects.filter(entity=management_entity).first()
-        entity_type = entity.entity_type
-        if entity_type == FACULTY:
+        if entity.entity_type == FACULTY:
             return management_entity
         else:
             faculty = EntityVersion.objects.filter(entity=management_entity).first().parent
