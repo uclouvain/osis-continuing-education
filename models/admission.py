@@ -347,13 +347,16 @@ class Admission(SerializableModel):
             acronym=self.formation,
             academic_year=academic_year.current_academic_year()
         ).first()
-        management_entity = education_group_year.management_entity
-        entity = EntityVersion.objects.filter(entity=management_entity).first()
-        if entity.entity_type == FACULTY:
-            return management_entity
+        if education_group_year:
+            management_entity = education_group_year.management_entity
+            entity = EntityVersion.objects.filter(entity=management_entity).first()
+            if entity.entity_type == FACULTY:
+                return management_entity
+            else:
+                faculty = EntityVersion.objects.filter(entity=management_entity).first().parent
+                return faculty
         else:
-            faculty = EntityVersion.objects.filter(entity=management_entity).first().parent
-            return faculty
+            return None
 
 
 def search(**kwargs):
