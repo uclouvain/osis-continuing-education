@@ -112,3 +112,16 @@
         </div>
     </div>
 {% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $('#order_student').DataTable( {
+                "order": [[ 3, "asc" ]],
+                "paging": false,
+                "info": false,
+                "bFilter": false
+            } );
+        } );
+    </script>
+{% endblock %}
