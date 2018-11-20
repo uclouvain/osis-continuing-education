@@ -31,6 +31,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from base.models import entity_version
+from base.models.education_group_year import EducationGroupYear
+from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
@@ -43,19 +45,14 @@ from continuing_education.views.common import display_errors
 @login_required
 def list_registrations(request):
     faculty_filter = int(request.GET.get("faculty", 0))
+    admission_list = Admission.objects.filter(
+        state=admission_state_choices.ACCEPTED
+    ).order_by('person_information')
     if faculty_filter:
-        admission_list = Admission.objects.filter(
-            faculty=faculty_filter,
-            state=admission_state_choices.ACCEPTED
-        ).order_by(
-            'person_information'
-        )
-    else:
-        admission_list = Admission.objects.filter(
-            state=admission_state_choices.ACCEPTED
-        ).order_by(
-            'person_information'
-        )
+        formations = _get_formations_by_faculty(faculty_filter)
+        admission_list = admission_list.filter(
+            formation__in=formations
+        ).order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
@@ -70,6 +67,20 @@ def list_registrations(request):
         'faculties': faculties,
         'active_faculty': faculty_filter
     })
+
+
+def _get_formations_by_faculty(faculty):
+    entity = EntityVersion.objects.filter(id=faculty).first().entity
+    entities_child = EntityVersion.objects.filter(parent=entity)
+    formations = EducationGroupYear.objects.filter(
+        management_entity=entity
+    )
+    for child in entities_child:
+        formations |= EducationGroupYear.objects.filter(
+            management_entity=child.entity
+        )
+    formations = [formation.acronym for formation in formations]
+    return formations
 
 
 @login_required
