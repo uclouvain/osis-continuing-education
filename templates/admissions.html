@@ -89,7 +89,6 @@
                     </tr>
                 </tfoot>
                 {% for admission in admissions %}
-                    {% if admission.state != "draft" %}
                     <tr>
                         <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
                             {{ admission.person_information.person.last_name }}
@@ -100,20 +99,15 @@
                         <td title="{{admission.formation.title}}">{{ admission.formation }}</td>
                         <td title="{{admission.faculty.title}}">{{ admission.faculty.acronym }}</td>
                         <td style="vertical-align: middle;" class="admission-state">
-                            {% if admission.state == "waiting" %}
+                            {% if admission.is_waiting %}
                                 <span class="label label-primary show">{% trans admission.state %}</span>
-                            {% elif admission.state == "accepted" %}
-                                <span class="label label-success show">{% trans admission.state %}</span>
-                            {% elif admission.state == "rejected" %}
+                            {% elif admission.is_rejected %}
                                 <span class="label label-danger show">{% trans admission.state %}</span>
-                            {% elif admission.state == "submitted" %}
+                            {% elif admission.is_submitted %}
                                 <span class="label label-info show">{% trans admission.state %}</span>
-                            {% elif admission.state == "draft" %}
-                                <span class="label label-default show">{% trans admission.state %}</span>
                             {% endif %}
                         </td>
                     </tr>
-                    {% endif %}
                 {% endfor %}
             </table>
         </div>

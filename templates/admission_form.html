@@ -47,10 +47,12 @@
             <span class="sr-only">{% trans 'State' %}</span>
           </button>
           <ul class="dropdown-menu">
-            <li><a value="waiting" href="#">{% trans 'Waiting' %}</a></li>
-            <li><a value="accepted" href="#">{% trans 'Accepted' %}</a></li>
-            <li><a value="rejected" href="#">{% trans 'Rejected' %}</a></li>
-              <li><a value="submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
+              {% for state in states %}
+                  {% with state.0 as state_value and state.1 as state_trans %}
+                     <li><a value="{{state_value}}" href="#">{{state_trans}}</a></li>
+                  {% endwith %}
+              {% endfor %}
+           <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
           </ul>
         </div>
         <h2>{% trans 'Admission' %}</h2>
@@ -188,10 +190,10 @@
 
         //dynamically change color of state button
         states = {
-            "waiting": "btn-primary",
-            "accepted": "btn-success",
-            "rejected": "btn-danger",
-            "submitted": "btn-info"
+            "Waiting": "btn-primary",
+            "Accepted": "btn-success",
+            "Rejected": "btn-danger",
+            "Submitted": "btn-info"
         };
         var state_initial = "{{ state }}";
         setStateActive(state_initial);
@@ -207,15 +209,14 @@
         function setStateActive(newState){
             let newClass = states[newState];
             let text = "";
-            if(newState !== "") {
+            if(newState !== "None") {
                 text = $("[value=" + newState + "]")[0].text;
             }
             else {
                 text = $("#button-state").text();
             }
-            $('#button-state').html(text);
-            $('#button-state').attr("value",newState);
-            $('#button-state').addClass(newClass);
+            let buttonState =
+            $('#button-state').html(text).attr("value",newState).addClass(newClass);
             $('#button-state-caret').addClass(newClass);
         }
 
