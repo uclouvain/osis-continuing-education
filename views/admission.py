@@ -140,6 +140,7 @@ def admission_form(request, admission_id=None):
         request,
         'admission_form.html',
         {
+            'admission_id': admission.id,
             'admission_form': adm_form,
             'person_form': person_form,
             'address_form': address_form,
