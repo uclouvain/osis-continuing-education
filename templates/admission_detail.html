@@ -166,6 +166,9 @@
                             {% if admission.awareness_emailing %}
                             <li>{% trans 'Awareness emailing' %}</li>
                             {% endif %}
+                            {% if admission.awareness_other %}
+                            <li>{% trans 'Other' %}: {{ admission.awareness_other }}</li>
+                            {% endif %}
                             </ul>
                         </div>
                 </div>

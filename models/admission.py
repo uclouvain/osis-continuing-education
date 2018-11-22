@@ -183,6 +183,11 @@ class Admission(SerializableModel):
         default=False,
         verbose_name=_("Awareness emailing")
     )
+    awareness_other = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name=_("Awareness other")
+    )
 
     # State
     state = models.CharField(

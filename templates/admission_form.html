@@ -161,6 +161,25 @@
                             {% bootstrap_field admission_form.awareness_linkedin form_group_class="form-group col-md-12" label=_("Awareness LinkedIn") %}
                             {% bootstrap_field admission_form.awareness_customized_mail form_group_class="form-group col-md-12" label=_("Awareness customized mail") %}
                             {% bootstrap_field admission_form.awareness_emailing form_group_class="form-group col-md-12" label=_("Awareness emailing") %}
+                            {% with admission_form.awareness_other.value as other_value %}
+                            <div class="form-group col-md-12">
+                                <div class="checkbox">
+                                    <label for="id_awareness_other">
+                                        <input type="checkbox" name="awareness_other" class="" id="id_awareness_other_checkbox"
+                                            {% if other_value != None and other_value != '' %}
+                                                   checked
+                                            {% endif %}>
+                                            {% trans 'Other' %}
+                                    </label>
+                                </div>
+                                <div id="other-text-field" class="col-md-4"
+                                        {% if other_value == None or other_value == '' %}
+                                            hidden
+                                        {% endif %}>
+                                    {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group' %}
+                                </div>
+                            </div>
+                            {% endwith %}
                         </div>
                 </div>
 
@@ -215,10 +234,17 @@
             else {
                 text = $("#button-state").text();
             }
-            let buttonState =
             $('#button-state').html(text).attr("value",newState).addClass(newClass);
             $('#button-state-caret').addClass(newClass);
         }
+
+        //show other text field when other is checked
+        $('#id_awareness_other_checkbox').change(function(){
+            $('#other-text-field').toggle(this.checked);
+            if(!this.checked){
+                $('#other-text-field input').val('');
+            }
+        });
 
         //reload page with person information form instance when selected
         let person_id = "{{person.id | escapejs}}";
