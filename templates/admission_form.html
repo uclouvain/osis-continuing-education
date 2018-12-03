@@ -51,8 +51,8 @@
           </button>
           <ul class="dropdown-menu">
               {% for state in states %}
-                  {% with state.0 as state_value and state.1 as state_trans %}
-                     <li><a value="{{state_value}}" href="#">{{state_trans}}</a></li>
+                  {% with state.0 as state_value %}
+                     <li><a value="{{state_value}}" href="#">{% trans state_trans %}}</a></li>
                   {% endwith %}
               {% endfor %}
            <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-03 17:35+0100\n"
+"POT-Creation-Date: 2018-12-03 17:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: models/enums/admission_state_choices.py:11
+msgid "Accepted"
+msgstr ""
 
 #: templates/admission_detail.html:198
 msgid "Actions"
@@ -194,6 +198,10 @@ msgstr ""
 
 #: templates/admission_detail.html:60
 msgid "Documents"
+msgstr ""
+
+#: models/enums/admission_state_choices.py:17
+msgid "Draft"
 msgstr ""
 
 #: templates/admission_detail.html:46 templates/registration_detail.html:40
@@ -498,6 +506,10 @@ msgstr ""
 msgid "Registration type"
 msgstr ""
 
+#: models/enums/admission_state_choices.py:12
+msgid "Rejected"
+msgstr ""
+
 #: models/admission.py:288
 msgid "Residence address"
 msgstr ""
@@ -563,7 +575,7 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: templates/admission_form.html:58
+#: models/enums/admission_state_choices.py:18 templates/admission_form.html:58
 msgid "Submitted"
 msgstr ""
 
@@ -578,6 +590,10 @@ msgstr ""
 #: models/admission.py:233 templates/registration_detail.html:61
 #: templates/registration_form.html:69
 msgid "VAT number"
+msgstr ""
+
+#: models/enums/admission_state_choices.py:13
+msgid "Waiting"
 msgstr ""
 
 #: models/enums/enums.py:16
