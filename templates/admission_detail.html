@@ -36,7 +36,7 @@
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
     <li><a href="{% url 'admission' %}">{% trans 'Admission' %}</a></li>
-    <li class="active">{{ admission.person.last_name }}, {{ admission.person.first_name }}</li>
+    <li class="active">{{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}</li>
 {% endblock %}
 
 {% block content %}
