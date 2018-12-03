@@ -44,6 +44,7 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING
+from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 
 
@@ -92,10 +93,12 @@ def _get_formations_by_faculty(faculty):
 @login_required
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
+    files = File.objects.all().filter(admission=admission_id)
     return render(
         request, "admission_detail.html",
         {
             'admission': admission,
+            'files': files
         }
     )
 
