@@ -26,7 +26,7 @@
 import itertools
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -49,6 +49,7 @@ from continuing_education.views.common import display_errors
 
 
 @login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_admissions(request):
     faculty_filter = int(request.GET.get("faculty", 0))
     state_to_display = [SUBMITTED, REJECTED, WAITING]
@@ -91,6 +92,7 @@ def _get_formations_by_faculty(faculty):
 
 
 @login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = File.objects.all().filter(admission=admission_id)
@@ -104,6 +106,7 @@ def admission_detail(request, admission_id):
 
 
 @login_required
+@permission_required('continuing_education.change_admission', raise_exception=True)
 def admission_form(request, admission_id=None):
     states = admission_state_choices.ADMIN_STATE_CHOICES
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
