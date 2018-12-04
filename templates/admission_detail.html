@@ -67,7 +67,7 @@
                     <div class="row form-group">
                         <div class="col-md-3">{% bootstrap_label _("First name") %} <br/> {{ admission.person_information.person.first_name | default:"-" }} </div>
                         <div class="col-md-3">{% bootstrap_label _("Last name") %} <br/> {{ admission.person_information.person.last_name | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.gender | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.get_gender_display | default:"-" }} </div>
                         <div class="col-md-3">{% bootstrap_label _("Citizenship") %} <br/> {{ admission.citizenship | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
@@ -113,14 +113,14 @@
                     <div class="panel-heading">{% trans 'Professional background' %}</div>
                     <div class="panel panel-body">
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Professional status") %} <br/> {{ admission.professional_status | default:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("Professional status") %} <br/> {{ admission.get_professional_status_display | default:"-" }} </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-md-4">{% bootstrap_label _("Current occupation") %} <br/> {{ admission.current_occupation | default:"-" }} </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-md-4">{% bootstrap_label _("Current employer") %} <br/> {{ admission.current_employer | default:"-" }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.activity_sector | default:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.get_activity_sector_display | default:"-" }} </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-md-4">{% bootstrap_label _("Past professional activities") %} <br/> {{ admission.past_professional_activities | default:"-" }} </div>
