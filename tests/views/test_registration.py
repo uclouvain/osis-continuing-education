@@ -28,7 +28,9 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
 from django.test import TestCase
+from rest_framework import status
 
+from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -36,8 +38,8 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 
 class ViewRegistrationTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
-        self.client.force_login(self.user)
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
         self.admission_accepted = AdmissionFactory(state=admission_state_choices.ACCEPTED)
         self.admission_rejected = AdmissionFactory(state=admission_state_choices.REJECTED)
 
@@ -99,3 +101,23 @@ class ViewRegistrationTestCase(TestCase):
             field_value = self.admission_accepted.__getattribute__(key)
             self.assertEqual(field_value, admission_dict[key])
 
+    def test_registration_list_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('registration')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_registration_detail_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('registration_detail', kwargs={'admission_id':self.admission_accepted.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_registration_edit_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('registration_edit', kwargs={'admission_id': self.admission_accepted.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

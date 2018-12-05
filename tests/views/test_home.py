@@ -26,15 +26,25 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from rest_framework import status
+
+from base.tests.factories.person import PersonWithPermissionsFactory
 
 
 class ViewHomeTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
-        self.client.force_login(self.user)
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
 
     def test_admin_view(self):
         url = reverse('continuing_education')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'continuing_education/admin_home.html')
+
+    def test_admission_list_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('continuing_education')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
