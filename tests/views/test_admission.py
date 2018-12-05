@@ -24,87 +24,80 @@
 #
 ##############################################################################
 import datetime
-import factory
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
+from rest_framework import status
 
-from base.models.entity_version import EntityVersion
-from base.models.enums import entity_type
-from base.models.offer_year import OfferYear
-from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.offer_year import OfferYearFactory
-from continuing_education.forms.admission import AdmissionForm
-from continuing_education.models import continuing_education_person
+from base.tests.factories.person import CentralManagerFactory, PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
-from continuing_education.tests.forms.test_admission_form import convert_dates, convert_countries
+
 
 class ViewAdmissionTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
-        self.client.force_login(self.user)
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
         self.admission = AdmissionFactory()
 
     def test_list_admissions(self):
         url = reverse('admission')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admissions.html')
 
     def test_list_admissions_pagination_empty_page(self):
         url = reverse('admission')
         response = self.client.get(url, {'page': 0})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admissions.html')
 
     def test_admission_detail(self):
         url = reverse('admission_detail', args=[self.admission.id])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admission_detail.html')
 
     def test_admission_detail_not_found(self):
         response = self.client.get(reverse('admission_detail', kwargs={
             'admission_id': 0,
         }))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_admission_new(self):
         url = reverse('admission_new')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admission_form.html')
 
     def test_admission_new_save(self):
         admission = model_to_dict(self.admission)
         response = self.client.post(reverse('admission_new'), data=admission)
         created_admission = Admission.objects.exclude(pk=self.admission.pk).get()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
 
     def test_admission_save_with_error(self):
         admission = model_to_dict(AdmissionFactory())
         admission['person_information'] = "no valid pk"
         response = self.client.post(reverse('admission_new'), data=admission)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admission_form.html')
 
     def test_admission_edit_not_found(self):
         response = self.client.get(reverse('admission_edit', kwargs={
             'admission_id': 0,
         }))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_edit_get_admission_found(self):
         url = reverse('admission_edit', args=[self.admission.id])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admission_form.html')
 
     def test_edit_post_admission_found(self):
@@ -129,3 +122,24 @@ class ViewAdmissionTestCase(TestCase):
             if isinstance(field_value, models.Model):
                 field_value = field_value.pk
             self.assertEqual(field_value, admission[key], key)
+
+    def test_admission_list_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('admission')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admission_detail_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('admission_detail', kwargs={'admission_id':self.admission.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admission_edit_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('admission_edit', kwargs={'admission_id': self.admission.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

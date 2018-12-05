@@ -363,6 +363,11 @@ class Admission(SerializableModel):
         else:
             return None
 
+    class Meta:
+        permissions = (
+            ("can_access_admission", "Can consult admission information"),
+        )
+
 
 def search(**kwargs):
     qs = Admission.objects
