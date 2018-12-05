@@ -25,7 +25,7 @@
 ##############################################################################
 from django.conf.urls import url
 
-from continuing_education.views.api.file import FileAPIView
+from continuing_education.api.views.file import FileAPIView
 
 urlpatterns = [
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
