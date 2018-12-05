@@ -32,6 +32,7 @@ from django.forms import model_to_dict
 from django.test import TestCase
 from rest_framework import status
 
+from base.tests.factories.person import CentralManagerFactory, PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -39,12 +40,8 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 
 class ViewAdmissionTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user('demo', 'demo@demo.org', 'passtest')
-        self.user.user_permissions.add(
-            Permission.objects.get(codename='can_access_admission'),
-            Permission.objects.get(codename='change_admission'),
-        )
-        self.client.force_login(self.user)
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
         self.admission = AdmissionFactory()
 
     def test_list_admissions(self):
