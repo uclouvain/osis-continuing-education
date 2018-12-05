@@ -25,7 +25,7 @@
 ##############################################################################
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -43,6 +43,7 @@ from continuing_education.views.common import display_errors
 
 
 @login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_registrations(request):
     faculty_filter = int(request.GET.get("faculty", 0))
     admission_list = Admission.objects.filter(
@@ -84,6 +85,7 @@ def _get_formations_by_faculty(faculty):
 
 
 @login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
 def registration_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     return render(
@@ -96,6 +98,7 @@ def registration_detail(request, admission_id):
 
 
 @login_required
+@permission_required('continuing_education.change_admission', raise_exception=True)
 def registration_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     form = RegistrationForm(request.POST or None, instance=admission)
