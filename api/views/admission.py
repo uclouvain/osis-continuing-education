@@ -61,3 +61,13 @@ class AdmissionList(generics.ListAPIView):
         'state',
         'formation',
     )  # Default ordering
+
+
+class AdmissionDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the training
+    """
+    name = 'admission-detail'
+    queryset = Admission.objects.all()
+    serializer_class = AdmissionSerializer
+    lookup_field = 'uuid'
