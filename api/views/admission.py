@@ -31,7 +31,7 @@ from continuing_education.models.admission import Admission
 
 class AdmissionList(generics.ListAPIView):
     """
-       Return a list of all the training with optional filtering.
+       Return a list of all the admission with optional filtering.
     """
     name = 'admission-list'
     queryset = Admission.objects.all().select_related(
