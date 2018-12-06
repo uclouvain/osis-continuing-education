@@ -25,10 +25,8 @@
 ##############################################################################
 from rest_framework import serializers
 
-from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from reference.models.country import Country
 
 
 class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
@@ -37,24 +35,14 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='uuid'
     )
     person_information = serializers.SlugRelatedField(
-        slug_field='person',
-        queryset=ContinuingEducationPerson.objects.all()
-    )
-    citizenship = serializers.SlugRelatedField(
-        slug_field='citizenship',
-        queryset=Country.objects.all()
-    )
-    address = serializers.SlugRelatedField(
-        slug_field='address',
-        queryset=Address.objects.all()
+        slug_field='uuid',
+        queryset=ContinuingEducationPerson.objects.all(),
     )
 
     # Display human readable value
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
-    registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
-    marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
 
     class Meta:
         model = Admission
@@ -64,7 +52,6 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
 
             # CONTACTS
             'citizenship',
-            'address',
             'phone_mobile',
             'email',
 
@@ -91,7 +78,7 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
             'professional_impact',
             'formation',
 
-            #AWARENESS
+            # AWARENESS
             'awareness_ucl_website',
             'awareness_formation_website',
             'awareness_press',
@@ -104,40 +91,40 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
             'state',
             'state_text',
 
-            # REGISTRATION
-            # BILLING
-            'registration_type',
-            'registration_type_text',
-            'use_address_for_billing',
-            'billing_address',
-            'head_office_name',
-            'company_number',
-            'vat_number',
-
-            # REGISTRATION
-            'national_registry_number',
-            'id_card_number',
-            'passport_number',
-            'marital_status',
-            'marital_status_text',
-            'spouse_name',
-            'children_number',
-            'previous_ucl_registration',
-            'previous_noma',
-
-            # POST
-            'use_address_for_post',
-            'residence_address',
-            'residence_phone',
-
-            # STUDENT SHEET
-            'registration_complete',
-            'noma',
-            'payment_complete',
-            'formation_spreading',
-            'prior_experience_validation',
-            'assessment_presented',
-            'assessment_succeeded',
-            'sessions'
+            # # REGISTRATION
+            # # BILLING
+            # 'registration_type',
+            # 'registration_type_text',
+            # 'use_address_for_billing',
+            # 'billing_address',
+            # 'head_office_name',
+            # 'company_number',
+            # 'vat_number',
+            #
+            # # REGISTRATION
+            # 'national_registry_number',
+            # 'id_card_number',
+            # 'passport_number',
+            # 'marital_status',
+            # 'marital_status_text',
+            # 'spouse_name',
+            # 'children_number',
+            # 'previous_ucl_registration',
+            # 'previous_noma',
+            #
+            # # POST
+            # 'use_address_for_post',
+            # 'residence_address',
+            # 'residence_phone',
+            #
+            # # STUDENT SHEET
+            # 'registration_complete',
+            # 'noma',
+            # 'payment_complete',
+            # 'formation_spreading',
+            # 'prior_experience_validation',
+            # 'assessment_presented',
+            # 'assessment_succeeded',
+            # 'sessions'
 
         )

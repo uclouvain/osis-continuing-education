@@ -65,7 +65,7 @@ class AdmissionList(generics.ListAPIView):
 
 class AdmissionDetail(generics.RetrieveAPIView):
     """
-        Return the detail of the training
+        Return the detail of the admission
     """
     name = 'admission-detail'
     queryset = Admission.objects.all()
