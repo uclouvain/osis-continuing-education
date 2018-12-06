@@ -25,6 +25,7 @@
 ##############################################################################
 from django.conf.urls import url
 
+from continuing_education.api.views.admission import AdmissionList
 from continuing_education.api.views.file import FileAPIView
 from continuing_education.api.views.schema import schema_view
 
@@ -32,4 +33,5 @@ urlpatterns = [
     url(r"^$", schema_view),
 
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
+    url(r'admission/$', AdmissionList.as_view(), name="admission_api"),
 ]

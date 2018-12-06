@@ -78,8 +78,8 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
             'other_educational_background',
 
             # PROFESSIONAL BACKGROUND
-            'profesionnal_status',
-            'professional_status_text'
+            'professional_status',
+            'professional_status_text',
             'current_occupation',
             'current_employer',
             'activity_sector',
@@ -107,7 +107,7 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
             # REGISTRATION
             # BILLING
             'registration_type',
-            'registration_type_text'
+            'registration_type_text',
             'use_address_for_billing',
             'billing_address',
             'head_office_name',
@@ -120,7 +120,7 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
             'passport_number',
             'marital_status',
             'marital_status_text',
-            'spouse_name'
+            'spouse_name',
             'children_number',
             'previous_ucl_registration',
             'previous_noma',
