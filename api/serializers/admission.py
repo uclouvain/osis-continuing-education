@@ -27,6 +27,7 @@ from rest_framework import serializers
 
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from reference.models.country import Country
 
 
 class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
@@ -37,6 +38,10 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
     person_information = serializers.SlugRelatedField(
         slug_field='uuid',
         queryset=ContinuingEducationPerson.objects.all(),
+    )
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
     )
 
     # Display human readable value
