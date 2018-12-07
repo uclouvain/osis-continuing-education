@@ -26,8 +26,5 @@
 from django.apps import AppConfig
 
 
-class ContinuousEducationConfig(AppConfig):
+class ContinuingEducationConfig(AppConfig):
     name = 'continuing_education'
-
-    def ready(self):
-        from . import signals

@@ -23,4 +23,4 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-default_app_config = 'continuing_education.apps.ContinuousEducationConfig'
+default_app_config = 'continuing_education.apps.ContinuingEducationConfig'
