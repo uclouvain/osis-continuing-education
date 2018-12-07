@@ -12,7 +12,7 @@
 {
     "model": "osis_common.messagetemplate",
     "fields": {
-        "reference": "iufc_participant_state_changed",
+        "reference": "iufc_participant_state_changed_txt",
         "subject": "IUFC - Statut de votre demande modifié: {{state}}",
         "template": "Le statut de votre demande d'admission a été modifié.\r\n\r\nNouveau statut: {{state}}",
         "format": "PLAIN",
