@@ -1,0 +1,22 @@
+[
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "continuing_education_participant_state_changed_html",
+        "subject": "IUFC - Statut de votre demande modifié: {{state}}",
+        "template": "<p>Le statut de votre demande d'admission a été modifié.</p>\r\n\r\n<p>Nouveau statut: {{state}}</p>",
+        "format": "HTML",
+        "language": "fr-be"
+    }
+},
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "continuing_education_account_ativation_txt",
+        "subject": "IUFC - Statut de votre demande modifié: {{state}}",
+        "template": "Le statut de votre demande d'admission a été modifié.\r\n\r\nNouveau statut: {{state}}",
+        "format": "PLAIN",
+        "language": "fr-be"
+    }
+}
+]
