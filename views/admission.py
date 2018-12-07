@@ -190,5 +190,3 @@ def _send_state_changed_mail(admission):
     message_content = message_config.create_message_content(html_template_ref, txt_template_ref,
                                                             [], receivers, template_data, subject_data)
     send_messages(message_content)
-
-    print("mail sent")
