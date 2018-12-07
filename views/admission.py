@@ -27,9 +27,11 @@ import itertools
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
@@ -46,6 +48,8 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
+from osis_common.messaging import message_config
+from osis_common.messaging.send_message import send_messages
 
 
 @login_required
@@ -135,7 +139,9 @@ def admission_form(request, admission_id=None):
         admission.address = address
         if not admission.person_information:
             admission.person_information = person
+        admission_before_save = admission.copy()
         admission.save()
+        _send_mails(admission_before_save, admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
 
     else:
@@ -155,3 +161,31 @@ def admission_form(request, admission_id=None):
             'states': states
         }
     )
+
+
+def _send_mails(admission_before_save, admission):
+    if admission.state != admission_before_save.state:
+        _send_state_changed_mail(admission)
+
+
+def _send_state_changed_mail(admission):
+    html_template_ref = 'continuing_education_participant_state_changed_html'
+    txt_template_ref = 'continuing_education_participant_state_changed_txt'
+
+    user = admission.person_information.person.user
+    receivers = [message_config.create_receiver(user.id, user.email, None)]
+
+    template_data = {
+        'first_name': admission.person_information.person.first_name,
+        'last_name': admission.person_information.person.last_name,
+        'formation': admission.formation,
+        'state': _(admission.state)
+    }
+
+    subject_data = {
+        'state': _(admission.state)
+    }
+
+    message_content = message_config.create_message_content(html_template_ref, txt_template_ref,
+                                                            [], receivers, template_data, subject_data)
+    send_messages(message_content)
