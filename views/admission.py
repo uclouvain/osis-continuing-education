@@ -143,7 +143,7 @@ def admission_form(request, admission_id=None):
             admission.person_information = person
         admission.save()
         if admission_before_save:
-            _send_mails(admission_before_save, admission)
+            _send_emails(admission_before_save, admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
 
     else:
@@ -165,14 +165,14 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _send_mails(admission_before_save, admission):
+def _send_emails(admission_before_save, admission):
     if admission.state != admission_before_save.state:
-        _send_state_changed_mail(admission)
+        _send_state_changed_email(admission)
 
 
-def _send_state_changed_mail(admission):
-    html_template_ref = 'iufc_participant_state_changed_html'
-    txt_template_ref = 'iufc_participant_state_changed_txt'
+def _send_state_changed_email(admission):
+    html_template_ref = 'iufc_participant_state_changed_{}_html'.format(admission.state.lower())
+    txt_template_ref = 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower())
 
     user = admission.person_information.person.user
     receivers = [message_config.create_receiver(user.id, user.email, None)]
