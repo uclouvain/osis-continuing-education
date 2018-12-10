@@ -43,6 +43,8 @@ class Admission(SerializableModel):
 
     CONTINUING_EDUCATION_TYPE = 8
 
+    changed = models.DateTimeField(null=True, auto_now=True)
+
     person_information = models.ForeignKey(
         'continuing_education.ContinuingEducationPerson',
         blank=True,
