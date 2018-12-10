@@ -50,7 +50,7 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 from osis_common.messaging import message_config
-from osis_common.messaging.send_message import send_messages
+from osis_common.messaging import send_message as message_service
 
 
 @login_required
@@ -142,7 +142,8 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
-        _send_mails(admission_before_save, admission)
+        if admission_before_save:
+            _send_mails(admission_before_save, admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
 
     else:
@@ -189,4 +190,4 @@ def _send_state_changed_mail(admission):
 
     message_content = message_config.create_message_content(html_template_ref, txt_template_ref,
                                                             [], receivers, template_data, subject_data)
-    send_messages(message_content)
+    message_service.send_messages(message_content)
