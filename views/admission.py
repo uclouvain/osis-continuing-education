@@ -115,10 +115,10 @@ def admission_form(request, admission_id=None):
     person_information = continuing_education_person.find_by_person(person=base_person)
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
-    adm_form = AdmissionForm(request.POST or None, instance=admission)
+    state = admission.state if admission else SUBMITTED
+    adm_form = AdmissionForm(request.POST or None, instance=admission, initial={'state': state})
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
-    state = admission.state if admission else None
     if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid():
         if address:
             address = address_form.save()
@@ -136,7 +136,7 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
         errors = list(itertools.product(adm_form.errors, person_form.errors, address_form.errors))
