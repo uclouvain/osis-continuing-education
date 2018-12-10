@@ -324,9 +324,8 @@ msgid "Legal cohabitant"
 msgstr "Cohabitant légal"
 
 #: models/address.py:15 templates/admission_detail.html:87
-#: templates/admission_form.html:94 templates/registration_detail.html:53
-#: templates/registration_detail.html:87 templates/registration_form.html:61
-#: templates/registration_form.html:103
+#: templates/registration_detail.html:53 templates/registration_detail.html:87
+#: templates/registration_form.html:61 templates/registration_form.html:103
 msgid "Location"
 msgstr "Ville"
 
@@ -557,6 +556,10 @@ msgstr "Nom du conjoint"
 #: templates/admissions.html:81
 msgid "State"
 msgstr "Etat"
+
+#: templates/admission_form.html:94
+msgid "Street Address"
+msgstr "Rue - numéro - boîte"
 
 #: templates/registration_detail.html:97 templates/registration_form.html:110
 msgid "Student sheet"
