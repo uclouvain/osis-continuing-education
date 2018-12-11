@@ -28,6 +28,7 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -103,6 +104,15 @@ def admission_detail(request, admission_id):
             'files': files
         }
     )
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def download_file(request, admission_id, file_id):
+    file = File.objects.get(pk=file_id)
+    response = HttpResponse(file.path, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=%s' % file.name
+    return response
 
 
 @login_required

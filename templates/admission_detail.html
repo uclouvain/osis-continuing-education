@@ -204,7 +204,7 @@
                                                 <td> {{file.size|filesizeformat}} </td>
                                                 <td > {{file.created_date}} </td>
                                                 <td>
-                                                    <a class="button" role="button" href="{% get_media_prefix %}{{ file.path }}" download>
+                                                    <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                                                         <span class="glyphicon glyphicon-download-alt btn-space btn-file"
                                                               aria-hidden="true"></span>
                                                     </a>
