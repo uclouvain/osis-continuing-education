@@ -157,7 +157,7 @@ def admission_form(request, admission_id=None):
         admission.save()
         if admission_before_save:
             _send_mails(admission_before_save, admission)
-        return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
         errors = list(itertools.product(adm_form.errors, person_form.errors, address_form.errors))
