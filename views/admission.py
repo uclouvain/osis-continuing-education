@@ -181,8 +181,15 @@ def _send_state_changed_email(admission):
     html_template_ref = 'iufc_participant_state_changed_{}_html'.format(admission.state.lower())
     txt_template_ref = 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower())
 
-    user = admission.person_information.person.user
-    receivers = [message_config.create_receiver(user.id, user.email, None)]
+    person = admission.person_information.person
+
+    receivers = [
+        message_config.create_receiver(
+            person.id,
+            person.email,
+            None
+        )
+    ]
 
     template_data = {
         'first_name': admission.person_information.person.first_name,
