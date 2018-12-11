@@ -71,16 +71,17 @@
                     {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("Person") %}
                 </div>
                 {% endif %}
-                <div class="row">
-                    {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("First name") %}
-                    {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("Last name") %}
-                    {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-2" label=_("Gender") %}
-                    {% bootstrap_field admission_form.citizenship form_group_class="form-group col-md-2" label=_("Citizenship") %}
-                </div>
-                <div class="row">
-                    {% bootstrap_field person_form.birth_date form_group_class="form-group col-md-4" label=_("Birth date") %}
-                    {% bootstrap_field person_form.birth_location form_group_class="form-group col-md-4" label=_("Birth location") %}
-                    {% bootstrap_field person_form.birth_country form_group_class="form-group col-md-4" label=_("Birth country") %}
+                <div id="person_details">
+                    <div class="row">
+                        {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("First name") %}
+                        {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("Last name") %}
+                        {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-4" label=_("Gender") %}
+                    </div>
+                    <div class="row">
+                        {% bootstrap_field person_form.birth_date form_group_class="form-group col-md-4" label=_("Birth date") %}
+                        {% bootstrap_field person_form.birth_location form_group_class="form-group col-md-4" label=_("Birth location") %}
+                        {% bootstrap_field person_form.birth_country form_group_class="form-group col-md-4" label=_("Birth country") %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,6 +92,7 @@
                 <div class="row">
                     {% bootstrap_field admission_form.phone_mobile form_group_class="form-group col-md-4" label=_("Mobile phone") %}
                     {% bootstrap_field admission_form.email form_group_class="form-group col-md-5" label=_("Email") %}
+                    {% bootstrap_field admission_form.citizenship form_group_class="form-group col-md-3" label=_("Citizenship") %}
                 </div>
                 <div class="row">
                     {% bootstrap_field address_form.location form_group_class="form-group col-md-4" label=_("Street Address") %}
@@ -215,14 +217,19 @@
 
 {% block script %}
     <script>
-        //toggle field when diploma_obtained yes is selected
+        // toggle field when diploma_obtained yes is selected
         let diploma_obtained = $('#id_high_school_diploma').find(":selected").val();
         $('.high_school_graduation_year').toggle(diploma_obtained == "True");
         $('#id_high_school_diploma').on('change', function() {
             $('.high_school_graduation_year').toggle($(this).find(":selected").val());
         });
 
-        //dynamically change color of state button
+        // toggle person fields when new person is selected
+        $('#id_person_information').on('change', function() {
+            $('#person_details').toggle($('#id_person_information').find(":selected").val() === '');
+        });
+
+        // dynamically change color of state button
         states = {
             "Waiting": "btn-primary",
             "Accepted": "btn-success",
@@ -253,7 +260,7 @@
             $('#button-state-caret').addClass(newClass);
         }
 
-        //show other text field when other is checked
+        // show other text field when other is checked
         $('#id_awareness_other_checkbox').change(function(){
             $('#other-text-field').toggle(this.checked);
             if(!this.checked){
@@ -261,16 +268,5 @@
             }
         });
 
-        //reload page with person information form instance when selected
-        let person_id = "{{person.id | escapejs}}";
-        let selected = $('#id_person').val(person_id);
-        $('#id_person').on('change', function() {
-            let person_id = $(this).find(":selected").val();
-            if(person_id) {
-                window.location.href = window.location.href.replace(/[\?#].*|$/, "?person=" + person_id)
-            } else {
-                window.location.href = window.location.href.replace(/[\?#].*|$/, "")
-            }
-        });
     </script>
 {% endblock %}

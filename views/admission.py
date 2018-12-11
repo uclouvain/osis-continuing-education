@@ -126,11 +126,14 @@ def admission_form(request, admission_id=None):
             address = Address(**address_form.cleaned_data)
             address.save()
 
-        person = person_form.save(commit=False)
-        if not base_person:
-            base_person = base_person_form.save()
-        person.person_id = base_person.pk
-        person.save()
+        person = request.POST.get('person_information', None)
+        if not person:
+            person = person_form.save(commit=False)
+            if not base_person:
+                base_person = base_person_form.save()
+            person.person_id = base_person.pk
+            person.save()
+
         admission = adm_form.save(commit=False)
         admission.address = address
         if not admission.person_information:
