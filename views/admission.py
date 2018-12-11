@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import itertools
-from copy import deepcopy
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -124,7 +123,7 @@ def download_file(request, admission_id, file_id):
 def admission_form(request, admission_id=None):
     states = admission_state_choices.ADMIN_STATE_CHOICES
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
-    admission_before_save = deepcopy(admission)
+    state_before_save = admission.state if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)
@@ -155,8 +154,8 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
-        if admission.state != admission_before_save.state:
-            _send_state_changed_email(admission_before_save, admission)
+        if state_before_save and admission.state != state_before_save:
+            _send_state_changed_email(admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
@@ -196,6 +195,13 @@ def _send_state_changed_email(admission):
         'state': _(admission.state)
     }
 
-    message_content = message_config.create_message_content(html_template_ref, txt_template_ref,
-                                                            [], receivers, template_data, subject_data)
+    message_content = message_config.create_message_content(
+        html_template_ref,
+        txt_template_ref,
+        [],
+        receivers,
+        template_data,
+        subject_data
+    )
+
     message_service.send_messages(message_content)
