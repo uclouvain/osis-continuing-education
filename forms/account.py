@@ -28,5 +28,5 @@ class ContinuingEducationPersonChoiceField(ModelChoiceField):
             continuing_education_person.person.last_name,
             continuing_education_person.person.first_name,
             continuing_education_person.birth_date,
-            continuing_education_person.birth_location or "{} {}".format(_("Birth location"), _("unknown")),
+            continuing_education_person.birth_location or _("Unknown birth place"),
         )
