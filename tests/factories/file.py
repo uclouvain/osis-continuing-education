@@ -23,26 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.conf.urls import url, include
 
-from continuing_education.views import (home, admission, registration)
+import factory
+from django.utils.datetime_safe import datetime
 
-urlpatterns = [
-    url(r'^$', home.main_view, name='continuing_education'),
-    url(r'^admission/', include([
-        url(r'^$', admission.list_admissions, name='admission'),
-        url(r'^new/$', admission.admission_form, name='admission_new'),
-        url(r'^edit/(?P<admission_id>[0-9]+)/', admission.admission_form, name='admission_edit'),
-        url(r'^(?P<admission_id>[0-9]+)/', include([
-            url(r'^$', admission.admission_detail, name='admission_detail'),
-            url(r'^file/(?P<file_id>[0-9]+)$', admission.download_file, name='download_file'),
-        ]))
-    ])),
-    url(r'^registration/', include([
-        url(r'^$', registration.list_registrations, name='registration'),
-        url(r'^edit/(?P<admission_id>[0-9]+)$', registration.registration_edit, name='registration_edit'),
-        url(r'^(?P<admission_id>[0-9]+)/', include([
-            url(r'^$', registration.registration_detail, name='registration_detail'),
-        ]))
-    ])),
-]
+from continuing_education.tests.factories.admission import AdmissionFactory
+
+
+class FileFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'continuing_education.File'
+
+    admission = factory.SubFactory(AdmissionFactory)
+    name = 'test'
+    path = 'path'
+    size = 1000
+    created_date = datetime.now()
