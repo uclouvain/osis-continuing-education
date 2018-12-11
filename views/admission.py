@@ -155,8 +155,8 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
-        if admission_before_save:
-            _send_mails(admission_before_save, admission)
+        if admission.state != admission_before_save.state:
+            _send_state_changed_email(admission_before_save, admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
@@ -178,12 +178,7 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _send_mails(admission_before_save, admission):
-    if admission.state != admission_before_save.state:
-        _send_state_changed_mail(admission)
-
-
-def _send_state_changed_mail(admission):
+def _send_state_changed_email(admission):
     html_template_ref = 'iufc_participant_state_changed_html'
     txt_template_ref = 'iufc_participant_state_changed_txt'
 
