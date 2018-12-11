@@ -1,0 +1,22 @@
+[
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_state_changed_waiting_html",
+        "subject": "IUFC - Demande d'admission mise en attente",
+        "template": "<p>Votre demande d'admission pour la formation {{formation}} a été mise en attente.</p>\r\n\r\n<p>Motif: </p>",
+        "format": "HTML",
+        "language": "fr-be"
+    }
+},
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_state_changed_waiting_txt",
+        "subject": "IUFC - Demande d'admission mise en attente",
+        "template": "Votre demande d'admission pour la formation {{formation}} a été mise en attente.\r\n\r\nMotif:",
+        "format": "PLAIN",
+        "language": "fr-be"
+    }
+}
+]

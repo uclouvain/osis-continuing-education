@@ -178,8 +178,8 @@ def admission_form(request, admission_id=None):
 
 
 def _send_state_changed_email(admission):
-    html_template_ref = 'iufc_participant_state_changed_html'
-    txt_template_ref = 'iufc_participant_state_changed_txt'
+    html_template_ref = 'iufc_participant_state_changed_{}_html'.format(admission.state.lower())
+    txt_template_ref = 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower())
 
     user = admission.person_information.person.user
     receivers = [message_config.create_receiver(user.id, user.email, None)]
