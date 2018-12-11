@@ -28,6 +28,7 @@ import random
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
@@ -39,6 +40,7 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
@@ -147,6 +149,17 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_edit', kwargs={'admission_id': self.admission.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admission_download_file(self):
+        uploaded_file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode('content'),
+            content_type="application/pdf"
+        )
+        file = FileFactory(admission=self.admission, path=uploaded_file)
+        url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch('osis_common.messaging.send_message.send_messages')
     def test_mail_sent_on_admission_state_changed(self, mock):
