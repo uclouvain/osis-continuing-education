@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='admission',
             name='state_reason',
-            field=models.TextField(blank=True, verbose_name='Motivation'),
+            field=models.TextField(blank=True, verbose_name='State reason'),
         ),
     ]

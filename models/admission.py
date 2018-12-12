@@ -200,7 +200,7 @@ class Admission(SerializableModel):
 
     state_reason = models.TextField(
         blank=True,
-        verbose_name=_("Motivation")
+        verbose_name=_("State reason")
     )
 
     # Billing
