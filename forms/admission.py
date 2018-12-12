@@ -2,7 +2,6 @@ from django import forms
 from django.forms import ModelForm, ChoiceField, ModelChoiceField
 from django.utils.translation import ugettext_lazy as _
 
-from base.models.academic_year import current_academic_year
 from base.models.education_group_year import EducationGroupYear
 from base.models.enums import education_group_categories
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
@@ -43,8 +42,7 @@ class AdmissionForm(ModelForm):
     )
     formation = FormationChoiceField(
         queryset=EducationGroupYear.objects.filter(
-            education_group_type__category=education_group_categories.TRAINING,
-            academic_year=current_academic_year().next()
+            education_group_type__category=education_group_categories.TRAINING
         ).order_by('acronym')
     )
 

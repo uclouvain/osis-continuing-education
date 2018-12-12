@@ -25,14 +25,15 @@
 ##############################################################################
 import datetime
 
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
 from rest_framework import status
 
-from base.tests.factories.person import CentralManagerFactory, PersonWithPermissionsFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -106,7 +107,7 @@ class ViewAdmissionTestCase(TestCase):
             'person_information': person_information.pk,
             'motivation': 'abcd',
             'professional_impact': 'abcd',
-            'formation': 'EXAMPLE',
+            'formation': EducationGroupYearFactory().pk,
             'awareness_ucl_website': True,
         }
         url = reverse('admission_edit', args=[self.admission.pk])
