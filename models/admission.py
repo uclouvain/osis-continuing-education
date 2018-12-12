@@ -198,6 +198,11 @@ class Admission(SerializableModel):
         verbose_name=_("State")
     )
 
+    state_reason = models.TextField(
+        blank=True,
+        verbose_name=_("Motivation")
+    )
+
     # Billing
     registration_type = models.CharField(
         max_length=50,
