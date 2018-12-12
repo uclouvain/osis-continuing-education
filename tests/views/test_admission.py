@@ -28,7 +28,6 @@ import random
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
-from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -38,7 +37,6 @@ from django.utils.translation import gettext as _
 from rest_framework import status
 
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
