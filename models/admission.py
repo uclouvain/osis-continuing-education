@@ -50,6 +50,12 @@ class Admission(SerializableModel):
         verbose_name=_("Person information")
     )
 
+    formation = models.ForeignKey(
+        'base.EducationGroupYear',
+        on_delete=models.PROTECT,
+        verbose_name=_("Formation")
+    )
+
     # Contact
     citizenship = models.ForeignKey(
         'reference.Country',
@@ -146,12 +152,6 @@ class Admission(SerializableModel):
     professional_impact = models.TextField(
         blank=True,
         verbose_name=_("Professional impact")
-    )
-
-    # Temporarily simplifying getting formation
-    formation = models.CharField(
-        max_length=50,
-        verbose_name=_("Formation")
     )
 
     # Awareness
