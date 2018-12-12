@@ -36,6 +36,7 @@ from django.test import TestCase
 from django.utils.translation import gettext as _
 from rest_framework import status
 
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
@@ -112,7 +113,7 @@ class ViewAdmissionTestCase(TestCase):
             'person_information': person_information.pk,
             'motivation': 'abcd',
             'professional_impact': 'abcd',
-            'formation': 'EXAMPLE',
+            'formation': EducationGroupYearFactory().pk,
             'awareness_ucl_website': True,
         }
         url = reverse('admission_edit', args=[self.admission.pk])
