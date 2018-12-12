@@ -499,10 +499,9 @@ msgid "Reason"
 msgstr "Raison"
 
 #: templates/fragment/state_reason_modal.html:33
-#, fuzzy
 #| msgid "Person information"
 msgid "Reason for waiting"
-msgstr "Informations personnelles"
+msgstr "Raison de mise en attente"
 
 #: templates/registrations.html:73
 msgid "Registered"
