@@ -138,7 +138,7 @@
                 <div class="panel-heading">{% trans 'Formation' %}</div>
                     <div class="panel panel-body">
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation | default:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation.acronym }} - {{ admission.formation.academic_year }} </div>
                             <div class="col-md-4">{% bootstrap_label _("Courses formula") %} <br/> {{ admission.courses_formula | default:"-" }} </div>
                             <div class="col-md-4">{% bootstrap_label _("Program code") %} <br/> {{ admission.program_code | default:"-" }} </div>
                         </div>

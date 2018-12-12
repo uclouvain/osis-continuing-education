@@ -1,12 +1,23 @@
 from django import forms
-from django.forms import ModelForm, ChoiceField
+from django.forms import ModelForm, ChoiceField, ModelChoiceField
 from django.utils.translation import ugettext_lazy as _
 
+from base.models.academic_year import current_academic_year
+from base.models.education_group_year import EducationGroupYear
+from base.models.enums import education_group_categories
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import admission_state_choices, enums
 from reference.models.country import Country
+
+
+class FormationChoiceField(ModelChoiceField):
+    def label_from_instance(self, formation):
+        return "{} {}".format(
+            formation.acronym,
+            formation.academic_year,
+        )
 
 
 class AdmissionForm(ModelForm):
@@ -29,6 +40,12 @@ class AdmissionForm(ModelForm):
         queryset=ContinuingEducationPerson.objects.all().order_by('person__last_name', 'person__first_name'),
         required=False,
         empty_label=_("New person")
+    )
+    formation = FormationChoiceField(
+        queryset=EducationGroupYear.objects.filter(
+            education_group_type__category=education_group_categories.TRAINING,
+            academic_year=current_academic_year().next()
+        ).order_by('acronym')
     )
 
     class Meta:
