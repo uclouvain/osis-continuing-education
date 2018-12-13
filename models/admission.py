@@ -25,7 +25,7 @@
 ##############################################################################
 
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -33,6 +33,7 @@ from base.models import academic_year
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from continuing_education.business.admission import send_admission_submitted_email, send_state_changed_email
 from continuing_education.models.enums import admission_state_choices, enums
 from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
 
@@ -392,8 +393,16 @@ def search(**kwargs):
 
 
 # TODO :: dismiss use of signal when API is used
+@receiver(pre_save, sender=Admission)
+def admission_pre_save_callback(sender, instance, **kwargs):
+    instance._original_state = Admission.objects.get(pk=instance.pk).state
+
+
+# TODO :: dismiss use of signal when API is used
 @receiver(post_save, sender=Admission)
-def admission_save_callback(sender, instance, created, **kwargs):
-    if instance.state == admission_state_choices.SUBMITTED:
-        print('post_save', instance.state, kwargs)
-    # send_admission_submitted_email(instance)
+def admission_post_save_callback(sender, instance, created, **kwargs):
+    if instance.state != instance._original_state:
+        if instance.state == admission_state_choices.SUBMITTED:
+            send_admission_submitted_email(instance)
+        elif instance.state != admission_state_choices.DRAFT:
+            send_state_changed_email(instance)
