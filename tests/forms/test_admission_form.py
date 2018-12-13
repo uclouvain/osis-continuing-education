@@ -37,7 +37,9 @@ class TestAdmissionForm(TestCase):
 
     def test_valid_form(self):
         admission = AdmissionFactory()
-        form = AdmissionForm(admission.__dict__)
+        data = admission.__dict__
+        data['formation'] = admission.formation.pk
+        form = AdmissionForm(data)
         self.assertTrue(form.is_valid(), form.errors)
 
 def convert_countries(person):
