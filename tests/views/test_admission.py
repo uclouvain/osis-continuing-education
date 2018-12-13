@@ -24,8 +24,6 @@
 #
 ##############################################################################
 import datetime
-import random
-from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -33,13 +31,11 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
-from django.utils.translation import gettext as _
 from rest_framework import status
 
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -161,25 +157,3 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    @patch('osis_common.messaging.send_message.send_messages')
-    def test_mail_sent_on_admission_state_changed(self, mock):
-        admission = model_to_dict(self.admission)
-        # select state other than active one
-        state_values = [x[0] for x in admission_state_choices.STATE_CHOICES if x[0] != admission['state']]
-        admission['state'] = random.choice(state_values)
-        url = reverse('admission_edit', args=[self.admission.pk])
-        response = self.client.post(url, data=admission)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
-        self.assertTrue(mock.called)
-        message_content = mock.call_args[0][0]
-        self.assertIn(_(admission['state']), str(message_content['template_base_data']))
-        self.assertIn(self.admission.person_information.person.user.email, str(message_content['receivers']))
-
-    @patch('osis_common.messaging.send_message.send_messages')
-    def test_mail_not_sent_on_same_admission_state(self, mock):
-        admission = model_to_dict(self.admission)
-        url = reverse('admission_edit', args=[self.admission.pk])
-        response = self.client.post(url, data=admission)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
-        self.assertFalse(mock.called)
