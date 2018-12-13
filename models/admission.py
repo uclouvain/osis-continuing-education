@@ -395,14 +395,20 @@ def search(**kwargs):
 # TODO :: dismiss use of signal when API is used
 @receiver(pre_save, sender=Admission)
 def admission_pre_save_callback(sender, instance, **kwargs):
-    instance._original_state = Admission.objects.get(pk=instance.pk).state
+    try:
+        instance._original_state = Admission.objects.get(pk=instance.pk).state
+    except Admission.DoesNotExist:
+        pass
 
 
 # TODO :: dismiss use of signal when API is used
 @receiver(post_save, sender=Admission)
 def admission_post_save_callback(sender, instance, created, **kwargs):
-    if instance.state != instance._original_state:
-        if instance.state == admission_state_choices.SUBMITTED:
-            send_admission_submitted_email(instance)
-        elif instance.state != admission_state_choices.DRAFT:
-            send_state_changed_email(instance)
+    try:
+        if instance.state != instance._original_state:
+            if instance.state == admission_state_choices.SUBMITTED:
+                send_admission_submitted_email(instance)
+            elif instance.state != admission_state_choices.DRAFT:
+                send_state_changed_email(instance)
+    except AttributeError:
+        pass
