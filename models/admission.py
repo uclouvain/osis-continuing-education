@@ -25,6 +25,8 @@
 ##############################################################################
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from base.models import academic_year
@@ -387,3 +389,11 @@ def search(**kwargs):
         qs = qs.filter(state=kwargs['state'])
 
     return qs
+
+
+# TODO :: dismiss use of signal when API is used
+@receiver(post_save, sender=Admission)
+def admission_save_callback(sender, instance, created, **kwargs):
+    if instance.state == admission_state_choices.SUBMITTED:
+        print('post_save', instance.state, kwargs)
+    # send_admission_submitted_email(instance)
