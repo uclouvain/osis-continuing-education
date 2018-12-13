@@ -37,6 +37,7 @@ from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
+from continuing_education.business.admission import send_state_changed_email
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.admission import AdmissionForm
@@ -48,8 +49,6 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
-from osis_common.messaging import message_config
-from osis_common.messaging import send_message as message_service
 
 
 @login_required
@@ -155,7 +154,7 @@ def admission_form(request, admission_id=None):
             admission.person_information = person
         admission.save()
         if state_before_save and admission.state != state_before_save:
-            _send_state_changed_email(admission)
+            send_state_changed_email(admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
@@ -175,40 +174,3 @@ def admission_form(request, admission_id=None):
             'states': states
         }
     )
-
-
-def _send_state_changed_email(admission):
-    html_template_ref = 'iufc_participant_state_changed_{}_html'.format(admission.state.lower())
-    txt_template_ref = 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower())
-
-    person = admission.person_information.person
-
-    receivers = [
-        message_config.create_receiver(
-            person.id,
-            person.email,
-            None
-        )
-    ]
-
-    template_data = {
-        'first_name': admission.person_information.person.first_name,
-        'last_name': admission.person_information.person.last_name,
-        'formation': admission.formation,
-        'state': _(admission.state)
-    }
-
-    subject_data = {
-        'state': _(admission.state)
-    }
-
-    message_content = message_config.create_message_content(
-        html_template_ref,
-        txt_template_ref,
-        [],
-        receivers,
-        template_data,
-        subject_data
-    )
-
-    message_service.send_messages(message_content)
