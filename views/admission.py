@@ -31,13 +31,11 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import gettext as _
 
 from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
-from continuing_education.business.admission import send_state_changed_email
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.admission import AdmissionForm
@@ -122,7 +120,6 @@ def download_file(request, admission_id, file_id):
 def admission_form(request, admission_id=None):
     states = admission_state_choices.ADMIN_STATE_CHOICES
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
-    state_before_save = admission.state if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)
@@ -153,8 +150,6 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
-        if state_before_save and admission.state != state_before_save:
-            send_state_changed_email(admission)
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
