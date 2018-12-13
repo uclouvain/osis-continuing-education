@@ -203,6 +203,8 @@
 
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
+        {% include "fragment/state_reason_modal.html" %}
+
         <div class="panel panel-body">
             <button type="submit" class="btn btn-primary" title="{%trans 'Save' %}">
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
@@ -241,10 +243,13 @@
         $(".dropdown-menu li a").click(function(){
           let newState = $(this).attr("value");
           let oldClass = states[$('#button-state').attr("value")];
-          setStateActive(newState);
           $('#button-state').removeClass(oldClass);
           $('#button-state-caret').removeClass(oldClass);
+          setStateActive(newState);
           $('#id_state').val(newState);
+          if(newState === "Waiting"){
+            openReasonModal()
+          }
         });
 
         function setStateActive(newState){
@@ -267,6 +272,16 @@
                 $('#other-text-field input').val('');
             }
         });
+
+        //open modal to add a state reason
+        function openReasonModal(){
+            $('#state_reason_modal').modal('show');
+        }
+
+        $('#cancel_reason').click(function () {
+            $("#id_state_reason").val(null);
+        })
+
 
     </script>
 {% endblock %}

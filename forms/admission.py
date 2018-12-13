@@ -90,4 +90,5 @@ class AdmissionForm(ModelForm):
 
             # State
             'state',
+            'state_reason'
         ]
