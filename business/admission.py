@@ -35,8 +35,10 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 def send_state_changed_email(admission):
     person = admission.person_information.person
     send_email(
-        html_template_ref='iufc_participant_state_changed_{}_html'.format(admission.state.lower()),
-        txt_template_ref='iufc_participant_state_changed_{}_txt'.format(admission.state.lower()),
+        template_references={
+            'html': 'iufc_participant_state_changed_{}_html'.format(admission.state.lower()),
+            'txt': 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower()),
+        },
         template_data={
             'first_name': admission.person_information.person.first_name,
             'last_name': admission.person_information.person.last_name,
@@ -59,8 +61,10 @@ def send_state_changed_email(admission):
 def send_admission_submitted_email(admission):
     managers = _get_continuing_education_managers()
     send_email(
-        html_template_ref='iufc_admin_admission_submitted_html',
-        txt_template_ref='iufc_admin_admission_submitted_txt',
+        template_references={
+            'html': 'iufc_admin_admission_submitted_html',
+            'txt': 'iufc_admin_admission_submitted_txt',
+        },
         template_data={
             'first_name': admission.person_information.person.first_name,
             'last_name': admission.person_information.person.last_name,
@@ -82,10 +86,10 @@ def send_admission_submitted_email(admission):
     )
 
 
-def send_email(html_template_ref, txt_template_ref, receivers, template_data, subject_data):
+def send_email(template_references, receivers, template_data, subject_data):
     message_content = message_config.create_message_content(
-        html_template_ref,
-        txt_template_ref,
+        template_references['html'],
+        template_references['txt'],
         [],
         receivers,
         template_data,
