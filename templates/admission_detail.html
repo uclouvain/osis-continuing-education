@@ -55,6 +55,12 @@
     </div>
 
     <div class="panel panel-default">
+        {% if admission.state_reason %}
+            <div class="alert alert-info" role="alert">
+                <b>{% trans 'Waiting state reason' %}: </b>
+                {{ admission.state_reason }}
+            </div>
+        {% endif %}
         <ul id="tabs" class="nav nav-tabs">
           <li role="presentation" class="active"><a href="#informations" role="tab" data-toggle="tab">{% trans 'Informations' %}</a></li>
           <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
