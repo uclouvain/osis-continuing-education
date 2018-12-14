@@ -1,0 +1,22 @@
+[
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_admission_created_html",
+        "subject": "IUFC - Demande d'admission enregistrée",
+        "template": "<p>Votre demande d’admission à la formation {{ formation }} a été enregistrée. Le gestionnaire du programme prendra contact avec vous dans les plus brefs délais.</p>",
+        "format": "HTML",
+        "language": "fr-be"
+    }
+},
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_admission_created_txt",
+        "subject": "IUFC - Demande d'admission enregistrée",
+        "template": "Votre demande d’admission à la formation {{ formation }} a été enregistrée. Le gestionnaire du programme prendra contact avec vous dans les plus brefs délais.",
+        "format": "PLAIN",
+        "language": "fr-be"
+    }
+}
+]
