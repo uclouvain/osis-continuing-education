@@ -33,6 +33,7 @@ from django.forms import model_to_dict
 from django.test import TestCase
 from rest_framework import status
 
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
@@ -43,9 +44,13 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 
 class ViewAdmissionTestCase(TestCase):
     def setUp(self):
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
-        self.admission = AdmissionFactory()
+        self.admission = AdmissionFactory(formation=self.formation)
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -85,7 +90,7 @@ class ViewAdmissionTestCase(TestCase):
         self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
 
     def test_admission_save_with_error(self):
-        admission = model_to_dict(AdmissionFactory())
+        admission = model_to_dict(self.admission)
         admission['person_information'] = "no valid pk"
         response = self.client.post(reverse('admission_new'), data=admission)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -109,7 +114,7 @@ class ViewAdmissionTestCase(TestCase):
             'person_information': person_information.pk,
             'motivation': 'abcd',
             'professional_impact': 'abcd',
-            'formation': EducationGroupYearFactory().pk,
+            'formation': self.formation.pk,
             'awareness_ucl_website': True,
         }
         url = reverse('admission_edit', args=[self.admission.pk])
