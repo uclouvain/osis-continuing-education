@@ -30,10 +30,6 @@ from reference.models.country import Country
 
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
-    # url = serializers.HyperlinkedIdentityField(
-    #     view_name='continuing_education_api_v1:address-detail',
-    #     lookup_field='uuid'
-    # )
 
     country = serializers.SlugRelatedField(
         slug_field='iso_code',
@@ -43,7 +39,6 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Address
         fields = (
-            # 'url',
             'uuid',
             'location',
             'postal_code',

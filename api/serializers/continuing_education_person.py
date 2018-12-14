@@ -29,20 +29,28 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.file import File
+from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
-    # url = serializers.HyperlinkedIdentityField(
-    #     view_name='continuing_education_api_v1:person-detail',
-    #     lookup_field='uuid'
-    # )
+    first_name = serializers.CharField(source='person.first_name', read_only=True)
+    last_name = serializers.CharField(source='person.last_name', read_only=True)
+    gender = serializers.CharField(source='person.gender', read_only=True)
+    email = serializers.CharField(source='person.email', read_only=True)
+
+    birth_country = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+    )
 
     class Meta:
         model = ContinuingEducationPerson
         fields = (
             'uuid',
-            # 'url',
-            'person',
+            'first_name',
+            'last_name',
+            'email',
+            'gender',
             'birth_date',
             'birth_location',
             'birth_country',

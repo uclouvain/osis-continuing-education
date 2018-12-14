@@ -25,6 +25,11 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.models.academic_year import current_academic_year
+from base.models.education_group_year import EducationGroupYear
+from base.models.enums import education_group_categories
+from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from reference.models.country import Country
@@ -35,19 +40,27 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
         view_name='continuing_education_api_v1:admission-detail',
         lookup_field='uuid'
     )
-    person_information = serializers.SlugRelatedField(
-        slug_field='uuid',
-        queryset=ContinuingEducationPerson.objects.all(),
-    )
+    person_information = ContinuingEducationPersonSerializer()
+
     citizenship = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
     )
 
+    main_address = AddressSerializer(source='address', read_only=True)
+
     # Display human readable value
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
+
+    formation = serializers.SlugRelatedField(
+        slug_field='acronym',
+        queryset=EducationGroupYear.objects.filter(
+            education_group_type__category=education_group_categories.TRAINING,
+            academic_year=current_academic_year().next()
+        )
+    )
 
     class Meta:
         model = Admission
@@ -57,6 +70,7 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
             'person_information',
 
             # CONTACTS
+            'main_address',
             'citizenship',
             'phone_mobile',
             'email',
