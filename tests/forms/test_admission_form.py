@@ -23,13 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import factory
 from django.test import TestCase
 
-from base.models import offer_year, entity_version
 from continuing_education.forms.admission import AdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.person import PersonFactory
 from reference.models import country
 
 
@@ -42,10 +39,12 @@ class TestAdmissionForm(TestCase):
         form = AdmissionForm(data)
         self.assertTrue(form.is_valid(), form.errors)
 
+
 def convert_countries(person):
     # person['address']['country'] = country.find_by_id(person["country_id"])
     person['birth_country'] = country.find_by_id(person["birth_country_id"])
     person['citizenship'] = country.find_by_id(person["citizenship_id"])
+
 
 def convert_dates(person):
     person['birth_date'] = person['birth_date'].strftime('%Y-%m-%d')
