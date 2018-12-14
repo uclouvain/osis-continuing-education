@@ -55,7 +55,7 @@
     </div>
 
     <div class="panel panel-default">
-        {% if admission.state_reason %}
+        {% if admission.state_reason and admission.is_waiting %}
             <div class="alert alert-info" role="alert">
                 <b>{% trans 'Waiting state reason' %}: </b>
                 {{ admission.state_reason }}
