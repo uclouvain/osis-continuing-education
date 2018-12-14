@@ -40,6 +40,7 @@ from osis_common.models.serializable_model import SerializableModel, Serializabl
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
 
+
 class AdmissionAdmin(SerializableModelAdmin):
     list_display = ('person_information', 'formation', 'state')
 
