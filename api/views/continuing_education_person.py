@@ -23,25 +23,40 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.conf.urls import url
+from rest_framework import generics
 
-from continuing_education.api.views.address import AddressList, AddressDetail
-from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
-from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonDetail, \
-    ContinuingEducationPersonList
-from continuing_education.api.views.file import FileAPIView
-from continuing_education.api.views.schema import schema_view
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
-urlpatterns = [
-    url(r"^$", schema_view),
 
-    url(r'^files/$', FileAPIView.as_view(), name="file_api"),
-    url(r'^admissions/$', AdmissionList.as_view(), name="admission_api"),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-    url(r'^persons/$', ContinuingEducationPersonList.as_view(), name="continuing_education_person_api"),
-    url(r'^persons/(?P<uuid>[0-9a-f-]+)$',
-        ContinuingEducationPersonDetail.as_view(), name=ContinuingEducationPersonDetail.name),
-    url(r'^addresses/$', AddressList.as_view(), name="address_api"),
-    url(r'^addresses/(?P<uuid>[0-9a-f-]+)$',
-        ContinuingEducationPersonDetail.as_view(), name=AddressDetail.name),
-]
+class ContinuingEducationPersonList(generics.ListAPIView):
+    """
+       Return a list of continuing education persons with optional filtering.
+    """
+    name = 'person-list'
+    queryset = ContinuingEducationPerson.objects.all().select_related(
+        'person'
+    )
+    serializer_class = ContinuingEducationPersonSerializer
+    filter_fields = (
+        'birth_country',
+    )
+    search_fields = (
+        'person',
+    )
+    ordering_fields = (
+        'birth_date',
+    )
+    ordering = (
+        'person',
+    )  # Default ordering
+
+
+class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the continuing education person
+    """
+    name = 'person-detail'
+    queryset = ContinuingEducationPerson.objects.all()
+    serializer_class = ContinuingEducationPersonSerializer
+    lookup_field = 'uuid'

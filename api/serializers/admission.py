@@ -52,6 +52,7 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Admission
         fields = (
+            'uuid',
             'url',
             'person_information',
 
