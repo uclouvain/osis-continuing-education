@@ -28,6 +28,7 @@ from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -106,6 +107,15 @@ def admission_detail(request, admission_id):
 
 
 @login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def download_file(request, admission_id, file_id):
+    file = File.objects.get(pk=file_id)
+    response = HttpResponse(file.path)
+    response['Content-Disposition'] = 'attachment; filename=%s' % file.name
+    return response
+
+
+@login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def admission_form(request, admission_id=None):
     states = admission_state_choices.ADMIN_STATE_CHOICES
@@ -115,7 +125,8 @@ def admission_form(request, admission_id=None):
     person_information = continuing_education_person.find_by_person(person=base_person)
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
-    adm_form = AdmissionForm(request.POST or None, instance=admission)
+    state = admission.state if admission else SUBMITTED
+    adm_form = AdmissionForm(request.POST or None, instance=admission, initial={'state': state})
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission.state if admission else None
@@ -126,17 +137,20 @@ def admission_form(request, admission_id=None):
             address = Address(**address_form.cleaned_data)
             address.save()
 
-        person = person_form.save(commit=False)
-        if not base_person:
-            base_person = base_person_form.save()
-        person.person_id = base_person.pk
-        person.save()
+        person = request.POST.get('person_information', None)
+        if not person:
+            person = person_form.save(commit=False)
+            if not base_person:
+                base_person = base_person_form.save()
+            person.person_id = base_person.pk
+            person.save()
+
         admission = adm_form.save(commit=False)
         admission.address = address
         if not admission.person_information:
             admission.person_information = person
         admission.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id':admission.pk}))
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
         errors = list(itertools.product(adm_form.errors, person_form.errors, address_form.errors))

@@ -25,24 +25,32 @@
 ##############################################################################
 import datetime
 
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
 from rest_framework import status
 
-from base.tests.factories.person import CentralManagerFactory, PersonWithPermissionsFactory
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
 class ViewAdmissionTestCase(TestCase):
     def setUp(self):
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
-        self.admission = AdmissionFactory()
+        self.admission = AdmissionFactory(formation=self.formation)
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -82,7 +90,7 @@ class ViewAdmissionTestCase(TestCase):
         self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
 
     def test_admission_save_with_error(self):
-        admission = model_to_dict(AdmissionFactory())
+        admission = model_to_dict(self.admission)
         admission['person_information'] = "no valid pk"
         response = self.client.post(reverse('admission_new'), data=admission)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -106,7 +114,7 @@ class ViewAdmissionTestCase(TestCase):
             'person_information': person_information.pk,
             'motivation': 'abcd',
             'professional_impact': 'abcd',
-            'formation': 'EXAMPLE',
+            'formation': self.formation.pk,
             'awareness_ucl_website': True,
         }
         url = reverse('admission_edit', args=[self.admission.pk])
@@ -143,3 +151,14 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_edit', kwargs={'admission_id': self.admission.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admission_download_file(self):
+        uploaded_file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode('content'),
+            content_type="application/pdf"
+        )
+        file = FileFactory(admission=self.admission, path=uploaded_file)
+        url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

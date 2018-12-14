@@ -1,0 +1,22 @@
+[
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_state_changed_accepted_html",
+        "subject": "IUFC - Demande d'admission acceptée",
+        "template": "<p>Votre demande d'admission pour la formation {{formation}} a été acceptée.</p>\r\n\r\n<p>Vous pouvez à présent remplir votre dossier d'inscripton.</p>",
+        "format": "HTML",
+        "language": "fr-be"
+    }
+},
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_state_changed_accepted_txt",
+        "subject": "IUFC - Demande d'admission acceptée",
+        "template": "Votre demande d'admission pour la formation {{formation}} a été acceptée.\r\n\r\nVous pouvez à présent remplir votre dossier d'inscripton.",
+        "format": "PLAIN",
+        "language": "fr-be"
+    }
+}
+]
