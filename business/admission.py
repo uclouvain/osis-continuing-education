@@ -95,6 +95,7 @@ def send_admission_created_email(admission):
         },
         template_data={
             'formation': admission.formation.acronym,
+            'admission_data': _get_formatted_admission_data(admission)
         },
         subject_data={},
         receivers=[
@@ -121,3 +122,30 @@ def send_email(template_references, receivers, template_data, subject_data):
 
 def _get_continuing_education_managers():
     return User.objects.filter(groups=Group.objects.get(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+
+
+def _get_formatted_admission_data(admission):
+    return [
+        "{} : {}".format(_('Last name'), _value_or_empty(admission.person_information.person.last_name)),
+        "{} : {}".format(_('First name'), _value_or_empty(admission.person_information.person.first_name)),
+        "{} : {}".format(_('Formation'), _value_or_empty(admission.formation.acronym)),
+        "{} : {}".format(_('High school diploma'), _('Yes') if admission.high_school_diploma else _('No')),
+        "{} : {}".format(_('High school graduation year'), _value_or_empty(admission.high_school_graduation_year)),
+        "{} : {}".format(_('Last degree level'), _value_or_empty(admission.last_degree_level)),
+        "{} : {}".format(_('Last degree field'), _value_or_empty(admission.last_degree_field)),
+        "{} : {}".format(_('Last degree institution'), _value_or_empty(admission.last_degree_institution)),
+        "{} : {}".format(_('Last degree graduation year'), _value_or_empty(admission.last_degree_graduation_year)),
+        "{} : {}".format(_('Other educational background'), _value_or_empty(admission.other_educational_background)),
+        "{} : {}".format(_('Professional status'), _value_or_empty(admission.professional_status)),
+        "{} : {}".format(_('Current occupation'), _value_or_empty(admission.current_occupation)),
+        "{} : {}".format(_('Current employer'), _value_or_empty(admission.current_employer)),
+        "{} : {}".format(_('Activity sector'), _value_or_empty(admission.activity_sector)),
+        "{} : {}".format(_('Past professional activities'), _value_or_empty(admission.past_professional_activities)),
+        "{} : {}".format(_('Motivation'), _value_or_empty(admission.motivation)),
+        "{} : {}".format(_('Professional impact'), _value_or_empty(admission.professional_impact)),
+        "{} : {}".format(_('State'), _value_or_empty(_(admission.state))),
+    ]
+
+
+def _value_or_empty(value):
+    return value or ''
