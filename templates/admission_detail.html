@@ -86,7 +86,7 @@
                 <div class="panel-heading">{% trans 'Contact' %}</div>
                 <div class="panel panel-body">
                     <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("Mobile phone") %} <br/> {{ admission.person_information.person.phone_mobile | default:"-" }} </div>
+                        <div class="col-md-3">{% bootstrap_label _("Mobile phone") %} <br/> {{ admission.phone_mobile | default:"-" }} </div>
                         <div class="col-md-3">{% bootstrap_label _("Email") %} <br/> {{ admission.email | default:"-" }} </div>
                     </div>
                     <div class="row form-group">
@@ -149,7 +149,7 @@
                             <div class="col-md-4">{% bootstrap_label _("Program code") %} <br/> {{ admission.program_code | default:"-" }} </div>
                         </div>
                         <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Faculty") %} <br/> {{ admission.faculty | default:"-" }} </div>
+                            <div class="col-md-4">{% bootstrap_label _("Faculty") %} <br/> {{ admission.get_faculty | default:"-" }} </div>
                             <div class="col-md-4">{% bootstrap_label _("Formation administrator") %} <br/> {{ admission.formation_administrator | default:"-" }} </div>
                         </div>
                 </div>
