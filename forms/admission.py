@@ -14,9 +14,9 @@ from reference.models.country import Country
 
 class FormationChoiceField(ModelChoiceField):
     def label_from_instance(self, formation):
-        return "{} {}".format(
+        return "{} : {}".format(
             formation.acronym,
-            formation.academic_year,
+            formation.title,
         )
 
 
