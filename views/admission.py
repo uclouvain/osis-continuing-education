@@ -60,7 +60,7 @@ def list_admissions(request):
     if faculty_filter:
         formations = _get_formations_by_faculty(faculty_filter)
         admission_list = admission_list.filter(
-            formation__in=formations
+            formation__acronym__in=formations
         ).order_by('person_information')
     faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
     paginator = Paginator(admission_list, 10)
