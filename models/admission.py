@@ -29,8 +29,6 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from base.models import academic_year
-from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
 from continuing_education.business.admission import send_admission_submitted_email, send_state_changed_email, \
@@ -359,10 +357,7 @@ class Admission(SerializableModel):
         return self.state == admission_state_choices.WAITING
 
     def get_faculty(self):
-        education_group_year = EducationGroupYear.objects.filter(
-            acronym=self.formation,
-            academic_year=academic_year.current_academic_year()
-        ).first()
+        education_group_year = self.formation
         if education_group_year:
             management_entity = education_group_year.management_entity
             entity = EntityVersion.objects.filter(entity=management_entity).first()

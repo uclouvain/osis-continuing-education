@@ -110,8 +110,9 @@ def admission_detail(request, admission_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def download_file(request, admission_id, file_id):
     file = File.objects.get(pk=file_id)
-    response = HttpResponse(file.path)
-    response['Content-Disposition'] = 'attachment; filename=%s' % file.name
+    filename = file.name.split('/')[-1]
+    response = HttpResponse(file.path, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
 
