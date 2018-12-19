@@ -35,6 +35,7 @@ from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -50,6 +51,9 @@ class ViewAdmissionTestCase(TestCase):
 
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
+        EntityVersionFactory(
+            entity=self.formation.management_entity
+        )
         self.admission = AdmissionFactory(formation=self.formation)
 
     def test_list_admissions(self):
