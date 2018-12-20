@@ -282,6 +282,16 @@
             $("#id_state_reason").val(null);
         })
 
+    //re-enable disabled field on form submit
+    let fields_to_enable = ["birth_country", "gender"];
 
+    function enableFields(fields) {
+        for (var field of fields) {
+            $("#id_" + field).prop( "disabled", false );
+        }
+    }
+    $( "#form" ).submit(function( event ) {
+        enableFields(fields_to_enable);
+    });
     </script>
 {% endblock %}

@@ -13,6 +13,22 @@ class ContinuingEducationPersonForm(ModelForm):
         required=False,
     )
 
+    def __init__(self, *args, **kwargs):
+
+        super(ContinuingEducationPersonForm, self).__init__(*args, **kwargs)
+
+        if self.instance.pk:
+            self._disable_existing_person_fields()
+
+    def _disable_existing_person_fields(self):
+        fields_to_disable = ["birth_country", "birth_date"]
+
+        for field in self.fields.keys():
+            self.fields[field].initial = getattr(self.instance, field)
+            self.fields[field].widget.attrs['readonly'] = True
+            if field in fields_to_disable:
+                self.fields[field].widget.attrs['disabled'] = True
+
     class Meta:
         model = ContinuingEducationPerson
         fields = [

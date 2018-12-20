@@ -7,11 +7,16 @@ from base.models.person import Person
 class PersonForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
-        user_email = kwargs.pop('user_email', None)
         super(PersonForm, self).__init__(*args, **kwargs)
-        if user_email:
-            self.fields['email'].initial = user_email
-            self.fields['email'].widget.attrs['readonly'] = True
+        if self.instance.pk:
+            self._disable_existing_person_fields()
+
+    def _disable_existing_person_fields(self):
+        for field in self.fields.keys():
+            self.fields[field].initial = getattr(self.instance, field)
+            self.fields[field].widget.attrs['readonly'] = True
+            if field is "gender":
+                self.fields[field].widget.attrs['disabled'] = True
 
     class Meta:
         model = Person
