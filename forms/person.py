@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
 from base.models.person import Person
+from continuing_education.business.admission import disable_existing_fields
 
 
 class PersonForm(ModelForm):
@@ -9,14 +10,7 @@ class PersonForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
         if self.instance.pk:
-            self._disable_existing_person_fields()
-
-    def _disable_existing_person_fields(self):
-        for field in self.fields.keys():
-            self.fields[field].initial = getattr(self.instance, field)
-            self.fields[field].widget.attrs['readonly'] = True
-            if field is "gender":
-                self.fields[field].widget.attrs['disabled'] = True
+            disable_existing_fields(self)
 
     class Meta:
         model = Person
