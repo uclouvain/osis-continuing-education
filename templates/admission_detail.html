@@ -54,7 +54,7 @@
                     <span class="caret"></span>
                     <span class="sr-only">{% trans 'State' %}</span>
                     </button>
-                    <ul class="dropdown-menu" onchange="form.submit();">
+                    <ul class="dropdown-menu">
                       {% for state in states %}
                           {% with state.0 as state_value and state.1 as state_trans %}
                              <li><a value="{{state_value}}" href="#" class="state-admission">{{state_trans}}</a></li>
@@ -259,7 +259,7 @@
             "Rejected": "btn-danger",
             "Submitted": "btn-info"
         };
-        var state_initial = "{{ admission.state }}";
+        let state_initial = "{{ admission.state }}";
         setStateActive(state_initial);
         $(".dropdown-menu li a").click(function(){
           let newState = $(this).attr("value");
