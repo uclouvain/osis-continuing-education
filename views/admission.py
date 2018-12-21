@@ -97,11 +97,22 @@ def _get_formations_by_faculty(faculty):
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = File.objects.all().filter(admission=admission_id)
+    states = admission_state_choices.ADMIN_STATE_CHOICES
+    adm_form = AdmissionForm(
+        request.POST or None,
+        instance=admission,
+    )
+    if adm_form.is_valid():
+        adm_form.save()
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+
     return render(
         request, "admission_detail.html",
         {
             'admission': admission,
-            'files': files
+            'files': files,
+            'states': states,
+            'admission_form': adm_form
         }
     )
 
