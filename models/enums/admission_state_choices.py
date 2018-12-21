@@ -7,15 +7,40 @@ WAITING = 'Waiting'
 DRAFT = 'Draft'
 SUBMITTED = 'Submitted'
 
-ADMIN_STATE_CHOICES = (
+STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
     (REJECTED, _('Rejected')),
     (WAITING, _('Waiting')),
-)
-
-STUDENT_STATE_CHOICES = (
     (DRAFT, _('Draft')),
     (SUBMITTED, _('Submitted')),
 )
 
-STATE_CHOICES = ADMIN_STATE_CHOICES + STUDENT_STATE_CHOICES
+STATES_DRAFT = {
+    'choices': ((SUBMITTED, _('Submitted')),),
+    'states': [SUBMITTED]
+}
+STATES_SUBMITTED = {
+    'choices': (
+        (ACCEPTED, _('Accepted')),
+        (REJECTED, _('Rejected')),
+        (WAITING, _('Waiting')),
+        (DRAFT, _('Draft')),
+    ),
+    'states': [ACCEPTED, REJECTED, WAITING, DRAFT]
+}
+STATES_ADMIN = {
+    'choices': (
+        (ACCEPTED, _('Accepted')),
+        (REJECTED, _('Rejected')),
+        (WAITING, _('Waiting')),
+    ),
+    'states': [ACCEPTED, REJECTED, WAITING]
+}
+
+NEW_ADMIN_STATE = {
+    DRAFT: STATES_DRAFT,
+    SUBMITTED: STATES_SUBMITTED,
+    WAITING: STATES_ADMIN,
+    ACCEPTED: STATES_ADMIN,
+    REJECTED: STATES_ADMIN,
+}
