@@ -9,7 +9,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0421_merge_20190102_1111'),
         ('continuing_education', '0030_admission_state_reason'),
     ]
 
