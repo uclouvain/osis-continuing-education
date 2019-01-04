@@ -38,9 +38,12 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
+from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+
+FILE_CONTENT = "test-content"
 
 
 class ViewAdmissionTestCase(TestCase):
@@ -166,3 +169,16 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_upload_file(self):
+        file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode(FILE_CONTENT),
+            content_type="application/pdf"
+        )
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data={'myfile': file}, format='multipart')
+
+        self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.manager)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
