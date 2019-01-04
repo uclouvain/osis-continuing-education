@@ -66,3 +66,9 @@ class File(Model):
     )
 
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
+
+    uploaded_by = models.ForeignKey(
+        'base.person',
+        null=True,
+        verbose_name=_("Uploaded by")
+    )
