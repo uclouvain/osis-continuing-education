@@ -364,9 +364,7 @@ class Admission(SerializableModel):
             if entity and entity.entity_type == FACULTY:
                 return management_entity
             else:
-                faculty = EntityVersion.objects.filter(entity=management_entity).first()
-                if faculty:
-                    return faculty.parent
+                _get_faculty_parent(management_entity)
         else:
             return None
 
@@ -387,6 +385,12 @@ def search(**kwargs):
         qs = qs.filter(state=kwargs['state'])
 
     return qs
+
+
+def _get_faculty_parent(management_entity):
+    faculty = EntityVersion.objects.filter(entity=management_entity).first()
+    if faculty:
+        return faculty.parent
 
 
 # TODO :: dismiss use of signal when API is used

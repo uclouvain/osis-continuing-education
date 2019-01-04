@@ -38,7 +38,7 @@ def admission_directory_path(instance, filename):
 
 
 class FileAdmin(ModelAdmin):
-    list_display = ('admission', 'name', 'path','uploaded_by')
+    list_display = ('admission', 'name', 'path', 'uploaded_by')
     raw_id_fields = ('uploaded_by',)
 
 
