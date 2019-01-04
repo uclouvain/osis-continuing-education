@@ -216,6 +216,7 @@
                                                 <th id="name">{% trans 'Name' %}</th>
                                                 <th id="size">{% trans 'Size' %}</th>
                                                 <th id="last_update">{% trans 'Last update' %}</th>
+                                                <th id="uploaded_by">{% trans 'Uploaded by' %}</th>
                                                 <th id="actions">{% trans 'Actions' %}</th>
                                             </tr>
                                         </thead>
@@ -223,7 +224,8 @@
                                             <tr>
                                                 <td> {{file.name}} </td>
                                                 <td> {{file.size|filesizeformat}} </td>
-                                                <td > {{file.created_date}} </td>
+                                                <td> {{file.created_date}} </td>
+                                                <td> {{file.uploaded_by}} </td>
                                                 <td>
                                                     <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                                                         <span class="glyphicon glyphicon-download-alt btn-space btn-file"
