@@ -98,7 +98,8 @@ def _get_formations_by_faculty(faculty):
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = File.objects.all().filter(admission=admission_id)
-    states = admission_state_choices.ADMIN_STATE_CHOICES
+    accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
+    states = accepted_states.get('choices', ())
     adm_form = AdmissionForm(
         request.POST or None,
         instance=admission,
@@ -117,8 +118,10 @@ def admission_detail(request, admission_id):
         file_to_admission.save()
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
     if adm_form.is_valid():
-        adm_form.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+        new_state = adm_form.cleaned_data['state']
+        if new_state in accepted_states.get('states', []):
+            adm_form.save()
+            return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     return render(
         request, "admission_detail.html",
@@ -144,8 +147,8 @@ def download_file(request, admission_id, file_id):
 @login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def admission_form(request, admission_id=None):
-    states = admission_state_choices.ADMIN_STATE_CHOICES
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
+    states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)

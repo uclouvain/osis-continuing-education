@@ -24,6 +24,8 @@
 #
 ##############################################################################
 import datetime
+import random
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -39,6 +41,7 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
+from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -169,6 +172,29 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch('continuing_education.business.admission._get_continuing_education_managers')
+    @patch('osis_common.messaging.send_message.send_messages')
+    def test_admission_detail_edit_state(self, mock_send, mock_managers):
+        states = NEW_ADMIN_STATE[self.admission.state]['states']
+        if self.admission.state in states:
+            states.remove(self.admission.state)
+        new_state = random.choices(states)
+        admission = {
+            'state': new_state[0],
+            'formation': self.formation.pk,
+        }
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data=admission)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
+        self.admission.refresh_from_db()
+
+        admission_state = self.admission.__getattribute__('state')
+        self.assertEqual(admission_state, admission['state'], 'state')
+
+
+
 
     def test_upload_file(self):
         file = SimpleUploadedFile(
