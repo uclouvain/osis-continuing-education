@@ -40,8 +40,8 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.file import File
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE
+from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -179,9 +179,9 @@ class ViewAdmissionTestCase(TestCase):
         states = NEW_ADMIN_STATE[self.admission.state]['states']
         if self.admission.state in states:
             states.remove(self.admission.state)
-        new_state = random.choices(states)
+        new_state = random.choice(states)
         admission = {
-            'state': new_state[0],
+            'state': new_state,
             'formation': self.formation.pk,
         }
 
@@ -192,9 +192,6 @@ class ViewAdmissionTestCase(TestCase):
 
         admission_state = self.admission.__getattribute__('state')
         self.assertEqual(admission_state, admission['state'], 'state')
-
-
-
 
     def test_upload_file(self):
         file = SimpleUploadedFile(
