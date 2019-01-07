@@ -204,6 +204,7 @@
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
         {% include "fragment/state_reason_modal.html" %}
+        {% include "fragment/warning_modal.html" %}
 
         <div class="panel panel-body">
             <button type="submit" class="btn btn-primary" title="{%trans 'Save' %}">
@@ -250,6 +251,9 @@
           if(newState === "Waiting"){
             openReasonModal()
           }
+          else if(newState === "Draft"){
+              openWarningModal()
+          }
         });
 
         function setStateActive(newState){
@@ -282,6 +286,9 @@
             $("#id_state_reason").val(null);
         })
 
+        function openWarningModal(){
+            $('#modalWarningDraft').modal('show');
+        }
     //re-enable disabled field on form submit
     let fields_to_enable = ["birth_country", "gender"];
 

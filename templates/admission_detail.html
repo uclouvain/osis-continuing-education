@@ -65,6 +65,7 @@
                 </div>
                 {% bootstrap_form admission_form exclude="state_reason" form_group_class="hidden" %}
                 {% include "fragment/state_reason_modal.html" %}
+                {% include "fragment/warning_modal.html" %}
             </form>
         <h2>{% trans 'Admission' %}</h2>
     </div>
@@ -271,6 +272,9 @@
           if(newState === "Waiting"){
             openReasonModal()
           }
+          else if(newState === "Draft"){
+              openWarningModal()
+          }
           else{
               $('#form').submit();
           }
@@ -296,9 +300,14 @@
 
         $('#cancel_reason').click(function () {
             $("#id_state_reason").val(null);
+            $('#form').submit();
         });
         $('#add_reason').click(function () {
             $('#form').submit();
         })
+
+        function openWarningModal(){
+            $('#modalWarningDraft').modal('show');
+        }
     </script>
 {% endblock %}
