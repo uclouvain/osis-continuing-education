@@ -71,5 +71,6 @@ class File(Model):
     uploaded_by = models.ForeignKey(
         'base.person',
         null=True,
-        verbose_name=_("Uploaded by")
+        verbose_name=_("Uploaded by"),
+        on_delete=models.PROTECT
     )
