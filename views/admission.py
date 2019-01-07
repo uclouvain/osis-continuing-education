@@ -135,7 +135,7 @@ def download_file(request, admission_id, file_id):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
-    states = admission_state_choices.NEW_ADMIN_STATE[admission.state] if admission else None
+    states = admission_state_choices.NEW_ADMIN_STATE[admission.state]['choices'] if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
     person_information = continuing_education_person.find_by_person(person=base_person)
