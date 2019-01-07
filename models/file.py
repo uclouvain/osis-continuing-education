@@ -38,7 +38,8 @@ def admission_directory_path(instance, filename):
 
 
 class FileAdmin(ModelAdmin):
-    list_display = ('admission', 'name', 'path',)
+    list_display = ('admission', 'name', 'path', 'uploaded_by')
+    raw_id_fields = ('uploaded_by',)
 
 
 class File(Model):
@@ -66,3 +67,10 @@ class File(Model):
     )
 
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
+
+    uploaded_by = models.ForeignKey(
+        'base.person',
+        null=True,
+        verbose_name=_("Uploaded by"),
+        on_delete=models.PROTECT
+    )
