@@ -106,17 +106,8 @@ def admission_detail(request, admission_id):
     )
 
     if request.method == 'POST' and request.FILES:
-        my_file = request.FILES['myfile']
-        person = Person.objects.get(user=request.user)
-        file_to_admission = File(
-            admission=admission,
-            path=my_file,
-            name=my_file.name,
-            size=my_file.size,
-            uploaded_by=person
-        )
-        file_to_admission.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+        _upload_file(request, admission)
+
     if adm_form.is_valid():
         new_state = adm_form.cleaned_data['state']
         if new_state in accepted_states.get('states', []):
@@ -134,6 +125,20 @@ def admission_detail(request, admission_id):
             'admission_form': adm_form
         }
     )
+
+
+def _upload_file(request, admission):
+    my_file = request.FILES['myfile']
+    person = Person.objects.get(user=request.user)
+    file_to_admission = File(
+        admission=admission,
+        path=my_file,
+        name=my_file.name,
+        size=my_file.size,
+        uploaded_by=person
+    )
+    file_to_admission.save()
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
 @login_required
