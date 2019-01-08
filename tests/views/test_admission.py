@@ -179,8 +179,8 @@ class ViewAdmissionTestCase(TestCase):
     @patch('continuing_education.business.admission._get_continuing_education_managers')
     @patch('osis_common.messaging.send_message.send_messages')
     def test_admission_detail_edit_state(self, mock_send, mock_managers):
-        states = NEW_ADMIN_STATE[self.admission.state]['states']
-        states.remove('Draft')
+        states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
+        states.remove(DRAFT)
         if self.admission.state in states:
             states.remove(self.admission.state)
         new_state = random.choice(states)
