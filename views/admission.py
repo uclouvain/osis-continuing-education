@@ -106,10 +106,10 @@ def admission_detail(request, admission_id):
     )
 
     if request.method == 'POST' and request.FILES:
-        _upload_file(request, admission)
+        return _upload_file(request, admission)
 
     if adm_form.is_valid():
-        _change_state(adm_form, accepted_states, admission)
+        return _change_state(adm_form, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
