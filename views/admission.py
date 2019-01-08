@@ -109,12 +109,7 @@ def admission_detail(request, admission_id):
         _upload_file(request, admission)
 
     if adm_form.is_valid():
-        new_state = adm_form.cleaned_data['state']
-        if new_state in accepted_states.get('states', []):
-            adm_form.save()
-            if new_state == DRAFT:
-                return redirect(reverse('admission'))
-            return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+        _change_state(adm_form, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
@@ -125,6 +120,15 @@ def admission_detail(request, admission_id):
             'admission_form': adm_form
         }
     )
+
+
+def _change_state(adm_form, accepted_states, admission):
+    new_state = adm_form.cleaned_data['state']
+    if new_state in accepted_states.get('states', []):
+        adm_form.save()
+        if new_state == DRAFT:
+            return redirect(reverse('admission'))
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
 def _upload_file(request, admission):
