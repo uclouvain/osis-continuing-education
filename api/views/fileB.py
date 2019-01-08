@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,22 +23,32 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from rest_framework import serializers
+from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 
+from continuing_education.api.serializers.fileB import FileSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
 
 
-class FileSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='continuing_education_api_v1:file-detail', lookup_field='uuid')
-    admission = serializers.SlugRelatedField(slug_field='formation', queryset=Admission.objects.all())
+class FileList(generics.ListAPIView):
+    """
+       Return a list of all the files with optional filtering.
+    """
+    name = 'file-list'
+    serializer_class = FileSerializer
+    filter_fields = (
+        'name',
+        'size',
+        'created_date'
+    )
+    search_fields = (
+        'name',
+        'path',
+        'size',
+        'created_date'
+    )
 
-    class Meta:
-        model = File
-        fields = (
-            'url',
-            'admission',
-            'name',
-            'path',
-            'size'
-        )
+    def get_queryset(self):
+        admission = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
+        return File.objects.filter(admission=admission)

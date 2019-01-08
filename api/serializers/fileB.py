@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,21 +23,18 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.conf.urls import url, include
+from rest_framework import serializers
 
-from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
-from continuing_education.api.views.file import FileAPIView
-from continuing_education.api.views.fileB import FileList
-from continuing_education.api.views.schema import schema_view
+from continuing_education.models.file import File
 
-urlpatterns = [
-    url(r"^$", schema_view),
 
-    url(r'^files/$', FileAPIView.as_view(), name="file_api"),
-    url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/', include([
-        url(r'^$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-        url(r'^filesB/$', FileList.as_view(), name=FileList.name),
-    ])),
-    # url(r'^filesB/$', FileList.as_view(), name=FileList.name)
-]
+class FileSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = File
+        fields = (
+            'name',
+            'path',
+            'size',
+            'created_date'
+        )
