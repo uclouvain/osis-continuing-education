@@ -45,7 +45,7 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 
@@ -121,6 +121,8 @@ def admission_detail(request, admission_id):
         new_state = adm_form.cleaned_data['state']
         if new_state in accepted_states.get('states', []):
             adm_form.save()
+            if new_state == DRAFT:
+                return redirect(reverse('admission'))
             return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     return render(
@@ -179,6 +181,8 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
+        if admission.state == DRAFT:
+            return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:
