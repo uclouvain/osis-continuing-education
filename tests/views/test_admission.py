@@ -40,7 +40,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED
+from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT
 from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
@@ -180,6 +180,7 @@ class ViewAdmissionTestCase(TestCase):
     @patch('osis_common.messaging.send_message.send_messages')
     def test_admission_detail_edit_state(self, mock_send, mock_managers):
         states = NEW_ADMIN_STATE[self.admission.state]['states']
+        states.remove('Draft')
         if self.admission.state in states:
             states.remove(self.admission.state)
         new_state = random.choice(states)
@@ -195,6 +196,20 @@ class ViewAdmissionTestCase(TestCase):
 
         admission_state = self.admission.__getattribute__('state')
         self.assertEqual(admission_state, admission['state'], 'state')
+
+    def test_admission_detail_edit_state_to_draft(self):
+        admission_draft = {
+            'formation': self.formation.pk,
+            'state': DRAFT
+        }
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data=admission_draft)
+        self.assertRedirects(response, reverse('admission'))
+        self.admission.refresh_from_db()
+
+        admission_state = self.admission.__getattribute__('state')
+        self.assertEqual(admission_state, admission_draft['state'], 'state')
 
     def test_upload_file(self):
         file = SimpleUploadedFile(
