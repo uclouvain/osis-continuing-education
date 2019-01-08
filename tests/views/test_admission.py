@@ -40,7 +40,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE
+from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED
 from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
@@ -60,7 +60,10 @@ class ViewAdmissionTestCase(TestCase):
         EntityVersionFactory(
             entity=self.formation.management_entity
         )
-        self.admission = AdmissionFactory(formation=self.formation)
+        self.admission = AdmissionFactory(
+            formation=self.formation,
+            state=SUBMITTED
+        )
 
     def test_list_admissions(self):
         url = reverse('admission')
