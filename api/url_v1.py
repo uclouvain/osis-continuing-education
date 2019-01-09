@@ -23,30 +23,44 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.conf.urls import url, include
+from django.conf.urls import url
 
 from continuing_education.api.views.address import AddressList, AddressDetail
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
     ContinuingEducationPersonDetail
-from continuing_education.api.views.file import FileAPIView
-from continuing_education.api.views.fileB import FileList
+from continuing_education.api.views.file import FileAPIView, FileList, FileDetail
 from continuing_education.api.views.schema import schema_view
 
 urlpatterns = [
     url(r"^$", schema_view),
 
+    # url(r'^files/$', FileAPIView.as_view(), name="file_api"),
+    # url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
+    # url(r'^admissions/(?P<admission_uuid>[0-9a-f-]+)/', include([
+    #     url(r'^$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
+    #     url(r'^files/$', include([
+    #         url(r'^$', FileList.as_view(), name=FileList.name),
+    #         url(r'^(?P<uuid>[0-9a-f-]+)/$', FileDetail.as_view(), name=FileDetail.name),
+    #     ])),
+    # ])),
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
     url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/', include([
-        url(r'^$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-        url(r'^filesB/$', FileList.as_view(), name=FileList.name),
-    ])),
+    url(r'^admissions/(?P<admission_uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
+    url(r'^admissions/(?P<admission_uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
+    url(
+        r'^admissions/(?P<admission_uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
+        FileDetail.as_view(),
+        name=FileDetail.name
+    ),
+
     url(r'^addresses/$', AddressList.as_view(), name=AddressList.name),
-    url(r'^addresses/(?P<uuid>[0-9a-f-]+)/$', AddressDetail.as_view(), name=AddressDetail.name),
+    url(r'^addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
     url(r'^persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
-    url(r'^persons/(?P<uuid>[0-9a-f-]+)/$',
+    url(
+        r'^persons/(?P<uuid>[0-9a-f-]+)$',
         ContinuingEducationPersonDetail.as_view(),
-        name=ContinuingEducationPersonDetail.name),
+        name=ContinuingEducationPersonDetail.name
+    ),
     # url(r'^filesB/$', FileList.as_view(), name=FileList.name)
 ]
