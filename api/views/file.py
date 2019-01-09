@@ -67,8 +67,9 @@ class FileAPIView(views.APIView):
 
     def delete(self, request):
         if 'file_path' in request.query_params:
+
             file_path = request.query_params['file_path']
-            file = get_object_or_404(File, path=file_path)
+            file = File.objects.get(path=file_path)
             file.delete()
             return Response(
                 data="File deleted",

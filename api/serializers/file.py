@@ -42,7 +42,8 @@ class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
         return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
 
 
-class FileSerializer(serializers.ModelSerializer):
+class FileSerializer(serializers.HyperlinkedModelSerializer):
+
     url = FileHyperlinkedIdentityField()
     uploaded_by = PersonDetailSerializer()
     created_date = serializers.DateTimeField()

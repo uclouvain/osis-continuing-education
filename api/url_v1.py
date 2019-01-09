@@ -35,15 +35,6 @@ from continuing_education.api.views.schema import schema_view
 urlpatterns = [
     url(r"^$", schema_view),
 
-    # url(r'^files/$', FileAPIView.as_view(), name="file_api"),
-    # url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
-    # url(r'^admissions/(?P<admission_uuid>[0-9a-f-]+)/', include([
-    #     url(r'^$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-    #     url(r'^files/$', include([
-    #         url(r'^$', FileList.as_view(), name=FileList.name),
-    #         url(r'^(?P<uuid>[0-9a-f-]+)/$', FileDetail.as_view(), name=FileDetail.name),
-    #     ])),
-    # ])),
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
     url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
     url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
@@ -62,5 +53,5 @@ urlpatterns = [
         ContinuingEducationPersonDetail.as_view(),
         name=ContinuingEducationPersonDetail.name
     ),
-    # url(r'^filesB/$', FileList.as_view(), name=FileList.name)
+
 ]
