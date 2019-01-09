@@ -25,20 +25,20 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.models.person import Person
+from base.api.serializers.person import PersonDetailSerializer
 from continuing_education.models.file import File
 
 
 class FileSerializer(serializers.HyperlinkedModelSerializer):
 
-    uploaded_by = serializers.SlugRelatedField(
-        slug_field='email',
-        queryset=Person.objects.all(),
-    )
+    uploaded_by = PersonDetailSerializer()
+    created_date = serializers.DateTimeField()
 
     class Meta:
         model = File
         fields = (
+            'uuid',
+            'url',
             'name',
             'path',
             'size',

@@ -23,13 +23,13 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import views, status
+from rest_framework import views, status, generics
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
+from continuing_education.api.serializers.file import FileSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
 
@@ -41,9 +41,6 @@ class FileAPIView(views.APIView):
         if 'file_path' in request.query_params:
             file_path = request.query_params['file_path']
             return _send_file(file_path)
-        elif 'admission_id' in request.query_params:
-            admission_id = request.query_params['admission_id']
-            return _send_documents_list(admission_id)
         else:
             return Response(
                 data="File not found",
@@ -91,8 +88,36 @@ def _send_file(file_path):
     return response
 
 
-def _send_documents_list(admission_id):
-    admission = Admission.objects.get(uuid=admission_id)
-    documents = File.objects.filter(admission=admission)
-    documents_json = serializers.serialize("json", documents)
-    return HttpResponse(documents_json)
+class FileList(generics.ListAPIView):
+    """
+       Return a list of all the files with optional filtering.
+    """
+    name = 'file-list'
+    serializer_class = FileSerializer
+    filter_fields = (
+        'name',
+        'size',
+        'created_date',
+        'uploaded_by'
+    )
+    search_fields = (
+        'name',
+        'path',
+        'size',
+        'created_date',
+        'uploaded_by'
+    )
+
+    def get_queryset(self):
+        admission = get_object_or_404(Admission, uuid=self.kwargs['admission_uuid'])
+        return File.objects.filter(admission=admission)
+
+
+class FileDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the file
+    """
+    name = 'file-detail'
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    lookup_field = 'uuid'
