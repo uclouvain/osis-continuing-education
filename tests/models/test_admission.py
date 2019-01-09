@@ -51,7 +51,8 @@ class TestAdmission(TestCase):
 
     @patch('osis_common.messaging.send_message.send_messages')
     def test_mail_sent_on_admission_state_changed(self, mock):
-        state_values = [x[0] for x in admission_state_choices.ADMIN_STATE_CHOICES]
+        state_values = [x[0] for x in admission_state_choices.STATES_ADMIN['choices']]
+        # When state is draft, no mail are sent : mock not called
         state = random.choice(state_values)
         self.submitted_admission.state = state
         self.submitted_admission.save()

@@ -2,16 +2,15 @@ from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
 from base.models.person import Person
+from continuing_education.business.admission import disable_existing_fields
 
 
 class PersonForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
-        user_email = kwargs.pop('user_email', None)
         super(PersonForm, self).__init__(*args, **kwargs)
-        if user_email:
-            self.fields['email'].initial = user_email
-            self.fields['email'].widget.attrs['readonly'] = True
+        if self.instance.pk:
+            disable_existing_fields(self)
 
     class Meta:
         model = Person

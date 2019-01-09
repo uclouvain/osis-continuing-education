@@ -65,3 +65,63 @@
 .admission-detail-state-submitted{
     background-color: #5bc0de;
 }
+
+.btn-space {
+    margin-right: 10px;
+}
+
+.btn-file {
+    font-size: 16px;
+}
+
+.alert {
+    display: block !important;
+}
+
+.custom-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-file-input {
+    position: absolute;
+    font-size: 50px;
+    right: 0;
+    top: 0;
+    opacity: 0 !important;
+}
+
+.custom-file-label {
+    display: block;
+    cursor: auto !important;
+}
+
+.custom-file-btn-group {
+    display: block;
+}
+
+#btn-upload{
+    margin-left: 10px;
+}
+
+label.required:after{
+    content:" *";
+}
+
+.form-button-group{
+    margin-right: 15px;
+    margin-top: 10px;
+}
+
+#tabs li a{
+    display: inline-block;
+    padding-top: 15px;
+    padding-bottom:15px;
+}
+
+.no-pad{
+    margin-right:0 !important;
+    margin-left:0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}

@@ -54,11 +54,13 @@ class FileAPIView(views.APIView):
         admission_id = request.data['admission_id']
         file_obj = request.data['file']
         admission = Admission.objects.get(uuid=admission_id)
+        person = admission.person_information.person
         file = File(
             admission=admission,
             name=file_obj.name,
             path=file_obj,
-            size=file_obj.size
+            size=file_obj.size,
+            uploaded_by=person
         )
         file.save()
         return Response(

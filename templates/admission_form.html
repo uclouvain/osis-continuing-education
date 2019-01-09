@@ -36,7 +36,7 @@
 {% block content %}
     <div class="page-header">
         {% if admission_id %}
-            <button type="submit" form="form" class="btn btn-default pull-right">
+            <button type="submit" form="form" class="btn btn-primary pull-right">
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
             <a class="btn btn-default pull-right" style="margin-right: 10px;" id="cancel" href="{% url 'admission' %}">
@@ -204,6 +204,7 @@
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
         {% include "fragment/state_reason_modal.html" %}
+        {% include "fragment/warning_modal.html" %}
 
         <div class="panel panel-body">
             <button type="submit" class="btn btn-primary" title="{%trans 'Save' %}">
@@ -250,6 +251,9 @@
           if(newState === "Waiting"){
             openReasonModal()
           }
+          else if(newState === "Draft"){
+              openWarningModal()
+          }
         });
 
         function setStateActive(newState){
@@ -282,6 +286,19 @@
             $("#id_state_reason").val(null);
         })
 
+        function openWarningModal(){
+            $('#modalWarningDraft').modal('show');
+        }
+    //re-enable disabled field on form submit
+    let fields_to_enable = ["birth_country", "gender"];
 
+    function enableFields(fields) {
+        for (var field of fields) {
+            $("#id_" + field).prop( "disabled", false );
+        }
+    }
+    $( "#form" ).submit(function( event ) {
+        enableFields(fields_to_enable);
+    });
     </script>
 {% endblock %}

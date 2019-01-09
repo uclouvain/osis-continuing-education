@@ -24,6 +24,8 @@
 #
 ##############################################################################
 import datetime
+import random
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -35,11 +37,16 @@ from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT
+from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+
+FILE_CONTENT = "test-content"
 
 
 class ViewAdmissionTestCase(TestCase):
@@ -50,7 +57,13 @@ class ViewAdmissionTestCase(TestCase):
 
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
-        self.admission = AdmissionFactory(formation=self.formation)
+        EntityVersionFactory(
+            entity=self.formation.management_entity
+        )
+        self.admission = AdmissionFactory(
+            formation=self.formation,
+            state=SUBMITTED
+        )
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -162,3 +175,51 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch('continuing_education.business.admission._get_continuing_education_managers')
+    @patch('osis_common.messaging.send_message.send_messages')
+    def test_admission_detail_edit_state(self, mock_send, mock_managers):
+        states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
+        states.remove(DRAFT)
+        if self.admission.state in states:
+            states.remove(self.admission.state)
+        new_state = random.choice(states)
+        admission = {
+            'state': new_state,
+            'formation': self.formation.pk,
+        }
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data=admission)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
+        self.admission.refresh_from_db()
+
+        admission_state = self.admission.__getattribute__('state')
+        self.assertEqual(admission_state, admission['state'], 'state')
+
+    def test_admission_detail_edit_state_to_draft(self):
+        admission_draft = {
+            'formation': self.formation.pk,
+            'state': DRAFT
+        }
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data=admission_draft)
+        self.assertRedirects(response, reverse('admission'))
+        self.admission.refresh_from_db()
+
+        admission_state = self.admission.__getattribute__('state')
+        self.assertEqual(admission_state, admission_draft['state'], 'state')
+
+    def test_upload_file(self):
+        file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode(FILE_CONTENT),
+            content_type="application/pdf"
+        )
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data={'myfile': file}, format='multipart')
+
+        self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.manager)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
