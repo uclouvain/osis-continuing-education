@@ -46,10 +46,10 @@ urlpatterns = [
     # ])),
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
     url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
-    url(r'^admissions/(?P<admission_uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-    url(r'^admissions/(?P<admission_uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
+    url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
+    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
     url(
-        r'^admissions/(?P<admission_uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
+        r'^admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
         FileDetail.as_view(),
         name=FileDetail.name
     ),

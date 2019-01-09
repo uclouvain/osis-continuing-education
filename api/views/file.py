@@ -109,7 +109,7 @@ class FileList(generics.ListAPIView):
     )
 
     def get_queryset(self):
-        admission = get_object_or_404(Admission, uuid=self.kwargs['admission_uuid'])
+        admission = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
         return File.objects.filter(admission=admission)
 
 

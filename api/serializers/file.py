@@ -30,7 +30,11 @@ from continuing_education.models.file import File
 
 
 class FileSerializer(serializers.HyperlinkedModelSerializer):
-
+    url = serializers.HyperlinkedIdentityField(
+        view_name='continuing_education_api_v1:file-detail',
+        lookup_field='uuid',
+        lookup_url_kwarg='file_uuid'
+    )
     uploaded_by = PersonDetailSerializer()
     created_date = serializers.DateTimeField()
 
