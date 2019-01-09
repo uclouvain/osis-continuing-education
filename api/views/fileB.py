@@ -40,13 +40,15 @@ class FileList(generics.ListAPIView):
     filter_fields = (
         'name',
         'size',
-        'created_date'
+        'created_date',
+        'uploaded_by'
     )
     search_fields = (
         'name',
         'path',
         'size',
-        'created_date'
+        'created_date',
+        'uploaded_by'
     )
 
     def get_queryset(self):

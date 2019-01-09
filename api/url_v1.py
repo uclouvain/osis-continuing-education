@@ -25,7 +25,10 @@
 ##############################################################################
 from django.conf.urls import url, include
 
+from continuing_education.api.views.address import AddressList, AddressDetail
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
+from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
+    ContinuingEducationPersonDetail
 from continuing_education.api.views.file import FileAPIView
 from continuing_education.api.views.fileB import FileList
 from continuing_education.api.views.schema import schema_view
@@ -39,5 +42,11 @@ urlpatterns = [
         url(r'^$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
         url(r'^filesB/$', FileList.as_view(), name=FileList.name),
     ])),
+    url(r'^addresses/$', AddressList.as_view(), name=AddressList.name),
+    url(r'^addresses/(?P<uuid>[0-9a-f-]+)/$', AddressDetail.as_view(), name=AddressDetail.name),
+    url(r'^persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
+    url(r'^persons/(?P<uuid>[0-9a-f-]+)/$',
+        ContinuingEducationPersonDetail.as_view(),
+        name=ContinuingEducationPersonDetail.name),
     # url(r'^filesB/$', FileList.as_view(), name=FileList.name)
 ]
