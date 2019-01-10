@@ -171,7 +171,11 @@ class ViewAdmissionTestCase(TestCase):
             content=str.encode('content'),
             content_type="application/pdf"
         )
-        file = FileFactory(admission=self.admission, path=uploaded_file)
+        file = FileFactory(
+            admission=self.admission,
+            path=uploaded_file,
+            uploaded_by=self.admission.person_information.person
+        )
         url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
