@@ -97,7 +97,7 @@
                         <td>{{ admission.person_information.person.first_name }}</td>
                         <td>{{ admission.email }}</td>
                         <td title="{{admission.formation.title}}">{{ admission.formation }}</td>
-                        <td title="{{admission.faculty.title}}">{{ admission.get_faculty }}</td>
+                        <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
                         <td style="vertical-align: middle;" class="admission-state">
                             {% if admission.is_waiting %}
                                 <span class="label label-primary show">{% trans admission.state %}</span>
