@@ -112,7 +112,7 @@ def admission_detail(request, admission_id):
         request.POST or None,
         instance=admission,
         )
-    
+
     if adm_form.is_valid():
         return _change_state(adm_form, accepted_states, admission, rejected_adm_form)
 
@@ -131,14 +131,7 @@ def admission_detail(request, admission_id):
 def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        if new_state == REJECTED:
-            if rejected_adm_form.is_valid():
-                rejected_adm_form.save()
-        else:
-            adm_form.save()
-        if new_state == DRAFT:
-            return redirect(reverse('admission'))
-        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+        return _new_state_management(adm_form, admission, new_state, rejected_adm_form)
 
 
 def _upload_file(request, admission):
@@ -221,3 +214,14 @@ def admission_form(request, admission_id=None):
             'states': states
         }
     )
+
+
+def _new_state_management(adm_form, admission, new_state, rejected_adm_form):
+    if new_state == DRAFT:
+        return redirect(reverse('admission'))
+    if new_state == REJECTED:
+        if rejected_adm_form.is_valid():
+            rejected_adm_form.save()
+    else:
+        adm_form.save()
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
