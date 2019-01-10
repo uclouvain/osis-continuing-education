@@ -30,10 +30,8 @@ from continuing_education.api.views.admission import AdmissionList, AdmissionDet
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
     ContinuingEducationPersonDetail
 from continuing_education.api.views.file import FileAPIView, FileList, FileDetail, FileDestroy
-from continuing_education.api.views.schema import schema_view
 
 urlpatterns = [
-    url(r"^$", schema_view),
     # TODO: remove files/ : it is for old api
     url(r'^files/addresses/$', AddressList.as_view(), name=AddressList.name),
     url(r'^files/addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
