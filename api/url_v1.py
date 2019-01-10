@@ -36,20 +36,20 @@ urlpatterns = [
     url(r"^$", schema_view),
 
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
-    url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
+    url(r'^files/admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
+    url(r'^files/admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
+    url(r'^files/admissions/(?P<uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
     url(
-        r'^admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
+        r'^files/admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
         FileDetail.as_view(),
         name=FileDetail.name
     ),
 
-    url(r'^addresses/$', AddressList.as_view(), name=AddressList.name),
-    url(r'^addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
-    url(r'^persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
+    url(r'^files/addresses/$', AddressList.as_view(), name=AddressList.name),
+    url(r'^files/addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
+    url(r'^files/persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
     url(
-        r'^persons/(?P<uuid>[0-9a-f-]+)$',
+        r'^files/persons/(?P<uuid>[0-9a-f-]+)$',
         ContinuingEducationPersonDetail.as_view(),
         name=ContinuingEducationPersonDetail.name
     ),
