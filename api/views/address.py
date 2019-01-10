@@ -26,9 +26,7 @@
 from rest_framework import generics
 
 from continuing_education.api.serializers.address import AddressSerializer
-from continuing_education.api.serializers.admission import AdmissionSerializer
 from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission
 
 
 class AddressList(generics.ListAPIView):

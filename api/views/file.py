@@ -91,18 +91,18 @@ class FileDetail(generics.RetrieveAPIView):
     lookup_field = 'uuid'
 
     def get_object(self):
-        file = File.objects.get(uuid=self.kwargs['file_uuid'])
+        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
         return file
 
 
 class FileDestroy(DestroyAPIView):
-    name = 'file-destroy'
+    name = 'file-delete'
     queryset = File.objects.all()
     serializer_class = FileSerializer
     lookup_field = 'uuid'
 
     def get_object(self):
-        file = File.objects.get(uuid=self.kwargs['file_uuid'])
+        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
         return file
 
 

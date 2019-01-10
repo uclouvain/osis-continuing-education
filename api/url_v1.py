@@ -34,7 +34,14 @@ from continuing_education.api.views.schema import schema_view
 
 urlpatterns = [
     url(r"^$", schema_view),
-
+    url(r'^files/addresses/$', AddressList.as_view(), name=AddressList.name),
+    url(r'^files/addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
+    url(r'^files/persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
+    url(
+        r'^files/persons/(?P<uuid>[0-9a-f-]+)$',
+        ContinuingEducationPersonDetail.as_view(),
+        name=ContinuingEducationPersonDetail.name
+    ),
     url(r'^files/$', FileAPIView.as_view(), name="file_api"),
     url(r'^files/admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
     url(r'^files/admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
@@ -50,13 +57,6 @@ urlpatterns = [
         name=FileDestroy.name
     ),
 
-    url(r'^files/addresses/$', AddressList.as_view(), name=AddressList.name),
-    url(r'^files/addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
-    url(r'^files/persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
-    url(
-        r'^files/persons/(?P<uuid>[0-9a-f-]+)$',
-        ContinuingEducationPersonDetail.as_view(),
-        name=ContinuingEducationPersonDetail.name
-    ),
+
 
 ]
