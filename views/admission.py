@@ -36,6 +36,7 @@ from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
+from base.models.person import Person
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
@@ -44,7 +45,7 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 
@@ -103,21 +104,17 @@ def admission_detail(request, admission_id):
         request.POST or None,
         instance=admission,
     )
+
+    if request.method == 'POST' and request.FILES:
+        return _upload_file(request, admission)
+
     rejected_adm_form = RejectedAdmissionForm(
         request.POST or None,
         instance=admission,
-    )
-
+        )
+    
     if adm_form.is_valid():
-        new_state = adm_form.cleaned_data['state']
-        if new_state in accepted_states.get('states', []):
-            if new_state == REJECTED:
-                if rejected_adm_form.is_valid():
-                    rejected_adm_form.save()
-            else:
-                adm_form.save()
-
-            return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+        return _change_state(adm_form, accepted_states, admission, rejected_adm_form)
 
     return render(
         request, "admission_detail.html",
@@ -129,6 +126,33 @@ def admission_detail(request, admission_id):
             'rejected_adm_form': rejected_adm_form,
         }
     )
+
+
+def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
+    new_state = adm_form.cleaned_data['state']
+    if new_state in accepted_states.get('states', []):
+        if new_state == REJECTED:
+            if rejected_adm_form.is_valid():
+                rejected_adm_form.save()
+        else:
+            adm_form.save()
+        if new_state == DRAFT:
+            return redirect(reverse('admission'))
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+
+
+def _upload_file(request, admission):
+    my_file = request.FILES['myfile']
+    person = Person.objects.get(user=request.user)
+    file_to_admission = File(
+        admission=admission,
+        path=my_file,
+        name=my_file.name,
+        size=my_file.size,
+        uploaded_by=person
+    )
+    file_to_admission.save()
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
 @login_required
@@ -176,6 +200,8 @@ def admission_form(request, admission_id=None):
         if not admission.person_information:
             admission.person_information = person
         admission.save()
+        if admission.state == DRAFT:
+            return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     else:

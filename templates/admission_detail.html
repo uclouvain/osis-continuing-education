@@ -244,6 +244,29 @@
                                         {% endfor %}
                                     </table>
                                 {% endif %}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form id="upload_form" method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="col-md-9 no-pad">
+                                                    <label class="custom-file-label btn btn-default"
+                                                           disabled id="custom-file-label">{% trans 'No file chosen' %}</label>
+                                                </div>
+                                                <div class="col-xs-12 col-md-3 no-pad pull-right">
+                                                    <div class="custom-file-btn-group">
+                                                        <button type="submit" class="col-xs-12 col-md-5 btn btn-primary pull-right" name="file_submit" id="btn-upload" value="upload" disabled>
+                                                            <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                                                            {% trans 'Upload' %}
+                                                        </button>
+                                                        <div class="col-xs-12 col-md-6 custom-file file btn btn-primary pull-right">
+                                                            {% trans 'Browse' %}
+                                                          <input type="file" class="custom-file-input" id="customFile" name="myfile">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -325,7 +348,10 @@
             $('#modalWarningDraft').modal('show');
         }
 
-
+        $('#customFile').change(function(e) {
+            $('#custom-file-label').text(this.files[0].name);
+            $('#btn-upload').removeAttr("disabled")
+        });
     </script>
     <script src="{% static 'js/rejected_admission.js' %}"></script>
 {% endblock %}

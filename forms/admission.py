@@ -114,7 +114,7 @@ class RejectedAdmissionForm(ModelForm):
     )
     other_reason = forms.CharField(
         required=False,
-        label=_('Other reason'),
+        label=_('Other rejection reason'),
     )
 
     class Meta:
