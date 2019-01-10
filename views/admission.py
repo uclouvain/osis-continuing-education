@@ -217,11 +217,13 @@ def admission_form(request, admission_id=None):
 
 
 def _new_state_management(adm_form, admission, new_state, rejected_adm_form):
-    if new_state == DRAFT:
-        return redirect(reverse('admission'))
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
             rejected_adm_form.save()
     else:
         adm_form.save()
+
+    if new_state == DRAFT:
+        return redirect(reverse('admission'))
+
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
