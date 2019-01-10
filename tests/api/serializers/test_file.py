@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,21 +23,35 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.test import TestCase, RequestFactory
+from django.urls import reverse
 
-import factory
-from django.utils.datetime_safe import datetime
-
-from base.tests.factories.person import PersonFactory
+from continuing_education.api.serializers.file import FileSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.file import FileFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
-class FileFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = 'continuing_education.File'
+class FileSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        person_information = ContinuingEducationPersonFactory()
+        cls.admission = AdmissionFactory(
+            person_information=person_information
+        )
+        cls.file = FileFactory(
+            uploaded_by=person_information.person
+        )
+        url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
+        cls.serializer = FileSerializer(cls.file, context={'request': RequestFactory().get(url)})
 
-    admission = factory.SubFactory(AdmissionFactory)
-    name = 'test'
-    path = 'path'
-    size = 1000
-    created_date = datetime.now()
-    uploaded_by = PersonFactory()
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'url',
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'uploaded_by'
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
