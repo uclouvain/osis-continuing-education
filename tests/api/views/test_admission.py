@@ -122,7 +122,6 @@ class GetAllAdmissionTestCase(APITestCase):
                 many=True,
                 context={'request': RequestFactory().get(self.url, query_string)},
             )
-            print("nok")
             self.assertEqual(response.data['results'], serializer.data)
 
 
