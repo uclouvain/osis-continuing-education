@@ -4,7 +4,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_waiting_html",
         "subject": "IUFC - Demande d'admission mise en attente",
-        "template": "<p>Votre demande d'admission pour la formation {{formation}} a été mise en attente.</p>\r\n\r\n<p>Motif: </p>",
+        "template": "<p>Votre demande d'admission pour la formation {{formation}} a été mise en attente.</p>\r\n\r\n<p>Motif: {{reason}}</p>",
         "format": "HTML",
         "language": "fr-be"
     }
@@ -14,7 +14,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_waiting_txt",
         "subject": "IUFC - Demande d'admission mise en attente",
-        "template": "Votre demande d'admission pour la formation {{formation}} a été mise en attente.\r\n\r\nMotif:",
+        "template": "Votre demande d'admission pour la formation {{formation}} a été mise en attente.\r\n\r\nMotif : {{reason}} ",
         "format": "PLAIN",
         "language": "fr-be"
     }

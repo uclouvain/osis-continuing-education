@@ -66,6 +66,7 @@
                 {% bootstrap_form admission_form exclude="state_reason" form_group_class="hidden" %}
                 {% include "fragment/state_reason_modal.html" %}
                 {% include "fragment/warning_modal.html" %}
+                {% include "fragment/rejected_reason_modal.html" %}
             </form>
         <h2>{% trans 'Admission' %}</h2>
     </div>
@@ -74,6 +75,12 @@
         {% if admission.state_reason and admission.is_waiting %}
             <div class="alert alert-info" role="alert">
                 <b>{% trans 'Waiting state reason' %}: </b>
+                {{ admission.state_reason }}
+            </div>
+        {% endif %}
+        {% if admission.state_reason and admission.is_rejected %}
+            <div class="alert alert-info" role="alert">
+                <b>{% trans 'Refusal state reason' %}: </b>
                 {{ admission.state_reason }}
             </div>
         {% endif %}
@@ -272,10 +279,13 @@
           setStateActive(newState);
           $('#id_state').val(newState);
           if(newState === "Waiting"){
-            openReasonModal()
+            openReasonModal(state_initial)
           }
           else if(newState === "Draft"){
               openWarningModal()
+          }
+          else if(newState === "Rejected"){
+              openRejectedModal()
           }
           else{
               $('#form').submit();
@@ -296,7 +306,10 @@
         }
 
         //open modal to add a state reason
-        function openReasonModal(){
+        function openReasonModal(state_initial){
+            if(state_initial != "Waiting"){
+                $('#id_state_reason').val('');
+            }
             $('#state_reason_modal').modal('show');
         }
 
@@ -311,5 +324,8 @@
         function openWarningModal(){
             $('#modalWarningDraft').modal('show');
         }
+
+
     </script>
+    <script src="{% static 'js/rejected_admission.js' %}"></script>
 {% endblock %}

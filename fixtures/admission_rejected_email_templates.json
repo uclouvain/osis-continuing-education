@@ -4,7 +4,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_rejected_html",
         "subject": "IUFC - Demande d'admission refusée",
-        "template": "<p>Votre demande d'admission pour la formation {{formation}} a été refusée.</p>\r\n\r\n<p>Motif: </p>",
+        "template": "<p>En réponse à votre demande d’admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>",
         "format": "HTML",
         "language": "fr-be"
     }
@@ -14,7 +14,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_rejected_txt",
         "subject": "IUFC - Demande d'admission refusée",
-        "template": "Votre demande d'admission pour la formation {{formation}} a été refusée.\r\n\r\nMotif:",
+        "template": "En réponse à votre demande d’admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :\r\n\r\n{{reason}}",
         "format": "PLAIN",
         "language": "fr-be"
     }

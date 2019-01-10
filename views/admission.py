@@ -38,7 +38,7 @@ from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
-from continuing_education.forms.admission import AdmissionForm
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
@@ -103,11 +103,20 @@ def admission_detail(request, admission_id):
         request.POST or None,
         instance=admission,
     )
+    rejected_adm_form = RejectedAdmissionForm(
+        request.POST or None,
+        instance=admission,
+    )
 
     if adm_form.is_valid():
         new_state = adm_form.cleaned_data['state']
         if new_state in accepted_states.get('states', []):
-            adm_form.save()
+            if new_state == REJECTED:
+                if rejected_adm_form.is_valid():
+                    rejected_adm_form.save()
+            else:
+                adm_form.save()
+
             return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
     return render(
@@ -116,7 +125,8 @@ def admission_detail(request, admission_id):
             'admission': admission,
             'files': files,
             'states': states,
-            'admission_form': adm_form
+            'admission_form': adm_form,
+            'rejected_adm_form': rejected_adm_form,
         }
     )
 
