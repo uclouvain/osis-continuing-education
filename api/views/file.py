@@ -26,6 +26,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import views, status, generics
+from rest_framework.generics import DestroyAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
@@ -59,7 +60,9 @@ class FileAPIView(views.APIView):
             size=file_obj.size,
             uploaded_by=person
         )
+        print(file.path)
         file.save()
+        print(file.path)
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED
@@ -69,6 +72,7 @@ class FileAPIView(views.APIView):
         if 'file_path' in request.query_params:
 
             file_path = request.query_params['file_path']
+            print(file_path)
             file = File.objects.get(path=file_path)
             file.delete()
             return Response(
@@ -122,3 +126,20 @@ class FileDetail(generics.RetrieveAPIView):
     queryset = File.objects.all()
     serializer_class = FileSerializer
     lookup_field = 'uuid'
+
+    def get_object(self):
+        file = File.objects.get(uuid=self.kwargs['file_uuid'])
+        return file
+
+
+class FileDestroy(DestroyAPIView):
+    name = 'file-destroy'
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    lookup_field = 'uuid'
+
+    def get_object(self):
+        file = File.objects.get(uuid=self.kwargs['file_uuid'])
+        return file
+
+
