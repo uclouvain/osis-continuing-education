@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import views, status, generics
 from rest_framework.generics import DestroyAPIView
@@ -38,16 +37,6 @@ from continuing_education.models.file import File
 class FileAPIView(views.APIView):
     parser_classes = (MultiPartParser,)
 
-    def get(self, request):
-        if 'file_path' in request.query_params:
-            file_path = request.query_params['file_path']
-            return _send_file(file_path)
-        else:
-            return Response(
-                data="File not found",
-                status=status.HTTP_404_NOT_FOUND
-            )
-
     def put(self, request):
         admission_id = request.data['admission_id']
         file_obj = request.data['file']
@@ -60,37 +49,11 @@ class FileAPIView(views.APIView):
             size=file_obj.size,
             uploaded_by=person
         )
-        print(file.path)
         file.save()
-        print(file.path)
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED
         )
-
-    def delete(self, request):
-        if 'file_path' in request.query_params:
-
-            file_path = request.query_params['file_path']
-            print(file_path)
-            file = File.objects.get(path=file_path)
-            file.delete()
-            return Response(
-                data="File deleted",
-                status=status.HTTP_204_NO_CONTENT
-            )
-        else:
-            return Response(
-                data="File not found",
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-
-def _send_file(file_path):
-    file = File.objects.get(path=file_path)
-    response = HttpResponse(file.path, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=%s' % file.name
-    return response
 
 
 class FileList(generics.ListAPIView):
