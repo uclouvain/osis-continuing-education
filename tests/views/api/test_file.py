@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import json
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -81,49 +80,6 @@ class ViewFileAPITestCase(TestCase):
         self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.admission.person_information.person)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(File.objects.count(),FILES_COUNT+1)
-
-    def test_get_file(self):
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Token ' + self.token.key
-        )
-        response = self.client.get(
-            path=self.file_api_url,
-            data={'file_path': self.file.path.name}
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content.decode(), FILE_CONTENT+"0")
-
-    def test_get_files_list(self):
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Token ' + self.token.key
-        )
-        response = self.client.get(
-            path=self.file_api_url,
-            data={'admission_id': self.admission.uuid}
-        )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(json.loads(response.content.decode("utf-8"))), FILES_COUNT)
-
-    def test_get_without_params(self):
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Token ' + self.token.key
-        )
-        response = self.client.get(
-            path=self.file_api_url
-        )
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_delete_file(self):
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Token ' + self.token.key
-        )
-        number_files = len(File.objects.all())
-        response = self.client.delete(
-            path=self.file_api_url + "?file_path=" + self.file.path.name,
-        )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        number_after_delete = len(File.objects.all())
-        self.assertEqual(number_after_delete, number_files-1)
 
 
 def add_files_to_db(admission):
