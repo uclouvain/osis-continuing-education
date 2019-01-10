@@ -104,5 +104,3 @@ class FileDestroy(DestroyAPIView):
     def get_object(self):
         file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
         return file
-
-
