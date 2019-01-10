@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import uuid
 
 from django.contrib.admin import ModelAdmin
 from django.db import models
@@ -43,7 +44,7 @@ class FileAdmin(ModelAdmin):
 
 
 class File(Model):
-
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     admission = models.ForeignKey(
         'continuing_education.Admission',
         blank=True,

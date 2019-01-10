@@ -23,32 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.core import serializers
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from rest_framework import views, status
+from rest_framework import views, status, generics
+from rest_framework.generics import DestroyAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
+from continuing_education.api.serializers.file import FileSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
 
 
 class FileAPIView(views.APIView):
     parser_classes = (MultiPartParser,)
-
-    def get(self, request):
-        if 'file_path' in request.query_params:
-            file_path = request.query_params['file_path']
-            return _send_file(file_path)
-        elif 'admission_id' in request.query_params:
-            admission_id = request.query_params['admission_id']
-            return _send_documents_list(admission_id)
-        else:
-            return Response(
-                data="File not found",
-                status=status.HTTP_404_NOT_FOUND
-            )
 
     def put(self, request):
         admission_id = request.data['admission_id']
@@ -68,31 +55,52 @@ class FileAPIView(views.APIView):
             status=status.HTTP_201_CREATED
         )
 
-    def delete(self, request):
-        if 'file_path' in request.query_params:
-            file_path = request.query_params['file_path']
-            file = get_object_or_404(File, path=file_path)
-            file.delete()
-            return Response(
-                data="File deleted",
-                status=status.HTTP_204_NO_CONTENT
-            )
-        else:
-            return Response(
-                data="File not found",
-                status=status.HTTP_404_NOT_FOUND
-            )
+
+class FileList(generics.ListAPIView):
+    """
+       Return a list of all the files with optional filtering.
+    """
+    name = 'file-list'
+    serializer_class = FileSerializer
+    filter_fields = (
+        'name',
+        'size',
+        'created_date',
+        'uploaded_by'
+    )
+    search_fields = (
+        'name',
+        'path',
+        'size',
+        'created_date',
+        'uploaded_by'
+    )
+
+    def get_queryset(self):
+        admission = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
+        return File.objects.filter(admission=admission)
 
 
-def _send_file(file_path):
-    file = File.objects.get(path=file_path)
-    response = HttpResponse(file.path, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=%s' % file.name
-    return response
+class FileDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the file
+    """
+    name = 'file-detail'
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    lookup_field = 'uuid'
+
+    def get_object(self):
+        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
+        return file
 
 
-def _send_documents_list(admission_id):
-    admission = Admission.objects.get(uuid=admission_id)
-    documents = File.objects.filter(admission=admission)
-    documents_json = serializers.serialize("json", documents)
-    return HttpResponse(documents_json)
+class FileDestroy(DestroyAPIView):
+    name = 'file-delete'
+    queryset = File.objects.all()
+    serializer_class = FileSerializer
+    lookup_field = 'uuid'
+
+    def get_object(self):
+        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
+        return file

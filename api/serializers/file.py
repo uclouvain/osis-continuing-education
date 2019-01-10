@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,21 +23,39 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from rest_framework import serializers
+from rest_framework.reverse import reverse
 
-import factory
-from django.utils.datetime_safe import datetime
-
-from base.tests.factories.person import PersonFactory
-from continuing_education.tests.factories.admission import AdmissionFactory
+from base.api.serializers.person import PersonDetailSerializer
+from continuing_education.models.file import File
 
 
-class FileFactory(factory.DjangoModelFactory):
+class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
+    def __init__(self, **kwargs):
+        super().__init__(view_name='continuing_education_api_v1:file-detail', **kwargs)
+
+    def get_url(self, obj, view_name, request, format):
+        url_kwargs = {
+            'uuid': obj.admission.uuid,
+            'file_uuid': obj.uuid
+        }
+        return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
+
+
+class FileSerializer(serializers.HyperlinkedModelSerializer):
+
+    url = FileHyperlinkedIdentityField()
+    uploaded_by = PersonDetailSerializer()
+    created_date = serializers.DateTimeField()
+
     class Meta:
-        model = 'continuing_education.File'
-
-    admission = factory.SubFactory(AdmissionFactory)
-    name = 'test'
-    path = 'path'
-    size = 1000
-    created_date = datetime.now()
-    uploaded_by = PersonFactory()
+        model = File
+        fields = (
+            'url',
+            'uuid',
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'uploaded_by'
+        )

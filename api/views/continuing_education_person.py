@@ -23,21 +23,40 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from rest_framework import generics
 
-import factory
-from django.utils.datetime_safe import datetime
-
-from base.tests.factories.person import PersonFactory
-from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
-class FileFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = 'continuing_education.File'
+class ContinuingEducationPersonList(generics.ListAPIView):
+    """
+       Return a list of continuing education persons with optional filtering.
+    """
+    name = 'person-list'
+    queryset = ContinuingEducationPerson.objects.all().select_related(
+        'person'
+    )
+    serializer_class = ContinuingEducationPersonSerializer
+    filter_fields = (
+        'birth_country',
+    )
+    search_fields = (
+        'person',
+    )
+    ordering_fields = (
+        'birth_date',
+    )
+    ordering = (
+        'person',
+    )  # Default ordering
 
-    admission = factory.SubFactory(AdmissionFactory)
-    name = 'test'
-    path = 'path'
-    size = 1000
-    created_date = datetime.now()
-    uploaded_by = PersonFactory()
+
+class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the continuing education person
+    """
+    name = 'person-detail'
+    queryset = ContinuingEducationPerson.objects.all()
+    serializer_class = ContinuingEducationPersonSerializer
+    lookup_field = 'uuid'

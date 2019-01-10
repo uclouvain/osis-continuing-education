@@ -23,21 +23,34 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from rest_framework import generics
 
-import factory
-from django.utils.datetime_safe import datetime
-
-from base.tests.factories.person import PersonFactory
-from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.models.address import Address
 
 
-class FileFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = 'continuing_education.File'
+class AddressList(generics.ListAPIView):
+    """
+       Return a list of all the addresses with optional filtering.
+    """
+    name = 'address-list'
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    filter_fields = (
+        'country',
+        'city',
+    )
+    search_fields = (
+        'location',
+        'city',
+    )
 
-    admission = factory.SubFactory(AdmissionFactory)
-    name = 'test'
-    path = 'path'
-    size = 1000
-    created_date = datetime.now()
-    uploaded_by = PersonFactory()
+
+class AddressDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the address
+    """
+    name = 'address-detail'
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    lookup_field = 'uuid'

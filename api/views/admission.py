@@ -23,21 +23,52 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from rest_framework import generics
 
-import factory
-from django.utils.datetime_safe import datetime
-
-from base.tests.factories.person import PersonFactory
-from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
+    AdmissionListSerializer
+from continuing_education.models.admission import Admission
 
 
-class FileFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = 'continuing_education.File'
+class AdmissionList(generics.ListAPIView):
+    """
+       Return a list of all the admission with optional filtering.
+    """
+    name = 'admission-list'
+    queryset = Admission.objects.all().select_related(
+        'person_information',
+        'citizenship',
+        'address',
+        'billing_address',
+        'residence_address'
+    )
+    serializer_class = AdmissionListSerializer
+    filter_fields = (
+        'person_information',
+        'formation',
+        'state',
+    )
+    search_fields = (
+        'person_information',
+        'formation',
+        'state',
+    )
+    ordering_fields = (
+        'person_information__person__last_name',
+        'formation',
+        'state',
+    )
+    ordering = (
+        'state',
+        'formation',
+    )  # Default ordering
 
-    admission = factory.SubFactory(AdmissionFactory)
-    name = 'test'
-    path = 'path'
-    size = 1000
-    created_date = datetime.now()
-    uploaded_by = PersonFactory()
+
+class AdmissionDetail(generics.RetrieveAPIView):
+    """
+        Return the detail of the admission
+    """
+    name = 'admission-detail'
+    queryset = Admission.objects.all()
+    serializer_class = AdmissionDetailSerializer
+    lookup_field = 'uuid'
