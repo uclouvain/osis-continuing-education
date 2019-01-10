@@ -25,7 +25,8 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.admission import AdmissionSerializer
+from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
+    AdmissionListSerializer
 from continuing_education.models.admission import Admission
 
 
@@ -41,7 +42,7 @@ class AdmissionList(generics.ListAPIView):
         'billing_address',
         'residence_address'
     )
-    serializer_class = AdmissionSerializer
+    serializer_class = AdmissionListSerializer
     filter_fields = (
         'person_information',
         'formation',
@@ -53,7 +54,7 @@ class AdmissionList(generics.ListAPIView):
         'state',
     )
     ordering_fields = (
-        'person_information',
+        'person_information__person__last_name',
         'formation',
         'state',
     )
@@ -69,5 +70,5 @@ class AdmissionDetail(generics.RetrieveAPIView):
     """
     name = 'admission-detail'
     queryset = Admission.objects.all()
-    serializer_class = AdmissionSerializer
+    serializer_class = AdmissionDetailSerializer
     lookup_field = 'uuid'

@@ -25,21 +25,39 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.models.academic_year import current_academic_year
-from base.models.education_group_year import EducationGroupYear
-from base.models.enums import education_group_categories
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from education_group.api.serializers.training import TrainingListSerializer
 from reference.models.country import Country
 
 
-class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
+class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:admission-detail',
         lookup_field='uuid'
     )
+    person_information = ContinuingEducationPersonSerializer()
+
+    # Display human readable value
+    state_text = serializers.CharField(source='get_state_display', read_only=True)
+
+    formation = TrainingListSerializer()
+
+    class Meta:
+        model = Admission
+        fields = (
+            'uuid',
+            'url',
+            'person_information',
+            'email',
+            'formation',
+            'state',
+            'state_text',
+        )
+
+
+class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     person_information = ContinuingEducationPersonSerializer()
 
     citizenship = serializers.SlugRelatedField(
@@ -54,19 +72,12 @@ class AdmissionSerializer(serializers.HyperlinkedModelSerializer):
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
-    formation = serializers.SlugRelatedField(
-        slug_field='acronym',
-        queryset=EducationGroupYear.objects.filter(
-            education_group_type__category=education_group_categories.TRAINING,
-            academic_year=current_academic_year().next()
-        )
-    )
+    formation = TrainingListSerializer()
 
     class Meta:
         model = Admission
         fields = (
             'uuid',
-            'url',
             'person_information',
 
             # CONTACTS
