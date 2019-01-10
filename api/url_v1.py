@@ -34,6 +34,7 @@ from continuing_education.api.views.schema import schema_view
 
 urlpatterns = [
     url(r"^$", schema_view),
+    # TODO: remove files/ : it is for old api
     url(r'^files/addresses/$', AddressList.as_view(), name=AddressList.name),
     url(r'^files/addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
     url(r'^files/persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),

@@ -48,6 +48,7 @@ class FileSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'url',
+            'uuid',
             'name',
             'path',
             'size',

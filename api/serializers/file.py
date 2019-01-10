@@ -52,6 +52,7 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
         model = File
         fields = (
             'url',
+            'uuid',
             'name',
             'path',
             'size',
