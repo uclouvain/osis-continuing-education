@@ -40,4 +40,4 @@ class FileFactory(factory.DjangoModelFactory):
     path = 'path'
     size = 1000
     created_date = datetime.now()
-    uploaded_by = PersonFactory()
+    uploaded_by = factory.SubFactory(PersonFactory)
