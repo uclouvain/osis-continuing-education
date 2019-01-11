@@ -676,7 +676,7 @@ msgstr "Lieu de naissance inconnu"
 
 #: templates/admission_detail.html:259
 msgid "Upload"
-msgstr "Envoyé"
+msgstr "Envoyer"
 
 #: models/file.py:74 templates/admission_detail.html:227
 msgid "Uploaded by"
