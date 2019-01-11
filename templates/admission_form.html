@@ -42,21 +42,6 @@
             <a class="btn btn-default pull-right" style="margin-right: 10px;" id="cancel" href="{% url 'admission' %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
-            <div class="btn-group pull-right">
-              <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
-              <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">{% trans 'State' %}</span>
-              </button>
-              <ul class="dropdown-menu">
-                  {% for state in states %}
-                      {% with state.0 as state_value and state.1 as state_trans %}
-                         <li><a value="{{state_value}}" href="#">{{state_trans}}</a></li>
-                      {% endwith %}
-                  {% endfor %}
-               <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
-              </ul>
-            </div>
         {% endif %}
         <h2>{% trans 'Admission' %}</h2>
     </div>
@@ -203,8 +188,6 @@
 
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
-        {% include "fragment/state_reason_modal.html" %}
-        {% include "fragment/warning_modal.html" %}
 
         <div class="panel panel-body">
             <button type="submit" class="btn btn-primary" title="{%trans 'Save' %}">
@@ -232,43 +215,6 @@
             $('#person_details').toggle($('#id_person_information').find(":selected").val() === '');
         });
 
-        // dynamically change color of state button
-        states = {
-            "Waiting": "btn-primary",
-            "Accepted": "btn-success",
-            "Rejected": "btn-danger",
-            "Submitted": "btn-info"
-        };
-        var state_initial = "{{ state }}";
-        setStateActive(state_initial);
-        $(".dropdown-menu li a").click(function(){
-          let newState = $(this).attr("value");
-          let oldClass = states[$('#button-state').attr("value")];
-          $('#button-state').removeClass(oldClass);
-          $('#button-state-caret').removeClass(oldClass);
-          setStateActive(newState);
-          $('#id_state').val(newState);
-          if(newState === "Waiting"){
-            openReasonModal()
-          }
-          else if(newState === "Draft"){
-              openWarningModal()
-          }
-        });
-
-        function setStateActive(newState){
-            let newClass = states[newState];
-            let text = "";
-            if(newState !== "None") {
-                text = $("[value=" + newState + "]")[0].text;
-            }
-            else {
-                text = $("#button-state").text();
-            }
-            $('#button-state').html(text).attr("value",newState).addClass(newClass);
-            $('#button-state-caret').addClass(newClass);
-        }
-
         // show other text field when other is checked
         $('#id_awareness_other_checkbox').change(function(){
             $('#other-text-field').toggle(this.checked);
@@ -277,18 +223,6 @@
             }
         });
 
-        //open modal to add a state reason
-        function openReasonModal(){
-            $('#state_reason_modal').modal('show');
-        }
-
-        $('#cancel_reason').click(function () {
-            $("#id_state_reason").val(null);
-        })
-
-        function openWarningModal(){
-            $('#modalWarningDraft').modal('show');
-        }
     //re-enable disabled field on form submit
     let fields_to_enable = ["birth_country", "gender"];
 
@@ -301,4 +235,5 @@
         enableFields(fields_to_enable);
     });
     </script>
+
 {% endblock %}

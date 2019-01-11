@@ -39,7 +39,7 @@ from base.models.enums import entity_type
 from base.models.person import Person
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
-from continuing_education.forms.admission import AdmissionForm
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
@@ -108,8 +108,13 @@ def admission_detail(request, admission_id):
     if request.method == 'POST' and request.FILES:
         return _upload_file(request, admission)
 
+    rejected_adm_form = RejectedAdmissionForm(
+        request.POST or None,
+        instance=admission,
+        )
+
     if adm_form.is_valid():
-        return _change_state(adm_form, accepted_states, admission)
+        return _change_state(adm_form, accepted_states, admission, rejected_adm_form)
 
     return render(
         request, "admission_detail.html",
@@ -117,18 +122,16 @@ def admission_detail(request, admission_id):
             'admission': admission,
             'files': files,
             'states': states,
-            'admission_form': adm_form
+            'admission_form': adm_form,
+            'rejected_adm_form': rejected_adm_form,
         }
     )
 
 
-def _change_state(adm_form, accepted_states, admission):
+def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        adm_form.save()
-        if new_state == DRAFT:
-            return redirect(reverse('admission'))
-        return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+        return _new_state_management(adm_form, admission, new_state, rejected_adm_form)
 
 
 def _upload_file(request, admission):
@@ -211,3 +214,16 @@ def admission_form(request, admission_id=None):
             'states': states
         }
     )
+
+
+def _new_state_management(adm_form, admission, new_state, rejected_adm_form):
+    if new_state == REJECTED:
+        if rejected_adm_form.is_valid():
+            rejected_adm_form.save()
+    else:
+        adm_form.save()
+
+    if new_state == DRAFT:
+        return redirect(reverse('admission'))
+
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))

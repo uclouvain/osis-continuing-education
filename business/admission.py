@@ -43,7 +43,8 @@ def send_state_changed_email(admission):
             'first_name': admission.person_information.person.first_name,
             'last_name': admission.person_information.person.last_name,
             'formation': admission.formation,
-            'state': _(admission.state)
+            'state': _(admission.state),
+            'reason': admission.state_reason if admission.state_reason else '-',
         },
         subject_data={
             'state': _(admission.state)
