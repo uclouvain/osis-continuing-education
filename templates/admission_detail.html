@@ -235,6 +235,10 @@
                                                 <td> {{file.created_date}} </td>
                                                 <td> {{file.uploaded_by}} </td>
                                                 <td>
+                                                    <a class="button" role="button"
+                                                        href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                                                        <span class="glyphicon glyphicon-remove-circle btn-space btn-file" aria-hidden="true"></span>
+                                                    </a>
                                                     <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                                                         <span class="glyphicon glyphicon-download-alt btn-space btn-file"
                                                               aria-hidden="true"></span>
