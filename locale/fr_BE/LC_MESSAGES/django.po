@@ -425,10 +425,8 @@ msgid "No document available"
 msgstr "Aucun document disponible"
 
 #: templates/admission_detail.html:253
-#, fuzzy
-#| msgid "Mobile phone"
 msgid "No file chosen"
-msgstr "GSM"
+msgstr "Aucun fichier choisi"
 
 #: business/enums/rejected_reason.py:32 models/enums/enums.py:32
 #: models/enums/enums.py:40 templates/admission_detail.html:206
@@ -553,10 +551,8 @@ msgid "Reason for waiting"
 msgstr "Raison de mise en attente"
 
 #: templates/admission_detail.html:83
-#, fuzzy
-#| msgid "Waiting state reason"
 msgid "Refusal state reason"
-msgstr "Raison de la mise en attente"
+msgstr "Motif d'état de refus"
 
 #: templates/registrations.html:73
 msgid "Registered"
@@ -587,10 +583,8 @@ msgid "Rejected"
 msgstr "Refusé"
 
 #: templates/fragment/rejected_reason_modal.html:33
-#, fuzzy
-#| msgid "Rejected"
 msgid "Rejected reason"
-msgstr "Refusé"
+msgstr "Motif de refus"
 
 #: models/admission.py:297
 msgid "Residence address"
@@ -682,11 +676,11 @@ msgstr "Lieu de naissance inconnu"
 
 #: templates/admission_detail.html:259
 msgid "Upload"
-msgstr ""
+msgstr "Envoyé"
 
 #: models/file.py:74 templates/admission_detail.html:227
 msgid "Uploaded by"
-msgstr ""
+msgstr "Envoyé par"
 
 #: models/admission.py:219 templates/registration_form.html:56
 msgid "Use address for billing"
@@ -732,12 +726,9 @@ msgstr ""
 "attente"
 
 #: templates/fragment/rejected_reason_modal.html:38
-#, fuzzy
-#| msgid "You can enter a reason to put this admission on hold"
 msgid "You can enter a reason to reject this admission"
 msgstr ""
-"Vous pouvez indiquer la raison pour laquelle cette admission est mise en "
-"attente"
+"Vous pouvez indiquer la raison pour laquelle cette admission est refusée "
 
 #: business/enums/rejected_reason.py:31
 msgid "You do not have the experience and/or motivation to follow this program"
