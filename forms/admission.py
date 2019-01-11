@@ -138,7 +138,7 @@ class RejectedAdmissionForm(ModelForm):
         self.fields['rejected_reason'].widget.attrs = {'onchange': 'disabledEnabledOtherReasonInputText();'}
 
     def _reject_state_init(self):
-        if any(self.instance.state_reason == reason for reason in REJECTED_REASON_CHOICES):
+        if any(self.instance.state_reason in reason for reason in REJECTED_REASON_CHOICES):
             self.fields['rejected_reason'].initial = self.instance.state_reason
             self._disabled_and_init_other_reason()
         elif self.instance.state_reason:
