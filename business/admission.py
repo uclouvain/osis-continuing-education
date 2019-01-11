@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.utils.translation import ugettext as _
 
@@ -69,8 +70,9 @@ def send_admission_submitted_email(admission):
         template_data={
             'first_name': admission.person_information.person.first_name,
             'last_name': admission.person_information.person.last_name,
-            'formation': admission.formation,
-            'state': _(admission.state)
+            'formation': formation,
+            'state': _(admission.state),
+            'formation_link': _build_formation_link(admission),
         },
         subject_data={
             'formation': admission.formation,
@@ -160,3 +162,29 @@ def disable_existing_fields(form):
         form.fields[field].widget.attrs['readonly'] = True
         if field in fields_to_disable:
             form.fields[field].widget.attrs['disabled'] = True
+
+
+def _build_formation_link(admission):
+    return "{}{}{}".format(
+        _get_host_part(),
+        "continuing_education/admission/",
+        admission.id,
+    )
+
+
+def _get_host_part():
+    if hasattr(settings, 'ENVIRONMENT'):
+        env = settings.ENVIRONMENT
+    else:
+        env = 'LOCAL'
+
+    if env == 'LOCAL':
+        return 'http://127.0.0.1:8002/'
+    elif env == 'DEV':
+        return 'https://dev.osis.uclouvain.be/'
+    elif env == 'QA':
+        return 'https://qa.osis.uclouvain.be/'
+    elif env == 'TEST':
+        return 'https://test.osis.uclouvain.be/'
+    else:
+        return 'https://osis.uclouvain.be/'
