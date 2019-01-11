@@ -159,6 +159,14 @@ def download_file(request, admission_id, file_id):
 
 
 @login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def delete_file(request, admission_id, file_id):
+    file = File.objects.filter(id=file_id)
+    file.delete()
+    return redirect('{}#documents'.format(reverse('admission_detail', kwargs={'admission_id': admission_id})))
+
+
+@login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
