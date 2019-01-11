@@ -226,4 +226,4 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.post(url, data={'myfile': file}, format='multipart')
 
         self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.manager)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
