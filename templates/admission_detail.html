@@ -356,6 +356,9 @@
             $('#custom-file-label').text(this.files[0].name);
             $('#btn-upload').removeAttr("disabled")
         });
+
+        var anchor = location.hash;
+        $('#tabs a[href="' + anchor + '"]').tab('show');
     </script>
     <script src="{% static 'js/rejected_admission.js' %}"></script>
 {% endblock %}
