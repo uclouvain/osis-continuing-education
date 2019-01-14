@@ -31,12 +31,14 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from base.models.person import Person
+from base.views.common import display_success_messages, display_error_messages
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
@@ -144,7 +146,11 @@ def _upload_file(request, admission):
         size=my_file.size,
         uploaded_by=person
     )
-    file_to_admission.save()
+    try:
+        file_to_admission.save()
+        display_success_messages(request, _("The document is uploaded correctly"))
+    except Exception as e:
+        display_error_messages(request, _("A problem occured : the document is not uploaded"))
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')
 
 
@@ -162,7 +168,11 @@ def download_file(request, admission_id, file_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def delete_file(request, admission_id, file_id):
     file = File.objects.filter(id=file_id)
-    file.delete()
+    try:
+        file.delete()
+        display_success_messages(request, _("File correctly deleted"))
+    except Exception as e:
+        display_error_messages(request, _("A problem occured during delete"))
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + '#documents')
 
 
