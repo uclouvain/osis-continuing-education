@@ -25,14 +25,14 @@
 ##############################################################################
 from django.utils.translation import ugettext as _
 
-COURSE_NOT_ADAPTED_TO_PROGRAM_ = _('Your course is not adapted to the program of this training')
+COURSE_NOT_ADAPTED_TO_PROGRAM = _('Your course is not adapted to the program of this training')
 DONT_MEET_ADMISSION_REQUIREMENTS = _('You do not meet the admission requirements')
 PROGRAM_COMPLETE = _('The programme is already complete')
 NOT_ENOUGH_EXPERIENCE = _('You do not have the experience and/or motivation to follow this program')
 OTHER = _('Other')
 
 REJECTED_REASON_CHOICES = (
-    (COURSE_NOT_ADAPTED_TO_PROGRAM_, COURSE_NOT_ADAPTED_TO_PROGRAM_),
+    (COURSE_NOT_ADAPTED_TO_PROGRAM, COURSE_NOT_ADAPTED_TO_PROGRAM),
     (DONT_MEET_ADMISSION_REQUIREMENTS, DONT_MEET_ADMISSION_REQUIREMENTS,),
     (PROGRAM_COMPLETE, PROGRAM_COMPLETE),
     (NOT_ENOUGH_EXPERIENCE, NOT_ENOUGH_EXPERIENCE),

@@ -145,7 +145,7 @@ def _upload_file(request, admission):
         uploaded_by=person
     )
     file_to_admission.save()
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')
 
 
 @login_required
@@ -156,6 +156,14 @@ def download_file(request, admission_id, file_id):
     response = HttpResponse(file.path, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def delete_file(request, admission_id, file_id):
+    file = File.objects.filter(id=file_id)
+    file.delete()
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + '#documents')
 
 
 @login_required
