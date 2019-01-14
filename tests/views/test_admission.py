@@ -27,12 +27,14 @@ import datetime
 import random
 from unittest.mock import patch
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
+from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
@@ -230,3 +232,27 @@ class ViewAdmissionTestCase(TestCase):
 
         self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("The document is uploaded correctly")),
+            str(messages_list[0])
+        )
+
+    @patch('django.db.models.base.Model.save', side_effect=Exception)
+    def test_upload_file_error(self, mock_save):
+        file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode(FILE_CONTENT),
+            content_type="application/pdf"
+        )
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data={'myfile': file}, format='multipart')
+
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("A problem occured : the document is not uploaded")),
+            str(messages_list[0])
+        )
