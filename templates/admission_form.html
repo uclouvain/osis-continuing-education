@@ -178,7 +178,7 @@
                                         {% if other_value == None or other_value == '' %}
                                             hidden
                                         {% endif %}>
-                                    {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group' %}
+                                    {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group'  field_class="other_required" %}
                                 </div>
                             </div>
                         {% endwith %}
@@ -234,6 +234,9 @@
     $( "#form" ).submit(function( event ) {
         enableFields(fields_to_enable);
     });
+
+    $(".other_required").after(" *").css('display', 'inline-block');
+
     </script>
 
 {% endblock %}
