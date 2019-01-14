@@ -2,7 +2,6 @@ env:
   global:
     - CC_TEST_REPORTER_ID=0f5097f9008192684ae5748e841b38d1b41496eb17d6e79749ce3c2e565e459b
 
-
 language: python
 python: "3.5.5"
 cache: pip
