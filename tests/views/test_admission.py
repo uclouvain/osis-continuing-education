@@ -27,12 +27,14 @@ import datetime
 import random
 from unittest.mock import patch
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
+from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
@@ -64,6 +66,12 @@ class ViewAdmissionTestCase(TestCase):
         self.admission = AdmissionFactory(
             formation=self.formation,
             state=SUBMITTED
+        )
+
+        self.file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode(FILE_CONTENT),
+            content_type="application/pdf"
         )
 
     def test_list_admissions(self):
@@ -218,15 +226,93 @@ class ViewAdmissionTestCase(TestCase):
         admission_state = self.admission.__getattribute__('state')
         self.assertEqual(admission_state, admission_draft['state'], 'state')
 
-    def test_upload_file(self):
-        file = SimpleUploadedFile(
+
+class UploadFileTestCase(TestCase):
+    def setUp(self):
+        current_acad_year = create_current_academic_year()
+        next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        formation = EducationGroupYearFactory(academic_year=next_acad_year)
+
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
+
+        self.admission = AdmissionFactory(
+            formation=formation,
+            state=SUBMITTED
+        )
+        self.file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
         )
 
+    def test_upload_file(self):
         url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data={'myfile': file}, format='multipart')
+        response = self.client.post(url, data={'myfile': self.file}, format='multipart')
 
-        self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.manager)
+        self.assertEqual(File.objects.get(path__contains=self.file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("The document is uploaded correctly")),
+            str(messages_list[0])
+        )
+
+    @patch('django.db.models.base.Model.save', side_effect=Exception)
+    def test_upload_file_error(self, mock_save):
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data={'myfile': self.file}, format='multipart')
+
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("A problem occured : the document is not uploaded")),
+            str(messages_list[0])
+        )
+
+
+class DeleteFileTestCase(TestCase):
+    def setUp(self):
+        current_acad_year = create_current_academic_year()
+        next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        formation = EducationGroupYearFactory(academic_year=next_acad_year)
+
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
+
+        self.admission = AdmissionFactory(
+            formation=formation,
+            state=SUBMITTED
+        )
+        self.file = FileFactory()
+
+    def test_delete_file(self):
+        self.assertEqual(File.objects.all().count(), 1)
+        url = reverse('delete_file', args=[self.admission.pk, self.file.pk])
+        response = self.client.get(url)
+
+        self.assertEqual(File.objects.all().count(), 0)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("File correctly deleted")),
+            str(messages_list[0])
+        )
+
+    @patch('django.db.models.query.QuerySet.delete', side_effect=Exception)
+    def test_delete_file_error(self, mock_delete):
+        self.assertEqual(File.objects.all().count(), 1)
+        url = reverse('delete_file', args=[self.admission.pk, self.file.pk])
+        response = self.client.get(url)
+
+        self.assertEqual(File.objects.all().count(), 1)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("A problem occured during delete")),
+            str(messages_list[0])
+        )
