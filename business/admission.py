@@ -23,12 +23,13 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.utils.translation import ugettext as _
 
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
@@ -61,6 +62,10 @@ def send_state_changed_email(admission):
 
 
 def send_admission_submitted_email(admission):
+    relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
+    # No request here because we are in a post_save
+    formation_url = 'https://%s%s' % (Site.objects.get_current().domain, relative_path)
+
     managers = _get_continuing_education_managers()
     send_email(
         template_references={
@@ -70,9 +75,9 @@ def send_admission_submitted_email(admission):
         template_data={
             'first_name': admission.person_information.person.first_name,
             'last_name': admission.person_information.person.last_name,
-            'formation': formation,
+            'formation': admission.formation,
             'state': _(admission.state),
-            'formation_link': _build_formation_link(admission),
+            'formation_link': formation_url,
         },
         subject_data={
             'formation': admission.formation,
@@ -162,29 +167,3 @@ def disable_existing_fields(form):
         form.fields[field].widget.attrs['readonly'] = True
         if field in fields_to_disable:
             form.fields[field].widget.attrs['disabled'] = True
-
-
-def _build_formation_link(admission):
-    return "{}{}{}".format(
-        _get_host_part(),
-        "continuing_education/admission/",
-        admission.id,
-    )
-
-
-def _get_host_part():
-    if hasattr(settings, 'ENVIRONMENT'):
-        env = settings.ENVIRONMENT
-    else:
-        env = 'LOCAL'
-
-    if env == 'LOCAL':
-        return 'http://127.0.0.1:8002/'
-    elif env == 'DEV':
-        return 'https://dev.osis.uclouvain.be/'
-    elif env == 'QA':
-        return 'https://qa.osis.uclouvain.be/'
-    elif env == 'TEST':
-        return 'https://test.osis.uclouvain.be/'
-    else:
-        return 'https://osis.uclouvain.be/'
