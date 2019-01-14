@@ -23,46 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
 
-from continuing_education.forms.registration import RegistrationForm
-from continuing_education.models.admission import Admission
-from continuing_education.views.common import display_errors
+import factory
+from django.utils.datetime_safe import datetime
 
-
-@login_required
-def registration_detail(request, admission_id):
-    admission = get_object_or_404(Admission, pk=admission_id)
-    return render(
-        request,
-        "student/registration_detail.html",
-        {
-            'admission': admission,
-        }
-    )
+from base.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.admission import AdmissionFactory
 
 
-@login_required
-def registration_edit(request, admission_id):
-    registration = get_object_or_404(Admission, pk=admission_id)
+class FileFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'continuing_education.File'
 
-    form = RegistrationForm(request.POST or None, instance=registration)
-    errors = []
-    if form.is_valid():
-        registration = form.save()
-        return redirect(reverse('student_registration_detail', kwargs={'admission_id':admission_id}))
-    else:
-        errors.append(form.errors)
-        display_errors(request, errors)
-
-    return render(
-        request,
-        'student/registration_form.html',
-        {
-            'registration': registration,
-            'form': form,
-            'errors': errors,
-        }
-    )
+    admission = factory.SubFactory(AdmissionFactory)
+    name = 'test'
+    path = 'path'
+    size = 1000
+    created_date = datetime.now()
+    uploaded_by = factory.SubFactory(PersonFactory)

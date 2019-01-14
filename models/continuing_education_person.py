@@ -21,20 +21,20 @@ class ContinuingEducationPerson(SerializableModel):
     birth_date = models.DateField(
         blank=True,
         default=datetime.date(2000, 1, 1),
-        verbose_name=_("birth_date")
+        verbose_name=_("Birth date")
     )
 
     birth_location = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("birth_location")
+        verbose_name=_("Birth location")
     )
     birth_country = models.ForeignKey(
         'reference.Country',
         blank=True,
         null=True,
         related_name='birth_country',
-        verbose_name=_("birth_country")
+        verbose_name=_("Birth country")
     )
 
     def __str__(self):

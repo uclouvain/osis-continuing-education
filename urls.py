@@ -26,30 +26,20 @@
 from django.conf.urls import url, include
 
 from continuing_education.views import (home, admission, registration)
-from continuing_education.views.student import admission as student_admission
-from continuing_education.views.student import registration as student_registration
-
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
-    url(r'^admin/$', home.admin_view, name='continuing_education_admin'),
-    url(r'^student/', include ([
-        url(r'^$', home.student_view, name='continuing_education_student'),
-        url(r'^admission_new/', student_admission.admission_new, name='student_admission_new'),
-        url(r'^admission_edit/(?P<admission_id>[0-9]+)$', student_admission.admission_edit, name='student_admission_edit'),
-        url(r'^admission_detail/(?P<admission_id>[0-9]+)$', student_admission.admission_detail, name='student_admission_detail'),
-        url(r'^registration_edit/(?P<admission_id>[0-9]+)$', student_registration.registration_edit, name='student_registration_edit'),
-        url(r'^registration_detail/(?P<admission_id>[0-9]+)$', student_registration.registration_detail, name='student_registration_detail'),
-    ])),
     url(r'^admission/', include([
         url(r'^$', admission.list_admissions, name='admission'),
         url(r'^new/$', admission.admission_form, name='admission_new'),
         url(r'^edit/(?P<admission_id>[0-9]+)/', admission.admission_form, name='admission_edit'),
         url(r'^(?P<admission_id>[0-9]+)/', include([
             url(r'^$', admission.admission_detail, name='admission_detail'),
+            url(r'^file/(?P<file_id>[0-9]+)$', admission.download_file, name='download_file'),
+            url(r'file/(?P<file_id>[0-9]+)/delete$', admission.delete_file, name='delete_file'),
         ]))
     ])),
-        url(r'^registration/', include([
+    url(r'^registration/', include([
         url(r'^$', registration.list_registrations, name='registration'),
         url(r'^edit/(?P<admission_id>[0-9]+)$', registration.registration_edit, name='registration_edit'),
         url(r'^(?P<admission_id>[0-9]+)/', include([

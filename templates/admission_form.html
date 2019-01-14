@@ -28,201 +28,215 @@
 {% endcomment %}
 
 {% block breadcrumb %}
-    <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
-    <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
-    <li class="active">{% trans 'admission' %}</li>
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li class="active">{% trans 'Admission' %}</li>
 {% endblock %}
 
 {% block content %}
     <div class="page-header">
         {% if admission_id %}
-        <button type="submit" form="form" class="btn btn-default pull-right">
-            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'save' %}
-        </button>
+            <button type="submit" form="form" class="btn btn-primary pull-right">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+            </button>
+            <a class="btn btn-default pull-right" style="margin-right: 10px;" id="cancel" href="{% url 'admission' %}">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
+            </a>
         {% endif %}
-        <div class="btn-group pull-right">
-          <button id="button-state" type="button" class="btn btn-default">{% trans 'state' %}</button>
-          <button id="button-state-caret" style="height:34px !important; margin-right: 20px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="caret"></span>
-            <span class="sr-only">{% trans 'state' %}</span>
-          </button>
-          <ul class="dropdown-menu">
-            <li><a value="waiting" href="#">{% trans 'waiting' %}</a></li>
-            <li><a value="accepted" href="#">{% trans 'accepted' %}</a></li>
-            <li><a value="rejected" href="#">{% trans 'rejected' %}</a></li>
-          </ul>
-        </div>
-        <h2>{% trans 'admission' %}</h2>
+        <h2>{% trans 'Admission' %}</h2>
     </div>
 
-    <div class="panel panel-default">
-            <form id="form" method="POST" class="post-form">
-                {% csrf_token %}
-                <div class="panel-heading">{% trans 'identification' %}</div>
-                <div class="panel panel-body">
-                    {% if admission_id is None %}
-                    <div class="row">
-                        {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("person") %}
-                    </div>
-                    {% endif %}
-                    <div class="row">
-                        {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("first_name") %}
-                        {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("last_name") %}
-                        {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-2" label=_("gender") %}
-                        {% bootstrap_field admission_form.citizenship form_group_class="form-group col-md-2" label=_("citizenship") %}
-                    </div>
-                    <div class="row">
-                        {% bootstrap_field person_form.birth_date form_group_class="form-group col-md-4" label=_("birth_date") %}
-                        {% bootstrap_field person_form.birth_location form_group_class="form-group col-md-4" label=_("birth_location") %}
-                        {% bootstrap_field person_form.birth_country form_group_class="form-group col-md-4" label=_("birth_country") %}
-                    </div>
-                </div>
-
-                <div class="panel-heading">{% trans 'contact' %}</div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field admission_form.phone_mobile form_group_class="form-group col-md-4" label=_("phone_mobile") %}
-                        {% bootstrap_field admission_form.email form_group_class="form-group col-md-5" label=_("email") %}
-                    </div>
-                    <div class="row">
-                        {% bootstrap_field address_form.location form_group_class="form-group col-md-4" label=_("location") %}
-                        {% bootstrap_field address_form.postal_code form_group_class="form-group col-md-2" label=_("postal_code") %}
-                        {% bootstrap_field address_form.city form_group_class="form-group col-md-3" label=_("city") %}
-                        {% bootstrap_field address_form.country form_group_class="form-group col-md-3" label=_("country") %}
-                    </div>
-                </div>
-
+    <form id="form" method="POST" class="post-form">
+        {% csrf_token %}
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Identification' %}</h4></div>
+            <div class="panel panel-body">
+                {% if admission_id is None %}
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="panel-heading">{% trans 'education' %}</div>
-                        <div class="panel panel-body">
-                            <div class="row">
-                                {% bootstrap_field admission_form.high_school_diploma form_group_class="form-group col-md-6" label=_("high_school_diploma") %}
-                                {% bootstrap_field admission_form.high_school_graduation_year form_group_class="high_school_graduation_year form-group col-md-6" label=_("high_school_graduation_year") %}
-                            </div>
-                            <div class="row">
-                                {% bootstrap_field admission_form.last_degree_level form_group_class="form-group col-md-6" label=_("last_degree_level") %}
-                                {% bootstrap_field admission_form.last_degree_field form_group_class="form-group col-md-6" label=_("last_degree_field") %}
-                            </div>
-                            <div class="row">
-                                {% bootstrap_field admission_form.last_degree_institution form_group_class="form-group col-md-6" label=_("last_degree_institution") %}
-                                {% bootstrap_field admission_form.last_degree_graduation_year form_group_class="form-group col-md-6" label=_("last_degree_graduation_year") %}
-                            </div>
-                            <div class="row">
-                                {% bootstrap_field admission_form.other_educational_background form_group_class="form-group col-md-12" label=_("other_educational_background") %}
-                            </div>
-                        </div>
+                    {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("Person") %}
+                </div>
+                {% endif %}
+                <div id="person_details">
+                    <div class="row">
+                        {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("First name") %}
+                        {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("Last name") %}
+                        {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-4" label=_("Gender") %}
                     </div>
-                    <div class="col-md-6">
-                    <div class="panel-heading">{% trans 'professional_background' %}</div>
-                    <div class="panel panel-body">
-                        <div class="row">
-                            {% bootstrap_field admission_form.professional_status form_group_class="form-group col-md-6" label=_("professional_status") %}
-                        </div>
-                        <div class="row">
-                            {% bootstrap_field admission_form.current_occupation form_group_class="form-group col-md-6" label=_("current_occupation") %}
-                        </div>
-                        <div class="row">
-                            {% bootstrap_field admission_form.current_employer form_group_class="form-group col-md-6" label=_("current_employer") %}
-                            {% bootstrap_field admission_form.activity_sector form_group_class="form-group col-md-6" label=_("activity_sector") %}
-                        </div>
-                        <div class="row">
-                            {% bootstrap_field admission_form.past_professional_activities form_group_class="form-group col-md-12" label=_("past_professional_activities") %}
-                        </div>
-                    </div>
+                    <div class="row">
+                        {% bootstrap_field person_form.birth_date form_group_class="form-group col-md-4" label=_("Birth date") %}
+                        {% bootstrap_field person_form.birth_location form_group_class="form-group col-md-4" label=_("Birth location") %}
+                        {% bootstrap_field person_form.birth_country form_group_class="form-group col-md-4" label=_("Birth country") %}
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="panel-heading">{% trans 'motivation' %}</div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Contact' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    {% bootstrap_field admission_form.phone_mobile form_group_class="form-group col-md-4" label=_("Mobile phone") %}
+                    {% bootstrap_field admission_form.email form_group_class="form-group col-md-5" label=_("Email") %}
+                    {% bootstrap_field admission_form.citizenship form_group_class="form-group col-md-3" label=_("Citizenship") %}
+                </div>
+                <div class="row">
+                    {% bootstrap_field address_form.location form_group_class="form-group col-md-4" label=_("Street Address") %}
+                    {% bootstrap_field address_form.postal_code form_group_class="form-group col-md-2" label=_("Postal code") %}
+                    {% bootstrap_field address_form.city form_group_class="form-group col-md-3" label=_("City") %}
+                    {% bootstrap_field address_form.country form_group_class="form-group col-md-3" label=_("Country") %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4>{% trans 'Education' %}</h4></div>
                     <div class="panel panel-body">
                         <div class="row">
-                            {% bootstrap_field admission_form.motivation form_group_class="form-group col-md-6" label=_("motivation") %}
-                            {% bootstrap_field admission_form.professional_impact form_group_class="form-group col-md-6" label=_("professional_impact") %}
+                            {% bootstrap_field admission_form.high_school_diploma form_group_class="form-group col-md-6" label=_("High school diploma") %}
+                            {% bootstrap_field admission_form.high_school_graduation_year form_group_class="high_school_graduation_year form-group col-md-6" label=_("High school graduation year") %}
                         </div>
+                        <div class="row">
+                            {% bootstrap_field admission_form.last_degree_level form_group_class="form-group col-md-6" label=_("Last degree level") %}
+                            {% bootstrap_field admission_form.last_degree_field form_group_class="form-group col-md-6" label=_("Last degree field") %}
+                        </div>
+                        <div class="row">
+                            {% bootstrap_field admission_form.last_degree_institution form_group_class="form-group col-md-6" label=_("Last degree institution") %}
+                            {% bootstrap_field admission_form.last_degree_graduation_year form_group_class="form-group col-md-6" label=_("Last degree graduation year") %}
+                        </div>
+                        <div class="row">
+                            {% bootstrap_field admission_form.other_educational_background form_group_class="form-group col-md-12" label=_("Other educational background") %}
+                        </div>
+                    </div>
                 </div>
-
-                <div class="panel-heading">{% trans 'formation' %}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4>{% trans 'Professional background' %}</h4></div>
                     <div class="panel panel-body">
                         <div class="row">
-                            {% bootstrap_field admission_form.formation form_group_class="form-group col-md-4" label=_("formation") %}
+                            {% bootstrap_field admission_form.professional_status form_group_class="form-group col-md-6" label=_("Professional status") %}
                         </div>
-                </div>
-
-                <div class="panel-heading">{% trans 'awareness' %}</div>
-                    <div class="panel panel-body">
                         <div class="row">
-                            {% bootstrap_field admission_form.awareness_ucl_website form_group_class="form-group col-md-12" label=_("awareness_ucl_website") %}
-                            {% bootstrap_field admission_form.awareness_formation_website form_group_class="form-group col-md-12" label=_("awareness_formation_website") %}
-                            {% bootstrap_field admission_form.awareness_press form_group_class="form-group col-md-12" label=_("awareness_press") %}
-                            {% bootstrap_field admission_form.awareness_facebook form_group_class="form-group col-md-12" label=_("awareness_facebook") %}
-                            {% bootstrap_field admission_form.awareness_linkedin form_group_class="form-group col-md-12" label=_("awareness_linkedin") %}
-                            {% bootstrap_field admission_form.awareness_customized_mail form_group_class="form-group col-md-12" label=_("awareness_customized_mail") %}
-                            {% bootstrap_field admission_form.awareness_emailing form_group_class="form-group col-md-12" label=_("awareness_emailing") %}
+                            {% bootstrap_field admission_form.current_occupation form_group_class="form-group col-md-6" label=_("Current occupation") %}
                         </div>
+                        <div class="row">
+                            {% bootstrap_field admission_form.current_employer form_group_class="form-group col-md-6" label=_("Current employer") %}
+                            {% bootstrap_field admission_form.activity_sector form_group_class="form-group col-md-6" label=_("Activity sector") %}
+                        </div>
+                        <div class="row">
+                            {% bootstrap_field admission_form.past_professional_activities form_group_class="form-group col-md-12" label=_("Past professional activities") %}
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
 
-                {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("state") %}
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Motivation' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    {% bootstrap_field admission_form.motivation form_group_class="form-group col-md-6" label=_("Motivation") %}
+                    {% bootstrap_field admission_form.professional_impact form_group_class="form-group col-md-6" label=_("Professional impact") %}
+                </div>
+            </div>
+        </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Formation' %}</h4></div>
                 <div class="panel panel-body">
-                    <button type="submit" class="btn btn-primary" title="{%trans 'submit' %}">
-                        <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'submit' %}
-                    </button>
-                    <a class="btn btn-default" id="" href="{% url 'admission' %}">
-                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'cancel' %}
-                    </a>
-                </div>
-            </form>
-    </div>
+                    <div class="row">
+                        {% bootstrap_field admission_form.formation form_group_class="form-group col-md-4" label=_("Formation") %}
+                    </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Awareness' %}</h4></div>
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field admission_form.awareness_ucl_website form_group_class="col-md-12" label=_("Awareness UCL website") %}
+                        {% bootstrap_field admission_form.awareness_formation_website form_group_class="col-md-12" label=_("Awareness formation website") %}
+                        {% bootstrap_field admission_form.awareness_press form_group_class="col-md-12" label=_("Awareness press") %}
+                        {% bootstrap_field admission_form.awareness_facebook form_group_class="col-md-12" label=_("Awareness Facebook") %}
+                        {% bootstrap_field admission_form.awareness_linkedin form_group_class="col-md-12" label=_("Awareness LinkedIn") %}
+                        {% bootstrap_field admission_form.awareness_customized_mail form_group_class="col-md-12" label=_("Awareness customized mail") %}
+                        {% bootstrap_field admission_form.awareness_emailing form_group_class="col-md-12" label=_("Awareness emailing") %}
+                        {% with admission_form.awareness_other.value as other_value %}
+                            <div class="col-md-12">
+                                <div class="checkbox">
+                                    <label for="id_awareness_other">
+                                        <input type="checkbox" name="awareness_other" class="" id="id_awareness_other_checkbox"
+                                            {% if other_value != None and other_value != '' %}
+                                                   checked
+                                            {% endif %}>
+                                            {% trans 'Other' %}
+                                    </label>
+                                </div>
+                                <div id="other-text-field" class="col-md-4"
+                                        {% if other_value == None or other_value == '' %}
+                                            hidden
+                                        {% endif %}>
+                                    {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group'  field_class="other_required" %}
+                                </div>
+                            </div>
+                        {% endwith %}
+                    </div>
+            </div>
+        </div>
+
+        {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
+
+
+        <div class="panel panel-body">
+            <button type="submit" class="btn btn-primary" title="{%trans 'Save' %}">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+            </button>
+            <a class="btn btn-default" id="" href="{% url 'admission' %}">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
+            </a>
+        </div>
+    </form>
 {% endblock %}
 
 
 {% block script %}
     <script>
-        //toggle field when diploma_obtained yes is selected
+        // toggle field when diploma_obtained yes is selected
         let diploma_obtained = $('#id_high_school_diploma').find(":selected").val();
         $('.high_school_graduation_year').toggle(diploma_obtained == "True");
         $('#id_high_school_diploma').on('change', function() {
             $('.high_school_graduation_year').toggle($(this).find(":selected").val());
         });
 
-        //dynamically change color of state button
-        states = {"waiting": "btn-primary", "accepted": "btn-success", "rejected": "btn-danger"};
-        let state = "{{admission.state | escapejs}}";
-        setStateActive(state);
-        $(".dropdown-menu li a").click(function(){
-          let newState = $(this).attr("value");
-          let oldClass = states[$('#button-state').attr("value")];
-          setStateActive(newState);
-          $('#button-state').removeClass(oldClass);
-          $('#button-state-caret').removeClass(oldClass);
-          $('#id_state').val(newState);
+        // toggle person fields when new person is selected
+        $('#id_person_information').on('change', function() {
+            $('#person_details').toggle($('#id_person_information').find(":selected").val() === '');
         });
 
-        function setStateActive(newState){
-            let newClass = states[newState];
-            let text = "";
-            if(newState !== "") {
-                text = $("[value=" + newState + "]")[0].text;
+        // show other text field when other is checked
+        $('#id_awareness_other_checkbox').change(function(){
+            $('#other-text-field').toggle(this.checked);
+            if(!this.checked){
+                $('#other-text-field input').val('');
             }
-            else {
-                text = $("#button-state").text();
-            }
-            $('#button-state').html(text);
-            $('#button-state').attr("value",newState);
-            $('#button-state').addClass(newClass);
-            $('#button-state-caret').addClass(newClass);
+        });
+
+    //re-enable disabled field on form submit
+    let fields_to_enable = ["birth_country", "gender"];
+
+    function enableFields(fields) {
+        for (var field of fields) {
+            $("#id_" + field).prop( "disabled", false );
         }
+    }
+    $( "#form" ).submit(function( event ) {
+        enableFields(fields_to_enable);
+    });
 
-        //reload page with person information form instance when selected
-        let person_id = "{{person.id | escapejs}}";
-        let selected = $('#id_person').val(person_id);
-        $('#id_person').on('change', function() {
-            let person_id = $(this).find(":selected").val();
-            if(person_id) {
-                window.location.href = window.location.href.replace(/[\?#].*|$/, "?person=" + person_id)
-            } else {
-                window.location.href = window.location.href.replace(/[\?#].*|$/, "")
-            }
-        });
+    $(".other_required").after(" *").css('display', 'inline-block');
+
     </script>
+
 {% endblock %}

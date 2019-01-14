@@ -1,0 +1,22 @@
+[
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_admin_admission_submitted_html",
+        "subject": "IUFC - Nouvelle demande d'admission - {{formation}}",
+        "template": "<p>Une demande d'admission pour la formation {{formation}} a été soumise par {{last_name}}, {{first_name}}.</p>",
+        "format": "HTML",
+        "language": "fr-be"
+    }
+},
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_admin_admission_submitted_txt",
+        "subject": "IUFC - Nouvelle demande d'admission - {{formation}}",
+        "template": "Une demande d'admission pour la formation {{formation}} a été soumise par {{last_name}}, {{first_name}}.",
+        "format": "PLAIN",
+        "language": "fr-be"
+    }
+}
+]

@@ -27,28 +27,25 @@
 {% endcomment %}
 
 {% block breadcrumb %}
-    <li><a href="{% url 'studies' %}">{% trans 'studies' %}</a></li>
-    <li><a href="{% url 'continuing_education' %}">{% trans 'continuing_education' %}</a></li>
-    <li class="active">{% trans 'administrator' %}</li>
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li class="active">{% trans 'Administrator' %}</li>
 {% endblock %}
 
 {% block content %}
     <div class="page-header">
-        <h2 class="text-capitalize">{% trans 'administrator' %}</h2>
+        <h2 class="text-capitalize">{% trans 'Administrator' %}</h2>
     </div>
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>{{ user.first_name }} {{ user.last_name }}</h4>
-        </div>
         <div class="panel panel-body">
             <div class="row">
                 <div class="col-md-1"><i class="fa fa-file-text" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
-                    <h4 class="media-heading"><a href="{% url 'admission' %}">{% trans 'admission' %}</a></h4>
+                    <h4 class="media-heading"><a href="{% url 'admission' %}">{% trans 'Admission' %}</a></h4>
                 </div>
                 <div class="col-md-1"><i class="fa fa-pencil-square" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
-                    <h4 class="media-heading"><a href="{% url 'registration' %}">{% trans 'registration' %}</a></h4>
+                    <h4 class="media-heading"><a href="{% url 'registration' %}">{% trans 'Registration' %}</a></h4>
                 </div>
             </div>
             <br>

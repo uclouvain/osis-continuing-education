@@ -23,27 +23,80 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import factory
 from django.test import TestCase
 
-from base.models import offer_year, entity_version
-from continuing_education.forms.admission import AdmissionForm
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.person import PersonFactory
 from reference.models import country
+from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
+
+ANY_REASON = 'Anything'
 
 
 class TestAdmissionForm(TestCase):
 
     def test_valid_form(self):
         admission = AdmissionFactory()
-        form = AdmissionForm(admission.__dict__)
+        data = admission.__dict__
+        data['formation'] = admission.formation.pk
+        form = AdmissionForm(data)
         self.assertTrue(form.is_valid(), form.errors)
+
+
+class TestRejectedAdmissionForm(TestCase):
+
+    def setUp(self):
+        self.rejected_admission_other = AdmissionFactory(
+            state=REJECTED,
+            state_reason=ANY_REASON,
+        )
+        self.rejected_admission_not_other = AdmissionFactory(
+            state=REJECTED,
+            state_reason=NOT_ENOUGH_EXPERIENCE,
+        )
+
+    def test_init_rejected_init_not_other(self):
+
+        form = RejectedAdmissionForm(None, instance=self.rejected_admission_not_other)
+
+        self.assertEqual(form.fields['other_reason'].initial, '')
+        self.assertEqual(form.fields['rejected_reason'].initial, NOT_ENOUGH_EXPERIENCE)
+        self.assertTrue(form.fields['other_reason'].disabled)
+
+    def test_init_rejected_init_other(self):
+        form = RejectedAdmissionForm(None, instance=self.rejected_admission_other)
+
+        self.assertEqual(form.fields['other_reason'].initial, ANY_REASON)
+        self.assertEqual(form.fields['rejected_reason'].initial, OTHER)
+
+        self.assertFalse(form.fields['other_reason'].disabled)
+
+    def test_save_other_reason(self):
+        data = self.rejected_admission_other.__dict__
+        data['rejected_reason'] = OTHER
+        new_reason = "{} else".format(ANY_REASON)
+        data['other_reason'] = new_reason
+
+        form = RejectedAdmissionForm(data, instance=self.rejected_admission_other)
+        obj_updated = form.save()
+        self.assertEqual(obj_updated.state, REJECTED)
+        self.assertEqual(obj_updated.state_reason, new_reason)
+
+    def test_save_not_other_reason(self):
+        data = self.rejected_admission_not_other.__dict__
+        data['rejected_reason'] = NOT_ENOUGH_EXPERIENCE
+
+        form = RejectedAdmissionForm(data, instance=self.rejected_admission_not_other)
+        obj_updated = form.save()
+        self.assertEqual(obj_updated.state, REJECTED)
+        self.assertEqual(obj_updated.state_reason, NOT_ENOUGH_EXPERIENCE)
 
 def convert_countries(person):
     # person['address']['country'] = country.find_by_id(person["country_id"])
     person['birth_country'] = country.find_by_id(person["birth_country_id"])
     person['citizenship'] = country.find_by_id(person["citizenship_id"])
+
 
 def convert_dates(person):
     person['birth_date'] = person['birth_date'].strftime('%Y-%m-%d')
