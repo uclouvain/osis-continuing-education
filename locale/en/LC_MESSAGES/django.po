@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 14:13+0100\n"
+"POT-Creation-Date: 2019-01-14 11:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: views/admission.py:153
+msgid "A problem occured : the document is not uploaded"
+msgstr ""
+
+#: views/admission.py:175
+msgid "A problem occured during delete"
+msgstr ""
 
 #: models/enums/admission_state_choices.py:11
 #: models/enums/admission_state_choices.py:24
@@ -46,7 +54,7 @@ msgstr ""
 msgid "Administrator"
 msgstr ""
 
-#: models/file.py:51 templates/admission_detail.html:38
+#: models/file.py:52 templates/admission_detail.html:38
 #: templates/admission_detail.html:71 templates/admission_form.html:33
 #: templates/admission_form.html:46 templates/admissions.html:37
 #: templates/admissions.html:42
@@ -139,7 +147,7 @@ msgstr ""
 msgid "Birth location"
 msgstr ""
 
-#: templates/admission_detail.html:262
+#: templates/admission_detail.html:266
 msgid "Browse"
 msgstr ""
 
@@ -253,6 +261,10 @@ msgstr ""
 
 #: models/enums/enums.py:23
 msgid "Female"
+msgstr ""
+
+#: views/admission.py:173
+msgid "File correctly deleted"
 msgstr ""
 
 #: business/admission.py:131 templates/admission_detail.html:97
@@ -393,7 +405,7 @@ msgstr ""
 msgid "NOMA"
 msgstr ""
 
-#: models/file.py:56 templates/admission_detail.html:224
+#: models/file.py:57 templates/admission_detail.html:224
 #: templates/admissions.html:76 templates/registrations.html:69
 msgid "Name"
 msgstr ""
@@ -425,7 +437,7 @@ msgstr ""
 msgid "No document available"
 msgstr ""
 
-#: templates/admission_detail.html:253
+#: templates/admission_detail.html:257
 msgid "No file chosen"
 msgstr ""
 
@@ -460,7 +472,7 @@ msgstr ""
 msgid "Past professional activities"
 msgstr ""
 
-#: models/file.py:61
+#: models/file.py:62
 msgid "Path"
 msgstr ""
 
@@ -621,7 +633,7 @@ msgstr ""
 msgid "Single"
 msgstr ""
 
-#: models/file.py:66 templates/admission_detail.html:225
+#: models/file.py:67 templates/admission_detail.html:225
 msgid "Size"
 msgstr ""
 
@@ -667,6 +679,10 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
+#: views/admission.py:151
+msgid "The document is uploaded correctly"
+msgstr ""
+
 #: business/enums/rejected_reason.py:30
 msgid "The programme is already complete"
 msgstr ""
@@ -675,11 +691,11 @@ msgstr ""
 msgid "Unknown birth place"
 msgstr ""
 
-#: templates/admission_detail.html:259
+#: templates/admission_detail.html:263
 msgid "Upload"
 msgstr ""
 
-#: models/file.py:74 templates/admission_detail.html:227
+#: models/file.py:75 templates/admission_detail.html:227
 msgid "Uploaded by"
 msgstr ""
 
