@@ -39,8 +39,9 @@ from base.tests.factories.academic_year import create_current_academic_year, Aca
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT
+from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED
 from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
@@ -192,9 +193,11 @@ class ViewAdmissionTestCase(TestCase):
             'state': new_state,
             'formation': self.formation.pk,
         }
-
+        data = admission
+        if new_state == REJECTED:
+            data['rejected_reason'] = DONT_MEET_ADMISSION_REQUIREMENTS
         url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data=admission)
+        response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
         self.admission.refresh_from_db()
 
