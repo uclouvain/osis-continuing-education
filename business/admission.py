@@ -64,7 +64,7 @@ def send_state_changed_email(admission):
 def send_admission_submitted_email(admission):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
-    formation_url = 'https://%s%s' % (Site.objects.get_current().domain, relative_path)
+    formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
 
     managers = _get_continuing_education_managers()
     send_email(
