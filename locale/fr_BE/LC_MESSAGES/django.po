@@ -21,8 +21,6 @@ msgid "A problem occured : the document is not uploaded"
 msgstr "Une erreur est survenue : le document n'a pas été uploadé"
 
 #: views/admission.py:175
-#, fuzzy
-#| msgid "A problem occured : the document is not uploaded"
 msgid "A problem occured during delete"
 msgstr "Un problème est survenu durant la suppression"
 
