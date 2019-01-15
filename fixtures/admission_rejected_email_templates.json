@@ -4,7 +4,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_rejected_html",
         "subject": "IUFC - Demande d'admission refusée",
-        "template": "<p>En réponse à votre demande d’admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>",
+        "template": "<p>En réponse à votre demande d’admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>\r\n<p>Nous restons à votre disposition pour tout autre programme. \r\nVeuillez, Madame, Monsieur, agréer l’expression de nos salutations distinguées.</p>",
         "format": "HTML",
         "language": "fr-be"
     }
@@ -14,7 +14,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_rejected_txt",
         "subject": "IUFC - Demande d'admission refusée",
-        "template": "En réponse à votre demande d’admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :\r\n\r\n{{reason}}",
+        "template": "En réponse à votre demande d’admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :\r\n\r\n{{reason}}\r\nNous restons à votre disposition pour tout autre programme. \r\nVeuillez, Madame, Monsieur, agréer l’expression de nos salutations distinguées.",
         "format": "PLAIN",
         "language": "fr-be"
     }
