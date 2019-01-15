@@ -43,7 +43,6 @@ class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
 
 
 class FileSerializer(serializers.HyperlinkedModelSerializer):
-
     url = FileHyperlinkedIdentityField()
     uploaded_by = PersonDetailSerializer()
     created_date = serializers.DateTimeField()

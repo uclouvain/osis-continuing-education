@@ -25,7 +25,7 @@
 ##############################################################################
 from django.shortcuts import get_object_or_404
 from rest_framework import views, status, generics
-from rest_framework.generics import DestroyAPIView
+from rest_framework.generics import DestroyAPIView, CreateAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
@@ -96,6 +96,9 @@ class FileDetail(generics.RetrieveAPIView):
 
 
 class FileDestroy(DestroyAPIView):
+    """
+        Remove a file
+    """
     name = 'file-delete'
     queryset = File.objects.all()
     serializer_class = FileSerializer
@@ -104,3 +107,11 @@ class FileDestroy(DestroyAPIView):
     def get_object(self):
         file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
         return file
+
+
+class FileCreate(CreateAPIView):
+    """
+        Create a file
+    """
+    name = 'file-create'
+    serializer_class = FileSerializer
