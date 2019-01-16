@@ -34,9 +34,9 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.file import AdmissionFileSerializer
-from continuing_education.models.admissionfile import AdmissionFile
+from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.file import FileFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
@@ -47,19 +47,19 @@ class GetAllFileTestCase(APITestCase):
         person_information = ContinuingEducationPersonFactory()
         cls.admission = AdmissionFactory(person_information=person_information)
         cls.url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        FileFactory(
+        AdmissionFileFactory(
             admission=cls.admission,
             uploaded_by=person_information.person
         )
-        FileFactory(
+        AdmissionFileFactory(
             admission=cls.admission,
             uploaded_by=person_information.person
         )
-        FileFactory(
+        AdmissionFileFactory(
             admission=cls.admission,
             uploaded_by=person_information.person
         )
-        FileFactory(
+        AdmissionFileFactory(
             admission=cls.admission,
             uploaded_by=person_information.person
         )
@@ -97,7 +97,7 @@ class GetFileTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
-        cls.file = FileFactory(
+        cls.file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         cls.user = UserFactory()
@@ -145,7 +145,7 @@ class DeleteFileTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
-        cls.file = FileFactory(
+        cls.file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         cls.user = UserFactory()

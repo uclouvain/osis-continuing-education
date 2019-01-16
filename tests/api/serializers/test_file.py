@@ -28,7 +28,7 @@ from django.urls import reverse
 
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.file import FileFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
@@ -39,7 +39,7 @@ class FileSerializerTestCase(TestCase):
         cls.admission = AdmissionFactory(
             person_information=person_information
         )
-        cls.file = FileFactory(
+        cls.file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
@@ -66,7 +66,7 @@ class FilePostSerializerTestCase(TestCase):
         cls.admission = AdmissionFactory(
             person_information=person_information
         )
-        cls.file = FileFactory(
+        cls.file = AdmissionFileFactory(
             uploaded_by=cls.uploaded_by
         )
         url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})

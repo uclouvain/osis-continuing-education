@@ -46,7 +46,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.file import FileFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 FILE_CONTENT = "test-content"
@@ -180,7 +180,7 @@ class ViewAdmissionTestCase(TestCase):
             content=str.encode('content'),
             content_type="application/pdf"
         )
-        file = FileFactory(
+        file = AdmissionFileFactory(
             admission=self.admission,
             path=uploaded_file,
             uploaded_by=self.admission.person_information.person
@@ -250,7 +250,7 @@ class UploadFileTestCase(TestCase):
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data={'myfile': self.file}, format='multipart')
 
-        self.assertEqual(File.objects.get(path__contains=self.file).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(path__contains=self.file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -286,7 +286,7 @@ class DeleteFileTestCase(TestCase):
             formation=formation,
             state=SUBMITTED
         )
-        self.file = FileFactory()
+        self.file = AdmissionFileFactory()
 
     def test_delete_file(self):
         self.assertEqual(File.objects.all().count(), 1)
