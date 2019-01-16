@@ -157,7 +157,7 @@ def _upload_file(request, admission):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def download_file(request, admission_id, file_id):
-    admission_file= AdmissionFile.objects.get(pk=file_id)
+    admission_file = AdmissionFile.objects.get(pk=file_id)
     filename = admission_file.name.split('/')[-1]
     response = HttpResponse(admission_file.path, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -167,7 +167,7 @@ def download_file(request, admission_id, file_id):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def delete_file(request, admission_id, file_id):
-    admission_file= AdmissionFile.objects.filter(id=file_id)
+    admission_file = AdmissionFile.objects.filter(id=file_id)
     try:
         admission_file.delete()
         display_success_messages(request, _("File correctly deleted"))
