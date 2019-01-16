@@ -26,7 +26,7 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from continuing_education.api.serializers.file import FileSerializer
+from continuing_education.api.serializers.file import FileSerializer, FilePostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -56,3 +56,36 @@ class FileSerializerTestCase(TestCase):
             'uploaded_by'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+
+class FilePostSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        person_information = ContinuingEducationPersonFactory()
+        cls.uploaded_by = person_information.person
+        cls.admission = AdmissionFactory(
+            person_information=person_information
+        )
+        cls.file = FileFactory(
+            uploaded_by=cls.uploaded_by
+        )
+        url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
+        cls.serializer = FilePostSerializer(cls.file, context={'request': RequestFactory().get(url)})
+
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'url',
+            'uuid',
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'uploaded_by'
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+    def test_ensure_uploaded_by_field_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['uploaded_by'],
+            self.uploaded_by.uuid
+        )

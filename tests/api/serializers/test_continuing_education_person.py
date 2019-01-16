@@ -40,7 +40,10 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
             birth_country=cls.birth_country
         )
         url = reverse('continuing_education_api_v1:person-list')
-        cls.serializer = ContinuingEducationPersonSerializer(cls.continuing_education_person, context={'request': RequestFactory().get(url)})
+        cls.serializer = ContinuingEducationPersonSerializer(
+            cls.continuing_education_person,
+            context={'request': RequestFactory().get(url)}
+        )
 
     def test_contains_expected_fields(self):
         expected_fields = [
