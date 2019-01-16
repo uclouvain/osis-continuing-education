@@ -30,7 +30,7 @@ from rest_framework.generics import CreateAPIView
 
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.admissionfile import AdmissionFile
+from continuing_education.models.file import AdmissionFile
 
 
 class AdmissionFileList(generics.ListAPIView):

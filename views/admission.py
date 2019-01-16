@@ -44,9 +44,9 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.models.admissionfile import AdmissionFile
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
+from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
 
 

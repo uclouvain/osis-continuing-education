@@ -41,6 +41,6 @@ admin.site.register(
     address.AddressAdmin
 )
 admin.site.register(
-    admissionfile.AdmissionFile,
-    admissionfile.AdmissionFileAdmin
+    file.AdmissionFile,
+    file.AdmissionFileAdmin
 )

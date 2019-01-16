@@ -28,7 +28,7 @@ from rest_framework.reverse import reverse
 
 from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
-from continuing_education.models.admissionfile import AdmissionFile
+from continuing_education.models.file import AdmissionFile
 
 
 class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
