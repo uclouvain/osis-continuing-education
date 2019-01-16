@@ -23,8 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import datetime
 import uuid
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
@@ -180,4 +182,58 @@ class DeleteFileTestCase(APITestCase):
             kwargs={'uuid':  uuid.uuid4(), 'file_uuid': uuid.uuid4()}
         )
         response = self.client.delete(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class CreateFileTestCase(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.admission = AdmissionFactory()
+        cls.user = UserFactory()
+        cls.url = reverse(
+            'continuing_education_api_v1:file-create',
+            kwargs={'uuid': cls.admission.uuid}
+        )
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user)
+
+    def test_delete_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_method_not_allowed(self):
+        methods_not_allowed = ['delete', 'get', 'put']
+
+        for method in methods_not_allowed:
+            response = getattr(self.client, method)(self.url)
+            self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_create_valid_file(self):
+        self.assertEqual(0, File.objects.all().count())
+
+        file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode("test_content"),
+            content_type="application/pdf"
+        )
+        data = {
+            'name': file.name,
+            'size': file.size,
+            'uploaded_by': self.admission.person_information.person.uuid,
+            'created_date': datetime.datetime.today(),
+            'path': file
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(1, File.objects.all().count())
+
+    def test_create_invalid_file_case_not_found(self):
+        invalid_url = reverse(
+            'continuing_education_api_v1:file-create',
+            kwargs={'uuid':  uuid.uuid4()}
+        )
+        response = self.client.post(invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

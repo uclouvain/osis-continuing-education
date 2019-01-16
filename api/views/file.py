@@ -96,5 +96,5 @@ class FileCreate(CreateAPIView):
 
     def get_serializer_context(self):
         serializer_context = super().get_serializer_context()
-        serializer_context['admission'] = Admission.objects.get(uuid=self.kwargs['uuid'])
+        serializer_context['admission'] = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
         return serializer_context
