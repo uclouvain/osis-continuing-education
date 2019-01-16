@@ -168,7 +168,6 @@ def download_file(request, admission_id, file_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def delete_file(request, admission_id, file_id):
     file = AdmissionFile.objects.filter(id=file_id)
-    file = File.objects.filter(id=file_id)
     try:
         file.delete()
         display_success_messages(request, _("File correctly deleted"))

@@ -263,7 +263,7 @@ class UploadFileTestCase(TestCase):
     def test_upload_file_error(self, mock_save):
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data={'myfile': self.file}, format='multipart')
-        self.assertEqual(AdmissionFile.objects.get(path__contains=file).uploaded_by, self.manager)
+
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -289,11 +289,11 @@ class DeleteFileTestCase(TestCase):
         self.file = AdmissionFileFactory()
 
     def test_delete_file(self):
-        self.assertEqual(File.objects.all().count(), 1)
+        self.assertEqual(AdmissionFile.objects.all().count(), 1)
         url = reverse('delete_file', args=[self.admission.pk, self.file.pk])
         response = self.client.get(url)
 
-        self.assertEqual(File.objects.all().count(), 0)
+        self.assertEqual(AdmissionFile.objects.all().count(), 0)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -304,11 +304,11 @@ class DeleteFileTestCase(TestCase):
 
     @patch('django.db.models.query.QuerySet.delete', side_effect=Exception)
     def test_delete_file_error(self, mock_delete):
-        self.assertEqual(File.objects.all().count(), 1)
+        self.assertEqual(AdmissionFile.objects.all().count(), 1)
         url = reverse('delete_file', args=[self.admission.pk, self.file.pk])
         response = self.client.get(url)
 
-        self.assertEqual(File.objects.all().count(), 1)
+        self.assertEqual(AdmissionFile.objects.all().count(), 1)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)

@@ -77,6 +77,7 @@ class AdmissionFile(Model):
     )
 
     def save(self, *args, **kwargs):
-        self.size = self.path.size
-        self.name = self.path.name
+        if not(self.size and self.name):
+            self.size = self.path.size
+            self.name = self.path.name
         super(AdmissionFile, self).save(*args, **kwargs)
