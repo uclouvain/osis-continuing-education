@@ -26,7 +26,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from base.api.serializers.person import PersonDetailSerializer
+from base.models.person import Person
 from continuing_education.models.file import File
 
 
@@ -44,7 +44,7 @@ class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
 
 class FileSerializer(serializers.HyperlinkedModelSerializer):
     url = FileHyperlinkedIdentityField()
-    uploaded_by = PersonDetailSerializer()
+    uploaded_by = serializers.UUIDField()
     created_date = serializers.DateTimeField()
 
     class Meta:
@@ -58,3 +58,10 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
             'created_date',
             'uploaded_by'
         )
+
+    def save(self, **kwargs):
+        self.instance.uploaded_by = Person.objects.get(uuid=self.data['uploaded_by'])
+        return super().save(**kwargs)
+
+
+
