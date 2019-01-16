@@ -25,8 +25,9 @@
 ##############################################################################
 
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.generics import CreateAPIView
+from rest_framework.response import Response
 
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.admission import Admission
@@ -65,6 +66,13 @@ class AdmissionFileCreate(CreateAPIView):
     """
     name = 'file-create'
     serializer_class = AdmissionFilePostSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=False)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_serializer_context(self):
         serializer_context = super().get_serializer_context()

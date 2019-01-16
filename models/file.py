@@ -75,3 +75,8 @@ class AdmissionFile(Model):
         verbose_name=_("Uploaded by"),
         on_delete=models.PROTECT
     )
+
+    def save(self, *args, **kwargs):
+        self.size = self.path.size
+        self.name = self.path.name
+        super(AdmissionFile, self).save(*args, **kwargs)

@@ -45,11 +45,12 @@ class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField
 
 class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
     url = AdmissionFileHyperlinkedIdentityField()
-    created_date = serializers.DateTimeField()
+    created_date = serializers.DateTimeField(required=False)
     uploaded_by = serializers.SlugRelatedField(
         slug_field='uuid',
         queryset=Person.objects.all()
     )
+    name = serializers.CharField(required=False)
 
     class Meta:
         model = AdmissionFile
