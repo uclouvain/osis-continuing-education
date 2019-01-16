@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-10 14:13+0100\n"
+"POT-Creation-Date: 2019-01-14 11:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,6 +15,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: views/admission.py:153
+msgid "A problem occured : the document is not uploaded"
+msgstr "Une erreur est survenue : le document n'a pas été uploadé"
+
+#: views/admission.py:175
+msgid "A problem occured during delete"
+msgstr "Un problème est survenu durant la suppression"
 
 #: models/enums/admission_state_choices.py:11
 #: models/enums/admission_state_choices.py:24
@@ -45,7 +53,7 @@ msgstr "Adresse"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#: models/file.py:51 templates/admission_detail.html:38
+#: models/file.py:52 templates/admission_detail.html:38
 #: templates/admission_detail.html:71 templates/admission_form.html:33
 #: templates/admission_form.html:46 templates/admissions.html:37
 #: templates/admissions.html:42
@@ -138,7 +146,7 @@ msgstr "Date de naissance"
 msgid "Birth location"
 msgstr "Lieu de naissance"
 
-#: templates/admission_detail.html:262
+#: templates/admission_detail.html:266
 msgid "Browse"
 msgstr "Parcourir"
 
@@ -253,6 +261,10 @@ msgstr "Faculté"
 #: models/enums/enums.py:23
 msgid "Female"
 msgstr "Femme"
+
+#: views/admission.py:173
+msgid "File correctly deleted"
+msgstr "Le fichier a bien été supprimé"
 
 #: business/admission.py:131 templates/admission_detail.html:97
 #: templates/admission_form.html:61 templates/admissions.html:77
@@ -392,7 +404,7 @@ msgstr "Motivation"
 msgid "NOMA"
 msgstr "NOMA"
 
-#: models/file.py:56 templates/admission_detail.html:224
+#: models/file.py:57 templates/admission_detail.html:224
 #: templates/admissions.html:76 templates/registrations.html:69
 msgid "Name"
 msgstr "Nom"
@@ -424,7 +436,7 @@ msgstr "Aucune Raison"
 msgid "No document available"
 msgstr "Aucun document disponible"
 
-#: templates/admission_detail.html:253
+#: templates/admission_detail.html:257
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
 
@@ -459,7 +471,7 @@ msgstr "Numéro de passeport"
 msgid "Past professional activities"
 msgstr "Expériences professionnelles passées"
 
-#: models/file.py:61
+#: models/file.py:62
 msgid "Path"
 msgstr "Chemin"
 
@@ -620,7 +632,7 @@ msgstr "Sessions"
 msgid "Single"
 msgstr "Célibataire"
 
-#: models/file.py:66 templates/admission_detail.html:225
+#: models/file.py:67 templates/admission_detail.html:225
 msgid "Size"
 msgstr "Taille"
 
@@ -666,6 +678,10 @@ msgstr "Soumettre"
 msgid "Submitted"
 msgstr "Soumis"
 
+#: views/admission.py:151
+msgid "The document is uploaded correctly"
+msgstr "Le document a bien été uploadé"
+
 #: business/enums/rejected_reason.py:30
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"
@@ -674,11 +690,11 @@ msgstr "Le programme est d’ores et déjà complet"
 msgid "Unknown birth place"
 msgstr "Lieu de naissance inconnu"
 
-#: templates/admission_detail.html:259
+#: templates/admission_detail.html:263
 msgid "Upload"
 msgstr "Envoyer"
 
-#: models/file.py:74 templates/admission_detail.html:227
+#: models/file.py:75 templates/admission_detail.html:227
 msgid "Uploaded by"
 msgstr "Envoyé par"
 

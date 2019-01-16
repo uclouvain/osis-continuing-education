@@ -37,17 +37,17 @@
                 <div class="panel-heading">
                     {% trans 'You can enter a reason to reject this admission' %}
                 </div>
+
                 <div class="panel-body">
                     {% bootstrap_field rejected_adm_form.rejected_reason form_group_class="form-group col-md-12" %}
                     {% bootstrap_field rejected_adm_form.other_reason form_group_class="form-group col-md-12" %}
                     <input type="hidden" id="old_other_reason">
                     <input type="hidden" id="old_predefined_rejected_reason">
-
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="cancel_rejected_reason" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
-                <button type="button" id="add_rejected_reason" class="btn btn-primary" data-dismiss="modal">{% trans 'Confirm the refusal' %}</button>
+                <button type="button" id="add_rejected_reason" class="btn btn-primary">{% trans 'Confirm the refusal' %}</button>
             </div>
         </div>
       </div>

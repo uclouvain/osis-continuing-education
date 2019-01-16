@@ -28,6 +28,8 @@ from django.utils.translation import ugettext as _
 
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
@@ -60,6 +62,10 @@ def send_state_changed_email(admission):
 
 
 def send_admission_submitted_email(admission):
+    relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
+    # No request here because we are in a post_save
+    formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
+
     managers = _get_continuing_education_managers()
     send_email(
         template_references={
@@ -70,7 +76,8 @@ def send_admission_submitted_email(admission):
             'first_name': admission.person_information.person.first_name,
             'last_name': admission.person_information.person.last_name,
             'formation': admission.formation,
-            'state': _(admission.state)
+            'state': _(admission.state),
+            'formation_link': formation_url,
         },
         subject_data={
             'formation': admission.formation,

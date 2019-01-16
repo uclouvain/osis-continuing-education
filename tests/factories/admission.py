@@ -47,28 +47,6 @@ class AdmissionFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.admission'
 
-    @staticmethod
-    def populate(country_id):
-        country = reference.models.country.find_by_id(country_id)
-        formation = OfferYear.objects.filter(
-            offer_type_id=CONTINUING_EDUCATION_TYPE,
-            academic_year_id=current_academic_years()
-        ).order_by('?').first()
-        faculty = entity_version.find_latest_version(
-            datetime.datetime.now()).filter(
-            entity_type=entity_type.FACULTY
-        ).order_by('?').first()
-
-        AdmissionFactory.create(
-            birth_country=country,
-            country=country,
-            citizenship=country,
-            billing_country=country,
-            residence_country=country,
-            formation=formation,
-            faculty=faculty
-        )
-
     person_information = factory.SubFactory(ContinuingEducationPersonFactory)
 
     # Identification
