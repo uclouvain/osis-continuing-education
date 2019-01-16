@@ -38,12 +38,12 @@ def admission_directory_path(instance, filename):
     )
 
 
-class FileAdmin(ModelAdmin):
+class AdmissionFileAdmin(ModelAdmin):
     list_display = ('admission', 'name', 'path', 'uploaded_by')
     raw_id_fields = ('uploaded_by',)
 
 
-class File(Model):
+class AdmissionFile(Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     admission = models.ForeignKey(
         'continuing_education.Admission',

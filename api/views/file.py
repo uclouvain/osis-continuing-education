@@ -30,7 +30,7 @@ from rest_framework.generics import CreateAPIView
 
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.file import File
+from continuing_education.models.admissionfile import AdmissionFile
 
 
 class AdmissionFileList(generics.ListAPIView):
@@ -55,7 +55,7 @@ class AdmissionFileList(generics.ListAPIView):
 
     def get_queryset(self):
         admission = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
-        return File.objects.filter(admission=admission)
+        return AdmissionFile.objects.filter(admission=admission)
 
 
 class AdmissionFileCreate(CreateAPIView):
@@ -77,10 +77,10 @@ class AdmissionFileRetrieveDestroy(generics.RetrieveDestroyAPIView):
         Return the detail of the file or destroy it
     """
     name = 'file-detail-delete'
-    queryset = File.objects.all()
+    queryset = AdmissionFile.objects.all()
     serializer_class = AdmissionFileSerializer
     lookup_field = 'uuid'
 
     def get_object(self):
-        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
+        file = get_object_or_404(AdmissionFile, uuid=self.kwargs['file_uuid'])
         return file

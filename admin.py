@@ -25,6 +25,7 @@
 ##############################################################################
 
 from django.contrib import admin
+
 from continuing_education.models import *
 
 admin.site.register(
@@ -40,6 +41,6 @@ admin.site.register(
     address.AddressAdmin
 )
 admin.site.register(
-    file.File,
-    file.FileAdmin
+    admissionfile.AdmissionFile,
+    admissionfile.AdmissionFileAdmin
 )

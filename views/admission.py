@@ -44,9 +44,9 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.admissionfile import AdmissionFile
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
-from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 
 
@@ -97,7 +97,7 @@ def _get_formations_by_faculty(faculty):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    files = File.objects.all().filter(admission=admission_id)
+    files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     states = accepted_states.get('choices', ())
     adm_form = AdmissionForm(
@@ -137,7 +137,7 @@ def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
 def _upload_file(request, admission):
     my_file = request.FILES['myfile']
     person = Person.objects.get(user=request.user)
-    file_to_admission = File(
+    file_to_admission = AdmissionFile(
         admission=admission,
         path=my_file,
         name=my_file.name,
@@ -151,7 +151,7 @@ def _upload_file(request, admission):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def download_file(request, admission_id, file_id):
-    file = File.objects.get(pk=file_id)
+    file = AdmissionFile.objects.get(pk=file_id)
     filename = file.name.split('/')[-1]
     response = HttpResponse(file.path, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
@@ -161,7 +161,7 @@ def download_file(request, admission_id, file_id):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def delete_file(request, admission_id, file_id):
-    file = File.objects.filter(id=file_id)
+    file = AdmissionFile.objects.filter(id=file_id)
     file.delete()
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + '#documents')
 

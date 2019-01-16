@@ -34,7 +34,7 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.file import AdmissionFileSerializer
-from continuing_education.models.file import File
+from continuing_education.models.admissionfile import AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -89,7 +89,7 @@ class GetAllFileTestCase(APITestCase):
         self.assertTrue('results' in response.data)
 
         self.assertTrue('count' in response.data)
-        expected_count = File.objects.filter(admission=self.admission).count()
+        expected_count = AdmissionFile.objects.filter(admission=self.admission).count()
         self.assertEqual(response.data['count'], expected_count)
 
 
@@ -171,10 +171,10 @@ class DeleteFileTestCase(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_delete_valid_file(self):
-        self.assertEqual(1, File.objects.all().count())
+        self.assertEqual(1, AdmissionFile.objects.all().count())
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, File.objects.all().count())
+        self.assertEqual(0, AdmissionFile.objects.all().count())
 
     def test_delete_invalid_file_case_not_found(self):
         invalid_url = reverse(
@@ -212,7 +212,7 @@ class CreateFileTestCase(APITestCase):
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_create_valid_file(self):
-        self.assertEqual(0, File.objects.all().count())
+        self.assertEqual(0, AdmissionFile.objects.all().count())
 
         file = SimpleUploadedFile(
             name='upload_test.pdf',
@@ -228,7 +228,7 @@ class CreateFileTestCase(APITestCase):
         }
         response = self.client.post(self.url, data=data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(1, File.objects.all().count())
+        self.assertEqual(1, AdmissionFile.objects.all().count())
 
     def test_create_invalid_file_case_not_found(self):
         invalid_url = reverse(

@@ -41,8 +41,8 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
+from continuing_education.models.admissionfile import AdmissionFile
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED
-from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -228,5 +228,5 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data={'myfile': file}, format='multipart')
 
-        self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(path__contains=file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')

@@ -28,7 +28,7 @@ from rest_framework.reverse import reverse
 
 from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
-from continuing_education.models.file import File
+from continuing_education.models.admissionfile import AdmissionFile
 
 
 class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
@@ -52,7 +52,7 @@ class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
     )
 
     class Meta:
-        model = File
+        model = AdmissionFile
         fields = (
             'url',
             'uuid',
@@ -74,7 +74,7 @@ class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
     uploaded_by = PersonDetailSerializer(read_only=True)
 
     class Meta:
-        model = File
+        model = AdmissionFile
         fields = (
             'url',
             'uuid',
