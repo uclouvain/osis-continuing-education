@@ -150,8 +150,8 @@ def _upload_file(request, admission):
     try:
         file_to_admission.save()
         display_success_messages(request, _("The document is uploaded correctly"))
-    except TooLongFilenameException as f:
-        display_error_messages(request, str(f))
+    except TooLongFilenameException as e:
+        display_error_messages(request, str(e))
     except Exception as e:
         display_error_messages(request, _("A problem occured : the document is not uploaded"))
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')
