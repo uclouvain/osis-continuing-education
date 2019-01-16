@@ -198,7 +198,7 @@ class CreateFileTestCase(APITestCase):
     def setUp(self):
         self.client.force_authenticate(user=self.user)
 
-    def test_delete_not_authorized(self):
+    def test_create_not_authorized(self):
         self.client.force_authenticate(user=None)
 
         response = self.client.delete(self.url)
