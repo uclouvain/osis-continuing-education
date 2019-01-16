@@ -29,7 +29,7 @@ from continuing_education.api.views.address import AddressList, AddressDetail
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
     ContinuingEducationPersonDetail
-from continuing_education.api.views.file import FileAPIView, FileList, FileDetail, FileDestroy, FileCreate
+from continuing_education.api.views.file import FileList, FileDetail, FileDestroy, FileCreate
 
 urlpatterns = [
     # TODO: remove files/ : it is for old api
@@ -41,7 +41,6 @@ urlpatterns = [
         ContinuingEducationPersonDetail.as_view(),
         name=ContinuingEducationPersonDetail.name
     ),
-    url(r'^$', FileAPIView.as_view(), name="file_api"),
     url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
     url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
     url(r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
