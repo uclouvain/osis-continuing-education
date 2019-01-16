@@ -30,6 +30,8 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from reference.models import country
 from continuing_education.models.enums.admission_state_choices import REJECTED
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 
 ANY_REASON = 'Anything'
 
@@ -37,7 +39,10 @@ ANY_REASON = 'Anything'
 class TestAdmissionForm(TestCase):
 
     def test_valid_form(self):
-        admission = AdmissionFactory()
+        current_academic_yr = create_current_academic_year()
+        next_academic_yr = AcademicYearFactory(year=current_academic_yr.year+1)
+        admission = AdmissionFactory(formation=EducationGroupYearFactory(academic_year=next_academic_yr))
+
         data = admission.__dict__
         data['formation'] = admission.formation.pk
         form = AdmissionForm(data)
@@ -91,6 +96,7 @@ class TestRejectedAdmissionForm(TestCase):
         obj_updated = form.save()
         self.assertEqual(obj_updated.state, REJECTED)
         self.assertEqual(obj_updated.state_reason, NOT_ENOUGH_EXPERIENCE)
+
 
 def convert_countries(person):
     # person['address']['country'] = country.find_by_id(person["country_id"])
