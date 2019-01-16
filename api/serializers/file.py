@@ -31,9 +31,9 @@ from base.models.person import Person
 from continuing_education.models.file import File
 
 
-class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
+class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
     def __init__(self, **kwargs):
-        super().__init__(view_name='continuing_education_api_v1:file-detail', **kwargs)
+        super().__init__(view_name='continuing_education_api_v1:file-detail-delete', **kwargs)
 
     def get_url(self, obj, view_name, request, format):
         url_kwargs = {
@@ -43,8 +43,8 @@ class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
         return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
 
 
-class FilePostSerializer(serializers.HyperlinkedModelSerializer):
-    url = FileHyperlinkedIdentityField()
+class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
+    url = AdmissionFileHyperlinkedIdentityField()
     created_date = serializers.DateTimeField()
     uploaded_by = serializers.SlugRelatedField(
         slug_field='uuid',
@@ -68,8 +68,8 @@ class FilePostSerializer(serializers.HyperlinkedModelSerializer):
         return super().create(validated_data)
 
 
-class FileSerializer(serializers.HyperlinkedModelSerializer):
-    url = FileHyperlinkedIdentityField()
+class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
+    url = AdmissionFileHyperlinkedIdentityField()
     created_date = serializers.DateTimeField()
     uploaded_by = PersonDetailSerializer(read_only=True)
 

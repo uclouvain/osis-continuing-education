@@ -26,19 +26,19 @@
 
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from rest_framework.generics import DestroyAPIView, CreateAPIView
+from rest_framework.generics import CreateAPIView
 
-from continuing_education.api.serializers.file import FileSerializer, FilePostSerializer
+from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
 
 
-class FileList(generics.ListAPIView):
+class AdmissionFileList(generics.ListAPIView):
     """
        Return a list of all the files with optional filtering.
     """
     name = 'file-list'
-    serializer_class = FileSerializer
+    serializer_class = AdmissionFileSerializer
     filter_fields = (
         'name',
         'size',
@@ -58,43 +58,29 @@ class FileList(generics.ListAPIView):
         return File.objects.filter(admission=admission)
 
 
-class FileDetail(generics.RetrieveAPIView):
-    """
-        Return the detail of the file
-    """
-    name = 'file-detail'
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-    lookup_field = 'uuid'
-
-    def get_object(self):
-        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
-        return file
-
-
-class FileDestroy(DestroyAPIView):
-    """
-        Remove a file
-    """
-    name = 'file-delete'
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-    lookup_field = 'uuid'
-
-    def get_object(self):
-        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
-        return file
-
-
-class FileCreate(CreateAPIView):
+class AdmissionFileCreate(CreateAPIView):
 
     """
         Create a file
     """
     name = 'file-create'
-    serializer_class = FilePostSerializer
+    serializer_class = AdmissionFilePostSerializer
 
     def get_serializer_context(self):
         serializer_context = super().get_serializer_context()
         serializer_context['admission'] = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
         return serializer_context
+
+
+class AdmissionFileRetrieveDestroy(generics.RetrieveDestroyAPIView):
+    """
+        Return the detail of the file or destroy it
+    """
+    name = 'file-detail-delete'
+    queryset = File.objects.all()
+    serializer_class = AdmissionFileSerializer
+    lookup_field = 'uuid'
+
+    def get_object(self):
+        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
+        return file

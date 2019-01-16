@@ -29,10 +29,9 @@ from continuing_education.api.views.address import AddressList, AddressDetail
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
     ContinuingEducationPersonDetail
-from continuing_education.api.views.file import FileList, FileDetail, FileDestroy, FileCreate
+from continuing_education.api.views.file import AdmissionFileList, AdmissionFileRetrieveDestroy, AdmissionFileCreate
 
 urlpatterns = [
-    # TODO: remove files/ : it is for old api
     url(r'^addresses/$', AddressList.as_view(), name=AddressList.name),
     url(r'^addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
     url(r'^persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
@@ -43,21 +42,21 @@ urlpatterns = [
     ),
     url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
     url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$', FileList.as_view(), name=FileList.name),
+    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$', AdmissionFileList.as_view(), name=AdmissionFileList.name),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/create/$',
-        FileCreate.as_view(),
-        name=FileCreate.name
+        AdmissionFileCreate.as_view(),
+        name=AdmissionFileCreate.name
     ),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
-        FileDetail.as_view(),
-        name=FileDetail.name
+        AdmissionFileRetrieveDestroy.as_view(),
+        name=AdmissionFileRetrieveDestroy.name
     ),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)/delete/$',
-        FileDestroy.as_view(),
-        name=FileDestroy.name
+        AdmissionFileRetrieveDestroy.as_view(),
+        name=AdmissionFileRetrieveDestroy.name
     ),
 
 ]

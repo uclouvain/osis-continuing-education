@@ -26,7 +26,7 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from continuing_education.api.serializers.file import FileSerializer, FilePostSerializer
+from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -43,7 +43,7 @@ class FileSerializerTestCase(TestCase):
             uploaded_by=person_information.person
         )
         url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        cls.serializer = FileSerializer(cls.file, context={'request': RequestFactory().get(url)})
+        cls.serializer = AdmissionFileSerializer(cls.file, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
         expected_fields = [
@@ -70,7 +70,7 @@ class FilePostSerializerTestCase(TestCase):
             uploaded_by=cls.uploaded_by
         )
         url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        cls.serializer = FilePostSerializer(cls.file, context={'request': RequestFactory().get(url)})
+        cls.serializer = AdmissionFilePostSerializer(cls.file, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
         expected_fields = [

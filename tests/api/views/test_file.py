@@ -33,7 +33,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.file import FileSerializer
+from continuing_education.api.serializers.file import AdmissionFileSerializer
 from continuing_education.models.file import File
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
@@ -102,7 +102,7 @@ class GetFileTestCase(APITestCase):
         )
         cls.user = UserFactory()
         cls.url = reverse(
-            'continuing_education_api_v1:file-detail',
+            'continuing_education_api_v1:file-detail-delete',
             kwargs={'file_uuid': cls.file.uuid, 'uuid': cls.file.admission.uuid}
         )
 
@@ -116,7 +116,7 @@ class GetFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete', 'put']
+        methods_not_allowed = ['post', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -126,7 +126,7 @@ class GetFileTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = FileSerializer(
+        serializer = AdmissionFileSerializer(
             self.file,
             context={'request': RequestFactory().get(self.url)},
         )
@@ -134,7 +134,7 @@ class GetFileTestCase(APITestCase):
 
     def test_get_invalid_file_case_not_found(self):
         invalid_url = reverse(
-            'continuing_education_api_v1:file-detail',
+            'continuing_education_api_v1:file-detail-delete',
             kwargs={'uuid':  uuid.uuid4(), 'file_uuid': uuid.uuid4()}
         )
         response = self.client.get(invalid_url)
@@ -150,7 +150,7 @@ class DeleteFileTestCase(APITestCase):
         )
         cls.user = UserFactory()
         cls.url = reverse(
-            'continuing_education_api_v1:file-delete',
+            'continuing_education_api_v1:file-detail-delete',
             kwargs={'file_uuid': cls.file.uuid, 'uuid': cls.file.admission.uuid}
         )
 
@@ -164,7 +164,7 @@ class DeleteFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'get', 'put']
+        methods_not_allowed = ['post', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -178,7 +178,7 @@ class DeleteFileTestCase(APITestCase):
 
     def test_delete_invalid_file_case_not_found(self):
         invalid_url = reverse(
-            'continuing_education_api_v1:file-delete',
+            'continuing_education_api_v1:file-detail-delete',
             kwargs={'uuid':  uuid.uuid4(), 'file_uuid': uuid.uuid4()}
         )
         response = self.client.delete(invalid_url)
