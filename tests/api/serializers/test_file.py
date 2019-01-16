@@ -39,11 +39,11 @@ class FileSerializerTestCase(TestCase):
         cls.admission = AdmissionFactory(
             person_information=person_information
         )
-        cls.file = AdmissionFileFactory(
+        cls.admission_file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        cls.serializer = AdmissionFileSerializer(cls.file, context={'request': RequestFactory().get(url)})
+        cls.serializer = AdmissionFileSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
         expected_fields = [
@@ -66,11 +66,11 @@ class FilePostSerializerTestCase(TestCase):
         cls.admission = AdmissionFactory(
             person_information=person_information
         )
-        cls.file = AdmissionFileFactory(
+        cls.admission_file = AdmissionFileFactory(
             uploaded_by=cls.uploaded_by
         )
         url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        cls.serializer = AdmissionFilePostSerializer(cls.file, context={'request': RequestFactory().get(url)})
+        cls.serializer = AdmissionFilePostSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
         expected_fields = [

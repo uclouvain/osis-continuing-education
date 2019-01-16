@@ -97,13 +97,13 @@ class GetFileTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
-        cls.file = AdmissionFileFactory(
+        cls.admission_file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         cls.user = UserFactory()
         cls.url = reverse(
             'continuing_education_api_v1:file-detail-delete',
-            kwargs={'file_uuid': cls.file.uuid, 'uuid': cls.file.admission.uuid}
+            kwargs={'file_uuid': cls.admission_file.uuid, 'uuid': cls.admission_file.admission.uuid}
         )
 
     def setUp(self):
@@ -127,7 +127,7 @@ class GetFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         serializer = AdmissionFileSerializer(
-            self.file,
+            self.admission_file,
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
@@ -145,13 +145,13 @@ class DeleteFileTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
-        cls.file = AdmissionFileFactory(
+        cls.admission_file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         cls.user = UserFactory()
         cls.url = reverse(
             'continuing_education_api_v1:file-detail-delete',
-            kwargs={'file_uuid': cls.file.uuid, 'uuid': cls.file.admission.uuid}
+            kwargs={'file_uuid': cls.admission_file.uuid, 'uuid': cls.admission_file.admission.uuid}
         )
 
     def setUp(self):
@@ -214,17 +214,17 @@ class CreateFileTestCase(APITestCase):
     def test_create_valid_file(self):
         self.assertEqual(0, AdmissionFile.objects.all().count())
 
-        file = SimpleUploadedFile(
+        admission_file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode("test_content"),
             content_type="application/pdf"
         )
         data = {
-            'name': file.name,
-            'size': file.size,
+            'name': admission_file.name,
+            'size': admission_file.size,
             'uploaded_by': self.admission.person_information.person.uuid,
             'created_date': datetime.datetime.today(),
-            'path': file
+            'path': admission_file
         }
         response = self.client.post(self.url, data=data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

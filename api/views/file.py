@@ -90,5 +90,5 @@ class AdmissionFileRetrieveDestroy(generics.RetrieveDestroyAPIView):
     lookup_field = 'uuid'
 
     def get_object(self):
-        file = get_object_or_404(AdmissionFile, uuid=self.kwargs['file_uuid'])
-        return file
+        admission_file = get_object_or_404(AdmissionFile, uuid=self.kwargs['file_uuid'])
+        return admission_file

@@ -228,18 +228,18 @@
                                                 <th id="actions">{% trans 'Actions' %}</th>
                                             </tr>
                                         </thead>
-                                        {% for file in files %}
+                                        {% for admission_file in files %}
                                             <tr>
-                                                <td> {{file.name}} </td>
-                                                <td> {{file.size|filesizeformat}} </td>
-                                                <td> {{file.created_date}} </td>
-                                                <td> {{file.uploaded_by}} </td>
+                                                <td> {{admission_file.name}} </td>
+                                                <td> {{admission_file.size|filesizeformat}} </td>
+                                                <td> {{admission_file.created_date}} </td>
+                                                <td> {{admission_file.uploaded_by}} </td>
                                                 <td>
                                                     <a class="button" role="button"
-                                                        href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                                                        href="{% url 'delete_file' admission_id=admission.id file_id=admission_file.id %}">
                                                         <span class="glyphicon glyphicon-remove-circle btn-space btn-file" aria-hidden="true"></span>
                                                     </a>
-                                                    <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
+                                                    <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=admission_file.id %}">
                                                         <span class="glyphicon glyphicon-download-alt btn-space btn-file"
                                                               aria-hidden="true"></span>
                                                     </a>

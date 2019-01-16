@@ -68,7 +68,7 @@ class ViewAdmissionTestCase(TestCase):
             state=SUBMITTED
         )
 
-        self.file = SimpleUploadedFile(
+        self.admission_file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
@@ -180,12 +180,12 @@ class ViewAdmissionTestCase(TestCase):
             content=str.encode('content'),
             content_type="application/pdf"
         )
-        file = AdmissionFileFactory(
+        admission_file = AdmissionFileFactory(
             admission=self.admission,
             path=uploaded_file,
             uploaded_by=self.admission.person_information.person
         )
-        url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': file.pk})
+        url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': admission_file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -240,7 +240,7 @@ class UploadFileTestCase(TestCase):
             formation=formation,
             state=SUBMITTED
         )
-        self.file = SimpleUploadedFile(
+        self.admission_file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
@@ -248,9 +248,9 @@ class UploadFileTestCase(TestCase):
 
     def test_upload_file(self):
         url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data={'myfile': self.file}, format='multipart')
+        response = self.client.post(url, data={'myfile': self.admission_file}, format='multipart')
 
-        self.assertEqual(AdmissionFile.objects.get(path__contains=self.file).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(path__contains=self.admission_file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -262,7 +262,7 @@ class UploadFileTestCase(TestCase):
     @patch('django.db.models.base.Model.save', side_effect=Exception)
     def test_upload_file_error(self, mock_save):
         url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data={'myfile': self.file}, format='multipart')
+        response = self.client.post(url, data={'myfile': self.admission_file}, format='multipart')
 
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
@@ -286,11 +286,11 @@ class DeleteFileTestCase(TestCase):
             formation=formation,
             state=SUBMITTED
         )
-        self.file = AdmissionFileFactory()
+        self.admission_file = AdmissionFileFactory()
 
     def test_delete_file(self):
         self.assertEqual(AdmissionFile.objects.all().count(), 1)
-        url = reverse('delete_file', args=[self.admission.pk, self.file.pk])
+        url = reverse('delete_file', args=[self.admission.pk, self.admission_file.pk])
         response = self.client.get(url)
 
         self.assertEqual(AdmissionFile.objects.all().count(), 0)
@@ -305,7 +305,7 @@ class DeleteFileTestCase(TestCase):
     @patch('django.db.models.query.QuerySet.delete', side_effect=Exception)
     def test_delete_file_error(self, mock_delete):
         self.assertEqual(AdmissionFile.objects.all().count(), 1)
-        url = reverse('delete_file', args=[self.admission.pk, self.file.pk])
+        url = reverse('delete_file', args=[self.admission.pk, self.admission_file.pk])
         response = self.client.get(url)
 
         self.assertEqual(AdmissionFile.objects.all().count(), 1)
