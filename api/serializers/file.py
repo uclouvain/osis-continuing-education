@@ -26,6 +26,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
+from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
 from continuing_education.models.file import File
 
@@ -42,10 +43,13 @@ class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
         return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
 
 
-class FileSerializer(serializers.HyperlinkedModelSerializer):
+class FilePostSerializer(serializers.HyperlinkedModelSerializer):
     url = FileHyperlinkedIdentityField()
-    uploaded_by = serializers.UUIDField()
     created_date = serializers.DateTimeField()
+    uploaded_by = serializers.SlugRelatedField(
+        slug_field='uuid',
+        queryset=Person.objects.all()
+    )
 
     class Meta:
         model = File
@@ -59,9 +63,24 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
             'uploaded_by'
         )
 
-    def save(self, **kwargs):
-        self.instance.uploaded_by = Person.objects.get(uuid=self.data['uploaded_by'])
-        return super().save(**kwargs)
+    def create(self, validated_data):
+        validated_data['admission'] = self.context['admission']
+        return super().create(validated_data)
 
 
+class FileSerializer(serializers.HyperlinkedModelSerializer):
+    url = FileHyperlinkedIdentityField()
+    created_date = serializers.DateTimeField()
+    uploaded_by = PersonDetailSerializer(read_only=True)
 
+    class Meta:
+        model = File
+        fields = (
+            'url',
+            'uuid',
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'uploaded_by'
+        )

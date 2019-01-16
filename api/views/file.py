@@ -25,36 +25,12 @@
 ##############################################################################
 
 from django.shortcuts import get_object_or_404
-from rest_framework import views, status, generics
+from rest_framework import generics
 from rest_framework.generics import DestroyAPIView, CreateAPIView
-from rest_framework.parsers import MultiPartParser
-from rest_framework.response import Response
 
-from continuing_education.api.serializers.file import FileSerializer
+from continuing_education.api.serializers.file import FileSerializer, FilePostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import File
-
-
-class FileAPIView(views.APIView):
-    parser_classes = (MultiPartParser,)
-
-    def put(self, request):
-        admission_id = request.data['admission_id']
-        file_obj = request.data['file']
-        admission = Admission.objects.get(uuid=admission_id)
-        person = admission.person_information.person
-        file = File(
-            admission=admission,
-            name=file_obj.name,
-            path=file_obj,
-            size=file_obj.size,
-            uploaded_by=person
-        )
-        file.save()
-        return Response(
-            data="File uploaded sucessfully",
-            status=status.HTTP_201_CREATED
-        )
 
 
 class FileList(generics.ListAPIView):
@@ -116,11 +92,9 @@ class FileCreate(CreateAPIView):
         Create a file
     """
     name = 'file-create'
-    serializer_class = FileSerializer
+    serializer_class = FilePostSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def get_serializer_context(self):
+        serializer_context = super().get_serializer_context()
+        serializer_context['admission'] = Admission.objects.get(uuid=self.kwargs['uuid'])
+        return serializer_context
