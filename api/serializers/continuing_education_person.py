@@ -40,6 +40,7 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
         slug_field='iso_code',
         queryset=Country.objects.all(),
     )
+    birth_country_text = serializers.CharField(source='birth_country.name', read_only=True)
 
     class Meta:
         model = ContinuingEducationPerson
@@ -53,4 +54,5 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
             'birth_date',
             'birth_location',
             'birth_country',
+            'birth_country_text'
         )

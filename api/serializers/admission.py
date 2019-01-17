@@ -64,6 +64,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
         slug_field='iso_code',
         queryset=Country.objects.all(),
     )
+    citizenship_text = serializers.CharField(source='citizenship.name', read_only=True)
 
     main_address = AddressSerializer(source='address', read_only=True)
 
@@ -83,6 +84,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # CONTACTS
             'main_address',
             'citizenship',
+            'citizenship_text',
             'phone_mobile',
             'email',
 

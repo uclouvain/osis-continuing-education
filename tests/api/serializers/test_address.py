@@ -49,6 +49,7 @@ class AddressSerializerTestCase(TestCase):
             'postal_code',
             'city',
             'country',
+            'country_text'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

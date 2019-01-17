@@ -35,6 +35,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
         slug_field='iso_code',
         queryset=Country.objects.all(),
     )
+    country_text = serializers.CharField(source='country.name', read_only=True)
 
     class Meta:
         model = Address
@@ -44,4 +45,5 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
             'postal_code',
             'city',
             'country',
+            'country_text'
         )

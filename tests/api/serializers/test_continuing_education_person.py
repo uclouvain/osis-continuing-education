@@ -56,6 +56,7 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
             'birth_date',
             'birth_location',
             'birth_country',
+            'birth_country_text'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

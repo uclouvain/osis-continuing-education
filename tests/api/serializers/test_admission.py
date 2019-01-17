@@ -76,6 +76,7 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'person_information',
             'main_address',
             'citizenship',
+            'citizenship_text',
             'phone_mobile',
             'email',
             'high_school_diploma',
