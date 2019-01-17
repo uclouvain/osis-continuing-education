@@ -31,7 +31,7 @@ from continuing_education.models.address import Address
 
 class AddressListCreate(generics.ListCreateAPIView):
     """
-       Return a list of all the addresses with optional filtering or create an addreess.
+       Return a list of all the addresses with optional filtering or create an address.
     """
     name = 'address-list-create'
     queryset = Address.objects.all()
