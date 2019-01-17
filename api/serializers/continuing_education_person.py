@@ -34,6 +34,7 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
     last_name = serializers.CharField(source='person.last_name', read_only=True)
     gender = serializers.CharField(source='person.gender', read_only=True)
     email = serializers.CharField(source='person.email', read_only=True)
+    person_uuid = serializers.CharField(source='person.uuid', read_only=True)
 
     birth_country = serializers.SlugRelatedField(
         slug_field='iso_code',
@@ -44,6 +45,7 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
         model = ContinuingEducationPerson
         fields = (
             'uuid',
+            'person_uuid',
             'first_name',
             'last_name',
             'email',
