@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import itertools
+import mimetypes
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -162,7 +163,7 @@ def _upload_file(request, admission):
 def download_file(request, admission_id, file_id):
     admission_file = AdmissionFile.objects.get(pk=file_id)
     filename = admission_file.name.split('/')[-1]
-    response = HttpResponse(admission_file.path, content_type='text/plain')
+    response = HttpResponse(admission_file.path, content_type=mimetypes.guess_type(filename))
     response['Content-Disposition'] = 'attachment; filename=%s' % filename
     return response
 
