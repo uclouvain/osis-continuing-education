@@ -41,7 +41,7 @@ class GetAllAddressTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:address-list')
+        cls.url = reverse('continuing_education_api_v1:address-list-create')
 
         cls.country = CountryFactory()
 
@@ -59,7 +59,7 @@ class GetAllAddressTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete', 'put']
+        methods_not_allowed = ['delete', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -116,4 +116,54 @@ class GetAddressTestCase(APITestCase):
     def test_get_invalid_address_case_not_found(self):
         invalid_url = reverse('continuing_education_api_v1:address-detail', kwargs={'uuid':  uuid.uuid4()})
         response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class CreateAddressTestCase(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.country = CountryFactory()
+
+        cls.address = AddressFactory(country=cls.country)
+        cls.user = UserFactory()
+        cls.url = reverse(
+            'continuing_education_api_v1:address-list-create',
+            kwargs={'uuid': cls.address.uuid}
+        )
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user)
+
+    def test_create_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_method_not_allowed(self):
+        methods_not_allowed = ['delete', 'put']
+
+        for method in methods_not_allowed:
+            response = getattr(self.client, method)(self.url)
+            self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_create_valid_address(self):
+        self.assertEqual(0, Address.objects.all().count())
+
+        data = {
+            'location': self.address.location,
+            'postal_code': self.address.postal_code,
+            'city': self.address.city,
+            'country': self.address.country.iso_code,
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(1, Address.objects.all().count())
+
+    def test_create_invalid_address_case_not_found(self):
+        invalid_url = reverse(
+            'continuing_education_api_v1:address-list-create',
+            kwargs={'uuid':  uuid.uuid4()}
+        )
+        response = self.client.post(invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

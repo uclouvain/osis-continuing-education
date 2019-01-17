@@ -29,11 +29,11 @@ from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.models.address import Address
 
 
-class AddressList(generics.ListAPIView):
+class AddressListCreate(generics.ListCreateAPIView):
     """
-       Return a list of all the addresses with optional filtering.
+       Return a list of all the addresses with optional filtering or create an addreess.
     """
-    name = 'address-list'
+    name = 'address-list-create'
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     filter_fields = (

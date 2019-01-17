@@ -25,14 +25,15 @@
 ##############################################################################
 from django.conf.urls import url
 
-from continuing_education.api.views.address import AddressList, AddressDetail
+from continuing_education.api.views.address import AddressDetail, AddressListCreate
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
     ContinuingEducationPersonDetail
 from continuing_education.api.views.file import AdmissionFileList, AdmissionFileRetrieveDestroy, AdmissionFileCreate
 
 urlpatterns = [
-    url(r'^addresses/$', AddressList.as_view(), name=AddressList.name),
+    url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),
+    url(r'^addresses/create/$', AddressListCreate.as_view(), name=AddressListCreate.name),
     url(r'^addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
     url(r'^persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
     url(

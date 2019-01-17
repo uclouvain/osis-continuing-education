@@ -60,7 +60,6 @@ class AdmissionFileList(generics.ListAPIView):
 
 
 class AdmissionFileCreate(CreateAPIView):
-
     """
         Create a file
     """

@@ -39,7 +39,7 @@ class AddressSerializerTestCase(TestCase):
         cls.address = AddressFactory(
             country=cls.country
         )
-        url = reverse('continuing_education_api_v1:address-list')
+        url = reverse('continuing_education_api_v1:address-list-create')
         cls.serializer = AddressSerializer(cls.address, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
