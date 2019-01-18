@@ -82,7 +82,7 @@ class File(Model):
     )
 
     file_category = models.CharField(
-        choices=file_category_choices.FILE_TYPE_CATEGORIES,
+        choices=file_category_choices.FILE_CATEGORY_CHOICES,
         default=file_category_choices.DOCUMENT,
         max_length=20
     )

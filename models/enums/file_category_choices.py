@@ -25,13 +25,12 @@
 ##############################################################################
 from django.utils.translation import ugettext_lazy as _
 
-# PROJECT_CALENDAR_TYPES
 DOCUMENT = "Document"
 INVOICE = "Invoice"
 STUDENT = "Student"
 
 
-FILE_TYPE_CATEGORIES = (
+FILE_CATEGORY_CHOICES = (
     (DOCUMENT, _(DOCUMENT)),
     (INVOICE, _(INVOICE)),
     (STUDENT, _(STUDENT)),
