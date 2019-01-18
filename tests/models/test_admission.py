@@ -77,10 +77,3 @@ class TestAdmission(TestCase):
         self.assertTrue(mock_managers.called)
         message_content = mock_send.call_args[0][0]
         self.assertIn(_(self.admission.state), str(message_content['template_base_data']))
-
-    @patch('osis_common.messaging.send_message.send_messages')
-    def test_mail_sent_on_admission_created(self, mock_send):
-        adm = AdmissionFactory()
-        self.assertTrue(mock_send.called)
-        message_content = mock_send.call_args[0][0]
-        self.assertIn(adm.formation.acronym, str(message_content['template_base_data']))
