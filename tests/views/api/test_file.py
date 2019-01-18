@@ -77,7 +77,7 @@ class ViewFileAPITestCase(TestCase):
             },
             format='multipart'
         )
-        self.assertEqual(File.objects.get(path__contains=file).uploaded_by, self.admission.person_information.person)
+        self.assertEqual(File.objects.get(name=file.name).uploaded_by, self.admission.person_information.person)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(File.objects.count(),FILES_COUNT+1)
 

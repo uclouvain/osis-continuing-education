@@ -68,7 +68,7 @@ class TestAdmission(TestCase):
 
     @patch('continuing_education.business.admission._get_continuing_education_managers')
     @patch('osis_common.messaging.send_message.send_messages')
-    def test_mail_sent_on_admission_submitted(self, mock_send, mock_managers):
+    def test_mails_sent_to_admin_and_participant_on_admission_submitted(self, mock_send, mock_managers):
         self.admission.state = admission_state_choices.DRAFT
         self.admission.save()
         self.admission.state = admission_state_choices.SUBMITTED
@@ -77,10 +77,5 @@ class TestAdmission(TestCase):
         self.assertTrue(mock_managers.called)
         message_content = mock_send.call_args[0][0]
         self.assertIn(_(self.admission.state), str(message_content['template_base_data']))
-
-    @patch('osis_common.messaging.send_message.send_messages')
-    def test_mail_sent_on_admission_created(self, mock_send):
-        adm = AdmissionFactory()
-        self.assertTrue(mock_send.called)
-        message_content = mock_send.call_args[0][0]
-        self.assertIn(adm.formation.acronym, str(message_content['template_base_data']))
+        receivers = mock_send.call_args[0][0]['receivers']
+        self.assertIn(self.admission.person_information.person.user.email, str(receivers))
