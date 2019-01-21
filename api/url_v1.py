@@ -42,7 +42,11 @@ urlpatterns = [
     ),
     url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
     url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$', AdmissionFileListCreate.as_view(), name=AdmissionFileListCreate.name),
+    url(
+        r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$',
+        AdmissionFileListCreate.as_view(),
+        name=AdmissionFileListCreate.name
+    ),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
         AdmissionFileRetrieveDestroy.as_view(),
