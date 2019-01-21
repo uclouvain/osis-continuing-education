@@ -53,7 +53,6 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
     content = serializers.SerializerMethodField()
 
     def get_content(self, file):
-        file.path.open(mode='rb')
         file.content = base64.b64encode(file.path.read())
         return file.content
 
