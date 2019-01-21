@@ -45,7 +45,7 @@ class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField
 
 class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
     url = AdmissionFileHyperlinkedIdentityField()
-    created_date = serializers.DateTimeField(required=False)
+    created_date = serializers.DateTimeField(required=False, read_only=True)
     uploaded_by = serializers.SlugRelatedField(
         slug_field='uuid',
         queryset=Person.objects.all()
