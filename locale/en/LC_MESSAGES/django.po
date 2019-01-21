@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-16 15:28+0100\n"
+"POT-Creation-Date: 2019-01-21 15:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/views/test_admission.py:271 views/admission.py:156
+#: tests/views/test_admission.py:271 views/admission.py:157
 msgid "A problem occured : the document is not uploaded"
 msgstr ""
 
-#: tests/views/test_admission.py:316 views/admission.py:178
+#: tests/views/test_admission.py:336 views/admission.py:179
 msgid "A problem occured during delete"
 msgstr ""
 
@@ -263,7 +263,7 @@ msgstr ""
 msgid "Female"
 msgstr ""
 
-#: tests/views/test_admission.py:301 views/admission.py:176
+#: tests/views/test_admission.py:321 views/admission.py:177
 msgid "File correctly deleted"
 msgstr ""
 
@@ -441,9 +441,9 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-#: business/enums/rejected_reason.py:32 models/enums/enums.py:32
-#: models/enums/enums.py:40 templates/admission_detail.html:206
-#: templates/admission_form.html:174
+#: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:31
+#: models/enums/enums.py:32 models/enums/enums.py:40
+#: templates/admission_detail.html:206 templates/admission_form.html:174
 msgid "Other"
 msgstr ""
 
@@ -679,17 +679,23 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: tests/views/test_admission.py:258 views/admission.py:152
+#: tests/views/test_admission.py:258 views/admission.py:153
 msgid "The document is uploaded correctly"
 msgstr ""
 
-#: models/file.py:87
+#: models/file.py:93 tests/views/test_admission.py:289
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr ""
 
 #: business/enums/rejected_reason.py:30
 msgid "The programme is already complete"
+msgstr ""
+
+#: business/enums/waiting_reason.py:28
+msgid ""
+"The programme is already complete. We will contact you again for the next "
+"edition."
 msgstr ""
 
 #: forms/account.py:39
@@ -761,6 +767,12 @@ msgstr ""
 msgid ""
 "You will set the state Draft to the admission. It will be visible and "
 "editable for the participant as well as invisible for you."
+msgstr ""
+
+#: business/enums/waiting_reason.py:29
+msgid ""
+"Your admission file is being verified by the responsible training jury. We "
+"will report to you as soon as possible."
 msgstr ""
 
 #: business/enums/rejected_reason.py:28
