@@ -23,6 +23,9 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import base64
+import codecs
+
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
@@ -47,6 +50,12 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
     url = FileHyperlinkedIdentityField()
     uploaded_by = PersonDetailSerializer()
     created_date = serializers.DateTimeField()
+    content = serializers.SerializerMethodField()
+
+    def get_content(self, file):
+        file.path.open(mode='rb')
+        file.content = base64.b64encode(file.path.read())
+        return file.content
 
     class Meta:
         model = File
@@ -57,5 +66,6 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
             'path',
             'size',
             'created_date',
-            'uploaded_by'
+            'uploaded_by',
+            'content'
         )
