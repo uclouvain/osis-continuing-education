@@ -29,11 +29,11 @@ from continuing_education.api.serializers.continuing_education_person import Con
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
-class ContinuingEducationPersonList(generics.ListAPIView):
+class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     """
-       Return a list of continuing education persons with optional filtering.
+       Return a list of continuing education persons with optional filtering or create one.
     """
-    name = 'person-list'
+    name = 'person-list-create'
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
