@@ -96,10 +96,7 @@ class AddressListCreateTestCase(APITestCase):
         self.assertEqual(4, Address.objects.all().count())
 
     def test_create_invalid_address(self):
-        invalid_url = reverse(
-            'continuing_education_api_v1:address-list-create'
-        )
-        response = self.client.post(invalid_url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
