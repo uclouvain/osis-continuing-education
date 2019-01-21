@@ -25,7 +25,7 @@
 ##############################################################################
 from django.conf.urls import url
 
-from continuing_education.api.views.address import AddressDetail, AddressListCreate
+from continuing_education.api.views.address import AddressDetailUpdateDestroy, AddressListCreate
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonDetail, \
     ContinuingEducationPersonListCreate
@@ -33,7 +33,11 @@ from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, Ad
 
 urlpatterns = [
     url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),
-    url(r'^addresses/(?P<uuid>[0-9a-f-]+)$', AddressDetail.as_view(), name=AddressDetail.name),
+    url(
+        r'^addresses/(?P<uuid>[0-9a-f-]+)$',
+        AddressDetailUpdateDestroy.as_view(),
+        name=AddressDetailUpdateDestroy.name
+    ),
     url(r'^persons/$', ContinuingEducationPersonListCreate.as_view(), name=ContinuingEducationPersonListCreate.name),
     url(
         r'^persons/(?P<uuid>[0-9a-f-]+)$',

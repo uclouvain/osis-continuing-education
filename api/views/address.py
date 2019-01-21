@@ -46,11 +46,11 @@ class AddressListCreate(generics.ListCreateAPIView):
     )
 
 
-class AddressDetail(generics.RetrieveAPIView):
+class AddressDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
-        Return the detail of the address
+        Return the detail of the address, destroy one or update one.
     """
-    name = 'address-detail'
+    name = 'address-detail-update-delete'
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     lookup_field = 'uuid'
