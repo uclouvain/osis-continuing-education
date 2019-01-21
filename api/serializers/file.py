@@ -71,7 +71,7 @@ class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
 
 class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
     url = AdmissionFileHyperlinkedIdentityField()
-    created_date = serializers.DateTimeField()
+    created_date = serializers.DateTimeField(read_only=True)
     uploaded_by = PersonDetailSerializer(read_only=True)
 
     class Meta:
