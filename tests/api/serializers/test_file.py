@@ -42,7 +42,7 @@ class FileSerializerTestCase(TestCase):
         cls.admission_file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
-        url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
+        url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
         cls.serializer = AdmissionFileSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
@@ -69,7 +69,7 @@ class FilePostSerializerTestCase(TestCase):
         cls.admission_file = AdmissionFileFactory(
             uploaded_by=cls.uploaded_by
         )
-        url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
+        url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
         cls.serializer = AdmissionFilePostSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):

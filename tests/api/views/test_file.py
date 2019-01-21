@@ -46,23 +46,12 @@ class GetAllFileTestCase(APITestCase):
         cls.user = UserFactory()
         person_information = ContinuingEducationPersonFactory()
         cls.admission = AdmissionFactory(person_information=person_information)
-        cls.url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        AdmissionFileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
-        AdmissionFileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
-        AdmissionFileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
-        AdmissionFileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
+        cls.url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
+        for x in range(4):
+            AdmissionFileFactory(
+                admission=cls.admission,
+                uploaded_by=person_information.person
+            )
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -74,7 +63,7 @@ class GetAllFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete', 'put']
+        methods_not_allowed = ['delete', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -191,7 +180,7 @@ class CreateFileTestCase(APITestCase):
         cls.admission = AdmissionFactory()
         cls.user = UserFactory()
         cls.url = reverse(
-            'continuing_education_api_v1:file-create',
+            'continuing_education_api_v1:file-list-create',
             kwargs={'uuid': cls.admission.uuid}
         )
 
@@ -205,7 +194,7 @@ class CreateFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'get', 'put']
+        methods_not_allowed = ['delete', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -232,7 +221,7 @@ class CreateFileTestCase(APITestCase):
 
     def test_create_invalid_file(self):
         invalid_url = reverse(
-            'continuing_education_api_v1:file-create',
+            'continuing_education_api_v1:file-list-create',
             kwargs={'uuid':  uuid.uuid4()}
         )
         response = self.client.post(invalid_url)

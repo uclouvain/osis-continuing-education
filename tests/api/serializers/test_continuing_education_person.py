@@ -39,7 +39,7 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
         cls.continuing_education_person = ContinuingEducationPersonFactory(
             birth_country=cls.birth_country
         )
-        url = reverse('continuing_education_api_v1:person-list')
+        url = reverse('continuing_education_api_v1:person-list-create')
         cls.serializer = ContinuingEducationPersonSerializer(
             cls.continuing_education_person,
             context={'request': RequestFactory().get(url)}
