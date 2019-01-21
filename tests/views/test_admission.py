@@ -27,6 +27,7 @@ import datetime
 import random
 from unittest.mock import patch
 
+import factory.fuzzy
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -44,7 +45,7 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED
-from continuing_education.models.file import File
+from continuing_education.models.file import File, MAX_ADMISSION_FILE_NAME_LENGTH
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -249,8 +250,7 @@ class UploadFileTestCase(TestCase):
     def test_upload_file(self):
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data={'myfile': self.file}, format='multipart')
-
-        self.assertEqual(File.objects.get(path__contains=self.file).uploaded_by, self.manager)
+        self.assertEqual(File.objects.get(name=self.file.name).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -269,6 +269,26 @@ class UploadFileTestCase(TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertIn(
             ugettext(_("A problem occured : the document is not uploaded")),
+            str(messages_list[0])
+        )
+
+    def test_upload_file_error_name_too_long(self):
+        file_name_too_long = SimpleUploadedFile(
+            name='{}.pdf'.format(factory.fuzzy.FuzzyText(length=MAX_ADMISSION_FILE_NAME_LENGTH + 10).fuzz()),
+            content=str.encode(FILE_CONTENT),
+            content_type="application/pdf"
+        )
+
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data={'myfile': file_name_too_long}, format='multipart')
+
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            _("The name of the file is too long : maximum %(length)s characters.") % {
+                'length': MAX_ADMISSION_FILE_NAME_LENGTH
+            },
             str(messages_list[0])
         )
 

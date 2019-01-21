@@ -61,7 +61,7 @@ def send_state_changed_email(admission):
     )
 
 
-def send_admission_submitted_email(admission):
+def send_admission_submitted_email_to_admin(admission):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
@@ -94,12 +94,12 @@ def send_admission_submitted_email(admission):
     )
 
 
-def send_admission_created_email(admission):
+def send_admission_submitted_email_to_participant(admission):
     participant = admission.person_information.person
     send_email(
         template_references={
-            'html': 'iufc_participant_admission_created_html',
-            'txt': 'iufc_participant_admission_created_txt',
+            'html': 'iufc_participant_admission_submitted_html',
+            'txt': 'iufc_participant_admission_submitted_txt',
         },
         template_data={
             'formation': admission.formation.acronym,

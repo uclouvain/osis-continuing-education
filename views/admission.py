@@ -49,6 +49,7 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
+from continuing_education.models.exceptions import TooLongFilenameException
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 
@@ -150,6 +151,8 @@ def _upload_file(request, admission):
     try:
         file_to_admission.save()
         display_success_messages(request, _("The document is uploaded correctly"))
+    except TooLongFilenameException as e:
+        display_error_messages(request, str(e))
     except Exception as e:
         display_error_messages(request, _("A problem occured : the document is not uploaded"))
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')

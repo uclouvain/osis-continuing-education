@@ -30,6 +30,11 @@ from django.db import models
 from django.db.models import Model
 from django.utils.translation import ugettext_lazy as _
 
+from continuing_education.models.enums import file_category_choices
+from continuing_education.models.exceptions import TooLongFilenameException
+
+MAX_ADMISSION_FILE_NAME_LENGTH = 100
+
 
 def admission_directory_path(instance, filename):
     return 'continuing_education/admission_{}/{}'.format(
@@ -53,7 +58,7 @@ class File(Model):
     )
 
     name = models.CharField(
-        max_length=50,
+        max_length=MAX_ADMISSION_FILE_NAME_LENGTH,
         verbose_name=_("Name")
     )
 
@@ -75,3 +80,18 @@ class File(Model):
         verbose_name=_("Uploaded by"),
         on_delete=models.PROTECT
     )
+
+    file_category = models.CharField(
+        choices=file_category_choices.FILE_CATEGORY_CHOICES,
+        default=file_category_choices.DOCUMENT,
+        max_length=20
+    )
+
+    def save(self, *args, **kwargs):
+        if len(self.name) > MAX_ADMISSION_FILE_NAME_LENGTH:
+            raise TooLongFilenameException(
+                _("The name of the file is too long : maximum %(length)s characters.") % {
+                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
+                }
+            )
+        super(File, self).save(*args, **kwargs)
