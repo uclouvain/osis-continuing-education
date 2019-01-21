@@ -30,6 +30,7 @@ from django.db import models
 from django.db.models import Model
 from django.utils.translation import ugettext_lazy as _
 
+from continuing_education.models.enums import file_category_choices
 from continuing_education.models.exceptions import TooLongFilenameException
 
 MAX_ADMISSION_FILE_NAME_LENGTH = 100
@@ -78,6 +79,12 @@ class AdmissionFile(Model):
         null=True,
         verbose_name=_("Uploaded by"),
         on_delete=models.PROTECT
+    )
+
+    file_category = models.CharField(
+        choices=file_category_choices.FILE_CATEGORY_CHOICES,
+        default=file_category_choices.DOCUMENT,
+        max_length=20
     )
 
     def save(self, *args, **kwargs):

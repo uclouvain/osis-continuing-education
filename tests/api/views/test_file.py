@@ -230,7 +230,7 @@ class CreateFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(1, AdmissionFile.objects.all().count())
 
-    def test_create_invalid_file_case_not_found(self):
+    def test_create_invalid_file(self):
         invalid_url = reverse(
             'continuing_education_api_v1:file-create',
             kwargs={'uuid':  uuid.uuid4()}

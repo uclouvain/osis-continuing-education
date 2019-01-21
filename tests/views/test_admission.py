@@ -45,7 +45,7 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED
-from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
+from continuing_education.models.file import MAX_ADMISSION_FILE_NAME_LENGTH, AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
