@@ -38,11 +38,10 @@ $("#cancel_rejected_reason").click(function () {
     clear_other_reason_error();
     $('#id_rejected_reason').val($('#old_predefined_rejected_reason').val());
     $('#id_other_reason').val($('#old_other_reason').val());
-
     if (other_selected()){
         $('#id_other_reason').prop('disabled', false);
     }else{
         $('#id_other_reason').prop('disabled', true);
     }
-
+    setStateActive(state_initial);
 });
