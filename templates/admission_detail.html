@@ -64,7 +64,7 @@
                     </ul>
                 </div>
                 {% bootstrap_form admission_form exclude="state_reason" form_group_class="hidden" %}
-                {% include "fragment/state_reason_modal.html" %}
+                {% include "fragment/waiting_reason_modal.html" %}
                 {% include "fragment/warning_modal.html" %}
                 {% include "fragment/rejected_reason_modal.html" %}
             </form>
@@ -79,7 +79,7 @@
             </div>
         {% endif %}
         {% if admission.state_reason and admission.is_rejected %}
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-danger" role="alert">
                 <b>{% trans 'Refusal state reason' %}: </b>
                 {{ admission.state_reason }}
             </div>
@@ -306,13 +306,13 @@
           setStateActive(newState);
           $('#id_state').val(newState);
           if(newState === "Waiting"){
-            openReasonModal(state_initial)
+            openWaitingModal(state_initial)
           }
           else if(newState === "Draft"){
-              openWarningModal()
+              openWarningModal(state_initial)
           }
           else if(newState === "Rejected"){
-              openRejectedModal()
+              openRejectedModal(state_initial)
           }
           else{
               $('#form').submit();
@@ -328,29 +328,18 @@
             else {
                 text = $("#button-state").text();
             }
-            $('#button-state').html(text).attr("value",newState).addClass(newClass);
-            $('#button-state-caret').addClass(newClass);
+            let oldClass = states[$('#button-state').attr("value")];
+            $('#button-state').html(text).attr("value",newState).removeClass(oldClass).addClass(newClass);
+            $('#button-state-caret').removeClass(oldClass).addClass(newClass);
         }
-
-        //open modal to add a state reason
-        function openReasonModal(state_initial){
-            if(state_initial != "Waiting"){
-                $('#id_state_reason').val('');
-            }
-            $('#state_reason_modal').modal('show');
-        }
-
-        $('#cancel_reason').click(function () {
-            $("#id_state_reason").val(null);
-            $('#form').submit();
-        });
-        $('#add_reason').click(function () {
-            $('#form').submit();
-        })
 
         function openWarningModal(){
             $('#modalWarningDraft').modal('show');
         }
+
+        $('#cancel_warning').click(function () {
+            setStateActive(state_initial)
+        });
 
         $('#customFile').change(function(e) {
             $('#custom-file-label').text(this.files[0].name);
@@ -361,4 +350,5 @@
         $('#tabs a[href="' + anchor + '"]').tab('show');
     </script>
     <script src="{% static 'js/rejected_admission.js' %}"></script>
+    <script src="{% static 'js/waiting_admission.js' %}"></script>
 {% endblock %}

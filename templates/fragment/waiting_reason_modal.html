@@ -25,8 +25,8 @@
     * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-    <div class="modal fade" id="state_reason_modal" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+    <div class="modal fade" id="waiting_reason_modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
@@ -38,12 +38,15 @@
                     {% trans 'You can enter a reason to put this admission on hold' %}
                 </div>
                 <div class="panel-body">
-                    {% bootstrap_field admission_form.state_reason form_group_class="form-group col-md-12" label=_("Reason") %}
+                    {% bootstrap_field waiting_adm_form.waiting_reason form_group_class="form-group col-md-12" %}
+                    {% bootstrap_field waiting_adm_form.other_reason form_group_class="form-group col-md-12" %}
+                    <input type="hidden" id="old_other_reason">
+                    <input type="hidden" id="old_predefined_waiting_reason">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancel_reason" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'No Reason' %}</button>
-                <button type="button" id="add_reason" class="btn btn-primary" data-dismiss="modal">{% trans 'Add Reason' %}</button>
+                <button type="button" id="cancel_waiting_reason" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" id="add_waiting_reason" class="btn btn-primary">{% trans 'Confirm' %}</button>
             </div>
         </div>
       </div>
