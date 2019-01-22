@@ -23,15 +23,20 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 DOCUMENT = "Document"
 INVOICE = "Invoice"
-STUDENT = "Student"
+PARTICIPANT = "Participant"
 
 
 FILE_CATEGORY_CHOICES = (
-    (DOCUMENT, _(DOCUMENT)),
-    (INVOICE, _(INVOICE)),
-    (STUDENT, _(STUDENT)),
+    (DOCUMENT, _("Document")),
+    (INVOICE, _("Invoice")),
+    (PARTICIPANT, _("Participant")),
+)
+
+FILE_CATEGORY_CHOICES_ADMISSION_STATUS_OTHER_THAN_ACCEPTED = (
+    (DOCUMENT, _("Document")),
+    (PARTICIPANT, _("Participant")),
 )

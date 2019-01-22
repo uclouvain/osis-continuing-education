@@ -233,18 +233,20 @@
                                 <thead>
                                     <tr>
                                         <th id="name">{% trans 'Name' %}</th>
+                                        <th id="name">{% trans 'File category' %}</th>
+                                        <th id="uploaded_by">{% trans 'Uploaded by' %}</th>
                                         <th id="size">{% trans 'Size' %}</th>
                                         <th id="last_update">{% trans 'Last update' %}</th>
-                                        <th id="uploaded_by">{% trans 'Uploaded by' %}</th>
                                         <th id="actions">{% trans 'Actions' %}</th>
                                     </tr>
                                 </thead>
                                 {% for file in files %}
                                     <tr>
                                         <td> {{file.name}} </td>
+                                        <td> {% trans file.file_category %} </td>
+                                        <td> {{file.uploaded_by}} </td>
                                         <td> {{file.size|filesizeformat}} </td>
                                         <td> {{file.created_date}} </td>
-                                        <td> {{file.uploaded_by}} </td>
                                         <td>
                                             <a class="button" role="button" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
                                                 <span class="glyphicon glyphicon-remove-circle btn-space btn-file" aria-hidden="true"></span>

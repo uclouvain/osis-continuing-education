@@ -32,38 +32,55 @@
     <div class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title">
-                {% trans 'Upload File' %}
+                {% trans 'Upload file' %}
             </h4>
         </div>
-        <div class="panel-default">
-            <div class="panel-heading">
-                {% trans 'You can upload your file' %}
-            </div>
-            <div class="panel-body">
-                <form id="upload_form" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="col-md-8">
-                        <label class="custom-file-label btn btn-default"
-                               disabled id="custom-file-label">{% trans 'No file chosen' %}</label>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="custom-file-btn-group">
-                            <button type="submit" class="btn btn-primary pull-right" name="file_submit" id="btn-upload" value="upload" disabled>
-                                <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
-                                {% trans 'Upload' %}
-                            </button>
+        <form id="upload_form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="panel-default">
+                <div class="panel-heading">
+                    {% trans 'Please select the file you want to upload and the file category.' %}
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label class="custom-file-label btn btn-default" disabled id="custom-file-label">
+                                {% trans 'No file chosen' %}
+                            </label>
+                        </div>
+                        <div class="col-md-2">
                             <div class="custom-file file btn btn-primary pull-right">
                                 {% trans 'Browse' %}
-                              <input type="file" class="custom-file-input" id="customFile" name="myfile">
+                                <input type="file" class="custom-file-input" id="customFile" name="myfile">
                             </div>
                         </div>
                     </div>
-                </form>
+                    <br>
+                    <div>
+                        <label for="file-category-input">{% trans 'File category' %}</label>
+                        <select class="form-control" name="file-category-input" id="file-category-input">
+                            {% for choice in file_categories_choices %}
+                                <option value="{{ choice.0 }}" {{ choice.2 }}>{% trans choice.0 %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="notify_participant_checkbox">
+                        <label>
+                            <input type="checkbox" id="notify_participant" name="notify_participant" disabled>
+                            {% trans 'Notify participant by email' %}
+                        </label>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" id="cancel_upload_file" data-dismiss="modal">{% trans "Cancel" %}</button>
-        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="cancel_upload_file" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="submit" class="btn btn-primary" name="file_submit" id="btn-upload" value="upload" disabled>
+                    <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                    {% trans 'Upload' %}
+                </button>
+            </div>
+        </form>
     </div>
   </div>
 </div>
@@ -73,6 +90,17 @@
         $('#customFile').change(function(e) {
             $('#custom-file-label').text(this.files[0].name);
             $('#btn-upload').removeAttr("disabled")
+        });
+
+        $('#file-category-input').change(function(e) {
+            if($('#file-category-input').val() === "{{ invoice }}") {
+                document.getElementById("notify_participant").disabled = false;
+                document.getElementById("notify_participant").checked = true;
+            }
+            else {
+                document.getElementById("notify_participant").disabled = true;
+                document.getElementById("notify_participant").checked = false;
+            }
         });
     </script>
 {% endblock %}

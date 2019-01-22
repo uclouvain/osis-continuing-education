@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='file',
             name='file_category',
-            field=models.CharField(choices=[('Document', 'Document'), ('Invoice', 'Invoice'), ('Student', 'Student')], default='Document', max_length=20),
+            field=models.CharField(choices=[('Document', 'Document'), ('Invoice', 'Invoice'), ('Participant', 'Participant')], default='Document', max_length=20),
         ),
     ]

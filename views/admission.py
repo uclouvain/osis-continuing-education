@@ -40,6 +40,7 @@ from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from base.models.person import Person
 from base.views.common import display_success_messages, display_error_messages
+from continuing_education.business.admission import send_invoice_uploaded_email
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
@@ -47,9 +48,9 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
-from continuing_education.models.exceptions import TooLongFilenameException
+from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
 
@@ -128,7 +129,19 @@ def admission_detail(request, admission_id):
             'states': states,
             'admission_form': adm_form,
             'rejected_adm_form': rejected_adm_form,
+            'file_categories_choices': _get_file_category_choices_with_disabled_parameter(admission),
+            'invoice': file_category_choices.INVOICE
         }
+    )
+
+
+def _get_file_category_choices_with_disabled_parameter(admission):
+    invoice_choice_disabled = admission.state != admission_state_choices.ACCEPTED
+    return (
+        choice + ("disabled",)
+        if choice[0] == file_category_choices.INVOICE and invoice_choice_disabled
+        else choice + ("",)
+        for choice in file_category_choices.FILE_CATEGORY_CHOICES
     )
 
 
@@ -140,22 +153,35 @@ def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
 
 def _upload_file(request, admission):
     my_file = request.FILES['myfile']
+    file_category = request.POST.get('file-category-input', None)
     person = Person.objects.get(user=request.user)
+
     file_to_admission = File(
         admission=admission,
         path=my_file,
         name=my_file.name,
         size=my_file.size,
-        uploaded_by=person
+        uploaded_by=person,
+        file_category=file_category,
     )
+
     try:
         file_to_admission.save()
         display_success_messages(request, _("The document is uploaded correctly"))
-    except TooLongFilenameException as e:
+        if _email_notification_must_be_sent(file_category, request):
+            send_invoice_uploaded_email(admission)
+            display_success_messages(request, _("A notification email has been sent to the participant"))
+
+    except (TooLongFilenameException, InvalidFileCategoryException) as e:
         display_error_messages(request, str(e))
     except Exception as e:
         display_error_messages(request, _("A problem occured : the document is not uploaded"))
+
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')
+
+
+def _email_notification_must_be_sent(file_category, request):
+    return file_category == file_category_choices.INVOICE and request.POST.get('notify_participant', None)
 
 
 @login_required
