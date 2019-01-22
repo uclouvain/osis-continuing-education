@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-21 15:42+0100\n"
+"POT-Creation-Date: 2019-01-22 11:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/views/test_admission.py:271 views/admission.py:157
+#: tests/views/test_admission.py:271 views/admission.py:163
 msgid "A problem occured : the document is not uploaded"
 msgstr ""
 
-#: tests/views/test_admission.py:336 views/admission.py:179
+#: tests/views/test_admission.py:336 views/admission.py:185
 msgid "A problem occured during delete"
 msgstr ""
 
@@ -39,10 +39,6 @@ msgstr ""
 #: templates/admission_detail.html:152 templates/admission_form.html:126
 #: tests/business/test_admission.py:50
 msgid "Activity sector"
-msgstr ""
-
-#: templates/fragment/state_reason_modal.html:46
-msgid "Add Reason"
 msgstr ""
 
 #: models/admission.py:75
@@ -153,6 +149,7 @@ msgstr ""
 
 #: templates/admission_form.html:43 templates/admission_form.html:197
 #: templates/fragment/rejected_reason_modal.html:49
+#: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40
 #: templates/registration_form.html:132
 msgid "Cancel"
@@ -163,7 +160,7 @@ msgstr ""
 msgid "Children number"
 msgstr ""
 
-#: forms/admission.py:30 forms/registration.py:13 models/admission.py:69
+#: forms/admission.py:31 forms/registration.py:13 models/admission.py:69
 #: templates/admission_detail.html:100 templates/admission_form.html:80
 msgid "Citizenship"
 msgstr ""
@@ -180,6 +177,7 @@ msgstr ""
 msgid "Company number"
 msgstr ""
 
+#: templates/fragment/waiting_reason_modal.html:49
 #: templates/fragment/warning_modal.html:39
 msgid "Confirm"
 msgstr ""
@@ -263,7 +261,7 @@ msgstr ""
 msgid "Female"
 msgstr ""
 
-#: tests/views/test_admission.py:321 views/admission.py:177
+#: tests/views/test_admission.py:321 views/admission.py:183
 msgid "File correctly deleted"
 msgstr ""
 
@@ -303,7 +301,7 @@ msgstr ""
 msgid "Health"
 msgstr ""
 
-#: business/admission.py:140 forms/admission.py:37 forms/registration.py:20
+#: business/admission.py:140 forms/admission.py:38 forms/registration.py:20
 #: models/admission.py:91 templates/admission_detail.html:126
 #: templates/admission_form.html:97 tests/business/test_admission.py:40
 msgid "High school diploma"
@@ -419,7 +417,7 @@ msgstr ""
 msgid "New admission"
 msgstr ""
 
-#: forms/admission.py:42
+#: forms/admission.py:43
 msgid "New person"
 msgstr ""
 
@@ -427,10 +425,6 @@ msgstr ""
 #: templates/registrations.html:98 templates/registrations.html:105
 #: tests/business/test_admission.py:40
 msgid "No"
-msgstr ""
-
-#: templates/fragment/state_reason_modal.html:45
-msgid "No Reason"
 msgstr ""
 
 #: templates/admission_detail.html:217
@@ -453,8 +447,12 @@ msgstr ""
 msgid "Other educational background"
 msgstr ""
 
-#: forms/admission.py:117
+#: forms/admission.py:118
 msgid "Other rejection reason"
+msgstr ""
+
+#: forms/admission.py:173
+msgid "Other waiting reason"
 msgstr ""
 
 #: templates/registrations.html:74
@@ -500,7 +498,7 @@ msgstr ""
 msgid "Postal code"
 msgstr ""
 
-#: forms/admission.py:113
+#: forms/admission.py:114 forms/admission.py:169
 msgid "Predefined reason"
 msgstr ""
 
@@ -555,11 +553,7 @@ msgstr ""
 msgid "Public servant"
 msgstr ""
 
-#: templates/fragment/state_reason_modal.html:41
-msgid "Reason"
-msgstr ""
-
-#: templates/fragment/state_reason_modal.html:33
+#: templates/fragment/waiting_reason_modal.html:33
 msgid "Reason for waiting"
 msgstr ""
 
@@ -679,7 +673,7 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: tests/views/test_admission.py:258 views/admission.py:153
+#: tests/views/test_admission.py:258 views/admission.py:159
 msgid "The document is uploaded correctly"
 msgstr ""
 
@@ -747,7 +741,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: templates/fragment/state_reason_modal.html:38
+#: templates/fragment/waiting_reason_modal.html:38
 msgid "You can enter a reason to put this admission on hold"
 msgstr ""
 
