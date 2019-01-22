@@ -250,8 +250,6 @@ class UploadFileTestCase(TestCase):
 
     def test_upload_file(self):
         url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data={'myfile': self.file}, format='multipart')
-        self.assertEqual(File.objects.get(name=self.file.name).uploaded_by, self.manager)
         response = self.client.post(
             url,
             data={
@@ -261,6 +259,7 @@ class UploadFileTestCase(TestCase):
             format='multipart'
         )
 
+        self.assertEqual(File.objects.get(name=self.file.name).uploaded_by, self.manager)
         self.assertEqual(File.objects.get(path__contains=self.file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
