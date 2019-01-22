@@ -57,8 +57,8 @@
                     </div>
                     <br>
                     <div>
-                        <label for="file-category-input">{% trans 'File category' %}</label>
-                        <select class="form-control" name="file-category-input" id="file-category-input">
+                        <label for="file_category">{% trans 'File category' %}</label>
+                        <select class="form-control" name=file_category" id="file_category">
                             {% for choice in file_categories_choices %}
                                 <option value="{{ choice.0 }}" {{ choice.2 }}>{% trans choice.0 %}</option>
                             {% endfor %}
@@ -92,8 +92,8 @@
             $('#btn-upload').removeAttr("disabled")
         });
 
-        $('#file-category-input').change(function(e) {
-            if($('#file-category-input').val() === "{{ invoice }}") {
+        $('#file_category').change(function(e) {
+            if($('#file_category').val() === "{{ invoice }}") {
                 document.getElementById("notify_participant").disabled = false;
                 document.getElementById("notify_participant").checked = true;
             }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-22 10:47+0100\n"
+"POT-Creation-Date: 2019-01-22 13:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: views/admission.py:163
+#: views/admission.py:173
 msgid "A notification email has been sent to the participant"
 msgstr ""
 
-#: tests/views/test_admission.py:272 views/admission.py:168
+#: tests/views/test_admission.py:287 views/admission.py:178
 msgid "A problem occured : the document is not uploaded"
 msgstr ""
 
-#: tests/views/test_admission.py:337 views/admission.py:195
+#: tests/views/test_admission.py:381 views/admission.py:205
 msgid "A problem occured during delete"
 msgstr ""
 
@@ -233,6 +233,7 @@ msgid "Divorced"
 msgstr ""
 
 #: models/enums/file_category_choices.py:34
+#: models/enums/file_category_choices.py:40
 msgid "Document"
 msgstr ""
 
@@ -277,7 +278,7 @@ msgstr ""
 msgid "File category"
 msgstr ""
 
-#: tests/views/test_admission.py:322 views/admission.py:193
+#: tests/views/test_admission.py:366 views/admission.py:203
 msgid "File correctly deleted"
 msgstr ""
 
@@ -484,6 +485,7 @@ msgid "Paid"
 msgstr ""
 
 #: models/enums/file_category_choices.py:36
+#: models/enums/file_category_choices.py:41
 msgid "Participant"
 msgstr ""
 
@@ -709,17 +711,22 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: tests/views/test_admission.py:259 views/admission.py:160
+#: tests/views/test_admission.py:267 views/admission.py:170
 msgid "The document is uploaded correctly"
 msgstr ""
 
-#: models/file.py:93 tests/views/test_admission.py:290
+#: models/file.py:93 tests/views/test_admission.py:312
+#: tests/views/test_admission.py:334
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr ""
 
 #: business/enums/rejected_reason.py:30
 msgid "The programme is already complete"
+msgstr ""
+
+#: models/file.py:100
+msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr ""
 
 #: forms/account.py:39

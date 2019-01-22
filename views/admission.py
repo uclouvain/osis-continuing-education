@@ -153,7 +153,7 @@ def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
 
 def _upload_file(request, admission):
     my_file = request.FILES['myfile']
-    file_category = request.POST.get('file-category-input', None)
+    file_category = request.POST.get('file_category', None)
     person = Person.objects.get(user=request.user)
 
     file_to_admission = File(
