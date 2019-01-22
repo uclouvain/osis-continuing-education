@@ -97,8 +97,6 @@ class File(Model):
         if self.admission.state != admission_state_choices.ACCEPTED \
                 and self.file_category == file_category_choices.INVOICE:
             raise InvalidFileCategoryException(
-                _("The status of the admission must be Accepted to upload an invoice.") % {
-                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
-                }
+                _("The status of the admission must be Accepted to upload an invoice.")
             )
         super(File, self).save(*args, **kwargs)
