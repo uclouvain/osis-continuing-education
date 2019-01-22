@@ -123,7 +123,8 @@ def admission_detail(request, admission_id):
         )
 
     if adm_form.is_valid():
-        return _change_state(adm_form, accepted_states, admission, rejected_adm_form, waiting_adm_form)
+        forms = (adm_form, waiting_adm_form, rejected_adm_form)
+        return _change_state(forms, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
@@ -138,10 +139,11 @@ def admission_detail(request, admission_id):
     )
 
 
-def _change_state(adm_form, accepted_states, admission, rejected_adm_form, waiting_adm_form):
+def _change_state(forms, accepted_states, admission):
+    adm_form, waiting_adm_form, rejected_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(adm_form, admission, new_state, rejected_adm_form, waiting_adm_form)
+        return _new_state_management(forms, admission, new_state)
 
 
 def _upload_file(request, admission):
@@ -244,7 +246,8 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(adm_form, admission, new_state, rejected_adm_form, waiting_adm_form):
+def _new_state_management(forms, admission, new_state):
+    adm_form, waiting_adm_form, rejected_adm_form = forms
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
             rejected_adm_form.save()
