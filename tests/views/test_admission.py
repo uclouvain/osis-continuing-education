@@ -250,6 +250,8 @@ class UploadFileTestCase(TestCase):
 
     def test_upload_file(self):
         url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data={'myfile': self.file}, format='multipart')
+        self.assertEqual(File.objects.get(name=self.file.name).uploaded_by, self.manager)
         response = self.client.post(
             url,
             data={
