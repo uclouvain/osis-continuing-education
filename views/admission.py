@@ -251,8 +251,7 @@ def _new_state_management(adm_form, admission, new_state, rejected_adm_form, wai
     elif new_state == WAITING:
         if waiting_adm_form.is_valid():
             waiting_adm_form.save()
-    else:
-        adm_form.save()
+    adm_form.save()
 
     if new_state == DRAFT:
         return redirect(reverse('admission'))
