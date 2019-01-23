@@ -24,12 +24,12 @@
 #
 ##############################################################################
 from django.contrib.auth.models import Group, User
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
-from django.core.urlresolvers import reverse
-from django.contrib.sites.models import Site
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
@@ -104,6 +104,27 @@ def send_admission_submitted_email_to_participant(admission):
         template_data={
             'formation': admission.formation.acronym,
             'admission_data': _get_formatted_admission_data(admission)
+        },
+        subject_data={},
+        receivers=[
+            message_config.create_receiver(
+                participant.id,
+                participant.email,
+                None
+            )
+        ],
+    )
+
+
+def send_invoice_uploaded_email(admission):
+    participant = admission.person_information.person
+    send_email(
+        template_references={
+            'html': 'iufc_participant_invoice_uploaded_html',
+            'txt': 'iufc_participant_invoice_uploaded_txt',
+        },
+        template_data={
+            'formation': admission.formation.acronym,
         },
         subject_data={},
         receivers=[

@@ -1,0 +1,106 @@
+{% load i18n %}
+{% load bootstrap3 %}
+{% load staticfiles %}
+{% load static %}
+
+{% comment "License" %}
+    * OSIS stands for Open Student Information System. It's an application
+    * designed to manage the core business of higher education institutions,
+    * such as universities, faculties, institutes and professional schools.
+    * The core business involves the administration of students, teachers,
+    * courses, programs and so on.
+    *
+    * Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+    *
+    * This program is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * This program is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    * GNU General Public License for more details.
+    *
+    * A copy of this license - GNU General Public License - is available
+    * at the root of the source code of this program.  If not,
+    * see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+<div class="modal fade" id="upload_file_modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">
+                {% trans 'Upload file' %}
+            </h4>
+        </div>
+        <form id="upload_form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="panel-default">
+                <div class="panel-heading">
+                    {% trans 'Please select the file you want to upload and the file category.' %}
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <label class="custom-file-label btn btn-default" disabled id="custom-file-label">
+                                {% trans 'No file chosen' %}
+                            </label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="custom-file file btn btn-primary pull-right">
+                                {% trans 'Browse' %}
+                                <input type="file" class="custom-file-input" id="customFile" name="myfile">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div>
+                        <label for="file_category">{% trans 'File category' %}</label>
+                        <select class="form-control" name="file_category" id="file_category">
+                            {% for choice in file_categories_choices %}
+                                <option value="{{ choice.0 }}" {{ choice.2 }}>{% trans choice.0 %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br>
+                    <div class="notify_participant_checkbox">
+                        <label>
+                            <input type="checkbox" id="notify_participant" name="notify_participant" disabled>
+                            {% trans 'Notify participant by email' %}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="cancel_upload_file" data-dismiss="modal">{% trans "Cancel" %}</button>
+                <button type="submit" class="btn btn-primary" name="file_submit" id="btn-upload" value="upload" disabled>
+                    <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                    {% trans 'Upload' %}
+                </button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+{% block script %}
+    <script>
+        $('#customFile').change(function(e) {
+            $('#custom-file-label').text(this.files[0].name);
+            $('#btn-upload').removeAttr("disabled")
+        });
+
+        $('#file_category').change(function(e) {
+            if($('#file_category').val() === "{{ invoice }}") {
+                document.getElementById("notify_participant").disabled = false;
+                document.getElementById("notify_participant").checked = true;
+            }
+            else {
+                document.getElementById("notify_participant").disabled = true;
+                document.getElementById("notify_participant").checked = false;
+            }
+        });
+    </script>
+{% endblock %}
