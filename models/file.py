@@ -54,7 +54,7 @@ class File(Model):
         'continuing_education.Admission',
         blank=True,
         null=True,
-        verbose_name=pgettext("continuing_education","Admission")
+        verbose_name=pgettext("continuing_education", "Admission")
     )
 
     name = models.CharField(

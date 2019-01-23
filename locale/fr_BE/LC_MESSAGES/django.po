@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-22 11:01+0100\n"
+"POT-Creation-Date: 2019-01-23 10:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/views/test_admission.py:271 views/admission.py:163
+#: tests/views/test_admission.py:271 views/admission.py:165
 msgid "A problem occured : the document is not uploaded"
 msgstr "Une erreur est survenue : le document n'a pas été uploadé"
 
-#: tests/views/test_admission.py:336 views/admission.py:185
+#: tests/views/test_admission.py:336 views/admission.py:187
 msgid "A problem occured during delete"
 msgstr "Un problème est survenu durant la suppression"
 
@@ -55,6 +55,9 @@ msgstr "Gestionnaire"
 #: templates/admissions.html:42
 #: templates/continuing_education/admin_home.html:44
 #: templates/registration_form.html:43
+#, fuzzy
+#| msgid "Admission"
+msgctxt "continuing_education"
 msgid "Admission"
 msgstr "Admission"
 
@@ -260,7 +263,7 @@ msgstr "Faculté"
 msgid "Female"
 msgstr "Femme"
 
-#: tests/views/test_admission.py:321 views/admission.py:183
+#: tests/views/test_admission.py:321 views/admission.py:185
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
@@ -672,7 +675,7 @@ msgstr "Soumettre"
 msgid "Submitted"
 msgstr "Soumis"
 
-#: tests/views/test_admission.py:258 views/admission.py:159
+#: tests/views/test_admission.py:258 views/admission.py:161
 msgid "The document is uploaded correctly"
 msgstr "Le document a bien été uploadé"
 
