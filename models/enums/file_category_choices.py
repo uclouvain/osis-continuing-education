@@ -35,8 +35,3 @@ FILE_CATEGORY_CHOICES = (
     (INVOICE, _("Invoice")),
     (PARTICIPANT, _("Participant")),
 )
-
-FILE_CATEGORY_CHOICES_ADMISSION_STATUS_OTHER_THAN_ACCEPTED = (
-    (DOCUMENT, _("Document")),
-    (PARTICIPANT, _("Participant")),
-)
