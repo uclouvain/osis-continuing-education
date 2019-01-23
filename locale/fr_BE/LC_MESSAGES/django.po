@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-23 10:44+0100\n"
+"POT-Creation-Date: 2019-01-22 11:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/views/test_admission.py:271 views/admission.py:157
+#: tests/views/test_admission.py:271 views/admission.py:163
 msgid "A problem occured : the document is not uploaded"
 msgstr "Une erreur est survenue : le document n'a pas été uploadé"
 
-#: tests/views/test_admission.py:336 views/admission.py:179
+#: tests/views/test_admission.py:336 views/admission.py:185
 msgid "A problem occured during delete"
 msgstr "Un problème est survenu durant la suppression"
 
@@ -40,10 +40,6 @@ msgstr "Actions"
 msgid "Activity sector"
 msgstr "Secteur d'activité"
 
-#: templates/fragment/state_reason_modal.html:46
-msgid "Add Reason"
-msgstr "Ajouter Raison"
-
 #: models/admission.py:75
 msgid "Address"
 msgstr "Adresse"
@@ -59,7 +55,6 @@ msgstr "Gestionnaire"
 #: templates/admissions.html:42
 #: templates/continuing_education/admin_home.html:44
 #: templates/registration_form.html:43
-msgctxt "continuing_education"
 msgid "Admission"
 msgstr "Admission"
 
@@ -153,6 +148,7 @@ msgstr "Parcourir"
 
 #: templates/admission_form.html:43 templates/admission_form.html:197
 #: templates/fragment/rejected_reason_modal.html:49
+#: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40
 #: templates/registration_form.html:132
 msgid "Cancel"
@@ -163,7 +159,7 @@ msgstr "Annuler"
 msgid "Children number"
 msgstr "Nombre d'enfants"
 
-#: forms/admission.py:30 forms/registration.py:13 models/admission.py:69
+#: forms/admission.py:31 forms/registration.py:13 models/admission.py:69
 #: templates/admission_detail.html:100 templates/admission_form.html:80
 msgid "Citizenship"
 msgstr "Nationalité"
@@ -180,6 +176,7 @@ msgstr "Ville"
 msgid "Company number"
 msgstr "Numéro unique d'entreprise"
 
+#: templates/fragment/waiting_reason_modal.html:49
 #: templates/fragment/warning_modal.html:39
 msgid "Confirm"
 msgstr "Confirmer"
@@ -263,7 +260,7 @@ msgstr "Faculté"
 msgid "Female"
 msgstr "Femme"
 
-#: tests/views/test_admission.py:321 views/admission.py:177
+#: tests/views/test_admission.py:321 views/admission.py:183
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
@@ -303,7 +300,7 @@ msgstr "Nom du siège social"
 msgid "Health"
 msgstr "Santé"
 
-#: business/admission.py:140 forms/admission.py:37 forms/registration.py:20
+#: business/admission.py:140 forms/admission.py:38 forms/registration.py:20
 #: models/admission.py:91 templates/admission_detail.html:126
 #: templates/admission_form.html:97 tests/business/test_admission.py:40
 msgid "High school diploma"
@@ -419,7 +416,7 @@ msgstr "Numéro de registre national belge"
 msgid "New admission"
 msgstr "Nouvelle admission"
 
-#: forms/admission.py:42
+#: forms/admission.py:43
 msgid "New person"
 msgstr "Nouvelle personne"
 
@@ -428,10 +425,6 @@ msgstr "Nouvelle personne"
 #: tests/business/test_admission.py:40
 msgid "No"
 msgstr "Non"
-
-#: templates/fragment/state_reason_modal.html:45
-msgid "No Reason"
-msgstr "Aucune Raison"
 
 #: templates/admission_detail.html:217
 msgid "No document available"
@@ -453,9 +446,13 @@ msgstr "Autre"
 msgid "Other educational background"
 msgstr "Autres formations"
 
-#: forms/admission.py:117
+#: forms/admission.py:118
 msgid "Other rejection reason"
 msgstr "Autre motif de refus"
+
+#: forms/admission.py:173
+msgid "Other waiting reason"
+msgstr "Autre motif de mise en attente"
 
 #: templates/registrations.html:74
 msgid "Paid"
@@ -500,7 +497,7 @@ msgstr "Courrier"
 msgid "Postal code"
 msgstr "Code postal"
 
-#: forms/admission.py:113
+#: forms/admission.py:114 forms/admission.py:169
 msgid "Predefined reason"
 msgstr "Motif prédéfini"
 
@@ -555,11 +552,7 @@ msgstr "Public"
 msgid "Public servant"
 msgstr "Fonctionnaire"
 
-#: templates/fragment/state_reason_modal.html:41
-msgid "Reason"
-msgstr "Raison"
-
-#: templates/fragment/state_reason_modal.html:33
+#: templates/fragment/waiting_reason_modal.html:33
 msgid "Reason for waiting"
 msgstr "Raison de mise en attente"
 
@@ -679,7 +672,7 @@ msgstr "Soumettre"
 msgid "Submitted"
 msgstr "Soumis"
 
-#: tests/views/test_admission.py:258 views/admission.py:153
+#: tests/views/test_admission.py:258 views/admission.py:159
 msgid "The document is uploaded correctly"
 msgstr "Le document a bien été uploadé"
 
@@ -749,7 +742,7 @@ msgstr "Veuf(ve)"
 msgid "Yes"
 msgstr "Oui"
 
-#: templates/fragment/state_reason_modal.html:38
+#: templates/fragment/waiting_reason_modal.html:38
 msgid "You can enter a reason to put this admission on hold"
 msgstr ""
 "Vous pouvez indiquer la raison pour laquelle cette admission est mise en "
@@ -789,3 +782,12 @@ msgstr ""
 #: business/enums/rejected_reason.py:28
 msgid "Your course is not adapted to the program of this training"
 msgstr "Votre parcours n’est pas adapté au programme de cette formation"
+
+#~ msgid "Add Reason"
+#~ msgstr "Ajouter Raison"
+
+#~ msgid "No Reason"
+#~ msgstr "Aucune Raison"
+
+#~ msgid "Reason"
+#~ msgstr "Raison"
