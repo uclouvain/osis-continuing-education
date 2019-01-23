@@ -45,10 +45,6 @@ msgstr ""
 msgid "Activity sector"
 msgstr ""
 
-#: templates/fragment/state_reason_modal.html:46
-msgid "Add Reason"
-msgstr ""
-
 #: models/admission.py:75
 msgid "Address"
 msgstr ""
@@ -158,6 +154,7 @@ msgstr ""
 #: templates/admission_form.html:43 templates/admission_form.html:197
 #: templates/fragment/rejected_reason_modal.html:49
 #: templates/fragment/upload_file_modal.html:77
+#: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40
 #: templates/registration_form.html:132
 msgid "Cancel"
@@ -168,7 +165,7 @@ msgstr ""
 msgid "Children number"
 msgstr ""
 
-#: forms/admission.py:30 forms/registration.py:13 models/admission.py:69
+#: forms/admission.py:31 forms/registration.py:13 models/admission.py:69
 #: templates/admission_detail.html:104 templates/admission_form.html:80
 msgid "Citizenship"
 msgstr ""
@@ -185,6 +182,7 @@ msgstr ""
 msgid "Company number"
 msgstr ""
 
+#: templates/fragment/waiting_reason_modal.html:49
 #: templates/fragment/warning_modal.html:39
 msgid "Confirm"
 msgstr ""
@@ -438,7 +436,7 @@ msgstr ""
 msgid "New admission"
 msgstr ""
 
-#: forms/admission.py:42
+#: forms/admission.py:43
 msgid "New person"
 msgstr ""
 
@@ -446,10 +444,6 @@ msgstr ""
 #: templates/registrations.html:98 templates/registrations.html:105
 #: tests/business/test_admission.py:40
 msgid "No"
-msgstr ""
-
-#: templates/fragment/state_reason_modal.html:45
-msgid "No Reason"
 msgstr ""
 
 #: templates/admission_detail.html:229
@@ -476,8 +470,12 @@ msgstr ""
 msgid "Other educational background"
 msgstr ""
 
-#: forms/admission.py:117
+#: forms/admission.py:118
 msgid "Other rejection reason"
+msgstr ""
+
+#: forms/admission.py:173
+msgid "Other waiting reason"
 msgstr ""
 
 #: templates/registrations.html:74
@@ -532,7 +530,7 @@ msgstr ""
 msgid "Postal code"
 msgstr ""
 
-#: forms/admission.py:113
+#: forms/admission.py:114 forms/admission.py:169
 msgid "Predefined reason"
 msgstr ""
 
@@ -587,11 +585,7 @@ msgstr ""
 msgid "Public servant"
 msgstr ""
 
-#: templates/fragment/state_reason_modal.html:41
-msgid "Reason"
-msgstr ""
-
-#: templates/fragment/state_reason_modal.html:33
+#: templates/fragment/waiting_reason_modal.html:33
 msgid "Reason for waiting"
 msgstr ""
 
@@ -725,6 +719,12 @@ msgstr ""
 msgid "The programme is already complete"
 msgstr ""
 
+#: business/enums/waiting_reason.py:28
+msgid ""
+"The programme is already complete. We will contact you again for the next "
+"edition."
+msgstr ""
+
 #: models/file.py:100
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr ""
@@ -783,7 +783,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: templates/fragment/state_reason_modal.html:38
+#: templates/fragment/waiting_reason_modal.html:38
 msgid "You can enter a reason to put this admission on hold"
 msgstr ""
 
@@ -803,6 +803,12 @@ msgstr ""
 msgid ""
 "You will set the state Draft to the admission. It will be visible and "
 "editable for the participant as well as invisible for you."
+msgstr ""
+
+#: business/enums/waiting_reason.py:29
+msgid ""
+"Your admission file is being verified by the responsible training jury. We "
+"will report to you as soon as possible."
 msgstr ""
 
 #: business/enums/rejected_reason.py:28

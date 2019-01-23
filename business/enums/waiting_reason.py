@@ -25,16 +25,13 @@
 ##############################################################################
 from django.utils.translation import ugettext_lazy as _
 
-COURSE_NOT_ADAPTED_TO_PROGRAM = _('Your course is not adapted to the program of this training')
-DONT_MEET_ADMISSION_REQUIREMENTS = _('You do not meet the admission requirements')
-PROGRAM_COMPLETE = _('The programme is already complete')
-NOT_ENOUGH_EXPERIENCE = _('You do not have the experience and/or motivation to follow this program')
+PROGRAM_COMPLETE = _('The programme is already complete. We will contact you again for the next edition.')
+VERIFICATION_IN_PROGRESS = _('Your admission file is being verified by the responsible training jury. '
+                             'We will report to you as soon as possible.')
 OTHER = _('Other')
 
-REJECTED_REASON_CHOICES = (
-    (COURSE_NOT_ADAPTED_TO_PROGRAM, COURSE_NOT_ADAPTED_TO_PROGRAM),
-    (DONT_MEET_ADMISSION_REQUIREMENTS, DONT_MEET_ADMISSION_REQUIREMENTS,),
+WAITING_REASON_CHOICES = (
     (PROGRAM_COMPLETE, PROGRAM_COMPLETE),
-    (NOT_ENOUGH_EXPERIENCE, NOT_ENOUGH_EXPERIENCE),
+    (VERIFICATION_IN_PROGRESS, VERIFICATION_IN_PROGRESS),
     (OTHER, OTHER),
 )

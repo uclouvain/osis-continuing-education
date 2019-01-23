@@ -208,7 +208,7 @@ class ViewAdmissionTestCase(TestCase):
             data['rejected_reason'] = DONT_MEET_ADMISSION_REQUIREMENTS
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data=data)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
         self.admission.refresh_from_db()
 
         admission_state = self.admission.__getattribute__('state')

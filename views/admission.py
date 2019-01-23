@@ -43,7 +43,7 @@ from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
@@ -118,8 +118,14 @@ def admission_detail(request, admission_id):
         instance=admission,
         )
 
+    waiting_adm_form = WaitingAdmissionForm(
+        request.POST or None,
+        instance=admission,
+        )
+
     if adm_form.is_valid():
-        return _change_state(adm_form, accepted_states, admission, rejected_adm_form)
+        forms = (adm_form, waiting_adm_form, rejected_adm_form)
+        return _change_state(forms, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
@@ -129,6 +135,7 @@ def admission_detail(request, admission_id):
             'states': states,
             'admission_form': adm_form,
             'rejected_adm_form': rejected_adm_form,
+            'waiting_adm_form': waiting_adm_form,
             'file_categories_choices': _get_file_category_choices_with_disabled_parameter(admission),
             'invoice': file_category_choices.INVOICE
         }
@@ -145,10 +152,11 @@ def _get_file_category_choices_with_disabled_parameter(admission):
     )
 
 
-def _change_state(adm_form, accepted_states, admission, rejected_adm_form):
+def _change_state(forms, accepted_states, admission):
+    adm_form, waiting_adm_form, rejected_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(adm_form, admission, new_state, rejected_adm_form)
+        return _new_state_management(forms, admission, new_state)
 
 
 def _upload_file(request, admission):
@@ -264,12 +272,15 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(adm_form, admission, new_state, rejected_adm_form):
+def _new_state_management(forms, admission, new_state):
+    adm_form, waiting_adm_form, rejected_adm_form = forms
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
             rejected_adm_form.save()
-    else:
-        adm_form.save()
+    elif new_state == WAITING:
+        if waiting_adm_form.is_valid():
+            waiting_adm_form.save()
+    adm_form.save()
 
     if new_state == DRAFT:
         return redirect(reverse('admission'))
