@@ -52,11 +52,11 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     )  # Default ordering
 
 
-class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
+class ContinuingEducationPersonDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
         Return the detail of the continuing education person
     """
-    name = 'person-detail'
+    name = 'person-detail-update-delete'
     queryset = ContinuingEducationPerson.objects.all()
     serializer_class = ContinuingEducationPersonSerializer
     lookup_field = 'uuid'
