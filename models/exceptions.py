@@ -29,3 +29,9 @@ class TooLongFilenameException(Exception):
     def __init__(self, message=None, errors=None):
         super(TooLongFilenameException, self).__init__(message)
         self.errors = errors
+
+
+class InvalidFileCategoryException(Exception):
+    def __init__(self, message=None, errors=None):
+        super(InvalidFileCategoryException, self).__init__(message)
+        self.errors = errors

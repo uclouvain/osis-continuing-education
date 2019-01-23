@@ -27,11 +27,11 @@ from django.utils.translation import ugettext_lazy as _
 
 DOCUMENT = "Document"
 INVOICE = "Invoice"
-STUDENT = "Student"
+PARTICIPANT = "Participant"
 
 
 FILE_CATEGORY_CHOICES = (
-    (DOCUMENT, _(DOCUMENT)),
-    (INVOICE, _(INVOICE)),
-    (STUDENT, _(STUDENT)),
+    (DOCUMENT, _("Document")),
+    (INVOICE, _("Invoice")),
+    (PARTICIPANT, _("Participant")),
 )
