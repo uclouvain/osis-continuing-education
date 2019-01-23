@@ -23,14 +23,14 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 PROGRAM_COMPLETE = _('The programme is already complete. We will contact you again for the next edition.')
 VERIFICATION_IN_PROGRESS = _('Your admission file is being verified by the responsible training jury. '
                              'We will report to you as soon as possible.')
 OTHER = _('Other')
 
-REJECTED_REASON_CHOICES = (
+WAITING_REASON_CHOICES = (
     (PROGRAM_COMPLETE, PROGRAM_COMPLETE),
     (VERIFICATION_IN_PROGRESS, VERIFICATION_IN_PROGRESS),
     (OTHER, OTHER),
