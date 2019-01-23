@@ -6,27 +6,27 @@ function openWaitingModal() {
 }
 
 function disabledEnabledOtherReasonInputText(){
-    if(other_selected()){
+    if(otherSelected()){
         document.getElementById("id_other_reason").disabled = false;
     }else{
         document.getElementById("id_other_reason").disabled = true;
         $("#id_other_reason").val('');
-        clear_other_reason_error();
+        clearOtherReasonError();
     }
 }
 
-function other_selected(){
+function otherSelected(){
     let selected_element = document.getElementById("id_waiting_reason").value;
     return selected_element === "Other" || selected_element === "Autre";
 }
 
-function clear_other_reason_error(){
+function clearOtherReasonError(){
     $('#id_other_reason').parent().removeClass("has-error");
 }
 
 $('#add_waiting_reason').click(function (e) {
-    clear_other_reason_error();
-    if(!$('#id_other_reason').val() && other_selected()){
+    clearOtherReasonError();
+    if(!$('#id_other_reason').val() && otherSelected()){
         $('#id_other_reason').parent().addClass("has-error");
     } else {
         $('#form').submit();
@@ -35,11 +35,11 @@ $('#add_waiting_reason').click(function (e) {
 });
 
 $("#cancel_waiting_reason").click(function () {
-    clear_other_reason_error();
+    clearOtherReasonError();
     $('#id_waiting_reason').val($('#old_predefined_waiting_reason').val());
     $('#id_other_reason').val($('#old_other_reason').val());
 
-    if (other_selected()){
+    if (otherSelected()){
         $('#id_other_reason').prop('disabled', false);
     }else{
         $('#id_other_reason').prop('disabled', true);
