@@ -58,7 +58,7 @@
                     <br>
                     <div>
                         <label for="file_category">{% trans 'File category' %}</label>
-                        <select class="form-control" name=file_category" id="file_category">
+                        <select class="form-control" name="file_category" id="file_category">
                             {% for choice in file_categories_choices %}
                                 <option value="{{ choice.0 }}" {{ choice.2 }}>{% trans choice.0 %}</option>
                             {% endfor %}

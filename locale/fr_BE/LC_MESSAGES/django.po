@@ -741,7 +741,7 @@ msgstr "Envoyer"
 #: templates/admission_detail.html:223
 #: templates/fragment/upload_file_modal.html:35
 msgid "Upload file"
-msgstr "Uploader un fichier"
+msgstr "Uploader un document"
 
 #: models/file.py:80 templates/admission_detail.html:237
 msgid "Uploaded by"
