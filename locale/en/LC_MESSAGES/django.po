@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-23 11:00+0100\n"
+"POT-Creation-Date: 2019-01-23 15:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,6 +60,7 @@ msgstr ""
 #: templates/admissions.html:42
 #: templates/continuing_education/admin_home.html:44
 #: templates/registration_form.html:43
+msgctxt "continuing_education"
 msgid "Admission"
 msgstr ""
 
@@ -231,7 +232,6 @@ msgid "Divorced"
 msgstr ""
 
 #: models/enums/file_category_choices.py:34
-#: models/enums/file_category_choices.py:40
 msgid "Document"
 msgstr ""
 
@@ -483,7 +483,6 @@ msgid "Paid"
 msgstr ""
 
 #: models/enums/file_category_choices.py:36
-#: models/enums/file_category_choices.py:41
 msgid "Participant"
 msgstr ""
 

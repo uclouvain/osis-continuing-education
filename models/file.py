@@ -28,7 +28,7 @@ import uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext
 
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
@@ -54,7 +54,7 @@ class File(Model):
         'continuing_education.Admission',
         blank=True,
         null=True,
-        verbose_name=_("Admission")
+        verbose_name=pgettext("continuing_education", "Admission")
     )
 
     name = models.CharField(
