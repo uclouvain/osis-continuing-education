@@ -31,11 +31,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from base.models import entity_version
+from base.models import person as mdl_person
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
+from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
+from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
+from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
@@ -105,6 +109,12 @@ def registration_edit(request, admission_id):
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
     residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
     errors = []
+
+    base_person = mdl_person.find_by_user(user=request.user)
+    id_form = PersonForm(request.POST or None, instance=base_person)
+    person_information = continuing_education_person.find_by_person(person=base_person)
+    person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
+
     if form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
         billing_address, created = Address.objects.get_or_create(**billing_address_form.cleaned_data)
         residence_address, created = Address.objects.get_or_create(**residence_address_form.cleaned_data)
@@ -126,5 +136,7 @@ def registration_edit(request, admission_id):
             'billing_address_form': billing_address_form,
             'residence_address_form': residence_address_form,
             'errors': errors,
+            'id_form': id_form,
+            'person_form': person_form
         }
     )

@@ -42,85 +42,94 @@
         {% endif %}
         <h2>{% trans 'Admission' %}</h2>
     </div>
-
-    <div class="panel panel-default">
             <form id="form" method="POST" class="post-form">
                 {% csrf_token %}
-                <div class="panel-heading">{% trans 'Billing' %}</div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field form.registration_type form_group_class="form-group col-md-4" label=_("Registration type") %}
-                        <div class="form-group col-md-6">
-                            {% bootstrap_label content="&nbsp;" label_class="show" %}
-                            <button id="copy_address_billing" class="btn btn-default" type="button">
-                                {% trans 'Use address for billing' %}
-                            </button>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">{% trans 'Identification' %}</div>
+                        <div class="panel panel-body">
+                            <div class="row">
+                                <div class="col-md-6">{% bootstrap_field id_form.last_name %}</div>
+                                <div class="col-md-6">{% bootstrap_field id_form.first_name %}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">{% bootstrap_field id_form.gender %}</div>
+                                <div class="col-md-6">{% bootstrap_field person_form.birth_date%}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">{% bootstrap_field person_form.birth_location %}</div>
+                                <div class="col-md-6">{% bootstrap_field person_form.birth_country %}</div>
+                            </div>
+                            <div class="row">
+                                {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4" label=_("National registry number") %}
+                                {% bootstrap_field form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
+                                {% bootstrap_field form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
+                            </div>
+                            <div class="row">
+                                {% bootstrap_field form.marital_status form_group_class="form-group col-md-3" label=_("Marital status") %}
+                                {% bootstrap_field form.spouse_name form_group_class="form-group col-md-6" label=_("Spouse name") %}
+                                {% bootstrap_field form.children_number form_group_class="form-group col-md-3" label=_("Children number") %}
+                            </div>
+                            <div class="row">
+                                {% bootstrap_field form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("Previous ucl registration") %}
+                                {% bootstrap_field form.previous_noma form_group_class="form-group col-md-5" label=_("Previous NOMA") %}
+                            </div>
+                        </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4>{% trans 'Billing' %}</h4></div>
+                    <div class="panel panel-body">
+                        <div class="row">
+                            {% bootstrap_field form.registration_type form_group_class="form-group col-md-4" label=_("Registration type") %}
+                        </div>
+                        {% bootstrap_field form.use_address_for_billing %}
+                         <div id="billing_address" class="row">
+                            {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-4" label=_("Location") %}
+                            {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-2" label=_("Postal code") %}
+                            {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" label=_("City") %}
+                            {% bootstrap_field billing_address_form.country form_group_class="form-group col-md-3" label=_("Country") %}
+                        </div>
+                         <div class="row">
+                            {% bootstrap_field form.head_office_name form_group_class="form-group col-md-4" label=_("Head office name") %}
+                            {% bootstrap_field form.company_number form_group_class="form-group col-md-4" label=_("Company number") %}
+                            {% bootstrap_field form.vat_number form_group_class="form-group col-md-4" label=_("VAT number") %}
                         </div>
                     </div>
-                     <div id="billing_address" class="row">
-                        {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-4" label=_("Location") %}
-                        {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-2" label=_("Postal code") %}
-                        {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" label=_("City") %}
-                        {% bootstrap_field billing_address_form.country form_group_class="form-group col-md-3" label=_("Country") %}
-                    </div>
-                     <div class="row">
-                        {% bootstrap_field form.head_office_name form_group_class="form-group col-md-4" label=_("Head office name") %}
-                        {% bootstrap_field form.company_number form_group_class="form-group col-md-4" label=_("Company number") %}
-                        {% bootstrap_field form.vat_number form_group_class="form-group col-md-4" label=_("VAT number") %}
-                    </div>
                 </div>
 
-                <div class="panel-heading">{% trans 'Registration' %}</div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4" label=_("National registry number") %}
-                        {% bootstrap_field form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
-                        {% bootstrap_field form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
-                    </div>
-                    <div class="row">
-                        {% bootstrap_field form.marital_status form_group_class="form-group col-md-3" label=_("Marital status") %}
-                        {% bootstrap_field form.spouse_name form_group_class="form-group col-md-6" label=_("Spouse name") %}
-                        {% bootstrap_field form.children_number form_group_class="form-group col-md-3" label=_("Children number") %}
-                    </div>
-                    <div class="row">
-                        {% bootstrap_field form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("Previous ucl registration") %}
-                        {% bootstrap_field form.previous_noma form_group_class="form-group col-md-5" label=_("Previous NOMA") %}
-                    </div>
-                </div>
-
-                <div class="panel-heading">{% trans 'Post' %}</div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field form.residence_phone form_group_class="form-group col-md-4" label=_("Residence phone") %}
-                        <div class="form-group col-md-6">
-                            {% bootstrap_label content="&nbsp;" label_class="show" %}
-                            <button id="copy_address_residence" class="btn btn-default" type="button">
-                                {% trans 'Use address for post' %}
-                            </button>
+                <div class="panel panel-default">
+                    <div class="panel-heading">{% trans 'Post' %}</div>
+                    <div class="panel panel-body">
+                        <div class="row">
+                            {% bootstrap_field form.residence_phone form_group_class="form-group col-md-4" label=_("Residence phone") %}
+                        </div>
+                        {% bootstrap_field form.use_address_for_post %}
+                         <div id="residence_address"  class="row">
+                            {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-4" label=_("Location") %}
+                            {% bootstrap_field residence_address_form.postal_code form_group_class="form-group col-md-2" label=_("Postal code") %}
+                            {% bootstrap_field residence_address_form.city form_group_class="form-group col-md-3" label=_("City") %}
+                            {% bootstrap_field residence_address_form.country form_group_class="form-group col-md-3" label=_("Country") %}
                         </div>
                     </div>
-                     <div id="residence_address"  class="row">
-                        {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-4" label=_("Location") %}
-                        {% bootstrap_field residence_address_form.postal_code form_group_class="form-group col-md-2" label=_("Postal code") %}
-                        {% bootstrap_field residence_address_form.city form_group_class="form-group col-md-3" label=_("City") %}
-                        {% bootstrap_field residence_address_form.country form_group_class="form-group col-md-3" label=_("Country") %}
-                    </div>
                 </div>
 
-                <div class="panel-heading">{% trans 'Student sheet' %}</div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field form.registration_complete form_group_class="form-group col-md-3" label=_("Registration complete") %}
-                        {% bootstrap_field form.noma form_group_class="form-group col-md-3" label=_("NOMA") %}
-                        {% bootstrap_field form.payment_complete form_group_class="form-group col-md-3" label=_("Payment complete") %}
-                    </div>
-                    <div class="row">
-                        {% bootstrap_field form.formation_spreading form_group_class="form-group col-md-3" label=_("Formation spreading") %}
-                        {% bootstrap_field form.prior_experience_validation form_group_class="form-group col-md-6" label=_("Prior experience validation") %}
-                    </div>
-                    <div class="row">
-                        {% bootstrap_field form.assessment_presented form_group_class="form-group col-md-3" label=_("Assessment presented") %}
-                        {% bootstrap_field form.assessment_succeeded form_group_class="form-group col-md-6" label=_("Assessment succeeded") %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">{% trans 'Student sheet' %}</div>
+                    <div class="panel panel-body">
+                        <div class="row">
+                            {% bootstrap_field form.registration_complete form_group_class="form-group col-md-3" label=_("Registration complete") %}
+                            {% bootstrap_field form.noma form_group_class="form-group col-md-3" label=_("NOMA") %}
+                            {% bootstrap_field form.payment_complete form_group_class="form-group col-md-3" label=_("Payment complete") %}
+                        </div>
+                        <div class="row">
+                            {% bootstrap_field form.formation_spreading form_group_class="form-group col-md-3" label=_("Formation spreading") %}
+                            {% bootstrap_field form.prior_experience_validation form_group_class="form-group col-md-6" label=_("Prior experience validation") %}
+                        </div>
+                        <div class="row">
+                            {% bootstrap_field form.assessment_presented form_group_class="form-group col-md-3" label=_("Assessment presented") %}
+                            {% bootstrap_field form.assessment_succeeded form_group_class="form-group col-md-6" label=_("Assessment succeeded") %}
+                        </div>
                     </div>
                 </div>
 
@@ -132,8 +141,8 @@
                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
                     </a>
                 </div>
+                </div>
             </form>
-    </div>
 {% endblock %}
 
 {% block script %}
@@ -145,19 +154,42 @@
             country: "{{admission.address.country_id | escapejs}}",
         }
 
-        $("#copy_address_billing").click(()=>{
-            copy_address("billing");
+        $("#id_use_address_for_billing:checkbox").change(function(){
+            if(this.checked){
+                copy_address("billing");
+            } else {
+                empty_address("billing");
+            }
         });
+        //check when page is loaded
+        $("#id_use_address_for_billing:checkbox").prop('checked')?copy_address("billing"):empty_address(("billing"));
 
-        $("#copy_address_residence").click(()=>{
-            copy_address("residence")
+        $("#id_use_address_for_post:checkbox").change(function(){
+            if(this.checked){
+                copy_address("residence");
+            } else {
+                empty_address("residence");
+            }
         });
+        //check when page is loaded
+        $("#id_use_address_for_post:checkbox").prop('checked')?copy_address("residence"):empty_address(("residence"));
 
         function copy_address(e){
-            $("#id_"+e+"-location").val(address.location);
-            $("#id_"+e+"-postal_code").val(address.postal_code);
-            $("#id_"+e+"-city").val(address.city);
-            $("#id_"+e+"-country").val(address.country);
+            ["location", "postal_code", "city"].forEach(function(field) {
+                $("#id_"+e+"-"+field).val(address[field]);
+                $("#id_"+e+"-"+field).prop("readonly", true);
+            });
+            $("#id_"+e+"-country").val(address['country']);
+            $("#id_"+e+"-country").prop("disabled", true);
+        }
+
+        function empty_address(e){
+            ["location", "postal_code", "city"].forEach(function(field) {
+                $("#id_"+e+"-"+field).val('');
+                $("#id_"+e+"-"+field).prop("readonly", false);
+            });
+            $("#id_"+e+"-country").val('');
+            $("#id_"+e+"-country").prop("disabled", false);
         }
     </script>
 {% endblock %}
