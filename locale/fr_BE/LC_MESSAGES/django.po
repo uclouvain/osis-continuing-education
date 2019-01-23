@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-21 15:42+0100\n"
+"POT-Creation-Date: 2019-01-23 10:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,7 @@ msgstr "Gestionnaire"
 #: templates/admissions.html:42
 #: templates/continuing_education/admin_home.html:44
 #: templates/registration_form.html:43
+msgctxt "continuing_education"
 msgid "Admission"
 msgstr "Admission"
 
