@@ -31,6 +31,7 @@ from rest_framework.response import Response
 
 from continuing_education.api.serializers.file import FileSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.exceptions import TooLongFilenameException
 from continuing_education.models.file import File
 
 
@@ -49,7 +50,11 @@ class FileAPIView(views.APIView):
             size=file_obj.size,
             uploaded_by=person
         )
-        file.save()
+        try:
+            file.save()
+        except TooLongFilenameException:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED

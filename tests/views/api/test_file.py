@@ -79,7 +79,28 @@ class ViewFileAPITestCase(TestCase):
         )
         self.assertEqual(File.objects.get(name=file.name).uploaded_by, self.admission.person_information.person)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(File.objects.count(),FILES_COUNT+1)
+        self.assertEqual(File.objects.count(), FILES_COUNT+1)
+
+    def test_upload_file_name_too_long(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Token ' + self.token.key
+        )
+        file = SimpleUploadedFile(
+            name='upload_test_with_too_much_character_oh_no_this_will_fail_upload_test_' +
+                 'with_too_much_character_oh_no_this_will_fail.pdf',
+            content=str.encode(FILE_CONTENT),
+            content_type="application/pdf"
+        )
+        response = self.client.put(
+            path=self.file_api_url,
+            data={
+                'file': file,
+                'admission_id': self.admission.uuid
+            },
+            format='multipart'
+        )
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(File.objects.count(), FILES_COUNT)
 
 
 def add_files_to_db(admission):
