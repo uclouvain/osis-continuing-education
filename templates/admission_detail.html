@@ -246,15 +246,16 @@
                                         <td> {{file.size|filesizeformat}} </td>
                                         <td> {{file.created_date}} </td>
                                         <td>
-                                            <a class="button" role="button" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
-                                                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
-                                            &nbsp;
-                                            <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
+                                            <a class="button" role="button" title="{% trans 'Download file' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                                                 <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
-                                            {% if file.file_category == invoice %}
                                             &nbsp;
-                                            <a class="button send_notification_mail_button" role="button">
-                                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+                                            <a class="button" role="button" title="{% trans 'Delete file' %}" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                                                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+
+                                            {% if file.file_category == invoice %}
+                                                &nbsp;
+                                                <a class="button send_notification_mail_button" role="button"  title="{% trans 'Send notification email' %}">
+                                                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
                                             {% endif %}
                                         </td>
                                     </tr>
