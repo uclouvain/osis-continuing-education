@@ -37,14 +37,14 @@
         </div>
         <div class="panel-default">
             <div class="panel-body">
-                {% trans 'This will send an notification email to the student, saying that there is an invoice uploaded.' %}
+                {% trans 'This will send an notification email to the participant, saying that there is an invoice available.' %}
             </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" id="cancel_send_mail" data-dismiss="modal">{% trans "Cancel" %}</button>
             <a href="{% url 'send_invoice_notification_mail' admission.pk %}" class="btn btn-primary" name="send_mail" id="btn_send_mail">
                 <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-                {% trans 'Send mail' %}
+                {% trans 'Send email' %}
             </a>
         </div>
     </div>

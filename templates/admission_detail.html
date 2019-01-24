@@ -246,10 +246,10 @@
                                         <td> {{file.size|filesizeformat}} </td>
                                         <td> {{file.created_date}} </td>
                                         <td>
-                                            <a class="button" role="button" title="{% trans 'Download file' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
+                                            <a class="button" role="button" title="{% trans 'Download document' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                                                 <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                                             &nbsp;
-                                            <a class="button" role="button" title="{% trans 'Delete file' %}" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                                            <a class="button" role="button" title="{% trans 'Delete document' %}" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
                                                 <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
 
                                             {% if file.file_category == invoice %}
