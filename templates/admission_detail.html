@@ -69,6 +69,7 @@
                 {% include "fragment/rejected_reason_modal.html" %}
             </form>
         {% include "fragment/upload_file_modal.html" %}
+        {% include "fragment/send_notification_mail_modal.html" %}
         <h2>{% trans 'Admission' context 'continuing_education' %}</h2>
     </div>
 
@@ -219,8 +220,8 @@
                             <a class="btn btn-primary" id="upload_file_button">
                                 <span class="glyphicon glyphicon-add" aria-hidden="true"></span> {% trans 'Upload file' %}
                             </a>
-                            <br><br>
                         </div>
+                        <br><br>
                         {% if not files %}
                             <div class="jumbotron">
                                 <p>{% trans 'No document available' %}</p>
@@ -245,12 +246,17 @@
                                         <td> {{file.size|filesizeformat}} </td>
                                         <td> {{file.created_date}} </td>
                                         <td>
-                                            <a class="button" role="button" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
-                                                <span class="glyphicon glyphicon-remove-circle btn-space btn-file" aria-hidden="true"></span>
-                                            </a>
-                                            <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
-                                                <span class="glyphicon glyphicon-download-alt btn-space btn-file" aria-hidden="true"></span>
-                                            </a>
+                                            <a class="button" role="button" title="{% trans 'Download document' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
+                                                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                                            &nbsp;
+                                            <a class="button" role="button" title="{% trans 'Delete document' %}" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                                                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+
+                                            {% if file.file_category == invoice %}
+                                                &nbsp;
+                                                <a class="button send_notification_mail_button" role="button"  title="{% trans 'Send notification email' %}">
+                                                    <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -326,6 +332,10 @@
 
         $("#upload_file_button").click(function(){
           $('#upload_file_modal').modal('show');
+        });
+
+        $(".send_notification_mail_button").click(function(){
+          $('#send_notification_mail_modal').modal('show');
         });
 
         var anchor = location.hash;

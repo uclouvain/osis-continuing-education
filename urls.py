@@ -35,6 +35,8 @@ urlpatterns = [
         url(r'^edit/(?P<admission_id>[0-9]+)/', admission.admission_form, name='admission_edit'),
         url(r'^(?P<admission_id>[0-9]+)/', include([
             url(r'^$', admission.admission_detail, name='admission_detail'),
+            url(r'^send_invoice_notification_mail/$', admission.send_invoice_notification_mail,
+                name='send_invoice_notification_mail'),
             url(r'^file/(?P<file_id>[0-9]+)$', admission.download_file, name='download_file'),
             url(r'file/(?P<file_id>[0-9]+)/delete$', admission.delete_file, name='delete_file'),
         ]))
