@@ -35,7 +35,7 @@
 
 {% block content %}
     <div class="page-header">
-        <h2>{% trans 'Registration' %}</h2>
+        <h2>{% trans 'Registrations' %}</h2>
     </div>
 
     <div class="panel panel-default">
@@ -84,7 +84,7 @@
                 {% for admission in admissions %}
                     <tr>
                         <td>
-                            <a href="{% url 'registration_detail' admission_id=admission.id %}">
+                            <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
                                 {{ admission.person_information.person.last_name }}
                             </a>
                         </td>
