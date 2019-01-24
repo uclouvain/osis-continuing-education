@@ -207,6 +207,14 @@ class Admission(SerializableModel):
         verbose_name=_("State reason")
     )
 
+    registration_state = models.CharField(
+        max_length=50,
+        blank=True,
+        choices=admission_state_choices.REGISTRATION_STATE_CHOICES,
+        default=admission_state_choices.WAITING,
+        verbose_name=_("Registration state")
+    )
+
     # Billing
     registration_type = models.CharField(
         max_length=50,
