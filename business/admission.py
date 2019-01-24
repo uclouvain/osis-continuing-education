@@ -80,8 +80,7 @@ def send_admission_submitted_email_to_admin(admission):
             'formation_link': formation_url,
         },
         subject_data={
-            'formation': admission.formation,
-            'state': _(admission.state),
+            'formation': admission.formation.acronym,
         },
         receivers=[
             message_config.create_receiver(
