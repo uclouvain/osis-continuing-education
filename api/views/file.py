@@ -31,6 +31,7 @@ from rest_framework.response import Response
 
 from continuing_education.api.serializers.file import FileSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import file_category_choices
 from continuing_education.models.exceptions import TooLongFilenameException
 from continuing_education.models.file import File
 
@@ -48,7 +49,8 @@ class FileAPIView(views.APIView):
             name=file_obj.name,
             path=file_obj,
             size=file_obj.size,
-            uploaded_by=person
+            uploaded_by=person,
+            file_category=file_category_choices.PARTICIPANT,  # File upload via API = Upload from Participant
         )
         try:
             file.save()
