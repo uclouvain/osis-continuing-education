@@ -47,7 +47,7 @@ class FileSerializerTestCase(TestCase):
         url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
         cls.serializer = AdmissionFileSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
-    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
+    @patch('continuing_education.api.serializers.file.AdmissionFileSerializer.get_content', return_value='content')
     def test_contains_expected_fields(self, mock_get_content):
         expected_fields = [
             'url',

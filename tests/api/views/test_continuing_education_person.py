@@ -37,7 +37,7 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 from reference.tests.factories.country import CountryFactory
 
 
-class GetAllContinuingEducationPersonTestCase(APITestCase):
+class ContinuingEducationPersonListCreateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
@@ -77,14 +77,14 @@ class GetAllContinuingEducationPersonTestCase(APITestCase):
         self.assertEqual(response.data['count'], expected_count)
 
 
-class GetContinuingEducationPersonTestCase(APITestCase):
+class ContinuingEducationPersonDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.birth_country = CountryFactory()
 
         cls.person = ContinuingEducationPersonFactory(birth_country=cls.birth_country)
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:person-detail', kwargs={'uuid': cls.person.uuid})
+        cls.url = reverse('continuing_education_api_v1:person-detail-update-delete', kwargs={'uuid': cls.person.uuid})
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -96,7 +96,7 @@ class GetContinuingEducationPersonTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete', 'put']
+        methods_not_allowed = ['post']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -113,6 +113,6 @@ class GetContinuingEducationPersonTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
 
     def test_get_invalid_person_case_not_found(self):
-        invalid_url = reverse('continuing_education_api_v1:person-detail', kwargs={'uuid':  uuid.uuid4()})
+        invalid_url = reverse('continuing_education_api_v1:person-detail-update-delete', kwargs={'uuid':  uuid.uuid4()})
         response = self.client.get(invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
