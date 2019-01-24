@@ -623,9 +623,9 @@ msgstr "Inscription"
 msgid "Registration complete"
 msgstr "En ordre d'inscription"
 
-#: models/admission.py:215
-msgid "Registration state"
-msgstr "Etat d'inscription"
+#: models/enums/admission_state_choices.py:17
+msgid "Registration submitted"
+msgstr "Inscription soumise"
 
 #: models/admission.py:223 templates/registration_detail.html:50
 #: templates/registration_form.html:52

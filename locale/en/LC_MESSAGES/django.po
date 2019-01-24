@@ -620,8 +620,8 @@ msgstr ""
 msgid "Registration complete"
 msgstr ""
 
-#: models/admission.py:215
-msgid "Registration state"
+#: models/enums/admission_state_choices.py:17
+msgid "Registration submitted"
 msgstr ""
 
 #: models/admission.py:223 templates/registration_detail.html:50
