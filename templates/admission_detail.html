@@ -35,7 +35,7 @@
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
-    <li><a href="{% url 'admission' %}">{% trans 'Admission' context 'continuing_education' %}</a></li>
+    <li><a href="{% url 'admission' %}">{% trans 'Admissions' context 'continuing_education' %}</a></li>
     <li class="active">{{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}</li>
 {% endblock %}
 
