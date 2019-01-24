@@ -116,6 +116,27 @@ def send_admission_submitted_email_to_participant(admission):
     )
 
 
+def send_invoice_uploaded_email(admission):
+    participant = admission.person_information.person
+    send_email(
+        template_references={
+            'html': 'iufc_participant_invoice_uploaded_html',
+            'txt': 'iufc_participant_invoice_uploaded_txt',
+        },
+        template_data={
+            'formation': admission.formation.acronym,
+        },
+        subject_data={},
+        receivers=[
+            message_config.create_receiver(
+                participant.id,
+                participant.email,
+                None
+            )
+        ],
+    )
+
+
 def send_email(template_references, receivers, template_data, subject_data):
     message_content = message_config.create_message_content(
         template_references['html'],

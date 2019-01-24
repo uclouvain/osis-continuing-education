@@ -5,13 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 from base.models.academic_year import current_academic_year
 from base.models.education_group_year import EducationGroupYear
 from base.models.enums import education_group_categories
+from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
+from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from continuing_education.models.enums import admission_state_choices, enums
-from reference.models.country import Country
-from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums import enums
+from reference.models.country import Country
 
 
 class FormationChoiceField(ModelChoiceField):
@@ -156,5 +157,60 @@ class RejectedAdmissionForm(ModelForm):
             instance.state_reason = self.cleaned_data["other_reason"]
         else:
             instance.state_reason = self.cleaned_data["rejected_reason"]
+        instance.save()
+        return instance
+
+
+class WaitingAdmissionForm(ModelForm):
+
+    waiting_reason = forms.ChoiceField(
+        choices=WAITING_REASON_CHOICES,
+        required=True,
+        label=_('Predefined reason'),
+    )
+    other_reason = forms.CharField(
+        required=False,
+        label=_('Other waiting reason'),
+    )
+
+    class Meta:
+        model = Admission
+        fields = [
+            'state',
+            'state_reason',
+        ]
+
+    def __init__(self, data, **kwargs):
+
+        super().__init__(data, **kwargs)
+
+        if data is None:
+            # GET
+            if self.instance.state == admission_state_choices.WAITING:
+                self._waiting_state_init()
+            else:
+                self._disabled_and_init_other_reason()
+
+        self.fields['waiting_reason'].widget.attrs = {'onchange': 'disabledEnabledOtherReasonInputText();'}
+
+    def _waiting_state_init(self):
+        if any(self.instance.state_reason in reason for reason in WAITING_REASON_CHOICES):
+            self.fields['waiting_reason'].initial = self.instance.state_reason
+            self._disabled_and_init_other_reason()
+        elif self.instance.state_reason:
+            self.fields['waiting_reason'].initial = OTHER
+            self.fields['other_reason'].disabled = False
+            self.fields['other_reason'].initial = self.instance.state_reason
+
+    def _disabled_and_init_other_reason(self):
+        self.fields['other_reason'].disabled = True
+        self.fields['other_reason'].initial = ''
+
+    def save(self):
+        instance = super().save(commit=False)
+        if self.cleaned_data["waiting_reason"] == OTHER:
+            instance.state_reason = self.cleaned_data["other_reason"]
+        else:
+            instance.state_reason = self.cleaned_data["waiting_reason"]
         instance.save()
         return instance

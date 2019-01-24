@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest.mock import patch
+
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
@@ -45,7 +47,8 @@ class FileSerializerTestCase(TestCase):
         url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
         cls.serializer = AdmissionFileSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
-    def test_contains_expected_fields(self):
+    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
+    def test_contains_expected_fields(self, mock_get_content):
         expected_fields = [
             'url',
             'uuid',
@@ -53,7 +56,8 @@ class FileSerializerTestCase(TestCase):
             'path',
             'size',
             'created_date',
-            'uploaded_by'
+            'uploaded_by',
+            'content'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

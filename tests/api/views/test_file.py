@@ -25,6 +25,7 @@
 ##############################################################################
 import datetime
 import uuid
+from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory
@@ -75,7 +76,8 @@ class AdmissionFileListCreateTestCase(APITestCase):
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_get_all_file_ensure_response_have_next_previous_results_count(self):
+    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
+    def test_get_all_file_ensure_response_have_next_previous_results_count(self, mock_get_content):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -155,7 +157,8 @@ class AdmissionFileRetrieveDestroy(APITestCase):
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_get_valid_file(self):
+    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
+    def test_get_valid_file(self, mock_get_content):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

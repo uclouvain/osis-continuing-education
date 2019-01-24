@@ -28,10 +28,10 @@ import uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext
 
-from continuing_education.models.enums import file_category_choices
-from continuing_education.models.exceptions import TooLongFilenameException
+from continuing_education.models.enums import file_category_choices, admission_state_choices
+from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
 
 MAX_ADMISSION_FILE_NAME_LENGTH = 100
 
@@ -44,7 +44,7 @@ def admission_directory_path(instance, filename):
 
 
 class AdmissionFileAdmin(ModelAdmin):
-    list_display = ('admission', 'name', 'path', 'uploaded_by')
+    list_display = ('admission', 'name', 'file_category', 'path', 'uploaded_by')
     raw_id_fields = ('uploaded_by',)
 
 
@@ -54,7 +54,7 @@ class AdmissionFile(Model):
         'continuing_education.Admission',
         blank=True,
         null=True,
-        verbose_name=_("Admission")
+        verbose_name=pgettext("continuing_education", "Admission")
     )
 
     name = models.CharField(
@@ -96,5 +96,11 @@ class AdmissionFile(Model):
                 _("The name of the file is too long : maximum %(length)s characters.") % {
                     'length': MAX_ADMISSION_FILE_NAME_LENGTH
                 }
+            )
+
+        if self.admission.state != admission_state_choices.ACCEPTED \
+                and self.file_category == file_category_choices.INVOICE:
+            raise InvalidFileCategoryException(
+                _("The status of the admission must be Accepted to upload an invoice.")
             )
         super(AdmissionFile, self).save(*args, **kwargs)

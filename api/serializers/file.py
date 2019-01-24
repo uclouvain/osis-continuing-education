@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import base64
+
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
@@ -61,7 +63,7 @@ class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
             'path',
             'size',
             'created_date',
-            'uploaded_by'
+            'uploaded_by',
         )
 
     def create(self, validated_data):
@@ -73,6 +75,11 @@ class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
     url = AdmissionFileHyperlinkedIdentityField()
     created_date = serializers.DateTimeField(read_only=True)
     uploaded_by = PersonDetailSerializer(read_only=True)
+    content = serializers.SerializerMethodField()
+
+    def get_content(self, file):
+        file.content = base64.b64encode(file.path.read())
+        return file.content
 
     class Meta:
         model = AdmissionFile
@@ -83,5 +90,6 @@ class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
             'path',
             'size',
             'created_date',
-            'uploaded_by'
+            'uploaded_by',
+            'content'
         )
