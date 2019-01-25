@@ -1,0 +1,87 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+* OSIS stands for Open Student Information System. It's an application
+* designed to manage the core business of higher education institutions,
+* such as universities, faculties, institutes and professional schools.
+* The core business involves the administration of students, teachers,
+* courses, programs and so on.
+*
+* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* A copy of this license - GNU General Public License - is available
+* at the root of the source code of this program.  If not,
+* see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+<div class="panel-body">
+    <div>
+        <a class="btn btn-primary" id="upload_file_button">
+            <span class="glyphicon glyphicon-add" aria-hidden="true"></span> {% trans 'Upload file' %}
+        </a>
+    </div>
+    <br><br>
+    {% if not files %}
+        <div class="jumbotron">
+            <p>{% trans 'No document available' %}</p>
+        </div>
+    {% else %}
+        <table id="table_education_groups" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th id="name">{% trans 'Name' %}</th>
+                    <th id="name">{% trans 'File category' %}</th>
+                    <th id="uploaded_by">{% trans 'Uploaded by' %}</th>
+                    <th id="size">{% trans 'Size' %}</th>
+                    <th id="last_update">{% trans 'Last update' %}</th>
+                    <th id="actions">{% trans 'Actions' %}</th>
+                </tr>
+            </thead>
+            {% for file in files %}
+                <tr>
+                    <td> {{file.name}} </td>
+                    <td> {% trans file.file_category %} </td>
+                    <td> {{file.uploaded_by}} </td>
+                    <td> {{file.size|filesizeformat}} </td>
+                    <td> {{file.created_date}} </td>
+                    <td>
+                        <a class="button" role="button" title="{% trans 'Download document' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
+                        &nbsp;
+                        <a class="button" role="button" title="{% trans 'Delete document' %}" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+
+                        {% if file.file_category == invoice %}
+                            &nbsp;
+                            <a class="button send_notification_mail_button" role="button"  title="{% trans 'Send notification email' %}">
+                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</div>
+
+{% include "fragment/upload_file_modal.html" %}
+{% include "fragment/send_notification_mail_modal.html" %}
+
+{% block script %}
+    <script>
+        $("#upload_file_button").click(function(){
+          $('#upload_file_modal').modal('show');
+        });
+    </script>
+{% endblock %}
