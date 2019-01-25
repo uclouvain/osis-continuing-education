@@ -45,9 +45,9 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
-from continuing_education.models.file import MAX_ADMISSION_FILE_NAME_LENGTH, AdmissionFile
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED
+from continuing_education.models.file import MAX_ADMISSION_FILE_NAME_LENGTH, AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -283,7 +283,7 @@ class UploadFileTestCase(TestCase):
             format='multipart'
         )
 
-        self.assertEqual(AdmissionFile.objects.get(name=self.file.name).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
@@ -424,7 +424,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
             formation=formation,
             state=ACCEPTED
         )
-        self.file = FileFactory(
+        self.file = AdmissionFileFactory(
             admission=self.admission
         )
 

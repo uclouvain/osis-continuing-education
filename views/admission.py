@@ -205,7 +205,7 @@ def send_invoice_notification_mail(request, admission_id):
 
 
 def _invoice_file_exists_for_admission(admission):
-    return File.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
+    return AdmissionFile.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
 
 
 @login_required
