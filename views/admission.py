@@ -193,6 +193,23 @@ def _email_notification_must_be_sent(file_category, request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+def send_invoice_notification_mail(request, admission_id):
+    admission = get_object_or_404(Admission, pk=admission_id)
+    if _invoice_file_exists_for_admission(admission):
+        send_invoice_uploaded_email(admission)
+        display_success_messages(request, _("A notification email has been sent to the participant"))
+    else:
+        display_error_messages(request, _("There is no invoice for this admission, notification email not sent"))
+
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')
+
+
+def _invoice_file_exists_for_admission(admission):
+    return File.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
 def download_file(request, admission_id, file_id):
     admission_file = AdmissionFile.objects.get(pk=file_id)
     filename = admission_file.name.split('/')[-1]

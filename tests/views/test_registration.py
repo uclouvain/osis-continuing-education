@@ -58,18 +58,6 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
 
-    def test_registration_detail(self):
-        url = reverse('registration_detail', args=[self.admission_accepted.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registration_detail.html')
-
-    def test_registration_detail_not_found(self):
-        response = self.client.get(reverse('registration_detail', kwargs={
-            'admission_id': 0,
-        }))
-        self.assertEqual(response.status_code, 404)
-
     def test_registration_edit_not_found(self):
         response = self.client.get(reverse('registration_edit', kwargs={
             'admission_id': 0,
@@ -93,7 +81,7 @@ class ViewRegistrationTestCase(TestCase):
         form = RegistrationForm(admission_dict)
         form.is_valid()
         response = self.client.post(url, data=form.cleaned_data)
-        self.assertRedirects(response, reverse('registration_detail', args=[self.admission_accepted.id]))
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission_accepted.id]))
         self.admission_accepted.refresh_from_db()
 
         # verifying that fields are correctly updated
@@ -111,7 +99,7 @@ class ViewRegistrationTestCase(TestCase):
     def test_registration_detail_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
-        url = reverse('registration_detail', kwargs={'admission_id':self.admission_accepted.pk})
+        url = reverse('admission_detail', kwargs={'admission_id':self.admission_accepted.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

@@ -6,6 +6,7 @@ WAITING = 'Waiting'
 
 DRAFT = 'Draft'
 SUBMITTED = 'Submitted'
+REGISTRATION_SUBMITTED = 'Registration submitted'
 
 STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
@@ -13,6 +14,7 @@ STATE_CHOICES = (
     (WAITING, _('Waiting')),
     (DRAFT, _('Draft')),
     (SUBMITTED, _('Submitted')),
+    (REGISTRATION_SUBMITTED, _('Registration submitted')),
 )
 
 STATES_DRAFT = {
@@ -34,7 +36,7 @@ STATES_ADMIN = {
         (REJECTED, _('Rejected')),
         (WAITING, _('Waiting')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING]
+    'states': [ACCEPTED, REJECTED, WAITING, REGISTRATION_SUBMITTED]
 }
 
 NEW_ADMIN_STATE = {

@@ -45,8 +45,9 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
-from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED
 from continuing_education.models.file import MAX_ADMISSION_FILE_NAME_LENGTH, AdmissionFile
+from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
+    ACCEPTED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -245,7 +246,7 @@ class UploadFileTestCase(TestCase):
         self.admission_file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
-            content_type="application/pdf"
+            content_type="application/pdf",
         )
 
     def test_upload_file(self):
@@ -259,7 +260,6 @@ class UploadFileTestCase(TestCase):
             format='multipart'
         )
         self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager)
-        self.assertEqual(AdmissionFile.objects.get(path__contains=self.admission_file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -283,17 +283,17 @@ class UploadFileTestCase(TestCase):
             format='multipart'
         )
 
-        self.assertEqual(AdmissionFile.objects.get(path__contains=self.admission_file).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(name=self.file.name).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
         self.assertIn(
             ugettext(_("The document is uploaded correctly")),
-            str(messages_list)
+            messages_list
         )
         self.assertIn(
             ugettext(_("A notification email has been sent to the participant")),
-            str(messages_list)
+            messages_list
         )
         self.assertTrue(mock_send_mail.called)
 
@@ -409,3 +409,59 @@ class DeleteFileTestCase(TestCase):
             ugettext(_("A problem occured during delete")),
             str(messages_list[0])
         )
+
+
+class InvoiceNotificationEmailTestCase(TestCase):
+    def setUp(self):
+        current_acad_year = create_current_academic_year()
+        next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        formation = EducationGroupYearFactory(academic_year=next_acad_year)
+
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
+
+        self.admission = AdmissionFactory(
+            formation=formation,
+            state=ACCEPTED
+        )
+        self.file = FileFactory(
+            admission=self.admission
+        )
+
+        self.url = reverse('send_invoice_notification_mail', args=[self.admission.pk])
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_mail_with_invoice(self, mock_send_mail):
+        self.file.file_category = file_category_choices.INVOICE
+        self.file.save()
+
+        response = self.client.get(self.url)
+
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("A notification email has been sent to the participant")),
+            messages_list
+        )
+        self.assertTrue(mock_send_mail.called)
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_mail_without_invoice(self, mock_send_mail):
+        self.file.file_category = file_category_choices.DOCUMENT
+        self.file.save()
+
+        response = self.client.get(self.url)
+
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("There is no invoice for this admission, notification email not sent")),
+            messages_list
+        )
+        self.assertNotIn(
+            ugettext(_("A notification email has been sent to the participant")),
+            messages_list
+        )
+        self.assertFalse(mock_send_mail.called)
