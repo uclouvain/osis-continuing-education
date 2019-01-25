@@ -289,13 +289,25 @@
           setStateActive(newState);
           $('#id_state').val(newState);
           if(newState === "Waiting"){
-            openWaitingModal(state_initial)
+            openModal(
+                'waiting_reason_modal',
+                'id_waiting_reason',
+                'old_predefined_waiting_reason',
+                'id_other_reason',
+                'old_other_reason'
+            );
           }
           else if(newState === "Draft"){
-              openWarningModal(state_initial)
+              openWarningModal(state_initial);
           }
           else if(newState === "Rejected"){
-              openRejectedModal(state_initial)
+              openModal(
+                'rejected_reason_modal',
+                'id_rejected-rejected_reason',
+                'old_predefined_rejected_reason',
+                'id_rejected-other_reason',
+                'old_rejected_other_reason'
+            );
           }
           else{
               $('#form').submit();
@@ -331,6 +343,5 @@
         var anchor = location.hash;
         $('#tabs a[href="' + anchor + '"]').tab('show');
     </script>
-    <script src="{% static 'js/rejected_admission.js' %}"></script>
-    <script src="{% static 'js/waiting_admission.js' %}"></script>
+    <script src="{% static 'js/rejected_waiting_admission.js' %}"></script>
 {% endblock %}
