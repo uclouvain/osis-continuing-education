@@ -28,7 +28,6 @@
 
 {% include "fragment/section_identification.html" %}
 
-<div class="panel-body">
     <div class="panel-heading">{% trans 'Billing' %}</div>
     <div class="panel panel-body">
         <div class="row form-group">
@@ -95,7 +94,6 @@
             <div class="col-md-6">{% bootstrap_label _("Assessment succeeded") %} <br/> {{ admission.assessment_succeeded | yesno }} </div>
         </div>
     </div>
-</div>
 
 
 {% block script %}
