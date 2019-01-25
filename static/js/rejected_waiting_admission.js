@@ -1,11 +1,11 @@
-function openModal(id_reason_modal, id_reason, id_old_reason, id_other_reason, id_old_other_reason) {
-    $('#'+id_reason_modal).modal('show');
-    $('#'+id_old_reason).val($('#'+id_reason).val());
-    $('#'+id_old_other_reason).val($('#'+id_other_reason).val());
+function openModal(idReasonModal, reason, otherReason) {
+    $('#'+idReasonModal).modal('show');
+    $('#'+reason.Old).val($('#'+reason.New).val());
+    $('#'+otherReason.Old).val($('#'+otherReason.New).val());
 }
 
-function disabledEnabledOtherReasonInputText(elementId_reason, otherReasonId){
-    if(otherSelected(elementId_reason)){
+function disabledEnabledOtherReasonInputText(elementIdReason, otherReasonId){
+    if(otherSelected(elementIdReason)){
         document.getElementById(otherReasonId).disabled = false;
     }else{
         document.getElementById(otherReasonId).disabled = true;
@@ -14,8 +14,8 @@ function disabledEnabledOtherReasonInputText(elementId_reason, otherReasonId){
     }
 }
 
-function otherSelected(elementId_reason){
-    let selected_element = document.getElementById(elementId_reason).value;
+function otherSelected(elementIdReason){
+    let selected_element = document.getElementById(elementIdReason).value;
     return selected_element === "Other" || selected_element === "Autre";
 }
 
@@ -23,25 +23,25 @@ function clearOtherReasonError(otherReasonId){
     $('#' + otherReasonId).parent().removeClass("has-error");
 }
 
-function add_reason(otherReasonId, elementId_reason, id_reason_modal, id_form){
+function add_reason(otherReasonId, elementIdReason, idReasonModal, idForm){
     clearOtherReasonError(otherReasonId);
-    if(!$('#'+otherReasonId).val() && otherSelected(elementId_reason)){
+    if(!$('#'+otherReasonId).val() && otherSelected(elementIdReason)){
         $('#'+otherReasonId).parent().addClass("has-error");
     } else {
-        $('#'+id_form).submit();
-        $("#"+id_reason_modal).modal('hide');
+        $('#'+idForm).submit();
+        $("#"+idReasonModal).modal('hide');
     }
 }
 
-function cancel_reason(otherReasonId, oldOtherReasonId,elementId_reason, elementId_old_reason){
+function cancel_reason(otherReasonId, oldOtherReasonId,elementIdReason, elementIdOldReason){
     clearOtherReasonError(otherReasonId);
-    console.log($('#'+elementId_old_reason).val());
+    console.log($('#'+elementIdOldReason).val());
     console.log($('#'+oldOtherReasonId).val());
 
-    $('#'+elementId_reason).val($('#'+elementId_old_reason).val());
+    $('#'+elementIdReason).val($('#'+elementIdOldReason).val());
     $('#'+otherReasonId).val($('#'+oldOtherReasonId).val());
 
-    if (otherSelected(elementId_reason)){
+    if (otherSelected(elementIdReason)){
         $('#'+otherReasonId).prop('disabled', false);
     }else{
         $('#'+otherReasonId).prop('disabled', true);

@@ -289,24 +289,24 @@
           setStateActive(newState);
           $('#id_state').val(newState);
           if(newState === "Waiting"){
-            openModal(
-                'waiting_reason_modal',
-                'id_waiting_reason',
-                'old_predefined_waiting_reason',
-                'id_other_reason',
-                'old_other_reason'
-            );
+              let waiting_reason = {New: 'id_waiting_reason', Old: 'old_predefined_waiting_reason'};
+              let other_reason = {New: 'id_other_reason', Old: 'old_other_reason'};
+              openModal(
+                  'waiting_reason_modal',
+                  waiting_reason,
+                  other_reason
+              );
           }
           else if(newState === "Draft"){
               openWarningModal(state_initial);
           }
           else if(newState === "Rejected"){
+              let refused_reason = {New: 'id_rejected-rejected_reason', Old: 'old_predefined_rejected_reason'};
+              let other_reason = {New: 'id_rejected-other_reason', Old: 'old_rejected_other_reason'};
               openModal(
-                'rejected_reason_modal',
-                'id_rejected-rejected_reason',
-                'old_predefined_rejected_reason',
-                'id_rejected-other_reason',
-                'old_rejected_other_reason'
+                  'rejected_reason_modal',
+                  refused_reason,
+                  other_reason
             );
           }
           else{
