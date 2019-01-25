@@ -122,7 +122,6 @@ def admission_detail(request, admission_id):
     waiting_adm_form = WaitingAdmissionForm(
         request.POST or None,
         instance=admission,
-        #prefix='waiting',
         )
 
     if adm_form.is_valid():
