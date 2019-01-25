@@ -116,6 +116,7 @@ def admission_detail(request, admission_id):
     rejected_adm_form = RejectedAdmissionForm(
         request.POST or None,
         instance=admission,
+        prefix='rejected',
         )
 
     waiting_adm_form = WaitingAdmissionForm(
