@@ -57,7 +57,6 @@ class FileAPIView(views.APIView):
             file.save()
         except TooLongFilenameException:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED
