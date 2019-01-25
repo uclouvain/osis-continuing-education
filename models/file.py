@@ -39,7 +39,7 @@ MAX_ADMISSION_FILE_NAME_LENGTH = 100
 def admission_directory_path(instance, filename):
     return 'continuing_education/admission_{}/{}'.format(
         instance.admission.id,
-        filename
+        instance.uuid
     )
 
 

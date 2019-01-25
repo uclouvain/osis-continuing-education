@@ -246,7 +246,7 @@ class UploadFileTestCase(TestCase):
         self.file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
-            content_type="application/pdf"
+            content_type="application/pdf",
         )
 
     def test_upload_file(self):
@@ -261,7 +261,6 @@ class UploadFileTestCase(TestCase):
         )
 
         self.assertEqual(File.objects.get(name=self.file.name).uploaded_by, self.manager)
-        self.assertEqual(File.objects.get(path__contains=self.file).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
@@ -284,8 +283,7 @@ class UploadFileTestCase(TestCase):
             },
             format='multipart'
         )
-
-        self.assertEqual(File.objects.get(path__contains=self.file).uploaded_by, self.manager)
+        self.assertEqual(File.objects.get(name=self.file.name).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
