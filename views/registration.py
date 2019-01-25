@@ -99,7 +99,7 @@ def registration_edit(request, admission_id):
         admission.billing_address = billing_address
         admission.residence_address = residence_address
         admission.save()
-        return redirect(reverse('registration_detail', kwargs={'admission_id':admission_id}))
+        return redirect(reverse('admission_detail', kwargs={'admission_id':admission_id}))
     else:
         errors.append(form.errors)
         display_errors(request, errors)
