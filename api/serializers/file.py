@@ -30,6 +30,7 @@ from rest_framework.reverse import reverse
 
 from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
+from continuing_education.models.enums import file_category_choices
 from continuing_education.models.file import AdmissionFile
 
 
@@ -53,6 +54,7 @@ class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
         queryset=Person.objects.all()
     )
     name = serializers.CharField(required=False)
+    file_category_text = serializers.CharField(source='get_file_category_display', read_only=True)
 
     class Meta:
         model = AdmissionFile
@@ -64,10 +66,13 @@ class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
             'size',
             'created_date',
             'uploaded_by',
+            'file_category',
+            'file_category_text'
         )
 
     def create(self, validated_data):
         validated_data['admission'] = self.context['admission']
+        validated_data['file_category'] = file_category_choices.PARTICIPANT
         return super().create(validated_data)
 
 
@@ -76,6 +81,7 @@ class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
     created_date = serializers.DateTimeField(read_only=True)
     uploaded_by = PersonDetailSerializer(read_only=True)
     content = serializers.SerializerMethodField()
+    file_category_text = serializers.CharField(source='get_file_category_display', read_only=True)
 
     def get_content(self, file):
         file.content = base64.b64encode(file.path.read())
@@ -91,5 +97,7 @@ class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
             'size',
             'created_date',
             'uploaded_by',
-            'content'
+            'content',
+            'file_category',
+            'file_category_text'
         )

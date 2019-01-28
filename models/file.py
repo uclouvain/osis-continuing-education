@@ -28,6 +28,7 @@ import uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
+from django.utils.text import get_valid_filename
 from django.utils.translation import ugettext_lazy as _, pgettext
 
 from continuing_education.models.enums import file_category_choices, admission_state_choices
@@ -90,7 +91,7 @@ class AdmissionFile(Model):
     def save(self, *args, **kwargs):
         if not(self.size and self.name):
             self.size = self.path.size
-            self.name = self.path.name
+            self.name = get_valid_filename(self.path.name)
         if len(self.name) > MAX_ADMISSION_FILE_NAME_LENGTH:
             raise TooLongFilenameException(
                 _("The name of the file is too long : maximum %(length)s characters.") % {
