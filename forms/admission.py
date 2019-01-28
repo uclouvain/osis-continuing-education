@@ -136,8 +136,6 @@ class RejectedAdmissionForm(ModelForm):
             else:
                 self._disabled_and_init_other_reason()
 
-        self.fields['rejected_reason'].widget.attrs = {'onchange': 'disabledEnabledOtherReasonInputText();'}
-
     def _reject_state_init(self):
         if any(self.instance.state_reason in reason for reason in REJECTED_REASON_CHOICES):
             self.fields['rejected_reason'].initial = self.instance.state_reason
@@ -190,8 +188,6 @@ class WaitingAdmissionForm(ModelForm):
                 self._waiting_state_init()
             else:
                 self._disabled_and_init_other_reason()
-
-        self.fields['waiting_reason'].widget.attrs = {'onchange': 'disabledEnabledOtherReasonInputText();'}
 
     def _waiting_state_init(self):
         if any(self.instance.state_reason in reason for reason in WAITING_REASON_CHOICES):
