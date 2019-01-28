@@ -57,7 +57,9 @@ class FileSerializerTestCase(TestCase):
             'size',
             'created_date',
             'uploaded_by',
-            'content'
+            'content',
+            'file_category',
+            'file_category_text'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -84,7 +86,9 @@ class FilePostSerializerTestCase(TestCase):
             'path',
             'size',
             'created_date',
-            'uploaded_by'
+            'uploaded_by',
+            'file_category',
+            'file_category_text'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

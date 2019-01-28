@@ -71,12 +71,6 @@ class ViewAdmissionTestCase(TestCase):
             state=SUBMITTED
         )
 
-        self.admission_file = SimpleUploadedFile(
-            name='upload_test.pdf',
-            content=str.encode(FILE_CONTENT),
-            content_type="application/pdf"
-        )
-
     def test_list_admissions(self):
         url = reverse('admission')
         response = self.client.get(url)
