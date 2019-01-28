@@ -30,6 +30,8 @@ from django.forms import model_to_dict
 from django.test import TestCase
 from rest_framework import status
 
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
@@ -40,8 +42,17 @@ class ViewRegistrationTestCase(TestCase):
     def setUp(self):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
-        self.admission_accepted = AdmissionFactory(state=admission_state_choices.ACCEPTED)
-        self.admission_rejected = AdmissionFactory(state=admission_state_choices.REJECTED)
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.admission_accepted = AdmissionFactory(
+            state=admission_state_choices.ACCEPTED,
+            formation=self.formation
+        )
+        self.admission_rejected = AdmissionFactory(
+            state=admission_state_choices.REJECTED,
+            formation=self.formation
+        )
 
     def test_list_registrations(self):
         url = reverse('registration')
