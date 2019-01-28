@@ -44,7 +44,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         cls.url = reverse('continuing_education_api_v1:person-list-create')
 
         cls.birth_country = CountryFactory()
-
+        cls.person = ContinuingEducationPersonFactory(birth_country=cls.birth_country)
         for x in range(3):
             ContinuingEducationPersonFactory(birth_country=cls.birth_country)
 
@@ -55,6 +55,12 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         self.client.force_authenticate(user=None)
 
         response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_create_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
@@ -76,6 +82,26 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         expected_count = ContinuingEducationPerson.objects.all().count()
         self.assertEqual(response.data['count'], expected_count)
 
+    def test_create_valid_person(self):
+        self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
+
+        data = {
+            'first_name': self.person.person.first_name,
+            'last_name': self.person.person.last_name,
+            'email': self.person.person.email,
+            'gender': self.person.person.gender,
+            'birth_date': self.person.birth_date,
+            'birth_location': self.person.birth_location,
+            'birth_country': self.person.birth_country.iso_code
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
+
+    def test_create_invalid_person(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class ContinuingEducationPersonDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
@@ -85,9 +111,25 @@ class ContinuingEducationPersonDetailUpdateDestroyTestCase(APITestCase):
         cls.person = ContinuingEducationPersonFactory(birth_country=cls.birth_country)
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:person-detail-update-delete', kwargs={'uuid': cls.person.uuid})
+        cls.invalid_url = reverse(
+            'continuing_education_api_v1:person-detail-update-delete',
+            kwargs={'uuid': uuid.uuid4()}
+        )
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
+
+    def test_delete_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_update_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_not_authorized(self):
         self.client.force_authenticate(user=None)
@@ -101,6 +143,35 @@ class ContinuingEducationPersonDetailUpdateDestroyTestCase(APITestCase):
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_delete_valid_person(self):
+        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(0, ContinuingEducationPerson.objects.all().count())
+
+    def test_delete_invalid_person_case_not_found(self):
+        response = self.client.delete(self.invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_valid_person(self):
+        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
+        data = {
+            'first_name': 'Tom',
+            'last_name': 'Jerry'
+        }
+        response = self.client.put(self.url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        serializer = ContinuingEducationPersonSerializer(
+            ContinuingEducationPerson.objects.all().first(),
+            context={'request': RequestFactory().get(self.url)},
+        )
+        self.assertEqual(response.data, serializer.data)
+
+    def test_update_invalid_person(self):
+        response = self.client.put(self.invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_valid_person(self):
         response = self.client.get(self.url)
