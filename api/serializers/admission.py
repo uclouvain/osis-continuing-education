@@ -25,16 +25,20 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.models.education_group_year import EducationGroupYear
+from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from education_group.api.serializers.training import TrainingListSerializer
 from reference.models.country import Country
 
 
 class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:admission-detail',
+        view_name='continuing_education_api_v1:admission-detail-update-destroy',
         lookup_field='uuid'
     )
     person_information = ContinuingEducationPersonSerializer()
@@ -56,24 +60,40 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
             'state_text',
         )
 
+    def create(self, validated_data):
+        iufc_person_data = validated_data.pop('person_information')
+        person_data = iufc_person_data.pop('person')
+        formation_data = validated_data.pop('formation')
+
+        person, created = Person.objects.get_or_create(**person_data)
+        iufc_person, created = ContinuingEducationPerson.objects.get_or_create(person=person, **iufc_person_data)
+        validated_data['person_information'] = iufc_person
+
+        formation = EducationGroupYear.objects.get(**formation_data)
+        validated_data['formation'] = formation
+
+        admission = Admission.objects.create(**validated_data)
+        return admission
+
 
 class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
-    person_information = ContinuingEducationPersonSerializer()
+    person_information = ContinuingEducationPersonSerializer(required=False)
 
     citizenship = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
+        required=False
     )
     citizenship_text = serializers.CharField(source='citizenship.name', read_only=True)
 
-    main_address = AddressSerializer(source='address', read_only=True)
+    main_address = AddressSerializer(source='address', required=False)
 
     # Display human readable value
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
-    formation = TrainingListSerializer()
+    formation = TrainingListSerializer(required=False)
 
     class Meta:
         model = Admission
@@ -161,3 +181,19 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # 'sessions'
 
         )
+
+    def update(self, instance, validated_data):
+        fields = instance._meta.fields
+        exclude = []
+        for field in fields:
+            field = field.name.split('.')[-1]
+            if field in exclude:
+                continue
+            if field == 'address' and 'address' in validated_data:
+                address_data = validated_data.pop('address')
+                address, created = Address.objects.update_or_create(**address_data)
+                instance.address = address
+            else:
+                exec("instance.%s = validated_data.get(field, instance.%s)" % (field, field))
+        instance.save()
+        return instance

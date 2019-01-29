@@ -91,11 +91,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         self.assertEqual(4, Person.objects.all().count())
         data = {
             "person": {
-                'uuid': self.person.uuid,
-                'first_name': self.person.first_name,
-                'last_name': self.person.last_name,
-                'gender': self.person.gender,
-                'email': self.person.email
+                'uuid': self.person.uuid
             },
             'birth_date': datetime.date.today(),
             'birth_location': 'Hilo',

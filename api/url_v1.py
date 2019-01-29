@@ -26,7 +26,7 @@
 from django.conf.urls import url
 
 from continuing_education.api.views.address import AddressDetailUpdateDestroy, AddressListCreate
-from continuing_education.api.views.admission import AdmissionList, AdmissionDetail
+from continuing_education.api.views.admission import AdmissionListCreate, AdmissionDetailUpdateDestroy
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonListCreate, \
     ContinuingEducationPersonDetailDestroy
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
@@ -44,8 +44,12 @@ urlpatterns = [
         ContinuingEducationPersonDetailDestroy.as_view(),
         name=ContinuingEducationPersonDetailDestroy.name
     ),
-    url(r'^admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
-    url(r'^admissions/(?P<uuid>[0-9a-f-]+)$', AdmissionDetail.as_view(), name=AdmissionDetail.name),
+    url(r'^admissions/$', AdmissionListCreate.as_view(), name=AdmissionListCreate.name),
+    url(
+        r'^admissions/(?P<uuid>[0-9a-f-]+)$',
+        AdmissionDetailUpdateDestroy.as_view(),
+        name=AdmissionDetailUpdateDestroy.name
+    ),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$',
         AdmissionFileListCreate.as_view(),

@@ -40,7 +40,7 @@ class AdmissionListSerializerTestCase(TestCase):
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
         )
-        url = reverse('continuing_education_api_v1:admission-list')
+        url = reverse('continuing_education_api_v1:admission-list-create')
         cls.serializer = AdmissionListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
@@ -67,7 +67,10 @@ class AdmissionDetailSerializerTestCase(TestCase):
             citizenship=cls.citizenship,
             person_information=cls.person_information,
         )
-        url = reverse('continuing_education_api_v1:admission-detail', kwargs={'uuid': cls.admission.uuid})
+        url = reverse(
+            'continuing_education_api_v1:admission-detail-update-destroy',
+            kwargs={'uuid': cls.admission.uuid}
+        )
         cls.serializer = AdmissionDetailSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):

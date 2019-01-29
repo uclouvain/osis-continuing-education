@@ -36,7 +36,8 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
 
     birth_country = serializers.SlugRelatedField(
         slug_field='iso_code',
-        queryset=Country.objects.all()
+        queryset=Country.objects.all(),
+        required=False
     )
     birth_country_text = serializers.CharField(source='birth_country.name', read_only=True)
 
@@ -53,10 +54,7 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
 
     def create(self, validated_data):
         person_data = validated_data.pop('person')
-        if 'uuid' in person_data:
-            person, created = Person.objects.get_or_create(uuid=person_data.pop('uuid'), **person_data)
-        else:
-            person = Person.objects.create(**person_data)
+        person, created = Person.objects.get_or_create(**person_data)
         validated_data['person'] = person
         iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
         return iufc_person

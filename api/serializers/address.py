@@ -34,6 +34,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
     country = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
+        required=False
     )
     country_text = serializers.CharField(source='country.name', read_only=True)
 
