@@ -24,6 +24,7 @@
 #
 ##############################################################################
 from django.shortcuts import get_object_or_404
+from django.utils.text import get_valid_filename
 from rest_framework import views, status, generics
 from rest_framework.generics import DestroyAPIView
 from rest_framework.parsers import MultiPartParser
@@ -46,7 +47,7 @@ class FileAPIView(views.APIView):
         person = admission.person_information.person
         file = File(
             admission=admission,
-            name=file_obj.name,
+            name=get_valid_filename(file_obj.name),
             path=file_obj,
             size=file_obj.size,
             uploaded_by=person,
@@ -56,7 +57,6 @@ class FileAPIView(views.APIView):
             file.save()
         except TooLongFilenameException:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-
         return Response(
             data="File uploaded sucessfully",
             status=status.HTTP_201_CREATED

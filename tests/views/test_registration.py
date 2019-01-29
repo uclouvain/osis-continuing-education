@@ -30,6 +30,8 @@ from django.forms import model_to_dict
 from django.test import TestCase
 from rest_framework import status
 
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
@@ -40,8 +42,17 @@ class ViewRegistrationTestCase(TestCase):
     def setUp(self):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
-        self.admission_accepted = AdmissionFactory(state=admission_state_choices.ACCEPTED)
-        self.admission_rejected = AdmissionFactory(state=admission_state_choices.REJECTED)
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.admission_accepted = AdmissionFactory(
+            state=admission_state_choices.ACCEPTED,
+            formation=self.formation
+        )
+        self.admission_rejected = AdmissionFactory(
+            state=admission_state_choices.REJECTED,
+            formation=self.formation
+        )
 
     def test_list_registrations(self):
         url = reverse('registration')
@@ -57,18 +68,6 @@ class ViewRegistrationTestCase(TestCase):
         response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
-
-    def test_registration_detail(self):
-        url = reverse('registration_detail', args=[self.admission_accepted.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registration_detail.html')
-
-    def test_registration_detail_not_found(self):
-        response = self.client.get(reverse('registration_detail', kwargs={
-            'admission_id': 0,
-        }))
-        self.assertEqual(response.status_code, 404)
 
     def test_registration_edit_not_found(self):
         response = self.client.get(reverse('registration_edit', kwargs={
@@ -93,7 +92,7 @@ class ViewRegistrationTestCase(TestCase):
         form = RegistrationForm(admission_dict)
         form.is_valid()
         response = self.client.post(url, data=form.cleaned_data)
-        self.assertRedirects(response, reverse('registration_detail', args=[self.admission_accepted.id]))
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission_accepted.id]))
         self.admission_accepted.refresh_from_db()
 
         # verifying that fields are correctly updated
@@ -111,7 +110,7 @@ class ViewRegistrationTestCase(TestCase):
     def test_registration_detail_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
-        url = reverse('registration_detail', kwargs={'admission_id':self.admission_accepted.pk})
+        url = reverse('admission_detail', kwargs={'admission_id':self.admission_accepted.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

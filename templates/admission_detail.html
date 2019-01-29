@@ -35,7 +35,7 @@
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
-    <li><a href="{% url 'admission' %}">{% trans 'Admission' context 'continuing_education' %}</a></li>
+    <li><a href="{% url 'admission' %}">{% trans 'Admissions' context 'continuing_education' %}</a></li>
     <li class="active">{{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}</li>
 {% endblock %}
 
@@ -68,8 +68,10 @@
                 {% include "fragment/warning_modal.html" %}
                 {% include "fragment/rejected_reason_modal.html" %}
             </form>
-        {% include "fragment/upload_file_modal.html" %}
-        <h2>{% trans 'Admission' context 'continuing_education' %}</h2>
+        <h3>
+            {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
+            &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
+        </h3>
     </div>
 
     <div class="panel panel-default">
@@ -86,178 +88,20 @@
             </div>
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
-          <li role="presentation" class="active"><a href="#informations" role="tab" data-toggle="tab">{% trans 'Informations' %}</a></li>
+          <li role="presentation" class="active"><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
+          <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
           <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="informations">
             {% csrf_token %}
-                <div class="panel-heading">{% trans 'Identification' %}</div>
-                <div class="panel panel-body">
-                    <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("First name") %} <br/> {{ admission.person_information.person.first_name | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Last name") %} <br/> {{ admission.person_information.person.last_name | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.get_gender_display | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Citizenship") %} <br/> {{ admission.citizenship | default:"-" }} </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("Birth date") %} <br/> {{ admission.person_information.birth_date | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Birth location") %} <br/> {{ admission.person_information.birth_location | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {{ admission.person_information.birth_country | default:"-" }} </div>
-                    </div>
-                </div>
-
-                <div class="panel-heading">{% trans 'Contact' %}</div>
-                <div class="panel panel-body">
-                    <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("Mobile phone") %} <br/> {{ admission.phone_mobile | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Email") %} <br/> {{ admission.email | default:"-" }} </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-3">{% bootstrap_label _("Location") %} <br/> {{ admission.address.location | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Postal code") %} <br/> {{ admission.address.postal_code | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.address.city | default:"-" }} </div>
-                        <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.address.country | default:"-" }} </div>
-                    </div>
-                </div>
-
-                        <div class="panel-heading">{% trans 'Education' %}</div>
-                        <div class="panel panel-body">
-                            <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("High school diploma") %} <br/> {{ admission.high_school_diploma | yesno }} </div>
-                                <div class="col-md-4">{% bootstrap_label _("High school graduation year") %} <br/> {{ admission.high_school_graduation_year | default:"-" }} </div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("Last degree level") %} <br/> {{ admission.last_degree_level | default:"-" }} </div>
-                                <div class="col-md-4">{% bootstrap_label _("Last degree field") %} <br/> {{ admission.last_degree_field | default:"-" }} </div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("Last degree institution") %} <br/> {{ admission.last_degree_institution | default:"-" }} </div>
-                                <div class="col-md-4">{% bootstrap_label _("Last degree graduation year") %} <br/> {{ admission.last_degree_graduation_year | default:"-" }} </div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col-md-4">{% bootstrap_label _("Other educational background") %} <br/> {{ admission.other_educational_background | default:"-" }} </div>
-                            </div>
-                        </div>
-
-                    <div class="panel-heading">{% trans 'Professional background' %}</div>
-                    <div class="panel panel-body">
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Professional status") %} <br/> {{ admission.get_professional_status_display | default:"-" }} </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Current occupation") %} <br/> {{ admission.current_occupation | default:"-" }} </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Current employer") %} <br/> {{ admission.current_employer | default:"-" }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.get_activity_sector_display | default:"-" }} </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Past professional activities") %} <br/> {{ admission.past_professional_activities | default:"-" }} </div>
-                        </div>
-                    </div>
-
-                <div class="panel-heading">{% trans 'Motivation' %}</div>
-                    <div class="panel panel-body">
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Motivation") %} <br/> {{ admission.motivation | default:"-" }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("Professional impact") %} <br/> {{ admission.professional_impact | default:"-" }} </div>
-                        </div>
-                </div>
-
-                <div class="panel-heading">{% trans 'Formation' %}</div>
-                    <div class="panel panel-body">
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation.acronym }} - {{ admission.formation.academic_year }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("Courses formula") %} <br/> {{ admission.courses_formula | default:"-" }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("Program code") %} <br/> {{ admission.program_code | default:"-" }} </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-md-4">{% bootstrap_label _("Faculty") %} <br/> {{ admission.get_faculty | default:"-" }} </div>
-                            <div class="col-md-4">{% bootstrap_label _("Formation administrator") %} <br/> {{ admission.formation_administrator | default:"-" }} </div>
-                        </div>
-                </div>
-
-                <div class="panel-heading">
-                    {% trans 'Awareness' %}
-                </div>
-                <div class="panel panel-body">
-                    <div class="row form-group">
-                        <ul>
-                            {% if admission.awareness_ucl_website %}
-                            <li>{% trans 'Awareness UCL website' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_formation_website %}
-                            <li>{% trans 'Awareness formation website' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_press %}
-                            <li>{% trans 'Awareness press' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_facebook %}
-                            <li>{% trans 'Awareness Facebook' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_linkedin %}
-                            <li>{% trans 'Awareness LinkedIn' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_customized_mail %}
-                            <li>{% trans 'Awareness customized mail' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_emailing %}
-                            <li>{% trans 'Awareness emailing' %}</li>
-                            {% endif %}
-                            {% if admission.awareness_other %}
-                            <li>{% trans 'Other' %}: {{ admission.awareness_other }}</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
+            <div role="tabpanel" class="tab-pane active" id="admission">
+                {% include "fragment/tab_admission.html" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="registration">
+                {% include "fragment/tab_registration.html" %}
             </div>
             <div role="tabpanel" class="tab-pane" id="documents">
-                <div role="tabpanel" class="tab-pane" id="documents">
-                    <div class="panel-body">
-                        <div>
-                            <a class="btn btn-primary" id="upload_file_button">
-                                <span class="glyphicon glyphicon-add" aria-hidden="true"></span> {% trans 'Upload file' %}
-                            </a>
-                            <br><br>
-                        </div>
-                        {% if not files %}
-                            <div class="jumbotron">
-                                <p>{% trans 'No document available' %}</p>
-                            </div>
-                        {% else %}
-                            <table id="table_education_groups" class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th id="name">{% trans 'Name' %}</th>
-                                        <th id="name">{% trans 'File category' %}</th>
-                                        <th id="uploaded_by">{% trans 'Uploaded by' %}</th>
-                                        <th id="size">{% trans 'Size' %}</th>
-                                        <th id="last_update">{% trans 'Last update' %}</th>
-                                        <th id="actions">{% trans 'Actions' %}</th>
-                                    </tr>
-                                </thead>
-                                {% for file in files %}
-                                    <tr>
-                                        <td> {{file.name}} </td>
-                                        <td> {% trans file.file_category %} </td>
-                                        <td> {{file.uploaded_by}} </td>
-                                        <td> {{file.size|filesizeformat}} </td>
-                                        <td> {{file.created_date}} </td>
-                                        <td>
-                                            <a class="button" role="button" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
-                                                <span class="glyphicon glyphicon-remove-circle btn-space btn-file" aria-hidden="true"></span>
-                                            </a>
-                                            <a class="button" role="button" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
-                                                <span class="glyphicon glyphicon-download-alt btn-space btn-file" aria-hidden="true"></span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        {% endif %}
-                    </div>
-                </div>
+                {% include "fragment/tab_documents.html" %}
             </div>
         </div>
     </div>
@@ -289,13 +133,25 @@
           setStateActive(newState);
           $('#id_state').val(newState);
           if(newState === "Waiting"){
-            openWaitingModal(state_initial)
+              let waiting_reason = {New: 'id_waiting_reason', Old: 'old_predefined_waiting_reason'};
+              let other_reason = {New: 'id_other_reason', Old: 'old_other_reason'};
+              openModal(
+                  'waiting_reason_modal',
+                  waiting_reason,
+                  other_reason
+              );
           }
           else if(newState === "Draft"){
-              openWarningModal(state_initial)
+              openWarningModal(state_initial);
           }
           else if(newState === "Rejected"){
-              openRejectedModal(state_initial)
+              let refused_reason = {New: 'id_rejected-rejected_reason', Old: 'old_predefined_rejected_reason'};
+              let other_reason = {New: 'id_rejected-other_reason', Old: 'old_rejected_other_reason'};
+              openModal(
+                  'rejected_reason_modal',
+                  refused_reason,
+                  other_reason
+            );
           }
           else{
               $('#form').submit();
@@ -324,13 +180,18 @@
             setStateActive(state_initial)
         });
 
-        $("#upload_file_button").click(function(){
-          $('#upload_file_modal').modal('show');
+        $(".send_notification_mail_button").click(function(){
+          $('#send_notification_mail_modal').modal('show');
         });
 
         var anchor = location.hash;
         $('#tabs a[href="' + anchor + '"]').tab('show');
+        if(anchor){
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+              }, 1);
+        }
+
     </script>
-    <script src="{% static 'js/rejected_admission.js' %}"></script>
-    <script src="{% static 'js/waiting_admission.js' %}"></script>
+    <script src="{% static 'js/rejected_waiting_admission.js' %}"></script>
 {% endblock %}

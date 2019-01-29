@@ -76,11 +76,6 @@ class UrlsTestCase(TestCase):
                 pattern_name='registration_edit',
                 kwargs={'admission_id': 1}
             ),
-            dict(
-                url_path="/continuing_education/registration/1/",
-                pattern_name='registration_detail',
-                kwargs={'admission_id': 1}
-            ),
         ]
 
         for url_name, pattern in test_paths(routes_to_test):

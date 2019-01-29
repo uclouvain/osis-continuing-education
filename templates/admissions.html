@@ -34,12 +34,12 @@
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
-    <li class="active">{% trans 'Admission' context 'continuing_education' %}</li>
+    <li class="active">{% trans 'Admissions' context 'continuing_education' %}</li>
 {% endblock %}
 
 {% block content %}
     <div class="page-header">
-        <h2>{% trans 'Admission' context 'continuing_education' %}</h2>
+        <h2>{% trans 'Admissions' context 'continuing_education' %}</h2>
     </div>
 
     <div class="panel panel-default">

@@ -5,14 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 from base.models.academic_year import current_academic_year
 from base.models.education_group_year import EducationGroupYear
 from base.models.enums import education_group_categories
+from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from continuing_education.models.enums import admission_state_choices, enums
-from reference.models.country import Country
-from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums import enums
+from reference.models.country import Country
 
 
 class FormationChoiceField(ModelChoiceField):
@@ -136,8 +136,6 @@ class RejectedAdmissionForm(ModelForm):
             else:
                 self._disabled_and_init_other_reason()
 
-        self.fields['rejected_reason'].widget.attrs = {'onchange': 'disabledEnabledOtherReasonInputText();'}
-
     def _reject_state_init(self):
         if any(self.instance.state_reason in reason for reason in REJECTED_REASON_CHOICES):
             self.fields['rejected_reason'].initial = self.instance.state_reason
@@ -190,8 +188,6 @@ class WaitingAdmissionForm(ModelForm):
                 self._waiting_state_init()
             else:
                 self._disabled_and_init_other_reason()
-
-        self.fields['waiting_reason'].widget.attrs = {'onchange': 'disabledEnabledOtherReasonInputText();'}
 
     def _waiting_state_init(self):
         if any(self.instance.state_reason in reason for reason in WAITING_REASON_CHOICES):
