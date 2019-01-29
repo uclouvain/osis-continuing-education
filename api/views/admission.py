@@ -72,4 +72,3 @@ class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Admission.objects.all()
     serializer_class = AdmissionDetailSerializer
     lookup_field = 'uuid'
-
