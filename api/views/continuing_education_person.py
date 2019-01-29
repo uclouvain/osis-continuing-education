@@ -60,4 +60,3 @@ class ContinuingEducationPersonDetailDestroy(generics.RetrieveDestroyAPIView):
     queryset = ContinuingEducationPerson.objects.all()
     serializer_class = ContinuingEducationPersonSerializer
     lookup_field = 'uuid'
-
