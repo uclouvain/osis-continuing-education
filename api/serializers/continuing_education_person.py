@@ -25,20 +25,18 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.api.serializers.person import PersonDetailSerializer
+from base.models.person import Person
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
-    first_name = serializers.CharField(source='person.first_name', read_only=True)
-    last_name = serializers.CharField(source='person.last_name', read_only=True)
-    gender = serializers.CharField(source='person.gender', read_only=True)
-    email = serializers.CharField(source='person.email', read_only=True)
-    person_uuid = serializers.CharField(source='person.uuid', read_only=True)
+    person = PersonDetailSerializer()
 
     birth_country = serializers.SlugRelatedField(
         slug_field='iso_code',
-        queryset=Country.objects.all(),
+        queryset=Country.objects.all()
     )
     birth_country_text = serializers.CharField(source='birth_country.name', read_only=True)
 
@@ -46,13 +44,19 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
         model = ContinuingEducationPerson
         fields = (
             'uuid',
-            'person_uuid',
-            'first_name',
-            'last_name',
-            'email',
-            'gender',
+            'person',
             'birth_date',
             'birth_location',
             'birth_country',
             'birth_country_text'
         )
+
+    def create(self, validated_data):
+        person_data = validated_data.pop('person')
+        if 'uuid' in person_data:
+            person, created = Person.objects.get_or_create(uuid=person_data.pop('uuid'), **person_data)
+        else:
+            person = Person.objects.create(**person_data)
+        validated_data['person'] = person
+        iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
+        return iufc_person
