@@ -47,6 +47,7 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
+            'id',
             'uuid',
             'person',
             'birth_date',

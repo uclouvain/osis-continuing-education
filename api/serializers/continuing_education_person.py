@@ -44,6 +44,7 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
     class Meta:
         model = ContinuingEducationPerson
         fields = (
+            'id',
             'uuid',
             'person',
             'birth_date',
