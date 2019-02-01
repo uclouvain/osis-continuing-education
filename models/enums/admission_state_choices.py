@@ -35,14 +35,14 @@ STATES_SUBMITTED = {
 
 STATES_ACCEPTED_VALIDATED = {
     'choices': (
-        (REGISTRATION_SUBMITTED, _('Registration submitted'))
+        (REGISTRATION_SUBMITTED, _('Registration submitted')),
     ),
     'states': [REGISTRATION_SUBMITTED]
 }
 
 STATES_REGISTRATION_SUBMITTED = {
     'choices': (
-        (VALIDATED, _('Validated'))
+        (VALIDATED, _('Validated')),
     ),
     'states': [VALIDATED]
 }
