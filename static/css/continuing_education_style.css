@@ -129,3 +129,7 @@ label.required:after{
 .button{
     font-size: 1.2em;
 }
+
+#button-state {
+    pointer-events: none;
+}
