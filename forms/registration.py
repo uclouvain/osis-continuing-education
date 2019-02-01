@@ -65,7 +65,7 @@ class RegistrationForm(ModelForm):
             'use_address_for_post',
             'residence_address',
             'residence_phone',
-            'registration_complete',
+            'ucl_registration_complete',
             'noma',
             'payment_complete',
             'formation_spreading',

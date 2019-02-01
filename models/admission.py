@@ -304,9 +304,9 @@ class Admission(SerializableModel):
     )
 
     # Student Sheet
-    registration_complete = models.BooleanField(
+    ucl_registration_complete = models.BooleanField(
         default=False,
-        verbose_name=_("Registration complete")
+        verbose_name=_("UCL registration complete")
     )
     noma = models.CharField(
         max_length=255,
