@@ -149,7 +149,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # 'residence_phone',
             #
             # # STUDENT SHEET
-            # 'registration_complete',
+            # 'ucl_registration_complete',
             # 'noma',
             # 'payment_complete',
             # 'formation_spreading',
