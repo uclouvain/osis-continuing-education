@@ -122,6 +122,7 @@
             "Accepted": "btn-success",
             "Rejected": "btn-danger",
             "Submitted": "btn-info",
+            "Registration submitted": "btn-info",
             "Validated": "btn-warning"
         };
         let state_initial = "{{ admission.state }}";
@@ -163,7 +164,7 @@
             let newClass = states[newState];
             let text = "";
             if(newState !== "None") {
-                text = $("[value=" + newState + "]")[0].text;
+                text = $("[value='" + newState + "']")[0].text;
             }
             else {
                 text = $("#button-state").text();
