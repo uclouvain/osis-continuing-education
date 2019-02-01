@@ -38,7 +38,9 @@ from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
+from base.models.enums import education_group_categories
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -192,43 +194,6 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    @patch('continuing_education.business.admission._get_continuing_education_managers')
-    @patch('osis_common.messaging.send_message.send_messages')
-    def test_admission_detail_edit_state(self, mock_send, mock_managers):
-        states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
-        states.remove(DRAFT)
-        if self.admission.state in states:
-            states.remove(self.admission.state)
-        new_state = random.choice(states)
-        admission = {
-            'state': new_state,
-            'formation': self.formation.pk,
-        }
-        data = admission
-        if new_state == REJECTED:
-            data['rejected_reason'] = DONT_MEET_ADMISSION_REQUIREMENTS
-        url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data=data)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
-        self.admission.refresh_from_db()
-
-        admission_state = self.admission.__getattribute__('state')
-        self.assertEqual(admission_state, admission['state'], 'state')
-
-    def test_admission_detail_edit_state_to_draft(self):
-        admission_draft = {
-            'formation': self.formation.pk,
-            'state': DRAFT
-        }
-
-        url = reverse('admission_detail', args=[self.admission.pk])
-        response = self.client.post(url, data=admission_draft)
-        self.assertRedirects(response, reverse('admission'))
-        self.admission.refresh_from_db()
-
-        admission_state = self.admission.__getattribute__('state')
-        self.assertEqual(admission_state, admission_draft['state'], 'state')
-
 
 class UploadFileTestCase(TestCase):
     def setUp(self):
@@ -370,7 +335,7 @@ class DeleteFileTestCase(TestCase):
     def setUp(self):
         current_acad_year = create_current_academic_year()
         next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        formation = EducationGroupYearFactory(academic_year=next_acad_year)
+        formation = EducationGroupYearFactory(academic_year=next_acad_year,)
 
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
@@ -465,3 +430,60 @@ class InvoiceNotificationEmailTestCase(TestCase):
             messages_list
         )
         self.assertFalse(mock_send_mail.called)
+
+
+class AdmissionStateChangedTestCase(TestCase):
+    def setUp(self):
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
+        EntityVersionFactory(
+            entity=self.formation.management_entity
+        )
+        self.admission = AdmissionFactory(
+            formation=self.formation,
+            state=random.choice(admission_state_choices.STATE_CHOICES)[0]
+        )
+        self.admission_submitted = AdmissionFactory(
+            formation=self.formation,
+            state=SUBMITTED
+        )
+
+    @patch('continuing_education.business.admission._get_continuing_education_managers')
+    @patch('osis_common.messaging.send_message.send_messages')
+    def test_admission_detail_edit_state(self, mock_send, mock_managers):
+        states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
+        if self.admission.state == admission_state_choices.SUBMITTED:
+            states.remove(DRAFT)
+        if self.admission.state in states:
+            states.remove(self.admission.state)
+        new_state = random.choice(states)
+        admission = {
+            'state': new_state,
+            'formation': self.formation.pk,
+        }
+        data = admission
+        if new_state == REJECTED:
+            data['rejected_reason'] = DONT_MEET_ADMISSION_REQUIREMENTS
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(url, data=data)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
+        self.admission.refresh_from_db()
+
+        admission_state = self.admission.__getattribute__('state')
+        self.assertEqual(admission_state, admission['state'], 'state')
+
+    def test_admission_detail_edit_state_to_draft(self):
+        admission_draft = {
+            'formation': self.formation.pk,
+            'state': DRAFT
+        }
+        url = reverse('admission_detail', args=[self.admission_submitted.pk])
+        response = self.client.post(url, data=admission_draft)
+        self.assertRedirects(response, reverse('admission'))
+        self.admission_submitted.refresh_from_db()
+
+        admission_state = self.admission_submitted.__getattribute__('state')
+        self.assertEqual(admission_state, admission_draft['state'], 'state')
