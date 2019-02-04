@@ -81,7 +81,7 @@
     <div class="panel-heading">{% trans 'Student sheet' %}</div>
     <div class="panel panel-body">
         <div class="row form-group">
-            <div class="col-md-3">{% bootstrap_label _("Registration complete") %} <br/> {{ admission.registration_complete | yesno }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Registration complete") %} <br/> {{ admission.ucl_registration_complete | yesno }} </div>
             <div class="col-md-3">{% bootstrap_label _("NOMA") %} <br/> {{ admission.noma | default:"-" }} </div>
             <div class="col-md-3">{% bootstrap_label _("Payment complete") %} <br/> {{ admission.payment_complete | yesno }} </div>
         </div>

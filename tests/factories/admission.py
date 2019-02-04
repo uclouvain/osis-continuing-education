@@ -124,7 +124,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     residence_phone = factory.Faker('phone_number')
 
     # Student Sheet
-    registration_complete = factory.fuzzy.FuzzyChoice([True, False])
+    ucl_registration_complete = factory.fuzzy.FuzzyChoice([True, False])
     noma = factory.Faker('isbn10')
     payment_complete = factory.fuzzy.FuzzyChoice([True, False])
     formation_spreading = factory.fuzzy.FuzzyChoice([True, False])
