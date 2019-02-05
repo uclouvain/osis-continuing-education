@@ -48,13 +48,6 @@ class AddressSerializerTestCase(TestCase):
             'location',
             'postal_code',
             'city',
-            'country',
-            'country_text'
+            'country'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
-
-    def test_ensure_country_field_is_slugified(self):
-        self.assertEqual(
-            self.serializer.data['country'],
-            self.country.iso_code
-        )

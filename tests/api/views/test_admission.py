@@ -153,10 +153,19 @@ class AdmissionListCreateTestCase(APITestCase):
             'person_information': {
                 'person': {
                     'uuid': self.person.person.uuid
+                },
+                'birth_country': {
+                    'iso_code': self.admission.person_information.birth_country.iso_code
                 }
             },
             'email': 'a@c.dk',
-            'formation': model_to_dict(self.formation),
+            'formation': {
+                'code': self.formation.partial_acronym,
+                'education_group_type': self.formation.education_group_type,
+                'academic_year': self.formation.academic_year.year,
+                'acronym': self.formation.acronym,
+                'title': self.formation.title
+            }
         }
         data['formation']['code'] = self.formation.partial_acronym
         data['formation']['education_group_type'] = self.formation.education_group_type.name
@@ -174,7 +183,9 @@ class AdmissionListCreateTestCase(APITestCase):
         data = {
             'person_information': {
                 'birth_date': datetime.date.today(),
-                'birth_country': 'FR',
+                'birth_country': {
+                    'iso_code': 'FR',
+                },
                 'birth_location': 'Turlututu',
                 'person': {
                     'first_name': 'Benjamin',
@@ -295,7 +306,7 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(1, Admission.objects.all().count())
         data = {
             'email': 'aaa@ddd.cd',
-            'phone_mobile': '0000'
+            'phone_mobile': '0000',
         }
 
         response = self.client.put(self.url, data=data)

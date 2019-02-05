@@ -79,7 +79,6 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'person_information',
             'main_address',
             'citizenship',
-            'citizenship_text',
             'phone_mobile',
             'email',
             'high_school_diploma',
@@ -111,9 +110,3 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'state_text',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
-
-    def test_ensure_citizenship_field_is_slugified(self):
-        self.assertEqual(
-            self.serializer.data['citizenship'],
-            self.citizenship.iso_code
-        )

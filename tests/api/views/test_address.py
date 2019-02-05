@@ -85,14 +85,15 @@ class AddressListCreateTestCase(APITestCase):
 
     def test_create_valid_address(self):
         self.assertEqual(3, Address.objects.all().count())
-
         data = {
             'location': self.address.location,
             'postal_code': self.address.postal_code,
             'city': self.address.city,
-            'country': self.address.country.iso_code,
+            'country': {
+                'iso_code': self.country.iso_code
+            },
         }
-        response = self.client.post(self.url, data=data, format='multipart')
+        response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(4, Address.objects.all().count())
 
@@ -106,8 +107,9 @@ class AddressDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.country = CountryFactory()
-        CountryFactory(
-            iso_code='FR'
+        cls.new_country = CountryFactory(
+            iso_code='FR',
+            name="France"
         )
 
         cls.address = AddressFactory(
@@ -163,7 +165,9 @@ class AddressDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(1, Address.objects.all().count())
         data = {
             'location': 'Rue de Dinant',
-            'country': 'FR'
+            'country': {
+                'iso_code': self.new_country.iso_code
+            }
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -173,6 +177,7 @@ class AddressDetailUpdateDestroyTestCase(APITestCase):
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
+        self.assertEqual(1, Address.objects.all().count())
 
     def test_update_invalid_address(self):
         response = self.client.put(self.invalid_url)

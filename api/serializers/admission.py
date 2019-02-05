@@ -33,6 +33,7 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from education_group.api.serializers.training import TrainingListSerializer
+from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
@@ -64,9 +65,16 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
         iufc_person_data = validated_data.pop('person_information')
         person_data = iufc_person_data.pop('person')
         formation_data = validated_data.pop('formation')
+        country_data = iufc_person_data.pop('birth_country')
 
         person, created = Person.objects.get_or_create(**person_data)
-        iufc_person, created = ContinuingEducationPerson.objects.get_or_create(person=person, **iufc_person_data)
+        country = Country.objects.get(**country_data)
+
+        iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
+            person=person,
+            birth_country=country,
+            **iufc_person_data
+        )
         validated_data['person_information'] = iufc_person
 
         formation = EducationGroupYear.objects.get(**formation_data)
@@ -79,12 +87,7 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
 class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     person_information = ContinuingEducationPersonSerializer(required=False)
 
-    citizenship = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-        required=False
-    )
-    citizenship_text = serializers.CharField(source='citizenship.name', read_only=True)
+    citizenship = CountrySerializer(required=False)
 
     main_address = AddressSerializer(source='address', required=False)
 
@@ -104,7 +107,6 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # CONTACTS
             'main_address',
             'citizenship',
-            'citizenship_text',
             'phone_mobile',
             'email',
 

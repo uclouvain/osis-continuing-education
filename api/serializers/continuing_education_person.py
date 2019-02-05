@@ -28,18 +28,14 @@ from rest_framework import serializers
 from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
     person = PersonDetailSerializer()
 
-    birth_country = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-        required=False
-    )
-    birth_country_text = serializers.CharField(source='birth_country.name', read_only=True)
+    birth_country = CountrySerializer()
 
     class Meta:
         model = ContinuingEducationPerson
@@ -50,12 +46,16 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
             'birth_date',
             'birth_location',
             'birth_country',
-            'birth_country_text'
         )
 
     def create(self, validated_data):
         person_data = validated_data.pop('person')
         person, created = Person.objects.get_or_create(**person_data)
         validated_data['person'] = person
+
+        country_data = validated_data.pop('birth_country')
+        country = Country.objects.get(**country_data)
+        validated_data['birth_country'] = country
+
         iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
         return iufc_person

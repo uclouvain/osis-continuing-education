@@ -32,7 +32,7 @@ from continuing_education.models.admission import Admission
 
 class AdmissionListCreate(generics.ListCreateAPIView):
     """
-       Return a list of all the admission with optional filtering.
+       Return a list of all the admission with optional filtering or create one.
     """
     name = 'admission-list-create'
     queryset = Admission.objects.all().select_related(

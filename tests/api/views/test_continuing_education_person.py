@@ -95,7 +95,9 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
             },
             'birth_date': datetime.date.today(),
             'birth_location': 'Hilo',
-            'birth_country': 'FR'
+            'birth_country': {
+                'iso_code': 'FR',
+            },
         }
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -114,7 +116,9 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
             },
             'birth_date': datetime.date.today(),
             'birth_location': 'Hilo',
-            'birth_country': 'FR'
+            'birth_country': {
+                'iso_code': 'FR',
+            }
         }
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

@@ -53,12 +53,6 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
             'birth_date',
             'birth_location',
             'birth_country',
-            'birth_country_text'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
-    def test_ensure_birth_country_field_is_slugified(self):
-        self.assertEqual(
-            self.serializer.data['birth_country'],
-            self.birth_country.iso_code
-        )
