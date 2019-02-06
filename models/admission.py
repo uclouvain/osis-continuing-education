@@ -356,6 +356,12 @@ class Admission(SerializableModel):
     def is_waiting(self):
         return self.state == admission_state_choices.WAITING
 
+    def is_registration_submitted(self):
+        return self.state == admission_state_choices.REGISTRATION_SUBMITTED
+
+    def is_validated(self):
+        return self.state == admission_state_choices.VALIDATED
+
     def get_faculty(self):
         education_group_year = self.formation
         if education_group_year:

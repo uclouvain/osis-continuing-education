@@ -47,7 +47,11 @@ from continuing_education.views.common import display_errors
 def list_registrations(request):
     faculty_filter = int(request.GET.get("faculty", 0))
     admission_list = Admission.objects.filter(
-        state=admission_state_choices.ACCEPTED
+        state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ]
     ).order_by('person_information')
     if faculty_filter:
         formations = _get_formations_by_faculty(faculty_filter)
