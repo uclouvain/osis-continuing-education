@@ -50,7 +50,7 @@
     background-color: #337ab7;
 }
 
-.admission-detail-state-accepted{
+.admission-detail-state-accepted, .admission-detail-state-validated{
     background-color: #5cb85c;
 }
 
