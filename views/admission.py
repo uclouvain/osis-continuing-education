@@ -49,7 +49,7 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices, file_category_choices
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
@@ -298,9 +298,15 @@ def _new_state_management(forms, admission, new_state):
     elif new_state == WAITING:
         if waiting_adm_form.is_valid():
             waiting_adm_form.save()
-    adm_form.save()
-
+    if new_state != VALIDATED:
+        adm_form.save()
+    else:
+        _validate_admission(adm_form)
     if new_state == DRAFT:
         return redirect(reverse('admission'))
-
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+
+
+@permission_required('can_validate_admission', raise_exception=True)
+def _validate_admission(adm_form):
+    adm_form.save()
