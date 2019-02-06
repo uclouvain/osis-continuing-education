@@ -376,7 +376,8 @@ class Admission(SerializableModel):
 
     class Meta:
         permissions = (
-            ("can_access_admission", "Can consult admission information"),
+            ("can_access_admission", "Can consult IUFC admission information"),
+            ("can_validate_registration", "Can validate IUFC registration file"),
         )
 
 
