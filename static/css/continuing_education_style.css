@@ -50,7 +50,7 @@
     background-color: #337ab7;
 }
 
-.admission-detail-state-accepted{
+.admission-detail-state-accepted, .admission-detail-state-validated{
     background-color: #5cb85c;
 }
 
@@ -128,4 +128,8 @@ label.required:after{
 
 .button{
     font-size: 1.2em;
+}
+
+#button-state {
+    pointer-events: none;
 }

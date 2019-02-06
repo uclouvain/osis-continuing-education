@@ -121,7 +121,9 @@
             "Waiting": "btn-primary",
             "Accepted": "btn-success",
             "Rejected": "btn-danger",
-            "Submitted": "btn-info"
+            "Submitted": "btn-info",
+            "Registration submitted": "btn-info",
+            "Validated": "btn-success"
         };
         let state_initial = "{{ admission.state }}";
         setStateActive(state_initial);
@@ -162,7 +164,7 @@
             let newClass = states[newState];
             let text = "";
             if(newState !== "None") {
-                text = $("[value=" + newState + "]")[0].text;
+                text = $("[value='" + newState + "']")[0].text;
             }
             else {
                 text = $("#button-state").text();

@@ -7,6 +7,7 @@ WAITING = 'Waiting'
 DRAFT = 'Draft'
 SUBMITTED = 'Submitted'
 REGISTRATION_SUBMITTED = 'Registration submitted'
+VALIDATED = 'Validated'
 
 STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
@@ -15,6 +16,7 @@ STATE_CHOICES = (
     (DRAFT, _('Draft')),
     (SUBMITTED, _('Submitted')),
     (REGISTRATION_SUBMITTED, _('Registration submitted')),
+    (VALIDATED, _('Validated')),
 )
 
 STATES_DRAFT = {
@@ -30,19 +32,36 @@ STATES_SUBMITTED = {
     ),
     'states': [ACCEPTED, REJECTED, WAITING, DRAFT]
 }
-STATES_ADMIN = {
+
+STATES_ACCEPTED_VALIDATED = {
+    'choices': (
+        (REGISTRATION_SUBMITTED, _('Registration submitted')),
+    ),
+    'states': [REGISTRATION_SUBMITTED]
+}
+
+STATES_REGISTRATION_SUBMITTED = {
+    'choices': (
+        (VALIDATED, _('Validated')),
+    ),
+    'states': [VALIDATED]
+}
+
+STATES_REJECTED_WAITING = {
     'choices': (
         (ACCEPTED, _('Accepted')),
         (REJECTED, _('Rejected')),
         (WAITING, _('Waiting')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING, REGISTRATION_SUBMITTED]
+    'states': [ACCEPTED, REJECTED, WAITING]
 }
 
 NEW_ADMIN_STATE = {
     DRAFT: STATES_DRAFT,
     SUBMITTED: STATES_SUBMITTED,
-    WAITING: STATES_ADMIN,
-    ACCEPTED: STATES_ADMIN,
-    REJECTED: STATES_ADMIN,
+    WAITING: STATES_REJECTED_WAITING,
+    ACCEPTED: STATES_ACCEPTED_VALIDATED,
+    REJECTED: STATES_REJECTED_WAITING,
+    VALIDATED: STATES_ACCEPTED_VALIDATED,
+    REGISTRATION_SUBMITTED: STATES_REGISTRATION_SUBMITTED
 }
