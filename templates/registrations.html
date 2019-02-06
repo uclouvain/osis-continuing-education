@@ -72,6 +72,7 @@
                         <th class="searchable">{% trans 'Formation' %}</th>
                         <th class="searchable">{% trans 'Registered' %}</th>
                         <th class="searchable">{% trans 'Paid' %}</th>
+                        <th class="searchable">{% trans 'Status' %}</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -104,6 +105,15 @@
                         {% else %}
                                 <span class="label label-danger show">{% trans 'No' %}</span>
                         {% endif %}
+                        </td>
+                        <td style="vertical-align: middle;" class="admission-state">
+                            {% if admission.is_accepted %}
+                                <span class="label label-default show">{% trans admission.state %}</span>
+                            {% elif admission.is_validated %}
+                                <span class="label label-success show">{% trans admission.state %}</span>
+                            {% elif admission.is_registration_submitted %}
+                                <span class="label label-info show">{% trans admission.state %}</span>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
