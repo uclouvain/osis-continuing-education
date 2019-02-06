@@ -302,18 +302,22 @@ def _new_state_management(request, forms, admission, new_state):
     if new_state != VALIDATED:
         adm_form.save()
     else:
-        try:
-            _validate_admission(request, adm_form)
-        except PermissionDenied:
-            display_error_messages(
-                request,
-                _("Continuing education managers only are allowed to validate a registration")
-            )
+        _validate_admission(request, adm_form)
     if new_state == DRAFT:
         return redirect(reverse('admission'))
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
-@permission_required('continuing_education.can_validate_registration', raise_exception=True)
 def _validate_admission(request, adm_form):
+    try:
+        _save_admission_with_validated_state(request, adm_form)
+    except PermissionDenied:
+        display_error_messages(
+            request,
+            _("Continuing education managers only are allowed to validate a registration")
+        )
+
+
+@permission_required('continuing_education.can_validate_registration', raise_exception=True)
+def _save_admission_with_validated_state(request, adm_form):
     adm_form.save()
