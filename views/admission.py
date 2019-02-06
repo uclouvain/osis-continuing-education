@@ -50,7 +50,8 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices, file_category_choices
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
+    REGISTRATION_SUBMITTED
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
@@ -105,7 +106,11 @@ def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = File.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
-    states = accepted_states.get('choices', ())
+    if not request.user.has_perm('continuing_education.can_validate_registration') and \
+            admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+        states = []
+    else:
+        states = accepted_states.get('choices', ())
     adm_form = AdmissionForm(
         request.POST or None,
         instance=admission,

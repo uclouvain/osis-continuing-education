@@ -148,6 +148,10 @@ class RegistrationStateChangedTestCase(TestCase):
             formation=self.formation,
             state=REGISTRATION_SUBMITTED
         )
+        self.registration_validated = AdmissionFactory(
+            formation=self.formation,
+            state=VALIDATED
+        )
 
     def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self):
         self.client.force_login(self.continuing_education_manager.user)
@@ -178,3 +182,19 @@ class RegistrationStateChangedTestCase(TestCase):
         # state should not be changed and PermissionDenied exception should be raised
         self.assertEqual(registration_state, REGISTRATION_SUBMITTED, 'state')
         self.assertRaises(PermissionDenied)
+
+    def test_registration_detail_list_authorized_state_choices(self):
+        for registration in [self.registration_submitted, self.registration_validated]:
+            self.client.force_login(self.continuing_education_manager.user)
+            url = reverse('admission_detail', args=[registration.pk])
+            response = self.client.get(url)
+            self.assertTemplateUsed(response, 'admission_detail.html')
+            self.assertGreaterEqual(len(response.context['states']), 0)
+
+    def test_registration_detail_empty_unauthorized_state_choices(self):
+        for registration in [self.registration_submitted, self.registration_validated]:
+            self.client.force_login(self.faculty_manager.user)
+            url = reverse('admission_detail', args=[registration.pk])
+            response = self.client.get(url)
+            self.assertTemplateUsed(response, 'admission_detail.html')
+            self.assertEqual(len(response.context['states']), 0)
