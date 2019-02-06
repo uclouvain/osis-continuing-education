@@ -314,6 +314,6 @@ def _new_state_management(request, forms, admission, new_state):
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
-@permission_required('can_validate_admission', raise_exception=True)
+@permission_required('continuing_education.can_validate_registration', raise_exception=True)
 def _validate_admission(request, adm_form):
     adm_form.save()

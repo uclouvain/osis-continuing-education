@@ -23,8 +23,11 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest.mock import patch
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
 from django.test import TestCase
@@ -32,9 +35,11 @@ from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
@@ -120,3 +125,56 @@ class ViewRegistrationTestCase(TestCase):
         url = reverse('registration_edit', kwargs={'admission_id': self.admission_accepted.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class RegistrationStateChangedTestCase(TestCase):
+    def setUp(self):
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.faculty_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+        )
+        self.continuing_education_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+            'can_validate_registration'
+        )
+        EntityVersionFactory(
+            entity=self.formation.management_entity
+        )
+        self.registration_submitted = AdmissionFactory(
+            formation=self.formation,
+            state=REGISTRATION_SUBMITTED
+        )
+
+    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self):
+        self.client.force_login(self.continuing_education_manager.user)
+        registration = {
+            'state': VALIDATED,
+            'formation': self.formation.pk,
+        }
+        data = registration
+        url = reverse('admission_detail', args=[self.registration_submitted.pk])
+        response = self.client.post(url, data=data)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
+        self.registration_submitted.refresh_from_db()
+        registration_state = self.registration_submitted.__getattribute__('state')
+        self.assertEqual(registration_state, VALIDATED, 'state')
+
+    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self):
+        self.client.force_login(self.faculty_manager.user)
+        registration = {
+            'state': VALIDATED,
+            'formation': self.formation.pk,
+        }
+        data = registration
+        url = reverse('admission_detail', args=[self.registration_submitted.pk])
+        response = self.client.post(url, data=data)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
+        self.registration_submitted.refresh_from_db()
+        registration_state = self.registration_submitted.__getattribute__('state')
+        # state should not be changed and PermissionDenied exception should be raised
+        self.assertEqual(registration_state, REGISTRATION_SUBMITTED, 'state')
+        self.assertRaises(PermissionDenied)
