@@ -28,6 +28,7 @@ import mimetypes
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -126,7 +127,7 @@ def admission_detail(request, admission_id):
 
     if adm_form.is_valid():
         forms = (adm_form, waiting_adm_form, rejected_adm_form)
-        return _change_state(forms, accepted_states, admission)
+        return _change_state(request, forms, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
@@ -153,11 +154,11 @@ def _get_file_category_choices_with_disabled_parameter(admission):
     )
 
 
-def _change_state(forms, accepted_states, admission):
+def _change_state(request, forms, accepted_states, admission):
     adm_form, waiting_adm_form, rejected_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(forms, admission, new_state)
+        return _new_state_management(request, forms, admission, new_state)
 
 
 def _upload_file(request, admission):
@@ -290,7 +291,7 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(forms, admission, new_state):
+def _new_state_management(request, forms, admission, new_state):
     adm_form, waiting_adm_form, rejected_adm_form = forms
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
@@ -301,12 +302,18 @@ def _new_state_management(forms, admission, new_state):
     if new_state != VALIDATED:
         adm_form.save()
     else:
-        _validate_admission(adm_form)
+        try:
+            _validate_admission(request, adm_form)
+        except PermissionDenied:
+            display_error_messages(
+                request,
+                _("Continuing education managers only are allowed to validate a registration")
+            )
     if new_state == DRAFT:
         return redirect(reverse('admission'))
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
 @permission_required('can_validate_admission', raise_exception=True)
-def _validate_admission(adm_form):
+def _validate_admission(request, adm_form):
     adm_form.save()
