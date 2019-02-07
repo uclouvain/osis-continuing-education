@@ -476,7 +476,7 @@ class AdmissionStateChangedTestCase(TestCase):
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
         self.admission.refresh_from_db()
 
-        admission_state = self.admission.__getattribute__('state')
+        admission_state = self.admission.state
         self.assertEqual(admission_state, admission['state'], 'state')
 
     def test_admission_detail_edit_state_to_draft(self):
@@ -489,5 +489,5 @@ class AdmissionStateChangedTestCase(TestCase):
         self.assertRedirects(response, reverse('admission'))
         self.admission_submitted.refresh_from_db()
 
-        admission_state = self.admission_submitted.__getattribute__('state')
+        admission_state = self.admission_submitted.state
         self.assertEqual(admission_state, admission_draft['state'], 'state')

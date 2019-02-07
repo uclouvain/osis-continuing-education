@@ -164,7 +164,7 @@ class RegistrationStateChangedTestCase(TestCase):
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
-        registration_state = self.registration_submitted.__getattribute__('state')
+        registration_state = self.registration_submitted.state
         self.assertEqual(registration_state, VALIDATED, 'state')
 
     def test_registration_detail_edit_state_to_validated_as_faculty_manager(self):
@@ -178,7 +178,7 @@ class RegistrationStateChangedTestCase(TestCase):
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
-        registration_state = self.registration_submitted.__getattribute__('state')
+        registration_state = self.registration_submitted.state
         # state should not be changed and PermissionDenied exception should be raised
         self.assertEqual(registration_state, REGISTRATION_SUBMITTED, 'state')
         self.assertRaises(PermissionDenied)
