@@ -55,7 +55,9 @@ class AdmissionListCreateTestCase(APITestCase):
 
         cls.citizenship = CountryFactory(iso_code='FR')
         new_country = CountryFactory(iso_code='NL')
-        cls.person = ContinuingEducationPersonFactory()
+        cls.person = ContinuingEducationPersonFactory(
+            birth_country=cls.citizenship
+        )
         cls.address = AddressFactory()
         cls.formation = TrainingFactory()
         cls.admission = AdmissionFactory(
@@ -152,19 +154,22 @@ class AdmissionListCreateTestCase(APITestCase):
         data = {
             'person_information': {
                 'uuid': self.admission.person_information.uuid,
+                'person': {
+                    'uuid': self.admission.person_information.person.uuid
+                },
+                'birth_country': self.admission.person_information.birth_country.iso_code
+
             },
             'email': 'a@c.dk',
             'formation': {
                 'code': self.formation.partial_acronym,
-                'education_group_type': self.formation.education_group_type,
+                'education_group_type': self.formation.education_group_type.name,
                 'academic_year': self.formation.academic_year.year,
                 'acronym': self.formation.acronym,
                 'title': self.formation.title
             }
         }
-        data['formation']['code'] = self.formation.partial_acronym
-        data['formation']['education_group_type'] = self.formation.education_group_type.name
-        data['formation']['academic_year'] = self.formation.academic_year.year
+
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(5, Admission.objects.all().count())
@@ -178,9 +183,7 @@ class AdmissionListCreateTestCase(APITestCase):
         data = {
             'person_information': {
                 'birth_date': datetime.date.today(),
-                'birth_country': {
-                    'iso_code': 'FR',
-                },
+                'birth_country':  'NL',
                 'birth_location': 'Turlututu',
                 'person': {
                     'first_name': 'Benjamin',
