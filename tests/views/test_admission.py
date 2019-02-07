@@ -48,7 +48,7 @@ from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
-    ACCEPTED, VALIDATED
+    ACCEPTED, VALIDATED, REGISTRATION_SUBMITTED
 from continuing_education.models.file import File, MAX_ADMISSION_FILE_NAME_LENGTH
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
@@ -437,7 +437,11 @@ class AdmissionStateChangedTestCase(TestCase):
         current_acad_year = create_current_academic_year()
         self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
         self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+            'can_validate_registration'
+        )
         self.client.force_login(self.manager.user)
         EntityVersionFactory(
             entity=self.formation.management_entity
@@ -455,8 +459,6 @@ class AdmissionStateChangedTestCase(TestCase):
     @patch('osis_common.messaging.send_message.send_messages')
     def test_admission_detail_edit_state(self, mock_send, mock_managers):
         states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
-        if self.admission.state == admission_state_choices.VALIDATED:
-            states.remove(VALIDATED)
         if self.admission.state == admission_state_choices.SUBMITTED:
             states.remove(DRAFT)
         if self.admission.state in states:
