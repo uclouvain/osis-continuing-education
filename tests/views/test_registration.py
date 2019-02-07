@@ -23,14 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from unittest.mock import patch
-
-from django.contrib.auth.models import User, Permission
-from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import PermissionDenied
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
 from django.test import TestCase
+from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
@@ -164,8 +162,7 @@ class RegistrationStateChangedTestCase(TestCase):
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
-        registration_state = self.registration_submitted.state
-        self.assertEqual(registration_state, VALIDATED, 'state')
+        self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
 
     def test_registration_detail_edit_state_to_validated_as_faculty_manager(self):
         self.client.force_login(self.faculty_manager.user)
@@ -178,10 +175,14 @@ class RegistrationStateChangedTestCase(TestCase):
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
-        registration_state = self.registration_submitted.state
-        # state should not be changed and PermissionDenied exception should be raised
-        self.assertEqual(registration_state, REGISTRATION_SUBMITTED, 'state')
-        self.assertRaises(PermissionDenied)
+        # state should not be changed and error message should be presented to user
+        self.assertEqual(self.registration_submitted.state, REGISTRATION_SUBMITTED, 'state')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("Continuing education managers only are allowed to validate a registration")),
+            str(messages_list[0])
+        )
 
     def test_registration_detail_list_authorized_state_choices(self):
         for registration in [self.registration_submitted, self.registration_validated]:

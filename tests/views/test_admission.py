@@ -38,9 +38,7 @@ from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
-from base.models.enums import education_group_categories
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
-from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -48,7 +46,7 @@ from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
-    ACCEPTED, VALIDATED, REGISTRATION_SUBMITTED
+    ACCEPTED
 from continuing_education.models.file import File, MAX_ADMISSION_FILE_NAME_LENGTH
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import FileFactory
@@ -475,9 +473,7 @@ class AdmissionStateChangedTestCase(TestCase):
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
         self.admission.refresh_from_db()
-
-        admission_state = self.admission.state
-        self.assertEqual(admission_state, admission['state'], 'state')
+        self.assertEqual(self.admission.state, admission['state'], 'state')
 
     def test_admission_detail_edit_state_to_draft(self):
         admission_draft = {
@@ -488,6 +484,4 @@ class AdmissionStateChangedTestCase(TestCase):
         response = self.client.post(url, data=admission_draft)
         self.assertRedirects(response, reverse('admission'))
         self.admission_submitted.refresh_from_db()
-
-        admission_state = self.admission_submitted.state
-        self.assertEqual(admission_state, admission_draft['state'], 'state')
+        self.assertEqual(self.admission_submitted.state, admission_draft['state'], 'state')

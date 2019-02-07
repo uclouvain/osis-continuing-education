@@ -318,15 +318,10 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 
 
 def _validate_admission(request, adm_form):
-    try:
-        _save_admission_with_validated_state(request, adm_form)
-    except PermissionDenied:
+    if request.user.has_perm("continuing_education.can_validate_registration"):
+        adm_form.save()
+    else:
         display_error_messages(
             request,
             _("Continuing education managers only are allowed to validate a registration")
         )
-
-
-@permission_required('continuing_education.can_validate_registration', raise_exception=True)
-def _save_admission_with_validated_state(request, adm_form):
-    adm_form.save()
