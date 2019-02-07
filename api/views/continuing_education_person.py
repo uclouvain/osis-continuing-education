@@ -25,7 +25,8 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
@@ -37,7 +38,7 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
-    serializer_class = ContinuingEducationPersonSerializer
+
     filter_fields = (
         'birth_country',
     )
@@ -50,6 +51,11 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     ordering = (
         'person',
     )  # Default ordering
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ContinuingEducationPersonPostSerializer
+        return ContinuingEducationPersonSerializer
 
 
 class ContinuingEducationPersonDetailDestroy(generics.RetrieveDestroyAPIView):

@@ -95,9 +95,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
             },
             'birth_date': datetime.date.today(),
             'birth_location': 'Hilo',
-            'birth_country': {
-                'iso_code': 'FR',
-            },
+            'birth_country': 'FR',
         }
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -107,6 +105,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
     def test_create_valid_person_with_new_user(self):
         self.assertEqual(3, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(4, Person.objects.all().count())
+
         data = {
             "person": {
                 'first_name': "Ben",
@@ -116,9 +115,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
             },
             'birth_date': datetime.date.today(),
             'birth_location': 'Hilo',
-            'birth_country': {
-                'iso_code': 'FR',
-            }
+            'birth_country': 'FR',
         }
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

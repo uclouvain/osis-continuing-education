@@ -54,7 +54,7 @@ class AdmissionListCreateTestCase(APITestCase):
         cls.url = reverse('continuing_education_api_v1:admission-list-create')
 
         cls.citizenship = CountryFactory(iso_code='FR')
-
+        new_country = CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
         cls.formation = TrainingFactory()
@@ -151,12 +151,7 @@ class AdmissionListCreateTestCase(APITestCase):
         self.assertEqual(4, Person.objects.all().count())
         data = {
             'person_information': {
-                'person': {
-                    'uuid': self.person.person.uuid
-                },
-                'birth_country': {
-                    'iso_code': self.admission.person_information.birth_country.iso_code
-                }
+                'uuid': self.admission.person_information.uuid,
             },
             'email': 'a@c.dk',
             'formation': {

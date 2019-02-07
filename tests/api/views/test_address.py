@@ -32,7 +32,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.models.address import Address
 from continuing_education.tests.factories.address import AddressFactory
 from reference.tests.factories.country import CountryFactory
@@ -89,11 +89,14 @@ class AddressListCreateTestCase(APITestCase):
             'location': self.address.location,
             'postal_code': self.address.postal_code,
             'city': self.address.city,
-            'country': {
-                'iso_code': self.country.iso_code
-            },
+            'country': self.country.iso_code,
         }
         response = self.client.post(self.url, data=data, format='json')
+        serializer = AddressPostSerializer(
+            Address.objects.all().last(),
+            context={'request': RequestFactory().get(self.url)},
+        )
+        self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(4, Address.objects.all().count())
 
@@ -165,14 +168,12 @@ class AddressDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(1, Address.objects.all().count())
         data = {
             'location': 'Rue de Dinant',
-            'country': {
-                'iso_code': self.new_country.iso_code
-            }
+            'country': self.new_country.iso_code
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = AddressSerializer(
+        serializer = AddressPostSerializer(
             Address.objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )

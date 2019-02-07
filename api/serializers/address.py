@@ -31,8 +31,7 @@ from reference.models.country import Country
 
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
-
-    country = CountrySerializer(required=False)
+    country = CountrySerializer(read_only=True)
 
     class Meta:
         model = Address
@@ -44,25 +43,9 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
             'country',
         )
 
-    def update(self, instance, validated_data):
-        fields = instance._meta.fields
-        exclude = []
-        for field in fields:
-            field = field.name.split('.')[-1]
-            if field in exclude:
-                continue
-            if field == 'country' and 'country' in validated_data:
-                country_data = validated_data.pop('country')
-                country = Country.objects.get(iso_code=country_data['iso_code'])
-                instance.country = country
-            else:
-                exec("instance.%s = validated_data.get(field, instance.%s)" % (field, field))
-        instance.save()
-        return instance
 
-    def create(self, validated_data):
-        country_data = validated_data.pop('country')
-        country = Country.objects.get(iso_code=country_data['iso_code'])
-        validated_data['country'] = country
-        address = Address.objects.create(**validated_data)
-        return address
+class AddressPostSerializer(AddressSerializer):
+    country = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+    )

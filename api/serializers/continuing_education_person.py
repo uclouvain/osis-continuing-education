@@ -33,9 +33,9 @@ from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
-    person = PersonDetailSerializer()
+    person = PersonDetailSerializer(read_only=True)
 
-    birth_country = CountrySerializer()
+    birth_country = CountrySerializer(read_only=True)
 
     class Meta:
         model = ContinuingEducationPerson
@@ -48,14 +48,19 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
             'birth_country',
         )
 
+
+class ContinuingEducationPersonPostSerializer(ContinuingEducationPersonSerializer):
+    person = PersonDetailSerializer()
+
+    birth_country = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+    )
+
     def create(self, validated_data):
         person_data = validated_data.pop('person')
         person, created = Person.objects.get_or_create(**person_data)
         validated_data['person'] = person
-
-        country_data = validated_data.pop('birth_country')
-        country = Country.objects.get(**country_data)
-        validated_data['birth_country'] = country
 
         iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
         return iufc_person

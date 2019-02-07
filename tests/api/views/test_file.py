@@ -34,7 +34,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.file import AdmissionFileSerializer
+from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
@@ -105,6 +105,12 @@ class AdmissionFileListCreateTestCase(APITestCase):
             'path': admission_file
         }
         response = self.client.post(self.url, data=data, format='multipart')
+
+        serializer = AdmissionFilePostSerializer(
+            AdmissionFile.objects.all().last(),
+            context={'request': RequestFactory().get(self.url)},
+        )
+        self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(5, AdmissionFile.objects.all().count())
 

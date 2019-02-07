@@ -25,7 +25,7 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.models.address import Address
 
 
@@ -35,7 +35,6 @@ class AddressListCreate(generics.ListCreateAPIView):
     """
     name = 'address-list-create'
     queryset = Address.objects.all()
-    serializer_class = AddressSerializer
     filter_fields = (
         'country',
         'city',
@@ -45,6 +44,11 @@ class AddressListCreate(generics.ListCreateAPIView):
         'city',
     )
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AddressPostSerializer
+        return AddressSerializer
+
 
 class AddressDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -52,5 +56,9 @@ class AddressDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
     name = 'address-detail-update-delete'
     queryset = Address.objects.all()
-    serializer_class = AddressSerializer
     lookup_field = 'uuid'
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return AddressPostSerializer
+        return AddressSerializer

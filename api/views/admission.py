@@ -23,7 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer
@@ -62,6 +63,14 @@ class AdmissionListCreate(generics.ListCreateAPIView):
         'state',
         'formation',
     )  # Default ordering
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=False)
+        print(serializer.errors)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):

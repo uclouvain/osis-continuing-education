@@ -199,3 +199,4 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
                 exec("instance.%s = validated_data.get(field, instance.%s)" % (field, field))
         instance.save()
         return instance
+
