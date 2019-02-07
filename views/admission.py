@@ -28,6 +28,7 @@ import mimetypes
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -49,7 +50,8 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices, file_category_choices
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
+    REGISTRATION_SUBMITTED
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
@@ -104,7 +106,11 @@ def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = File.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
-    states = accepted_states.get('choices', ())
+    if not request.user.has_perm('continuing_education.can_validate_registration') and \
+            admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+        states = []
+    else:
+        states = accepted_states.get('choices', ())
     adm_form = AdmissionForm(
         request.POST or None,
         instance=admission,
@@ -126,7 +132,7 @@ def admission_detail(request, admission_id):
 
     if adm_form.is_valid():
         forms = (adm_form, waiting_adm_form, rejected_adm_form)
-        return _change_state(forms, accepted_states, admission)
+        return _change_state(request, forms, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
@@ -153,11 +159,11 @@ def _get_file_category_choices_with_disabled_parameter(admission):
     )
 
 
-def _change_state(forms, accepted_states, admission):
+def _change_state(request, forms, accepted_states, admission):
     adm_form, waiting_adm_form, rejected_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(forms, admission, new_state)
+        return _new_state_management(request, forms, admission, new_state)
 
 
 def _upload_file(request, admission):
@@ -290,17 +296,32 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(forms, admission, new_state):
+def _new_state_management(request, forms, admission, new_state):
     adm_form, waiting_adm_form, rejected_adm_form = forms
+    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state)
+    if new_state != VALIDATED:
+        adm_form.save()
+        if new_state == DRAFT:
+            return redirect(reverse('admission'))
+    else:
+        _validate_admission(request, adm_form)
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+
+
+def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state):
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
             rejected_adm_form.save()
     elif new_state == WAITING:
         if waiting_adm_form.is_valid():
             waiting_adm_form.save()
-    adm_form.save()
 
-    if new_state == DRAFT:
-        return redirect(reverse('admission'))
 
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+def _validate_admission(request, adm_form):
+    if request.user.has_perm("continuing_education.can_validate_registration"):
+        adm_form.save()
+    else:
+        display_error_messages(
+            request,
+            _("Continuing education managers only are allowed to validate a registration")
+        )

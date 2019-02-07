@@ -23,18 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
 from django.test import TestCase
+from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
@@ -120,3 +123,79 @@ class ViewRegistrationTestCase(TestCase):
         url = reverse('registration_edit', kwargs={'admission_id': self.admission_accepted.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class RegistrationStateChangedTestCase(TestCase):
+    def setUp(self):
+        current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.faculty_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+        )
+        self.continuing_education_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+            'can_validate_registration'
+        )
+        EntityVersionFactory(
+            entity=self.formation.management_entity
+        )
+        self.registration_submitted = AdmissionFactory(
+            formation=self.formation,
+            state=REGISTRATION_SUBMITTED
+        )
+        self.registration_validated = AdmissionFactory(
+            formation=self.formation,
+            state=VALIDATED
+        )
+
+    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self):
+        self.client.force_login(self.continuing_education_manager.user)
+        registration = {
+            'state': VALIDATED,
+            'formation': self.formation.pk,
+        }
+        data = registration
+        url = reverse('admission_detail', args=[self.registration_submitted.pk])
+        response = self.client.post(url, data=data)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
+        self.registration_submitted.refresh_from_db()
+        self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
+
+    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self):
+        self.client.force_login(self.faculty_manager.user)
+        registration = {
+            'state': VALIDATED,
+            'formation': self.formation.pk,
+        }
+        data = registration
+        url = reverse('admission_detail', args=[self.registration_submitted.pk])
+        response = self.client.post(url, data=data)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
+        self.registration_submitted.refresh_from_db()
+        # state should not be changed and error message should be presented to user
+        self.assertEqual(self.registration_submitted.state, REGISTRATION_SUBMITTED, 'state')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEquals(response.status_code, 302)
+        self.assertIn(
+            ugettext(_("Continuing education managers only are allowed to validate a registration")),
+            str(messages_list[0])
+        )
+
+    def test_registration_detail_list_authorized_state_choices(self):
+        for registration in [self.registration_submitted, self.registration_validated]:
+            self.client.force_login(self.continuing_education_manager.user)
+            url = reverse('admission_detail', args=[registration.pk])
+            response = self.client.get(url)
+            self.assertTemplateUsed(response, 'admission_detail.html')
+            self.assertGreaterEqual(len(response.context['states']), 0)
+
+    def test_registration_detail_empty_unauthorized_state_choices(self):
+        for registration in [self.registration_submitted, self.registration_validated]:
+            self.client.force_login(self.faculty_manager.user)
+            url = reverse('admission_detail', args=[registration.pk])
+            response = self.client.get(url)
+            self.assertTemplateUsed(response, 'admission_detail.html')
+            self.assertEqual(len(response.context['states']), 0)

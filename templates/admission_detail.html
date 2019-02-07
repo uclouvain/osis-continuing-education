@@ -50,7 +50,7 @@
             {% csrf_token %}
                 <div class="btn-group pull-right">
                     <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
-                    <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% if not states %} disabled {% endif %}>
                     <span class="caret"></span>
                     <span class="sr-only">{% trans 'State' %}</span>
                     </button>
