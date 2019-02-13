@@ -98,6 +98,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     person_information = ContinuingEducationPersonSerializer(required=False)
 
     citizenship = CountrySerializer(required=False)
+    citizenship_text = serializers.CharField(source='citizenship.iso_code', read_only=True)
 
     main_address = AddressSerializer(source='address', required=False)
 
@@ -107,6 +108,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
     formation = TrainingListSerializer(required=False)
+    formation_text = serializers.CharField(source='formation.acronym', read_only=True)
 
     class Meta:
         model = Admission
@@ -117,6 +119,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # CONTACTS
             'main_address',
             'citizenship',
+            'citizenship_text',
             'phone_mobile',
             'email',
 
@@ -142,6 +145,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             'motivation',
             'professional_impact',
             'formation',
+            'formation_text',
 
             # AWARENESS
             'awareness_ucl_website',

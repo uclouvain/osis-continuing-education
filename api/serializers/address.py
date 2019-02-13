@@ -33,6 +33,8 @@ from reference.models.country import Country
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
     country = CountrySerializer(read_only=True)
 
+    country_text = serializers.CharField(source='country.name', read_only=True)
+
     class Meta:
         model = Address
         fields = (
@@ -41,6 +43,7 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
             'postal_code',
             'city',
             'country',
+            'country_text'
         )
 
 
