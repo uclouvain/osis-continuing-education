@@ -120,7 +120,7 @@ class AdmissionFileListCreateTestCase(APITestCase):
             kwargs={'uuid':  uuid.uuid4()}
         )
         response = self.client.post(invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class AdmissionFileRetrieveDestroy(APITestCase):
