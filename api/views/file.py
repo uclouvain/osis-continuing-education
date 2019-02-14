@@ -24,13 +24,14 @@
 #
 ##############################################################################
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 from rest_framework import status, generics
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.file import AdmissionFile
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
 
 
 class AdmissionFileListCreate(generics.ListCreateAPIView):
@@ -55,8 +56,18 @@ class AdmissionFileListCreate(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             return super().create(request, *args, **kwargs)
-        except ValidationError as e:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        except ValidationError:
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data=_("The name of the file is too long : maximum %(length)s characters.") % {
+                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
+                }
+            )
+        except Exception:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data=_("A problem occured : the document is not uploaded")
+            )
 
     def get_queryset(self):
         admission = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
