@@ -23,45 +23,36 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import datetime
 import uuid
 from unittest.mock import patch
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.file import FileSerializer
-from continuing_education.models.file import File
+from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
+from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.file import FileFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
-class GetAllFileTestCase(APITestCase):
+class AdmissionFileListCreateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
         person_information = ContinuingEducationPersonFactory()
         cls.admission = AdmissionFactory(person_information=person_information)
-        cls.url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        FileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
-        FileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
-        FileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
-        FileFactory(
-            admission=cls.admission,
-            uploaded_by=person_information.person
-        )
+        cls.url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
+        for x in range(4):
+            AdmissionFileFactory(
+                admission=cls.admission,
+                uploaded_by=person_information.person
+            )
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -72,14 +63,20 @@ class GetAllFileTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+    def test_create_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete', 'put']
+        methods_not_allowed = ['delete', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
+    @patch('continuing_education.api.serializers.file.AdmissionFileSerializer.get_content', return_value='content')
     def test_get_all_file_ensure_response_have_next_previous_results_count(self, mock_get_content):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -89,21 +86,59 @@ class GetAllFileTestCase(APITestCase):
         self.assertTrue('results' in response.data)
 
         self.assertTrue('count' in response.data)
-        expected_count = File.objects.filter(admission=self.admission).count()
+        expected_count = AdmissionFile.objects.filter(admission=self.admission).count()
         self.assertEqual(response.data['count'], expected_count)
 
+    def test_create_valid_file(self):
+        self.assertEqual(4, AdmissionFile.objects.all().count())
 
-class GetFileTestCase(APITestCase):
+        admission_file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode("test_content"),
+            content_type="application/pdf"
+        )
+        data = {
+            'name': admission_file.name,
+            'size': admission_file.size,
+            'uploaded_by': self.admission.person_information.person.uuid,
+            'created_date': datetime.datetime.today(),
+            'path': admission_file
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+
+        serializer = AdmissionFilePostSerializer(
+            AdmissionFile.objects.all().last(),
+            context={'request': RequestFactory().get(self.url)},
+        )
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(5, AdmissionFile.objects.all().count())
+
+    def test_create_invalid_file(self):
+        invalid_url = reverse(
+            'continuing_education_api_v1:file-list-create',
+            kwargs={'uuid':  uuid.uuid4()}
+        )
+        response = self.client.post(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class AdmissionFileRetrieveDestroy(APITestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
-        cls.file = FileFactory(
+        cls.admission_file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
         cls.user = UserFactory()
         cls.url = reverse(
-            'continuing_education_api_v1:file-detail',
-            kwargs={'file_uuid': cls.file.uuid, 'uuid': cls.file.admission.uuid}
+            'continuing_education_api_v1:file-detail-delete',
+            kwargs={'file_uuid': cls.admission_file.uuid, 'uuid': cls.admission_file.admission.uuid}
+        )
+
+        cls.invalid_url = reverse(
+            'continuing_education_api_v1:file-detail-delete',
+            kwargs={'uuid':  uuid.uuid4(), 'file_uuid': uuid.uuid4()}
         )
 
     def setUp(self):
@@ -115,49 +150,6 @@ class GetFileTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete', 'put']
-
-        for method in methods_not_allowed:
-            response = getattr(self.client, method)(self.url)
-            self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
-    def test_get_valid_file(self, mock_get_content):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        serializer = FileSerializer(
-            self.file,
-            context={'request': RequestFactory().get(self.url)},
-        )
-        self.assertEqual(response.data, serializer.data)
-
-    def test_get_invalid_file_case_not_found(self):
-        invalid_url = reverse(
-            'continuing_education_api_v1:file-detail',
-            kwargs={'uuid':  uuid.uuid4(), 'file_uuid': uuid.uuid4()}
-        )
-        response = self.client.get(invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-class DeleteFileTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        person_information = ContinuingEducationPersonFactory()
-        cls.file = FileFactory(
-            uploaded_by=person_information.person
-        )
-        cls.user = UserFactory()
-        cls.url = reverse(
-            'continuing_education_api_v1:file-delete',
-            kwargs={'file_uuid': cls.file.uuid, 'uuid': cls.file.admission.uuid}
-        )
-
-    def setUp(self):
-        self.client.force_authenticate(user=self.user)
-
     def test_delete_not_authorized(self):
         self.client.force_authenticate(user=None)
 
@@ -165,22 +157,33 @@ class DeleteFileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'get', 'put']
+        methods_not_allowed = ['post', 'put']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    @patch('continuing_education.api.serializers.file.AdmissionFileSerializer.get_content', return_value='content')
+    def test_get_valid_file(self, mock_get_content):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        serializer = AdmissionFileSerializer(
+            self.admission_file,
+            context={'request': RequestFactory().get(self.url)},
+        )
+        self.assertEqual(response.data, serializer.data)
+
+    def test_get_invalid_file_case_not_found(self):
+        response = self.client.get(self.invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_delete_valid_file(self):
-        self.assertEqual(1, File.objects.all().count())
+        self.assertEqual(1, AdmissionFile.objects.all().count())
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, File.objects.all().count())
+        self.assertEqual(0, AdmissionFile.objects.all().count())
 
     def test_delete_invalid_file_case_not_found(self):
-        invalid_url = reverse(
-            'continuing_education_api_v1:file-delete',
-            kwargs={'uuid':  uuid.uuid4(), 'file_uuid': uuid.uuid4()}
-        )
-        response = self.client.delete(invalid_url)
+        response = self.client.delete(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
