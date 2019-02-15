@@ -26,15 +26,12 @@
 from rest_framework import serializers
 
 from continuing_education.models.address import Address
+from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
-
-    country = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-    )
+    country = CountrySerializer(read_only=True)
 
     class Meta:
         model = Address
@@ -45,3 +42,10 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
             'city',
             'country',
         )
+
+
+class AddressPostSerializer(AddressSerializer):
+    country = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+    )
