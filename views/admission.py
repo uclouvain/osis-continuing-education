@@ -61,6 +61,7 @@ def list_admissions(request):
     admission_list = []
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
+        faculty_filter = search_form.cleaned_data['faculty']
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
     try:
@@ -72,6 +73,7 @@ def list_admissions(request):
     return render(request, "admissions.html", {
         'admissions': admissions,
         'search_form': search_form,
+        'active_faculty': faculty_filter
     })
 
 
