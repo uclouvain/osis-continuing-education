@@ -25,10 +25,7 @@
 ##############################################################################
 from rest_framework import serializers
 
-from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from continuing_education.models.file import File
 from reference.models.country import Country
 
 

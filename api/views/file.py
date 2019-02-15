@@ -24,51 +24,21 @@
 #
 ##############################################################################
 from django.shortcuts import get_object_or_404
-from django.utils.text import get_valid_filename
-from rest_framework import views, status, generics
-from rest_framework.generics import DestroyAPIView
-from rest_framework.parsers import MultiPartParser
+from django.utils.translation import ugettext_lazy as _
+from rest_framework import status, generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from continuing_education.api.serializers.file import FileSerializer
+from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import file_category_choices
-from continuing_education.models.exceptions import TooLongFilenameException
-from continuing_education.models.file import File
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
 
 
-class FileAPIView(views.APIView):
-    parser_classes = (MultiPartParser,)
-
-    def put(self, request):
-        admission_id = request.data['admission_id']
-        file_obj = request.data['file']
-        admission = Admission.objects.get(uuid=admission_id)
-        person = admission.person_information.person
-        file = File(
-            admission=admission,
-            name=get_valid_filename(file_obj.name),
-            path=file_obj,
-            size=file_obj.size,
-            uploaded_by=person,
-            file_category=file_category_choices.PARTICIPANT,  # File upload via API = Upload from Participant
-        )
-        try:
-            file.save()
-        except TooLongFilenameException:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
-        return Response(
-            data="File uploaded sucessfully",
-            status=status.HTTP_201_CREATED
-        )
-
-
-class FileList(generics.ListAPIView):
+class AdmissionFileListCreate(generics.ListCreateAPIView):
     """
        Return a list of all the files with optional filtering.
     """
-    name = 'file-list'
-    serializer_class = FileSerializer
+    name = 'file-list-create'
     filter_fields = (
         'name',
         'size',
@@ -83,31 +53,47 @@ class FileList(generics.ListAPIView):
         'uploaded_by'
     )
 
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except ValidationError:
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data=_("The name of the file is too long : maximum %(length)s characters.") % {
+                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
+                }
+            )
+        except Exception:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data=_("A problem occured : the document is not uploaded")
+            )
+
     def get_queryset(self):
         admission = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
-        return File.objects.filter(admission=admission)
+        return AdmissionFile.objects.filter(admission=admission)
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AdmissionFilePostSerializer
+        return AdmissionFileSerializer
+
+    def get_serializer_context(self):
+        serializer_context = super().get_serializer_context()
+        if self.request.method == 'POST':
+            serializer_context['admission'] = get_object_or_404(Admission, uuid=self.kwargs['uuid'])
+        return serializer_context
 
 
-class FileDetail(generics.RetrieveAPIView):
+class AdmissionFileRetrieveDestroy(generics.RetrieveDestroyAPIView):
     """
-        Return the detail of the file
+        Return the detail of the file or destroy it
     """
-    name = 'file-detail'
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+    name = 'file-detail-delete'
+    queryset = AdmissionFile.objects.all()
+    serializer_class = AdmissionFileSerializer
     lookup_field = 'uuid'
 
     def get_object(self):
-        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
-        return file
-
-
-class FileDestroy(DestroyAPIView):
-    name = 'file-delete'
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
-    lookup_field = 'uuid'
-
-    def get_object(self):
-        file = get_object_or_404(File, uuid=self.kwargs['file_uuid'])
-        return file
+        admission_file = get_object_or_404(AdmissionFile, uuid=self.kwargs['file_uuid'])
+        return admission_file

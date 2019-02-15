@@ -28,26 +28,26 @@ from unittest.mock import patch
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from continuing_education.api.serializers.file import FileSerializer
+from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.file import FileFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
-class FileSerializerTestCase(TestCase):
+class AdmissionFileSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
         cls.admission = AdmissionFactory(
             person_information=person_information
         )
-        cls.file = FileFactory(
+        cls.admission_file = AdmissionFileFactory(
             uploaded_by=person_information.person
         )
-        url = reverse('continuing_education_api_v1:file-list', kwargs={'uuid': cls.admission.uuid})
-        cls.serializer = FileSerializer(cls.file, context={'request': RequestFactory().get(url)})
+        url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
+        cls.serializer = AdmissionFileSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
 
-    @patch('continuing_education.api.serializers.file.FileSerializer.get_content', return_value='content')
+    @patch('continuing_education.api.serializers.file.AdmissionFileSerializer.get_content', return_value='content')
     def test_contains_expected_fields(self, mock_get_content):
         expected_fields = [
             'url',
@@ -57,6 +57,43 @@ class FileSerializerTestCase(TestCase):
             'size',
             'created_date',
             'uploaded_by',
-            'content'
+            'content',
+            'file_category',
+            'file_category_text'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+
+class AdmissionFilePostSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        person_information = ContinuingEducationPersonFactory()
+        cls.uploaded_by = person_information.person
+        cls.admission = AdmissionFactory(
+            person_information=person_information
+        )
+        cls.admission_file = AdmissionFileFactory(
+            uploaded_by=cls.uploaded_by
+        )
+        url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
+        cls.serializer = AdmissionFilePostSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
+
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'url',
+            'uuid',
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'uploaded_by',
+            'file_category',
+            'file_category_text'
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+    def test_ensure_uploaded_by_field_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['uploaded_by'],
+            self.uploaded_by.uuid
+        )
