@@ -55,22 +55,16 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
 from continuing_education.models.file import File
 from continuing_education.views.common import display_errors
+from continuing_education.forms.search import AdmissionFilterForm
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_admissions(request):
-    faculty_filter = int(request.GET.get("faculty", 0))
-    state_to_display = [SUBMITTED, REJECTED, WAITING]
-    admission_list = Admission.objects.filter(
-        state__in=state_to_display
-    ).order_by('person_information')
-    if faculty_filter:
-        formations = _get_formations_by_faculty(faculty_filter)
-        admission_list = admission_list.filter(
-            formation__acronym__in=formations
-        ).order_by('person_information')
-    faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
+    search_form = AdmissionFilterForm(data=request.POST)
+    admission_list = []
+    if search_form.is_valid():
+        admission_list = search_form.get_admissions()
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
     try:
@@ -81,23 +75,8 @@ def list_admissions(request):
         admissions = paginator.page(paginator.num_pages)
     return render(request, "admissions.html", {
         'admissions': admissions,
-        'faculties': faculties,
-        'active_faculty': faculty_filter
+        'search_form': search_form,
     })
-
-
-def _get_formations_by_faculty(faculty):
-    entity = EntityVersion.objects.filter(id=faculty).first().entity
-    entities_child = EntityVersion.objects.filter(parent=entity)
-    formations = EducationGroupYear.objects.filter(
-        management_entity=entity
-    )
-    for child in entities_child:
-        formations |= EducationGroupYear.objects.filter(
-            management_entity=child.entity
-        )
-    formations = [formation.acronym for formation in formations]
-    return formations
 
 
 @login_required
