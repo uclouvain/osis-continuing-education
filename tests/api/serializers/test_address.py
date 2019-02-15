@@ -26,7 +26,7 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.tests.factories.address import AddressFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -39,7 +39,7 @@ class AddressSerializerTestCase(TestCase):
         cls.address = AddressFactory(
             country=cls.country
         )
-        url = reverse('continuing_education_api_v1:address-list')
+        url = reverse('continuing_education_api_v1:address-list-create')
         cls.serializer = AddressSerializer(cls.address, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
@@ -48,7 +48,29 @@ class AddressSerializerTestCase(TestCase):
             'location',
             'postal_code',
             'city',
-            'country',
+            'country'
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+
+class AddressPostSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.country = CountryFactory()
+
+        cls.address = AddressFactory(
+            country=cls.country
+        )
+        url = reverse('continuing_education_api_v1:address-list-create')
+        cls.serializer = AddressPostSerializer(cls.address, context={'request': RequestFactory().get(url)})
+
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'uuid',
+            'location',
+            'postal_code',
+            'city',
+            'country'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

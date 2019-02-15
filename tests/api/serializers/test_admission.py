@@ -1,28 +1,3 @@
-##############################################################################
-#
-#    OSIS stands for Open Student Information System. It's an application
-#    designed to manage the core business of higher education institutions,
-#    such as universities, faculties, institutes and professional schools.
-#    The core business involves the administration of students, teachers,
-#    courses, programs and so on.
-#
-#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    A copy of this license - GNU General Public License - is available
-#    at the root of the source code of this program.  If not,
-#    see http://www.gnu.org/licenses/.
-#
-##############################################################################
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
@@ -40,7 +15,7 @@ class AdmissionListSerializerTestCase(TestCase):
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
         )
-        url = reverse('continuing_education_api_v1:admission-list')
+        url = reverse('continuing_education_api_v1:admission-list-create')
         cls.serializer = AdmissionListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
@@ -67,7 +42,10 @@ class AdmissionDetailSerializerTestCase(TestCase):
             citizenship=cls.citizenship,
             person_information=cls.person_information,
         )
-        url = reverse('continuing_education_api_v1:admission-detail', kwargs={'uuid': cls.admission.uuid})
+        url = reverse(
+            'continuing_education_api_v1:admission-detail-update-destroy',
+            kwargs={'uuid': cls.admission.uuid}
+        )
         cls.serializer = AdmissionDetailSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
@@ -107,9 +85,3 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'state_text',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
-
-    def test_ensure_citizenship_field_is_slugified(self):
-        self.assertEqual(
-            self.serializer.data['citizenship'],
-            self.citizenship.iso_code
-        )

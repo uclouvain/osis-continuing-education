@@ -26,7 +26,8 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -39,16 +40,43 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
         cls.continuing_education_person = ContinuingEducationPersonFactory(
             birth_country=cls.birth_country
         )
-        url = reverse('continuing_education_api_v1:person-list')
-        cls.serializer = ContinuingEducationPersonSerializer(cls.continuing_education_person, context={'request': RequestFactory().get(url)})
+        url = reverse('continuing_education_api_v1:person-list-create')
+        cls.serializer = ContinuingEducationPersonSerializer(
+            cls.continuing_education_person,
+            context={'request': RequestFactory().get(url)}
+        )
 
     def test_contains_expected_fields(self):
         expected_fields = [
+            'id',
             'uuid',
-            'first_name',
-            'last_name',
-            'email',
-            'gender',
+            'person',
+            'birth_date',
+            'birth_location',
+            'birth_country',
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+
+class ContinuingEducationPersonPostSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.birth_country = CountryFactory()
+
+        cls.continuing_education_person = ContinuingEducationPersonFactory(
+            birth_country=cls.birth_country
+        )
+        url = reverse('continuing_education_api_v1:person-list-create')
+        cls.serializer = ContinuingEducationPersonPostSerializer(
+            cls.continuing_education_person,
+            context={'request': RequestFactory().get(url)}
+        )
+
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'id',
+            'uuid',
+            'person',
             'birth_date',
             'birth_location',
             'birth_country',
