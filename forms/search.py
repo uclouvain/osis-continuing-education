@@ -57,8 +57,8 @@ class FormationModelChoiceField(ModelChoiceField):
 
 class AdmissionFilterForm(BootstrapForm):
     faculty = FacultyModelChoiceField(
-        queryset=
-        entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY).order_by('acronym'),
+        queryset=entity_version.find_latest_version(datetime.now())
+                               .filter(entity_type=entity_type.FACULTY).order_by('acronym'),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False
@@ -111,4 +111,3 @@ def _get_formations_by_faculty(faculty):
         )
     formations = [formation.acronym for formation in formations]
     return formations
-
