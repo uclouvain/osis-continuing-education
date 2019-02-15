@@ -46,36 +46,6 @@ class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField
         return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
 
 
-class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
-    url = AdmissionFileHyperlinkedIdentityField()
-    created_date = serializers.DateTimeField(required=False, read_only=True)
-    uploaded_by = serializers.SlugRelatedField(
-        slug_field='uuid',
-        queryset=Person.objects.all()
-    )
-    name = serializers.CharField(required=False)
-    file_category_text = serializers.CharField(source='get_file_category_display', read_only=True)
-
-    class Meta:
-        model = AdmissionFile
-        fields = (
-            'url',
-            'uuid',
-            'name',
-            'path',
-            'size',
-            'created_date',
-            'uploaded_by',
-            'file_category',
-            'file_category_text'
-        )
-
-    def create(self, validated_data):
-        validated_data['admission'] = self.context['admission']
-        validated_data['file_category'] = file_category_choices.PARTICIPANT
-        return super().create(validated_data)
-
-
 class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
     url = AdmissionFileHyperlinkedIdentityField()
     created_date = serializers.DateTimeField(read_only=True)
@@ -101,3 +71,17 @@ class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
             'file_category',
             'file_category_text'
         )
+
+
+class AdmissionFilePostSerializer(AdmissionFileSerializer):
+    created_date = serializers.DateTimeField(required=False, read_only=True)
+    uploaded_by = serializers.SlugRelatedField(
+        slug_field='uuid',
+        queryset=Person.objects.all()
+    )
+    name = serializers.CharField(required=False)
+
+    def create(self, validated_data):
+        validated_data['admission'] = self.context['admission']
+        validated_data['file_category'] = file_category_choices.PARTICIPANT
+        return super().create(validated_data)

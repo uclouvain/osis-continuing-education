@@ -117,7 +117,6 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # CONTACTS
             'main_address',
             'citizenship',
-            'citizenship_text',
             'phone_mobile',
             'email',
 
@@ -143,7 +142,6 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             'motivation',
             'professional_impact',
             'formation',
-            'formation_text',
 
             # AWARENESS
             'awareness_ucl_website',
