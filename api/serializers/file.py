@@ -24,18 +24,19 @@
 #
 ##############################################################################
 import base64
-import codecs
 
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from base.api.serializers.person import PersonDetailSerializer
-from continuing_education.models.file import File
+from base.models.person import Person
+from continuing_education.models.enums import file_category_choices
+from continuing_education.models.file import AdmissionFile
 
 
-class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
+class AdmissionFileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
     def __init__(self, **kwargs):
-        super().__init__(view_name='continuing_education_api_v1:file-detail', **kwargs)
+        super().__init__(view_name='continuing_education_api_v1:file-detail-delete', **kwargs)
 
     def get_url(self, obj, view_name, request, format):
         url_kwargs = {
@@ -45,19 +46,18 @@ class FileHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
         return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
 
 
-class FileSerializer(serializers.HyperlinkedModelSerializer):
-
-    url = FileHyperlinkedIdentityField()
-    uploaded_by = PersonDetailSerializer()
-    created_date = serializers.DateTimeField()
-    content = serializers.SerializerMethodField()
-
-    def get_content(self, file):
-        file.content = base64.b64encode(file.path.read())
-        return file.content
+class AdmissionFilePostSerializer(serializers.HyperlinkedModelSerializer):
+    url = AdmissionFileHyperlinkedIdentityField()
+    created_date = serializers.DateTimeField(required=False, read_only=True)
+    uploaded_by = serializers.SlugRelatedField(
+        slug_field='uuid',
+        queryset=Person.objects.all()
+    )
+    name = serializers.CharField(required=False)
+    file_category_text = serializers.CharField(source='get_file_category_display', read_only=True)
 
     class Meta:
-        model = File
+        model = AdmissionFile
         fields = (
             'url',
             'uuid',
@@ -66,5 +66,38 @@ class FileSerializer(serializers.HyperlinkedModelSerializer):
             'size',
             'created_date',
             'uploaded_by',
-            'content'
+            'file_category',
+            'file_category_text'
+        )
+
+    def create(self, validated_data):
+        validated_data['admission'] = self.context['admission']
+        validated_data['file_category'] = file_category_choices.PARTICIPANT
+        return super().create(validated_data)
+
+
+class AdmissionFileSerializer(serializers.HyperlinkedModelSerializer):
+    url = AdmissionFileHyperlinkedIdentityField()
+    created_date = serializers.DateTimeField(read_only=True)
+    uploaded_by = PersonDetailSerializer(read_only=True)
+    content = serializers.SerializerMethodField()
+    file_category_text = serializers.CharField(source='get_file_category_display', read_only=True)
+
+    def get_content(self, file):
+        file.content = base64.b64encode(file.path.read())
+        return file.content
+
+    class Meta:
+        model = AdmissionFile
+        fields = (
+            'url',
+            'uuid',
+            'name',
+            'path',
+            'size',
+            'created_date',
+            'uploaded_by',
+            'content',
+            'file_category',
+            'file_category_text'
         )

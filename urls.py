@@ -25,6 +25,7 @@
 ##############################################################################
 from django.conf.urls import url, include
 
+import continuing_education.views.file
 from continuing_education.views import (home, admission, registration)
 
 urlpatterns = [
@@ -37,8 +38,8 @@ urlpatterns = [
             url(r'^$', admission.admission_detail, name='admission_detail'),
             url(r'^send_invoice_notification_mail/$', admission.send_invoice_notification_mail,
                 name='send_invoice_notification_mail'),
-            url(r'^file/(?P<file_id>[0-9]+)$', admission.download_file, name='download_file'),
-            url(r'file/(?P<file_id>[0-9]+)/delete$', admission.delete_file, name='delete_file'),
+            url(r'^file/(?P<file_id>[0-9]+)$', continuing_education.views.file.download_file, name='download_file'),
+            url(r'file/(?P<file_id>[0-9]+)/delete$', continuing_education.views.file.delete_file, name='delete_file'),
         ]))
     ])),
     url(r'^registration/', include([

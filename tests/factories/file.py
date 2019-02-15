@@ -31,9 +31,9 @@ from base.tests.factories.person import PersonFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
-class FileFactory(factory.DjangoModelFactory):
+class AdmissionFileFactory(factory.DjangoModelFactory):
     class Meta:
-        model = 'continuing_education.File'
+        model = 'continuing_education.AdmissionFile'
 
     admission = factory.SubFactory(AdmissionFactory)
     name = 'test'

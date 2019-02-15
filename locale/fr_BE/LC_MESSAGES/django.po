@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-01 15:54+0100\n"
+"POT-Creation-Date: 2019-02-14 16:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,17 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/views/test_admission.py:260 tests/views/test_admission.py:409
-#: tests/views/test_admission.py:429 views/admission.py:182
-#: views/admission.py:202
+#: tests/views/test_admission.py:224 tests/views/test_admission.py:244
+#: tests/views/test_file.py:83 views/admission.py:161 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr "Un email de notification a été envoyé au participant"
 
-#: tests/views/test_admission.py:281 views/admission.py:187
+#: api/views/file.py:69 tests/views/test_file.py:104 views/file.py:76
 msgid "A problem occured : the document is not uploaded"
 msgstr "Une erreur est survenue : le document n'a pas été uploadé"
 
-#: tests/views/test_admission.py:374 views/admission.py:231
+#: tests/views/test_file.py:197 views/file.py:99
 msgid "A problem occured during delete"
 msgstr "Un problème est survenu durant la suppression"
 
@@ -55,7 +54,7 @@ msgstr "Adresse"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#: models/file.py:57 templates/admission_detail.html:91
+#: models/file.py:58 templates/admission_detail.html:91
 #: templates/admission_form.html:33 templates/admission_form.html:46
 #: templates/registration_form.html:43
 msgctxt "continuing_education"
@@ -213,6 +212,11 @@ msgstr "Contact"
 msgid "Continuing Education"
 msgstr "Formations Continues"
 
+#: tests/views/test_registration.py:183 views/admission.py:257
+msgid ""
+"Continuing education managers only are allowed to validate a registration"
+msgstr ""
+
 #: forms/address.py:12 models/address.py:32 templates/admission_form.html:86
 #: templates/fragment/tab_admission.html:41
 #: templates/fragment/tab_registration.html:40
@@ -294,7 +298,7 @@ msgstr "Femme"
 msgid "File category"
 msgstr "Catégorie de fichier"
 
-#: tests/views/test_admission.py:359 views/admission.py:229
+#: tests/views/test_file.py:182 views/file.py:97
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
@@ -441,7 +445,7 @@ msgstr "Motivation"
 msgid "NOMA"
 msgstr "NOMA"
 
-#: models/file.py:62 templates/admissions.html:76
+#: models/file.py:63 templates/admissions.html:76
 #: templates/fragment/tab_documents.html:44 templates/registrations.html:69
 msgid "Name"
 msgstr "Nom"
@@ -460,7 +464,7 @@ msgid "New person"
 msgstr "Nouvelle personne"
 
 #: business/admission.py:160 models/enums/enums.py:4
-#: templates/registrations.html:98 templates/registrations.html:105
+#: templates/registrations.html:99 templates/registrations.html:106
 #: tests/business/test_admission.py:40
 msgid "No"
 msgstr "Non"
@@ -516,7 +520,7 @@ msgstr "Numéro de passeport"
 msgid "Past professional activities"
 msgstr "Expériences professionnelles passées"
 
-#: models/file.py:67
+#: models/file.py:68
 msgid "Path"
 msgstr "Chemin"
 
@@ -698,7 +702,7 @@ msgstr "Sessions"
 msgid "Single"
 msgstr "Célibataire"
 
-#: models/file.py:72 templates/fragment/tab_documents.html:47
+#: models/file.py:73 templates/fragment/tab_documents.html:47
 msgid "Size"
 msgstr "Taille"
 
@@ -717,6 +721,12 @@ msgstr "Etat"
 #: models/admission.py:207
 msgid "State reason"
 msgstr "Raison du changement d'état"
+
+#: templates/registrations.html:75
+#, fuzzy
+#| msgid "State"
+msgid "Status"
+msgstr "Etat"
 
 #: templates/admission_form.html:83
 msgid "Street Address"
@@ -744,12 +754,11 @@ msgstr "Soumettre"
 msgid "Submitted"
 msgstr "Soumis"
 
-#: tests/views/test_admission.py:233 tests/views/test_admission.py:256
-#: views/admission.py:179
+#: tests/views/test_file.py:56 tests/views/test_file.py:79 views/file.py:68
 msgid "The document is uploaded correctly"
 msgstr "Le document a bien été uploadé"
 
-#: models/file.py:93 tests/views/test_admission.py:306
+#: api/views/file.py:62 models/file.py:97 tests/views/test_file.py:129
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
@@ -766,11 +775,11 @@ msgstr ""
 "Le programme est d’ores et déjà complet pour cette édition. Nous vous "
 "recontacterons lors du lancement de la prochaine édition de ce dernier."
 
-#: models/file.py:100 tests/views/test_admission.py:329
+#: models/file.py:104 tests/views/test_file.py:152
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr "L'admission doit être en statut Accepté pour uploader une facture."
 
-#: tests/views/test_admission.py:425 views/admission.py:204
+#: tests/views/test_admission.py:240 views/admission.py:163
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
@@ -803,7 +812,7 @@ msgstr "Envoyer"
 msgid "Upload file"
 msgstr "Uploader un document"
 
-#: models/file.py:80 templates/fragment/tab_documents.html:46
+#: models/file.py:81 templates/fragment/tab_documents.html:46
 msgid "Uploaded by"
 msgstr "Envoyé par"
 
@@ -844,7 +853,7 @@ msgid "Widowed"
 msgstr "Veuf(ve)"
 
 #: business/admission.py:160 models/enums/enums.py:5
-#: templates/registrations.html:96 templates/registrations.html:103
+#: templates/registrations.html:97 templates/registrations.html:104
 #: tests/business/test_admission.py:40
 msgid "Yes"
 msgstr "Oui"
