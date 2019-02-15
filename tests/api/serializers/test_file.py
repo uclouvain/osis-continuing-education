@@ -34,7 +34,7 @@ from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
-class FileSerializerTestCase(TestCase):
+class AdmissionFileSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()
@@ -64,7 +64,7 @@ class FileSerializerTestCase(TestCase):
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
 
-class FilePostSerializerTestCase(TestCase):
+class AdmissionFilePostSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         person_information = ContinuingEducationPersonFactory()

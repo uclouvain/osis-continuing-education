@@ -27,6 +27,7 @@
 from django.contrib import admin
 
 from continuing_education.models import *
+from continuing_education.models import file
 
 admin.site.register(
     admission.Admission,

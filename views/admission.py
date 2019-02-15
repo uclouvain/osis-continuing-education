@@ -24,12 +24,10 @@
 #
 ##############################################################################
 import itertools
-import mimetypes
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -38,7 +36,6 @@ from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
-from base.models.person import Person
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email
 from continuing_education.forms.account import ContinuingEducationPersonForm
@@ -49,10 +46,11 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices, file_category_choices
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
-from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
+    REGISTRATION_SUBMITTED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
+from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 
 
 @login_required
@@ -104,7 +102,11 @@ def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
-    states = accepted_states.get('choices', ())
+    if not request.user.has_perm('continuing_education.can_validate_registration') and \
+            admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+        states = []
+    else:
+        states = accepted_states.get('choices', ())
     adm_form = AdmissionForm(
         request.POST or None,
         instance=admission,
@@ -126,7 +128,7 @@ def admission_detail(request, admission_id):
 
     if adm_form.is_valid():
         forms = (adm_form, waiting_adm_form, rejected_adm_form)
-        return _change_state(forms, accepted_states, admission)
+        return _change_state(request, forms, accepted_states, admission)
 
     return render(
         request, "admission_detail.html",
@@ -143,53 +145,11 @@ def admission_detail(request, admission_id):
     )
 
 
-def _get_file_category_choices_with_disabled_parameter(admission):
-    invoice_choice_disabled = admission.state != admission_state_choices.ACCEPTED
-    return (
-        choice + ("disabled",)
-        if choice[0] == file_category_choices.INVOICE and invoice_choice_disabled
-        else choice + ("",)
-        for choice in file_category_choices.FILE_CATEGORY_CHOICES
-    )
-
-
-def _change_state(forms, accepted_states, admission):
+def _change_state(request, forms, accepted_states, admission):
     adm_form, waiting_adm_form, rejected_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(forms, admission, new_state)
-
-
-def _upload_file(request, admission):
-    my_file = request.FILES['myfile']
-    file_category = request.POST.get('file_category', None)
-    person = Person.objects.get(user=request.user)
-    file_to_admission = AdmissionFile(
-        admission=admission,
-        path=my_file,
-        name=my_file.name,
-        size=my_file.size,
-        uploaded_by=person,
-        file_category=file_category,
-    )
-
-    try:
-        file_to_admission.save()
-        display_success_messages(request, _("The document is uploaded correctly"))
-        if _email_notification_must_be_sent(file_category, request):
-            send_invoice_uploaded_email(admission)
-            display_success_messages(request, _("A notification email has been sent to the participant"))
-
-    except (TooLongFilenameException, InvalidFileCategoryException) as e:
-        display_error_messages(request, str(e))
-    except Exception as e:
-        display_error_messages(request, _("A problem occured : the document is not uploaded"))
-
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + '#documents')
-
-
-def _email_notification_must_be_sent(file_category, request):
-    return file_category == file_category_choices.INVOICE and request.POST.get('notify_participant', None)
+        return _new_state_management(request, forms, admission, new_state)
 
 
 @login_required
@@ -207,28 +167,6 @@ def send_invoice_notification_mail(request, admission_id):
 
 def _invoice_file_exists_for_admission(admission):
     return AdmissionFile.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
-
-
-@login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
-def download_file(request, admission_id, file_id):
-    admission_file = AdmissionFile.objects.get(pk=file_id)
-    filename = admission_file.name.split('/')[-1]
-    response = HttpResponse(admission_file.path, content_type=mimetypes.guess_type(filename))
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
-    return response
-
-
-@login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
-def delete_file(request, admission_id, file_id):
-    admission_file = AdmissionFile.objects.filter(id=file_id)
-    try:
-        admission_file.delete()
-        display_success_messages(request, _("File correctly deleted"))
-    except Exception as e:
-        display_error_messages(request, _("A problem occured during delete"))
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + '#documents')
 
 
 @login_required
@@ -289,17 +227,32 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(forms, admission, new_state):
+def _new_state_management(request, forms, admission, new_state):
     adm_form, waiting_adm_form, rejected_adm_form = forms
+    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state)
+    if new_state != VALIDATED:
+        adm_form.save()
+        if new_state == DRAFT:
+            return redirect(reverse('admission'))
+    else:
+        _validate_admission(request, adm_form)
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+
+
+def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state):
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
             rejected_adm_form.save()
     elif new_state == WAITING:
         if waiting_adm_form.is_valid():
             waiting_adm_form.save()
-    adm_form.save()
 
-    if new_state == DRAFT:
-        return redirect(reverse('admission'))
 
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+def _validate_admission(request, adm_form):
+    if request.user.has_perm("continuing_education.can_validate_registration"):
+        adm_form.save()
+    else:
+        display_error_messages(
+            request,
+            _("Continuing education managers only are allowed to validate a registration")
+        )
