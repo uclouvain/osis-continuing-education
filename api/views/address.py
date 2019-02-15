@@ -25,17 +25,16 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.models.address import Address
 
 
-class AddressList(generics.ListAPIView):
+class AddressListCreate(generics.ListCreateAPIView):
     """
-       Return a list of all the addresses with optional filtering.
+       Return a list of all the addresses with optional filtering or create an address.
     """
-    name = 'address-list'
+    name = 'address-list-create'
     queryset = Address.objects.all()
-    serializer_class = AddressSerializer
     filter_fields = (
         'country',
         'city',
@@ -45,12 +44,21 @@ class AddressList(generics.ListAPIView):
         'city',
     )
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AddressPostSerializer
+        return AddressSerializer
 
-class AddressDetail(generics.RetrieveAPIView):
+
+class AddressDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
-        Return the detail of the address
+        Return the detail of the address, destroy one or update one.
     """
-    name = 'address-detail'
+    name = 'address-detail-update-delete'
     queryset = Address.objects.all()
-    serializer_class = AddressSerializer
     lookup_field = 'uuid'
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return AddressPostSerializer
+        return AddressSerializer

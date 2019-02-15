@@ -30,11 +30,11 @@ from continuing_education.api.serializers.admission import AdmissionDetailSerial
 from continuing_education.models.admission import Admission
 
 
-class AdmissionList(generics.ListAPIView):
+class AdmissionListCreate(generics.ListCreateAPIView):
     """
-       Return a list of all the admission with optional filtering.
+       Return a list of all the admission with optional filtering or create one.
     """
-    name = 'admission-list'
+    name = 'admission-list-create'
     queryset = Admission.objects.all().select_related(
         'person_information',
         'citizenship',
@@ -64,11 +64,11 @@ class AdmissionList(generics.ListAPIView):
     )  # Default ordering
 
 
-class AdmissionDetail(generics.RetrieveAPIView):
+class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
-        Return the detail of the admission
+        Return the detail of the admission, update or destroy it
     """
-    name = 'admission-detail'
+    name = 'admission-detail-update-destroy'
     queryset = Admission.objects.all()
     serializer_class = AdmissionDetailSerializer
     lookup_field = 'uuid'
