@@ -27,7 +27,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from base.business.xls import get_name_or_username
 from osis_common.document import xls_build
-from business.xls.xls_common import form_filters
+from continuing_education.business.xls.xls_common import form_filters
 
 
 TITLES = [
