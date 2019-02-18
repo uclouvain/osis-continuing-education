@@ -49,7 +49,7 @@ class FacultyModelChoiceField(ModelChoiceField):
 class FormationModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return "{}{} - {}".format(
-            " - " if obj.partial_acronym else '',
+            obj.partial_acronym or "",
             obj.acronym,
             obj.academic_year,
         )
