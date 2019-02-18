@@ -40,6 +40,7 @@ from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -117,7 +118,11 @@ class AdmissionListCreateTestCase(APITestCase):
         self.assertTrue('results' in response.data)
 
         self.assertTrue('count' in response.data)
-        expected_count = Admission.objects.all().count()
+        expected_count = Admission.objects.all().exclude(state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ]).count()
         self.assertEqual(response.data['count'], expected_count)
 
     def test_get_all_admission_ensure_default_order(self):
@@ -126,7 +131,11 @@ class AdmissionListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        admissions = Admission.objects.all().order_by('state', 'formation')
+        admissions = Admission.objects.all().exclude(state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ]).order_by('state', 'formation')
         serializer = AdmissionListSerializer(admissions, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'], serializer.data)
 
