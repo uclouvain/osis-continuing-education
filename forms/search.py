@@ -61,7 +61,8 @@ class AdmissionFilterForm(BootstrapForm):
                                .filter(entity_type=entity_type.FACULTY).order_by('acronym'),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
-        required=False
+        required=False,
+        label=_('Faculty')
     )
 
     formation = FormationModelChoiceField(
@@ -69,6 +70,7 @@ class AdmissionFilterForm(BootstrapForm):
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,
+        label=_('Formation')
     )
 
     def __init__(self, *args, **kwargs):

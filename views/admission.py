@@ -52,6 +52,7 @@ from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
+from continuing_education.business.xls import create_xls
 
 
 @login_required
@@ -62,6 +63,10 @@ def list_admissions(request):
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
         faculty_filter = search_form.cleaned_data['faculty']
+
+    if request.POST.get('xls_status') == "xls_admissions":
+        return create_xls(request.user, admission_list, search_form)
+
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
     try:
