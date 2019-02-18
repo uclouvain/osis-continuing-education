@@ -126,4 +126,3 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
         update_address(instance, validated_data, 'residence_address')
         update_address(instance, validated_data, 'billing_address')
         return super().update(instance, validated_data)
-
