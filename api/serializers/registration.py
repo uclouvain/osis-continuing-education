@@ -25,9 +25,9 @@
 ##############################################################################
 from rest_framework import serializers
 
+from continuing_education.api.common import update_address
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
-from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from education_group.api.serializers.training import TrainingListSerializer
 
@@ -123,12 +123,7 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        if 'residence_address' in validated_data:
-            r_address_data = validated_data.pop('residence_address')
-            r_address, created = Address.objects.update_or_create(**r_address_data)
-            instance.residence_address = r_address
-        if 'billing_address' in validated_data:
-            b_address_data = validated_data.pop('billing_address')
-            b_address, created = Address.objects.update_or_create(**b_address_data)
-            instance.billing_address = b_address
+        update_address(instance, validated_data, 'residence_address')
+        update_address(instance, validated_data, 'billing_address')
         return super().update(instance, validated_data)
+

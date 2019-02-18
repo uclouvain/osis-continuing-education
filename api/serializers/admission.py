@@ -27,10 +27,10 @@ from rest_framework import serializers
 
 from base.models.education_group_year import EducationGroupYear
 from base.models.person import Person
+from continuing_education.api.common import update_address
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
-from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from education_group.api.serializers.training import TrainingListSerializer
@@ -194,8 +194,5 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        if 'address' in validated_data:
-            address_data = validated_data.pop('address')
-            address, created = Address.objects.update_or_create(**address_data)
-            instance.address = address
+        update_address(instance, validated_data, 'address')
         return super().update(instance, validated_data)
