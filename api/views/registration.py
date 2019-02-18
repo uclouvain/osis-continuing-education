@@ -27,6 +27,7 @@ from rest_framework import generics
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
 
 
 class RegistrationList(generics.ListAPIView):
@@ -34,12 +35,7 @@ class RegistrationList(generics.ListAPIView):
        Return a list of all the registration with optional filtering or create one.
     """
     name = 'registration-list'
-    queryset = Admission.objects.all().select_related(
-        'person_information',
-        'address',
-        'billing_address',
-        'residence_address'
-    )
+
     serializer_class = RegistrationListSerializer
     filter_fields = (
         'person_information',
@@ -60,6 +56,19 @@ class RegistrationList(generics.ListAPIView):
         'state',
         'formation',
     )  # Default ordering
+
+    def get_queryset(self):
+        queryset = Admission.objects.filter(state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ]).select_related(
+            'person_information',
+            'address',
+            'billing_address',
+            'residence_address'
+        )
+        return queryset
 
 
 class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):

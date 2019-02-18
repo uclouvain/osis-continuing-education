@@ -28,6 +28,7 @@ from rest_framework import generics
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
 
 
 class AdmissionListCreate(generics.ListCreateAPIView):
@@ -35,11 +36,7 @@ class AdmissionListCreate(generics.ListCreateAPIView):
        Return a list of all the admission with optional filtering or create one.
     """
     name = 'admission-list-create'
-    queryset = Admission.objects.all().select_related(
-        'person_information',
-        'citizenship',
-        'address',
-    )
+
     serializer_class = AdmissionListSerializer
     filter_fields = (
         'person_information',
@@ -60,6 +57,18 @@ class AdmissionListCreate(generics.ListCreateAPIView):
         'state',
         'formation',
     )  # Default ordering
+
+    def get_queryset(self):
+        queryset = Admission.objects.all().exclude(state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ]).select_related(
+            'person_information',
+            'citizenship',
+            'address',
+        )
+        return queryset
 
 
 class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
