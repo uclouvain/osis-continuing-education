@@ -41,6 +41,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors
 from continuing_education.forms.search import RegistrationFilterForm
+from continuing_education.business.xls.xls_registration import create_xls_registration
 
 
 @login_required
@@ -50,6 +51,9 @@ def list_registrations(request):
 
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
+
+    if request.POST.get('xls_status') == "xls_registrations":
+        return create_xls_registration(request.user, admission_list, search_form)
 
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')

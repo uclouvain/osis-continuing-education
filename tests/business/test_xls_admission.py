@@ -29,7 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from continuing_education.forms.search import AdmissionFilterForm
 
-from continuing_education.business.xls import ADMISSION_TITLES, XLS_DESCRIPTION, XLS_FILENAME,  WORKSHEET_TITLE, \
+from continuing_education.business.xls.xls_admission import ADMISSION_TITLES, XLS_DESCRIPTION, XLS_FILENAME,  WORKSHEET_TITLE, \
     create_xls, prepare_xls_content
 from osis_common.document import xls_build
 from base.tests.factories.user import UserFactory
@@ -43,7 +43,7 @@ from base.models.enums import entity_type
 FACULTY_ACRONYM = "AGRO"
 
 
-class TestXls(TestCase):
+class TestAdmissionXls(TestCase):
 
     def setUp(self):
         self.user = UserFactory()
@@ -53,7 +53,7 @@ class TestXls(TestCase):
         self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
         self.entity_version = EntityVersionFactory(
             entity=self.formation.management_entity,
-            acronym =FACULTY_ACRONYM,
+            acronym=FACULTY_ACRONYM,
             entity_type=entity_type.FACULTY
 
         )

@@ -52,7 +52,7 @@ from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
-from continuing_education.business.xls import create_xls
+from continuing_education.business.xls.xls_admission import create_xls
 
 
 @login_required
