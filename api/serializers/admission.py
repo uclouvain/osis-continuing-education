@@ -41,15 +41,14 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # context = kwargs.get('context', None)
+        # if context:
+        request = kwargs['context']['request']
 
-        context = kwargs.get('context', None)
-        if context:
-            request = kwargs['context']['request']
-
-            if request.method == 'POST':
-                self.fields['person_information'] = ContinuingEducationPersonPostSerializer()
-            else:
-                self.fields['person_information'] = ContinuingEducationPersonSerializer()
+        if request.method == 'POST':
+            self.fields['person_information'] = ContinuingEducationPersonPostSerializer()
+        else:
+            self.fields['person_information'] = ContinuingEducationPersonSerializer()
 
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:admission-detail-update-destroy',
@@ -195,14 +194,8 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        fields = instance._meta.fields
-        for field in fields:
-            field = field.name.split('.')[-1]
-            if field == 'address' and 'address' in validated_data:
-                address_data = validated_data.pop('address')
-                address, created = Address.objects.update_or_create(**address_data)
-                instance.address = address
-            else:
-                exec("instance.%s = validated_data.get(field, instance.%s)" % (field, field))
-        instance.save()
-        return instance
+        if 'address' in validated_data:
+            address_data = validated_data.pop('address')
+            address, created = Address.objects.update_or_create(**address_data)
+            instance.address = address
+        return super().update(instance, validated_data)
