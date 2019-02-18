@@ -25,22 +25,22 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
-    AdmissionListSerializer
+from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
 from continuing_education.models.admission import Admission
 
 
-class AdmissionListCreate(generics.ListCreateAPIView):
+class RegistrationListCreate(generics.ListAPIView):
     """
-       Return a list of all the admission with optional filtering or create one.
+       Return a list of all the registration with optional filtering or create one.
     """
-    name = 'admission-list-create'
+    name = 'registration-list'
     queryset = Admission.objects.all().select_related(
         'person_information',
-        'citizenship',
         'address',
+        'billing_address',
+        'residence_address'
     )
-    serializer_class = AdmissionListSerializer
+    serializer_class = RegistrationListSerializer
     filter_fields = (
         'person_information',
         'formation',
@@ -62,11 +62,11 @@ class AdmissionListCreate(generics.ListCreateAPIView):
     )  # Default ordering
 
 
-class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
-        Return the detail of the admission, update or destroy it
+        Return the detail of the registration, update or destroy it
     """
     name = 'admission-detail-update-destroy'
     queryset = Admission.objects.all()
-    serializer_class = AdmissionDetailSerializer
+    serializer_class = RegistrationDetailSerializer
     lookup_field = 'uuid'
