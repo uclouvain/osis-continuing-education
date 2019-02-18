@@ -48,6 +48,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
         expected_fields = [
             'uuid',
             'person_information',
+            'formation',
             'main_address',
             'state',
             'state_text',

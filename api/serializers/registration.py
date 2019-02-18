@@ -61,8 +61,12 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
     person_information = ContinuingEducationPersonSerializer(required=False)
 
     main_address = AddressSerializer(source='address', required=False)
+    billing_address = AddressSerializer(required=False)
+    residence_address = AddressSerializer(required=False)
 
     # Display human readable value
+    registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
+    marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
     formation = TrainingListSerializer(required=False)
@@ -72,6 +76,7 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'uuid',
             'person_information',
+            'formation',
 
             # CONTACTS
             'main_address',

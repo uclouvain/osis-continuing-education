@@ -50,9 +50,7 @@ class RegistrationListTestCase(APITestCase):
         cls.url = reverse('continuing_education_api_v1:registration-list')
 
         new_country = CountryFactory(iso_code='NL')
-        cls.person = ContinuingEducationPersonFactory(
-            birth_country=cls.citizenship
-        )
+        cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
         cls.formation = TrainingFactory()
         cls.admission = AdmissionFactory(
