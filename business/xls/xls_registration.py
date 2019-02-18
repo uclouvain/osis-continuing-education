@@ -53,7 +53,8 @@ def create_xls_registration(user, registrations_list, form):
                   xls_build.HEADER_TITLES: TITLES,
                   xls_build.WS_TITLE: WORKSHEET_TITLE}
 
-    return xls_build.generate_xls(xls_build.prepare_xls_parameters_list(working_sheets_data, parameters), form_filters(form))
+    return xls_build.generate_xls(xls_build.prepare_xls_parameters_list(working_sheets_data, parameters),
+                                  form_filters(form))
 
 
 def prepare_xls_content(registrations_list):
