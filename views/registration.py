@@ -40,25 +40,17 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors
+from continuing_education.forms.search import RegistrationFilterForm
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_registrations(request):
-    faculty_filter = int(request.GET.get("faculty", 0))
-    admission_list = Admission.objects.filter(
-        state__in=[
-            admission_state_choices.ACCEPTED,
-            admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED
-        ]
-    ).order_by('person_information')
-    if faculty_filter:
-        formations = _get_formations_by_faculty(faculty_filter)
-        admission_list = admission_list.filter(
-            formation__in=formations
-        ).order_by('person_information')
-    faculties = entity_version.find_latest_version(datetime.now()).filter(entity_type=entity_type.FACULTY)
+    search_form = RegistrationFilterForm(data=request.POST)
+
+    if search_form.is_valid():
+        admission_list = search_form.get_registrations()
+
     paginator = Paginator(admission_list, 10)
     page = request.GET.get('page')
     try:
@@ -69,8 +61,7 @@ def list_registrations(request):
         admissions = paginator.page(paginator.num_pages)
     return render(request, "registrations.html", {
         'admissions': admissions,
-        'faculties': faculties,
-        'active_faculty': faculty_filter
+        'search_form': search_form
     })
 
 

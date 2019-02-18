@@ -23,25 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.test import TestCase
+from datetime import date
 
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
+from django.test import TestCase
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
+
 from continuing_education.tests.factories.admission import AdmissionFactory
-from reference.models import country
 from continuing_education.models.enums.admission_state_choices import REJECTED
-from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
-from base.models.entity_version import EntityVersion
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.entity import EntityFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.forms.search import AdmissionFilterForm
-from base.models.academic_year import AcademicYear
-from datetime import date
+from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm
 from base.models.enums.entity_type import FACULTY
-from django.utils import timezone
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT
-
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
+    REGISTRATION_SUBMITTED
 
 
 class TestAdmissionFilterForm(TestCase):
@@ -67,6 +63,11 @@ class TestAdmissionFilterForm(TestCase):
                                                   end_date=None,
                                                   start_date=self.start_date)
 
+        self.fac_3_version = EntityVersionFactory(acronym="ESPO",
+                                                  entity_type=FACULTY,
+                                                  end_date=None,
+                                                  start_date=self.start_date)
+
         self.education_group_yr_1 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='A_FORM',
                                                               management_entity=self.fac_1_version.entity)
         self.education_group_yr_2 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='C_FORM')
@@ -74,8 +75,9 @@ class TestAdmissionFilterForm(TestCase):
                                                               management_entity=self.fac_1_version.entity)
         self.education_group_yr_4 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='D_FORM',
                                                               management_entity=self.fac_2_version.entity)
-        self.education_group_yr_5_not_admission = EducationGroupYearFactory(academic_year=next_academic_yr,
-                                                                            acronym='E_FORM')
+        self.education_group_yr_5 = EducationGroupYearFactory(academic_year=next_academic_yr,
+                                                              acronym='E_FORM',
+                                                              management_entity=self.fac_3_version.entity)
 
         self.admission_submitted_1 = AdmissionFactory(formation=self.education_group_yr_1, state=SUBMITTED)
 
@@ -86,18 +88,36 @@ class TestAdmissionFilterForm(TestCase):
         self.admission_draft = AdmissionFactory(formation=self.education_group_yr_4, state=DRAFT)
         self.admission_submitted_2 = AdmissionFactory(formation=self.education_group_yr_4, state=SUBMITTED)
 
-        self.registration = AdmissionFactory(formation=self.education_group_yr_5_not_admission, state=DRAFT)
+        self.registration_accepted = AdmissionFactory(formation=self.education_group_yr_5,
+                                                      state=ACCEPTED,
+                                                      ucl_registration_complete=True,
+                                                      payment_complete=False)
+        self.registration_submitted = AdmissionFactory(formation=self.education_group_yr_1,
+                                                       state=REGISTRATION_SUBMITTED,
+                                                       ucl_registration_complete=False,
+                                                       payment_complete=True)
 
-    def test_query_set_faculty_init(self):
+    def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
-        self.assertListEqual(list(form.fields['faculty'].queryset), [self.fac_2_version, self.fac_1_version])
+        self.assertListEqual(list(form.fields['faculty'].queryset),
+                             [self.fac_2_version, self.fac_1_version, self.fac_3_version])
 
-    def test_query_set_formation_init(self):
+    def test_queryset_formation_init(self):
         form = AdmissionFilterForm()
         self.assertListEqual(list(form.fields['formation'].queryset), [self.education_group_yr_1,
                                                                        self.education_group_yr_3,
                                                                        self.education_group_yr_2,
                                                                        self.education_group_yr_4])
+
+    def test_queryset_state_init(self):
+        form = RegistrationFilterForm()
+        self.assertListEqual(list(form.fields['state'].choices),
+                             [('', pgettext_lazy("plural", "All")),
+                              ('Accepted', _('Accepted')),
+                              ('Registration submitted',  _('Registration submitted')),
+                              ('Validated', _('Validated'))
+                              ]
+                             )
 
     def test_get_admissions_no_criteria(self):
         form = AdmissionFilterForm({})
@@ -129,5 +149,57 @@ class TestAdmissionFilterForm(TestCase):
         form = AdmissionFilterForm({"faculty": self.fac_1_version, "formation": self.education_group_yr_2})
         if form.is_valid():
             results = form.get_admissions()
-            print(results)
             self.assertCountEqual(results, [])
+
+    def test_get_registrations_no_criteria(self):
+        form = RegistrationFilterForm({})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registration_accepted,
+                                            self.registration_submitted])
+
+    def test_get_registrations_by_formation_criteria(self):
+        form = RegistrationFilterForm({"formation": self.education_group_yr_1})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertListEqual(list(results), [self.registration_submitted])
+
+    def test_get_registrations_by_faculty_criteria(self):
+        form = RegistrationFilterForm({"faculty": self.fac_1_version})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registration_submitted])
+
+    def test_get_registrations_by_faculty_and_formation_criteria(self):
+        form = RegistrationFilterForm({"faculty": self.fac_1_version, "formation": self.education_group_yr_1})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registration_submitted])
+
+        form = RegistrationFilterForm({"faculty": self.fac_1_version, "formation": self.education_group_yr_5})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [])
+
+    def test_get_registrations_by_ucl_registration_complete_criteria(self):
+        form = RegistrationFilterForm({"ucl_registration_complete": True})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registration_accepted])
+
+    def test_get_registrations_by_payment_complete(self):
+        form = RegistrationFilterForm({"payment_complete": True})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registration_submitted])
+
+        form = RegistrationFilterForm({"payment_complete": True, "ucl_registration_complete": True})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [])
+
+    def test_get_registrations_by_state(self):
+        form = RegistrationFilterForm({"state": ACCEPTED})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registration_accepted])
