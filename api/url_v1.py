@@ -30,6 +30,7 @@ from continuing_education.api.views.admission import AdmissionListCreate, Admiss
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonListCreate, \
     ContinuingEducationPersonDetailDestroy
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
+from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdateDestroy
 
 urlpatterns = [
     url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),
@@ -59,5 +60,11 @@ urlpatterns = [
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/(?P<file_uuid>[0-9a-f-]+)$',
         AdmissionFileRetrieveDestroy.as_view(),
         name=AdmissionFileRetrieveDestroy.name
+    ),
+    url(r'^registrations/$', RegistrationList.as_view(), name=RegistrationList.name),
+    url(
+        r'^registrations/(?P<uuid>[0-9a-f-]+)$',
+        RegistrationDetailUpdateDestroy.as_view(),
+        name=RegistrationDetailUpdateDestroy.name
     ),
 ]

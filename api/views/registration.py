@@ -29,7 +29,7 @@ from continuing_education.api.serializers.registration import RegistrationListSe
 from continuing_education.models.admission import Admission
 
 
-class RegistrationListCreate(generics.ListAPIView):
+class RegistrationList(generics.ListAPIView):
     """
        Return a list of all the registration with optional filtering or create one.
     """
@@ -66,7 +66,7 @@ class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
         Return the detail of the registration, update or destroy it
     """
-    name = 'admission-detail-update-destroy'
+    name = 'registration-detail-update-destroy'
     queryset = Admission.objects.all()
     serializer_class = RegistrationDetailSerializer
     lookup_field = 'uuid'
