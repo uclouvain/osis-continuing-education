@@ -140,18 +140,18 @@ class RegistrationFilterForm(AdmissionFilterForm):
 def get_queryset_by_faculty_formation(faculty, formation, states):
     qs = Admission.objects.filter(
         state__in=states
-    ).order_by('person_information')
+    )
 
     if faculty:
         formations = _get_formations_by_faculty(faculty)
         qs = qs.filter(
             formation__acronym__in=formations
-        ).order_by('person_information')
+        )
 
     if formation:
         qs = qs.filter(formation=formation)
 
-    return qs
+    return qs.order_by('person_information')
 
 
 def _get_formations_by_faculty(faculty):
