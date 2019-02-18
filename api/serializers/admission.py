@@ -41,8 +41,6 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # context = kwargs.get('context', None)
-        # if context:
         request = kwargs['context']['request']
 
         if request.method == 'POST':
