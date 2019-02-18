@@ -83,8 +83,8 @@ class TestXls(TestCase):
         expected_argument = _generate_xls_build_parameter(xls_data, self.user)
 
         self.assertEqual(expected_argument['list_description'], _('Admissions list'))
-        self.assertEqual(expected_argument['filename'], _('Admissions_list') )
-        self.assertEqual(expected_argument['username'], self.user.username )
+        self.assertEqual(expected_argument['filename'], _('Admissions_list'))
+        self.assertEqual(expected_argument['username'], self.user.username)
         self.assertEqual(expected_argument['data'][0]['content'], xls_data)
         self.assertEqual(expected_argument['data'][0]['header_titles'], ADMISSION_TITLES)
         self.assertEqual(expected_argument['data'][0]['worksheet_title'], _('Admissions list'))
@@ -92,7 +92,7 @@ class TestXls(TestCase):
 
 def _generate_xls_build_parameter(xls_data, user):
     return {
-        xls_build.LIST_DESCRIPTION_KEY: XLS_DESCRIPTION ,
+        xls_build.LIST_DESCRIPTION_KEY: XLS_DESCRIPTION,
         xls_build.FILENAME_KEY: XLS_FILENAME,
         xls_build.USER_KEY: user.username,
         xls_build.WORKSHEETS_DATA: [{
