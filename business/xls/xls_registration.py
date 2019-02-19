@@ -63,8 +63,8 @@ def prepare_xls_content(registrations_list):
 
 def extract_xls_data_from_registration(registration):
     return [
-        registration.person_information.person.first_name,
         registration.person_information.person.last_name,
+        registration.person_information.person.first_name,
         registration.email,
         registration.formation,
         registration.get_faculty() if registration.get_faculty() else '',

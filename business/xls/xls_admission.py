@@ -62,8 +62,8 @@ def prepare_xls_content(admission_list):
 
 def extract_xls_data_from_admission(admission):
     return [
-        admission.person_information.person.first_name,
         admission.person_information.person.last_name,
+        admission.person_information.person.first_name,
         admission.email,
         admission.formation,
         admission.get_faculty() if admission.get_faculty() else '',
