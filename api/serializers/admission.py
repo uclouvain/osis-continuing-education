@@ -27,14 +27,14 @@ from rest_framework import serializers
 
 from base.models.education_group_year import EducationGroupYear
 from base.models.person import Person
-from continuing_education.api.common import update_address
-from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from education_group.api.serializers.training import TrainingListSerializer
 from reference.api.serializers.country import CountrySerializer
+from reference.models.country import Country
 
 
 class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
@@ -92,6 +92,22 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        request = kwargs['context']['request']
+
+        if request.method == 'PATCH' or request.method == 'PUT':
+            self.fields['citizenship'] = serializers.SlugRelatedField(
+                slug_field='iso_code',
+                queryset=Country.objects.all(),
+            )
+            self.fields['main_address'] = AddressPostSerializer(source='address', required=False)
+            self.fields['person_information'] = ContinuingEducationPersonPostSerializer(required=False)
+        else:
+            self.fields['citizenship'] = CountrySerializer(required=False)
+            self.fields['main_address'] = AddressSerializer(source='address', required=False)
+            self.fields['person_information'] = ContinuingEducationPersonSerializer(required=False)
+
     person_information = ContinuingEducationPersonSerializer(required=False)
 
     citizenship = CountrySerializer(required=False)
@@ -152,45 +168,24 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
 
             'state',
             'state_text',
-
-            # # REGISTRATION
-            # # BILLING
-            # 'registration_type',
-            # 'registration_type_text',
-            # 'use_address_for_billing',
-            # 'billing_address',
-            # 'head_office_name',
-            # 'company_number',
-            # 'vat_number',
-            #
-            # # REGISTRATION
-            # 'national_registry_number',
-            # 'id_card_number',
-            # 'passport_number',
-            # 'marital_status',
-            # 'marital_status_text',
-            # 'spouse_name',
-            # 'children_number',
-            # 'previous_ucl_registration',
-            # 'previous_noma',
-            #
-            # # POST
-            # 'use_address_for_post',
-            # 'residence_address',
-            # 'residence_phone',
-            #
-            # # STUDENT SHEET
-            # 'ucl_registration_complete',
-            # 'noma',
-            # 'payment_complete',
-            # 'formation_spreading',
-            # 'prior_experience_validation',
-            # 'assessment_presented',
-            # 'assessment_succeeded',
-            # 'sessions'
-
         )
 
     def update(self, instance, validated_data):
-        update_address(instance, validated_data, 'address')
-        return super().update(instance, validated_data)
+        addr_serializer = self.fields['main_address']
+        addr_instance = instance.address
+        addr_data = validated_data.pop('address')
+        addr_serializer.update(addr_instance, addr_data)
+
+        pers_serializer = self.fields['person_information']
+        pers_instance = instance.person_information
+        pers_data = validated_data.pop('person_information')
+        pers_serializer.update(pers_instance, pers_data)
+
+        for_serializer = self.fields['formation']
+        for_instance = instance.formation
+        for_data = validated_data.pop('formation')
+        for_serializer.update(for_instance, for_data)
+        # update_address(instance, validated_data, 'main_address')
+
+        return super(AdmissionDetailSerializer, self).update(instance, validated_data)
+
