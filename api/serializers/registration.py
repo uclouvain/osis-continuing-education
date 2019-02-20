@@ -25,7 +25,6 @@
 ##############################################################################
 from rest_framework import serializers
 
-from continuing_education.api.common import update_address
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
 from continuing_education.models.admission import Admission
@@ -123,6 +122,12 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
         )
 
     def update(self, instance, validated_data):
-        update_address(instance, validated_data, 'residence_address')
-        update_address(instance, validated_data, 'billing_address')
+        self.update_field('billing_address', validated_data, instance.billing_address)
+        self.update_field('residence_address', validated_data, instance.residence_address)
         return super().update(instance, validated_data)
+
+    def update_field(self, field, validated_data, instance):
+        if field in validated_data:
+            field_serializer = self.fields[field]
+            field_data = validated_data.pop(field)
+            field_serializer.update(instance, field_data)
