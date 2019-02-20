@@ -30,6 +30,7 @@ from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
+from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from education_group.api.serializers.training import TrainingListSerializer
@@ -123,7 +124,8 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
     person_information = ContinuingEducationPersonPostSerializer(required=False)
     formation = serializers.SlugRelatedField(
         queryset=EducationGroupYear.objects.all(),
-        slug_field='uuid'
+        slug_field='uuid',
+        required=False
     )
 
     def update(self, instance, validated_data):
@@ -140,20 +142,25 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
             field_serializer.update(instance, field_data)
 
     def create(self, validated_data):
-        iufc_person_data = validated_data.pop('person_information')
-        person_data = iufc_person_data.pop('person')
-        formation_data = validated_data.pop('formation')
+        if 'person_information' in validated_data:
+            iufc_person_data = validated_data.pop('person_information')
+            person_data = iufc_person_data.pop('person')
+            person, created = Person.objects.get_or_create(**person_data)
 
-        person, created = Person.objects.get_or_create(**person_data)
+            iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
+                person=person,
+                **iufc_person_data
+            )
+            validated_data['person_information'] = iufc_person
 
-        iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
-            person=person,
-            **iufc_person_data
-        )
-        validated_data['person_information'] = iufc_person
+        formation_data = validated_data.pop('formation', None)
+        validated_data['formation'] = formation_data
 
-        formation = EducationGroupYear.objects.get(uuid=formation_data)
-        validated_data['formation'] = formation
+        if 'address' in validated_data:
+            address_data = validated_data.pop('address')
+            address, created = Address.objects.get_or_create(**address_data)
+            validated_data['address'] = address
 
         admission = Admission.objects.create(**validated_data)
+        admission.save()
         return admission

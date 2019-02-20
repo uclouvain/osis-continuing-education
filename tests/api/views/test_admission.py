@@ -199,6 +199,7 @@ class AdmissionListCreateTestCase(APITestCase):
             'email': 'a@c.dk',
             'formation': self.formation.uuid
         }
+
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(5, Admission.objects.all().count())
