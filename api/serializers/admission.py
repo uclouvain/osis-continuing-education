@@ -65,7 +65,7 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
 class AdmissionDetailSerializer(AdmissionListSerializer):
     citizenship = CountrySerializer()
 
-    main_address = AddressSerializer(source='address')
+    address = AddressSerializer()
 
     # Display human readable value
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
@@ -75,7 +75,7 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
         model = Admission
         fields = AdmissionListSerializer.Meta.fields + (
             # CONTACTS
-            'main_address',
+            'address',
             'citizenship',
             'phone_mobile',
 
@@ -119,31 +119,23 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         queryset=Country.objects.all(),
         required=False
     )
-    main_address = AddressPostSerializer(source='address', required=False)
+    address = AddressPostSerializer(required=False)
     person_information = ContinuingEducationPersonPostSerializer(required=False)
     formation = serializers.UUIDField()
 
     def update(self, instance, validated_data):
-        if 'address' in validated_data:
-            addr_serializer = self.fields['main_address']
-            addr_instance = instance.address
-            addr_data = validated_data.pop('address')
-            addr_serializer.update(addr_instance, addr_data)
-
-        if 'person_information' in validated_data:
-            pers_serializer = self.fields['person_information']
-            pers_instance = instance.person_information
-            pers_data = validated_data.pop('person_information')
-            pers_serializer.update(pers_instance, pers_data)
-
-        if 'formation' in validated_data:
-            for_serializer = self.fields['formation']
-            for_instance = instance.formation
-            for_data = validated_data.pop('formation')
-            for_serializer.update(for_instance, for_data)
+        self.update_field('address', validated_data, instance.address)
+        self.update_field('person_information', validated_data, instance.person_information)
+        self.update_field('formation', validated_data, instance.formation)
         # update_address(instance, validated_data, 'main_address')
 
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
+
+    def update_field(self, field, validated_data, instance):
+        if field in validated_data:
+            field_serializer = self.fields[field]
+            field_data = validated_data.pop(field)
+            field_serializer.update(instance, field_data)
 
     def create(self, validated_data):
         iufc_person_data = validated_data.pop('person_information')
