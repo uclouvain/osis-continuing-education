@@ -59,6 +59,6 @@ class AddressDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'uuid'
 
     def get_serializer_class(self):
-        if self.request.method == 'PUT':
+        if self.request.method == 'PUT' or self.request.method == 'PATCH':
             return AddressPostSerializer
         return AddressSerializer

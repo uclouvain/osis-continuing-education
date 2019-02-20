@@ -38,16 +38,6 @@ from reference.models.country import Country
 
 
 class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = kwargs['context']['request']
-
-        if request.method == 'POST':
-            self.fields['person_information'] = ContinuingEducationPersonPostSerializer()
-        else:
-            self.fields['person_information'] = ContinuingEducationPersonSerializer()
-
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:admission-detail-update-destroy',
         lookup_field='uuid'
@@ -71,67 +61,23 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
             'state_text',
         )
 
-    def create(self, validated_data):
-        iufc_person_data = validated_data.pop('person_information')
-        person_data = iufc_person_data.pop('person')
-        formation_data = validated_data.pop('formation')
 
-        person, created = Person.objects.get_or_create(**person_data)
+class AdmissionDetailSerializer(AdmissionListSerializer):
+    citizenship = CountrySerializer()
 
-        iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
-            person=person,
-            **iufc_person_data
-        )
-        validated_data['person_information'] = iufc_person
-
-        formation = EducationGroupYear.objects.get(**formation_data)
-        validated_data['formation'] = formation
-
-        admission = Admission.objects.create(**validated_data)
-        return admission
-
-
-class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        request = kwargs['context']['request']
-
-        if request.method == 'PATCH' or request.method == 'PUT':
-            self.fields['citizenship'] = serializers.SlugRelatedField(
-                slug_field='iso_code',
-                queryset=Country.objects.all(),
-            )
-            self.fields['main_address'] = AddressPostSerializer(source='address', required=False)
-            self.fields['person_information'] = ContinuingEducationPersonPostSerializer(required=False)
-        else:
-            self.fields['citizenship'] = CountrySerializer(required=False)
-            self.fields['main_address'] = AddressSerializer(source='address', required=False)
-            self.fields['person_information'] = ContinuingEducationPersonSerializer(required=False)
-
-    person_information = ContinuingEducationPersonSerializer(required=False)
-
-    citizenship = CountrySerializer(required=False)
-
-    main_address = AddressSerializer(source='address', required=False)
+    main_address = AddressSerializer(source='address')
 
     # Display human readable value
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
-    state_text = serializers.CharField(source='get_state_display', read_only=True)
-
-    formation = TrainingListSerializer(required=False)
 
     class Meta:
         model = Admission
-        fields = (
-            'uuid',
-            'person_information',
-
+        fields = AdmissionListSerializer.Meta.fields + (
             # CONTACTS
             'main_address',
             'citizenship',
             'phone_mobile',
-            'email',
 
             # EDUCATION
             'high_school_diploma',
@@ -154,7 +100,6 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # MOTIVATION
             'motivation',
             'professional_impact',
-            'formation',
 
             # AWARENESS
             'awareness_ucl_website',
@@ -165,27 +110,56 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             'awareness_customized_mail',
             'awareness_emailing',
             'awareness_other',
-
-            'state',
-            'state_text',
         )
 
+
+class AdmissionPostSerializer(AdmissionDetailSerializer):
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=False
+    )
+    main_address = AddressPostSerializer(source='address', required=False)
+    person_information = ContinuingEducationPersonPostSerializer(required=False)
+    formation = serializers.UUIDField()
+
     def update(self, instance, validated_data):
-        addr_serializer = self.fields['main_address']
-        addr_instance = instance.address
-        addr_data = validated_data.pop('address')
-        addr_serializer.update(addr_instance, addr_data)
+        if 'address' in validated_data:
+            addr_serializer = self.fields['main_address']
+            addr_instance = instance.address
+            addr_data = validated_data.pop('address')
+            addr_serializer.update(addr_instance, addr_data)
 
-        pers_serializer = self.fields['person_information']
-        pers_instance = instance.person_information
-        pers_data = validated_data.pop('person_information')
-        pers_serializer.update(pers_instance, pers_data)
+        if 'person_information' in validated_data:
+            pers_serializer = self.fields['person_information']
+            pers_instance = instance.person_information
+            pers_data = validated_data.pop('person_information')
+            pers_serializer.update(pers_instance, pers_data)
 
-        for_serializer = self.fields['formation']
-        for_instance = instance.formation
-        for_data = validated_data.pop('formation')
-        for_serializer.update(for_instance, for_data)
+        if 'formation' in validated_data:
+            for_serializer = self.fields['formation']
+            for_instance = instance.formation
+            for_data = validated_data.pop('formation')
+            for_serializer.update(for_instance, for_data)
         # update_address(instance, validated_data, 'main_address')
 
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
 
+    def create(self, validated_data):
+        iufc_person_data = validated_data.pop('person_information')
+        person_data = iufc_person_data.pop('person')
+        formation_data = validated_data.pop('formation')
+
+        person, created = Person.objects.get_or_create(**person_data)
+
+        iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
+            person=person,
+            **iufc_person_data
+        )
+        validated_data['person_information'] = iufc_person
+
+        formation = EducationGroupYear.objects.get(uuid=formation_data)
+        validated_data['formation'] = formation
+
+        admission = Admission.objects.create(**validated_data)
+        return admission

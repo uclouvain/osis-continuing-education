@@ -37,7 +37,8 @@ from rest_framework.test import APITestCase
 from base.models.person import Person
 from base.tests.factories.education_group_year import TrainingFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer
+from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
+    AdmissionPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import admission_state_choices
@@ -170,13 +171,7 @@ class AdmissionListCreateTestCase(APITestCase):
 
             },
             'email': 'a@c.dk',
-            'formation': {
-                'code': self.formation.partial_acronym,
-                'education_group_type': self.formation.education_group_type.name,
-                'academic_year': self.formation.academic_year.year,
-                'acronym': self.formation.acronym,
-                'title': self.formation.title
-            }
+            'formation': self.formation.uuid
         }
 
         response = self.client.post(self.url, data=data, format='json')
@@ -202,11 +197,8 @@ class AdmissionListCreateTestCase(APITestCase):
                 },
             },
             'email': 'a@c.dk',
-            'formation': model_to_dict(self.formation)
+            'formation': self.formation.uuid
         }
-        data['formation']['code'] = self.formation.partial_acronym
-        data['formation']['education_group_type'] = self.formation.education_group_type.name
-        data['formation']['academic_year'] = self.formation.academic_year.year
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(5, Admission.objects.all().count())
@@ -316,10 +308,10 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
             'phone_mobile': '0000',
         }
 
-        response = self.client.put(self.url, data=data)
+        response = self.client.patch(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = AdmissionDetailSerializer(
+        serializer = AdmissionPostSerializer(
             Admission.objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )
@@ -334,10 +326,10 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
             }
         }
 
-        response = self.client.put(self.url, data=data)
+        response = self.client.patch(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = AdmissionDetailSerializer(
+        serializer = AdmissionPostSerializer(
             Admission.objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )

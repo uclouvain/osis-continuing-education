@@ -26,7 +26,7 @@
 from rest_framework import generics
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
-    AdmissionListSerializer
+    AdmissionListSerializer, AdmissionPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 
@@ -36,8 +36,6 @@ class AdmissionListCreate(generics.ListCreateAPIView):
        Return a list of all the admission with optional filtering or create one.
     """
     name = 'admission-list-create'
-
-    serializer_class = AdmissionListSerializer
     filter_fields = (
         'person_information',
         'formation',
@@ -70,6 +68,19 @@ class AdmissionListCreate(generics.ListCreateAPIView):
         )
         return queryset
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AdmissionPostSerializer
+        return AdmissionListSerializer
+    #
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=False)
+    #     print(serializer.errors)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -77,5 +88,9 @@ class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
     name = 'admission-detail-update-destroy'
     queryset = Admission.objects.all()
-    serializer_class = AdmissionDetailSerializer
     lookup_field = 'uuid'
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT' or self.request.method == 'PATCH':
+            return AdmissionPostSerializer
+        return AdmissionDetailSerializer
