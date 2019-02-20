@@ -121,13 +121,15 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
     )
     address = AddressPostSerializer(required=False)
     person_information = ContinuingEducationPersonPostSerializer(required=False)
-    formation = serializers.UUIDField()
+    formation = serializers.SlugRelatedField(
+        queryset=EducationGroupYear.objects.all(),
+        slug_field='uuid'
+    )
 
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)
         self.update_field('person_information', validated_data, instance.person_information)
         self.update_field('formation', validated_data, instance.formation)
-        # update_address(instance, validated_data, 'main_address')
 
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
 

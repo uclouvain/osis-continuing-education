@@ -72,14 +72,6 @@ class AdmissionListCreate(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return AdmissionPostSerializer
         return AdmissionListSerializer
-    #
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=False)
-    #     print(serializer.errors)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -91,6 +83,6 @@ class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'uuid'
 
     def get_serializer_class(self):
-        if self.request.method == 'PUT' or self.request.method == 'PATCH':
+        if self.request.method in ['PUT', 'PATCH']:
             return AdmissionPostSerializer
         return AdmissionDetailSerializer
