@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-18 14:49+0100\n"
+"POT-Creation-Date: 2019-02-21 13:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -186,7 +186,7 @@ msgstr "Annuler"
 msgid "Children number"
 msgstr "Nombre d'enfants"
 
-#: forms/admission.py:31 forms/registration.py:13 models/admission.py:69
+#: forms/admission.py:32 forms/registration.py:13 models/admission.py:69
 #: templates/admission_form.html:80
 #: templates/fragment/section_identification.html:35
 msgid "Citizenship"
@@ -359,7 +359,7 @@ msgstr "Nom du siège social"
 msgid "Health"
 msgstr "Santé"
 
-#: business/admission.py:160 forms/admission.py:38 forms/registration.py:20
+#: business/admission.py:160 forms/admission.py:39 forms/registration.py:20
 #: models/admission.py:91 templates/admission_form.html:97
 #: templates/fragment/tab_admission.html:48 tests/business/test_admission.py:40
 msgid "High school diploma"
@@ -479,12 +479,12 @@ msgstr "Numéro de registre national belge"
 msgid "New admission"
 msgstr "Nouvelle admission"
 
-#: forms/admission.py:43
+#: forms/admission.py:44
 msgid "New person"
 msgstr "Nouvelle personne"
 
-#: business/admission.py:160 business/xls/xls_registration.py:70
-#: business/xls/xls_registration.py:71 forms/search.py:37
+#: business/admission.py:160 business/xls/xls_registration.py:71
+#: business/xls/xls_registration.py:72 forms/search.py:37
 #: models/enums/enums.py:4 templates/registrations.html:123
 #: templates/registrations.html:130 tests/business/test_admission.py:40
 #: tests/business/test_xls_registration.py:82
@@ -503,7 +503,7 @@ msgstr "Aucun fichier choisi"
 msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
 
-#: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:31
+#: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
 #: models/enums/enums.py:32 models/enums/enums.py:40
 #: templates/admission_form.html:174 templates/fragment/tab_admission.html:130
 msgid "Other"
@@ -515,11 +515,11 @@ msgstr "Autre"
 msgid "Other educational background"
 msgstr "Autres formations"
 
-#: forms/admission.py:118
+#: forms/admission.py:119
 msgid "Other rejection reason"
 msgstr "Autre motif de refus"
 
-#: forms/admission.py:171
+#: forms/admission.py:172
 msgid "Other waiting reason"
 msgstr "Autre motif de mise en attente"
 
@@ -579,7 +579,7 @@ msgstr "Courrier"
 msgid "Postal code"
 msgstr "Code postal"
 
-#: forms/admission.py:114 forms/admission.py:167
+#: forms/admission.py:115 forms/admission.py:168
 msgid "Predefined reason"
 msgstr "Motif prédéfini"
 
@@ -806,17 +806,9 @@ msgstr "Le document a bien été uploadé"
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
 
-#: business/enums/rejected_reason.py:30
+#: business/enums/rejected_reason.py:30 business/enums/waiting_reason.py:28
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"
-
-#: business/enums/waiting_reason.py:28
-msgid ""
-"The programme is already complete. We will contact you again for the next "
-"edition."
-msgstr ""
-"Le programme est d’ores et déjà complet pour cette édition. Nous vous "
-"recontacterons lors du lancement de la prochaine édition de ce dernier."
 
 #: models/file.py:104 tests/views/test_file.py:152
 msgid "The status of the admission must be Accepted to upload an invoice."
@@ -892,12 +884,20 @@ msgstr "Raison de la mise en attente"
 msgid "Warning"
 msgstr "Avertissement"
 
+#: business/enums/waiting_reason.py:29
+msgid "We will contact you again for the next edition"
+msgstr "Nous vous recontacterons lors du lancement de la prochaine édition de ce dernier"
+
+#: business/enums/waiting_reason.py:32
+msgid "We will report to you as soon as possible"
+msgstr "Nous reviendrons vers vous dans les plus brefs délais"
+
 #: models/enums/enums.py:16
 msgid "Widowed"
 msgstr "Veuf(ve)"
 
-#: business/admission.py:160 business/xls/xls_registration.py:70
-#: business/xls/xls_registration.py:71 forms/search.py:36
+#: business/admission.py:160 business/xls/xls_registration.py:71
+#: business/xls/xls_registration.py:72 forms/search.py:36
 #: models/enums/enums.py:5 templates/registrations.html:121
 #: templates/registrations.html:128 tests/business/test_admission.py:40
 #: tests/business/test_xls_registration.py:81
@@ -933,13 +933,9 @@ msgstr ""
 "Vous allez remettre l'admission en état Brouillon. Elle sera de nouveau "
 "visible et modifiable par le participant et invisible pour vous."
 
-#: business/enums/waiting_reason.py:29
-msgid ""
-"Your admission file is being verified by the responsible training jury. We "
-"will report to you as soon as possible."
-msgstr ""
-"Votre dossier est en cours de vérification par le jury de la formation. Nous "
-"reviendrons vers vous dans les plus brefs délais."
+#: business/enums/waiting_reason.py:31
+msgid "Your admission file is being verified by the responsible training jury"
+msgstr "Votre dossier est en cours de vérification par le jury de la formation"
 
 #: business/enums/rejected_reason.py:28
 msgid "Your course is not adapted to the program of this training"
