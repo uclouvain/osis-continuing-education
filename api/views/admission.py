@@ -28,7 +28,6 @@ from rest_framework import generics
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer, AdmissionPostSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import admission_state_choices
 
 
 class AdmissionListCreate(generics.ListCreateAPIView):
@@ -57,11 +56,7 @@ class AdmissionListCreate(generics.ListCreateAPIView):
     )  # Default ordering
 
     def get_queryset(self):
-        queryset = Admission.objects.all().exclude(state__in=[
-            admission_state_choices.ACCEPTED,
-            admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED
-        ]).select_related(
+        queryset = Admission.objects.all().select_related(
             'person_information',
             'citizenship',
             'address',
