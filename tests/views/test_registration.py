@@ -113,7 +113,7 @@ class ViewRegistrationTestCase(TestCase):
     def test_registration_detail_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
-        url = reverse('admission_detail', kwargs={'admission_id':self.admission_accepted.pk})
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission_accepted.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 

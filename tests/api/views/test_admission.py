@@ -150,7 +150,7 @@ class AdmissionListCreateTestCase(APITestCase):
             response = self.client.get(self.url, kwargs=query_string)
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-            admissions = Admission.objects.all().order_by(order)
+            admissions = Admission.admission_objects.all().order_by(order)
             serializer = AdmissionListSerializer(
                 admissions,
                 many=True,

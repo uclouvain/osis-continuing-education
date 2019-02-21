@@ -25,6 +25,7 @@
 ##############################################################################
 
 from django.db import models
+from django.db.models import Manager
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
@@ -65,6 +66,7 @@ class Admission(SerializableModel):
 
     CONTINUING_EDUCATION_TYPE = 8
 
+    objects = Manager()
     admission_objects = AdmissionManager()
     registration_objects = RegistrationManager()
 

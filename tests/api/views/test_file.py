@@ -89,7 +89,8 @@ class AdmissionFileListCreateTestCase(APITestCase):
         expected_count = AdmissionFile.objects.filter(admission=self.admission).count()
         self.assertEqual(response.data['count'], expected_count)
 
-    def test_create_valid_file(self):
+    @patch('continuing_education.api.serializers.file.AdmissionFileSerializer.get_content', return_value='content')
+    def test_create_valid_file(self, mock_get_content):
         self.assertEqual(4, AdmissionFile.objects.all().count())
 
         admission_file = SimpleUploadedFile(
@@ -102,6 +103,7 @@ class AdmissionFileListCreateTestCase(APITestCase):
             'size': admission_file.size,
             'uploaded_by': self.admission.person_information.person.uuid,
             'created_date': datetime.datetime.today(),
+            'path': admission_file
         }
         response = self.client.post(self.url, data=data, format='multipart')
 
