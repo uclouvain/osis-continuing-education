@@ -65,7 +65,7 @@ class Admission(SerializableModel):
 
     CONTINUING_EDUCATION_TYPE = 8
 
-    objects = AdmissionManager()
+    admission_objects = AdmissionManager()
     registration_objects = RegistrationManager()
 
     person_information = models.ForeignKey(

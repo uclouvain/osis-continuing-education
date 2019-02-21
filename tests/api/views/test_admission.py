@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import datetime
+import random
 import unittest
 import uuid
 
@@ -42,7 +43,7 @@ from continuing_education.api.serializers.admission import AdmissionListSerializ
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT
+from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -158,7 +159,7 @@ class AdmissionListCreateTestCase(APITestCase):
             self.assertEqual(response.data['results'], serializer.data)
 
     def test_create_valid_admission_with_existing_person(self):
-        self.assertEqual(4, Admission.objects.all().count())
+        self.assertEqual(3, Admission.admission_objects.all().count())
         self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(4, Person.objects.all().count())
         data = {
@@ -176,12 +177,12 @@ class AdmissionListCreateTestCase(APITestCase):
 
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(5, Admission.objects.all().count())
+        self.assertEqual(4, Admission.admission_objects.all().count())
         self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(4, Person.objects.all().count())
 
     def test_create_valid_admission_with_new_person_and_person_info(self):
-        self.assertEqual(4, Admission.objects.all().count())
+        self.assertEqual(3, Admission.admission_objects.all().count())
         self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(4, Person.objects.all().count())
         data = {
@@ -202,7 +203,7 @@ class AdmissionListCreateTestCase(APITestCase):
 
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(5, Admission.objects.all().count())
+        self.assertEqual(4, Admission.admission_objects.all().count())
         self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(5, Person.objects.all().count())
 
@@ -240,7 +241,9 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=ContinuingEducationPersonFactory(),
-            formation=TrainingFactory()
+            formation=TrainingFactory(),
+            state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
+
         )
 
         cls.user = UserFactory()

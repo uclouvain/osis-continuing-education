@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import random
 import unittest
 import uuid
 
@@ -36,8 +37,8 @@ from base.tests.factories.education_group_year import TrainingFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, DRAFT, \
+    REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -62,7 +63,7 @@ class RegistrationListTestCase(APITestCase):
         )
         AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
-            state=SUBMITTED,
+            state=VALIDATED,
             formation=TrainingFactory()
         )
         AdmissionFactory(
@@ -72,7 +73,7 @@ class RegistrationListTestCase(APITestCase):
         )
         AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
-            state=REJECTED,
+            state=REGISTRATION_SUBMITTED,
             formation=TrainingFactory()
         )
 
@@ -101,11 +102,7 @@ class RegistrationListTestCase(APITestCase):
         self.assertTrue('results' in response.data)
 
         self.assertTrue('count' in response.data)
-        expected_count = Admission.objects.filter(state__in=[
-            admission_state_choices.ACCEPTED,
-            admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED
-        ]).count()
+        expected_count = Admission.registration_objects.count()
         self.assertEqual(response.data['count'], expected_count)
 
     def test_get_all_registration_ensure_default_order(self):
@@ -114,11 +111,7 @@ class RegistrationListTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        registrations = Admission.objects.filter(state__in=[
-            admission_state_choices.ACCEPTED,
-            admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED
-        ]).order_by('state', 'formation')
+        registrations = Admission.registration_objects.all().order_by('state', 'formation')
         serializer = RegistrationListSerializer(registrations, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'], serializer.data)
 
@@ -145,7 +138,8 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
     def setUpTestData(cls):
         cls.admission = AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
-            formation=TrainingFactory()
+            formation=TrainingFactory(),
+            state=random.choice([ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED])
         )
 
         cls.user = UserFactory()
@@ -198,17 +192,17 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_valid_registration(self):
-        self.assertEqual(1, Admission.objects.all().count())
+        self.assertEqual(1, Admission.registration_objects.all().count())
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, Admission.objects.all().count())
+        self.assertEqual(0, Admission.registration_objects.all().count())
 
     def test_delete_invalid_registration_case_not_found(self):
         response = self.client.delete(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_valid_registration(self):
-        self.assertEqual(1, Admission.objects.all().count())
+        self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
             'vat_number': '123456',
             'id_card_number': '0000000',
@@ -222,10 +216,10 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(1, Admission.objects.all().count())
+        self.assertEqual(1, Admission.registration_objects.all().count())
 
     def test_update_valid_registration_billing_address(self):
-        self.assertEqual(1, Admission.objects.all().count())
+        self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
             'billing_address': {
                 'location': 'PERDU'
@@ -236,11 +230,11 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         serializer = RegistrationDetailSerializer(
-            Admission.objects.all().first(),
+            Admission.registration_objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(1, Admission.objects.all().count())
+        self.assertEqual(1, Admission.registration_objects.all().count())
 
     def test_update_invalid_registration(self):
         response = self.client.put(self.invalid_url)

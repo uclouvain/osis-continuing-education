@@ -102,7 +102,6 @@ class AdmissionFileListCreateTestCase(APITestCase):
             'size': admission_file.size,
             'uploaded_by': self.admission.person_information.person.uuid,
             'created_date': datetime.datetime.today(),
-            'path': admission_file
         }
         response = self.client.post(self.url, data=data, format='multipart')
 

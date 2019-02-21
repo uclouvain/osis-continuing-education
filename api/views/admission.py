@@ -56,7 +56,7 @@ class AdmissionListCreate(generics.ListCreateAPIView):
     )  # Default ordering
 
     def get_queryset(self):
-        queryset = Admission.objects.all().select_related(
+        queryset = Admission.admission_objects.all().select_related(
             'person_information',
             'citizenship',
             'address',
@@ -74,7 +74,7 @@ class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         Return the detail of the admission, update or destroy it
     """
     name = 'admission-detail-update-destroy'
-    queryset = Admission.objects.all()
+    queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
 
     def get_serializer_class(self):
