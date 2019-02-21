@@ -121,11 +121,11 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         required=False
     )
     address = AddressPostSerializer(required=False)
-    person_information = ContinuingEducationPersonPostSerializer(required=False)
+    person_information = ContinuingEducationPersonPostSerializer(required=True)
     formation = serializers.SlugRelatedField(
         queryset=EducationGroupYear.objects.all(),
         slug_field='uuid',
-        required=False
+        required=True
     )
 
     def update(self, instance, validated_data):
@@ -161,6 +161,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
             address, created = Address.objects.get_or_create(**address_data)
             validated_data['address'] = address
 
-        admission = Admission.objects.create(**validated_data)
+        admission = Admission(**validated_data)
         admission.save()
         return admission
