@@ -26,23 +26,15 @@
 from rest_framework import generics
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
-    AdmissionListSerializer
+    AdmissionListSerializer, AdmissionPostSerializer
 from continuing_education.models.admission import Admission
 
 
-class AdmissionList(generics.ListAPIView):
+class AdmissionListCreate(generics.ListCreateAPIView):
     """
-       Return a list of all the admission with optional filtering.
+       Return a list of all the admission with optional filtering or create one.
     """
-    name = 'admission-list'
-    queryset = Admission.objects.all().select_related(
-        'person_information',
-        'citizenship',
-        'address',
-        'billing_address',
-        'residence_address'
-    )
-    serializer_class = AdmissionListSerializer
+    name = 'admission-list-create'
     filter_fields = (
         'person_information',
         'formation',
@@ -63,12 +55,29 @@ class AdmissionList(generics.ListAPIView):
         'formation',
     )  # Default ordering
 
+    def get_queryset(self):
+        queryset = Admission.admission_objects.all().select_related(
+            'person_information',
+            'citizenship',
+            'address',
+        )
+        return queryset
 
-class AdmissionDetail(generics.RetrieveAPIView):
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AdmissionPostSerializer
+        return AdmissionListSerializer
+
+
+class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
-        Return the detail of the admission
+        Return the detail of the admission, update or destroy it
     """
-    name = 'admission-detail'
-    queryset = Admission.objects.all()
-    serializer_class = AdmissionDetailSerializer
+    name = 'admission-detail-update-destroy'
+    queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return AdmissionPostSerializer
+        return AdmissionDetailSerializer

@@ -25,30 +25,42 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.api.serializers.person import PersonDetailSerializer
+from base.models.person import Person
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
-    first_name = serializers.CharField(source='person.first_name', read_only=True)
-    last_name = serializers.CharField(source='person.last_name', read_only=True)
-    gender = serializers.CharField(source='person.gender', read_only=True)
-    email = serializers.CharField(source='person.email', read_only=True)
+    person = PersonDetailSerializer(read_only=True)
+
+    birth_country = CountrySerializer(read_only=True)
+
+    class Meta:
+        model = ContinuingEducationPerson
+        fields = (
+            'id',
+            'uuid',
+            'person',
+            'birth_date',
+            'birth_location',
+            'birth_country',
+        )
+
+
+class ContinuingEducationPersonPostSerializer(ContinuingEducationPersonSerializer):
+    person = PersonDetailSerializer()
 
     birth_country = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
     )
 
-    class Meta:
-        model = ContinuingEducationPerson
-        fields = (
-            'uuid',
-            'first_name',
-            'last_name',
-            'email',
-            'gender',
-            'birth_date',
-            'birth_location',
-            'birth_country',
-        )
+    def create(self, validated_data):
+        person_data = validated_data.pop('person')
+        person, created = Person.objects.get_or_create(**person_data)
+        validated_data['person'] = person
+
+        iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
+        return iufc_person

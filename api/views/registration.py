@@ -25,40 +25,52 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
-from continuing_education.models.address import Address
+from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
+from continuing_education.models.admission import Admission
 
 
-class AddressListCreate(generics.ListCreateAPIView):
+class RegistrationList(generics.ListAPIView):
     """
-       Return a list of all the addresses with optional filtering or create an address.
+       Return a list of all the registration with optional filtering or create one.
     """
-    name = 'address-list-create'
-    queryset = Address.objects.all()
+    name = 'registration-list'
+
+    serializer_class = RegistrationListSerializer
     filter_fields = (
-        'country',
-        'city',
+        'person_information',
+        'formation',
+        'state',
     )
     search_fields = (
-        'location',
-        'city',
+        'person_information',
+        'formation',
+        'state',
     )
+    ordering_fields = (
+        'person_information__person__last_name',
+        'formation',
+        'state',
+    )
+    ordering = (
+        'state',
+        'formation',
+    )  # Default ordering
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return AddressPostSerializer
-        return AddressSerializer
+    def get_queryset(self):
+        queryset = Admission.registration_objects.all().select_related(
+            'person_information',
+            'address',
+            'billing_address',
+            'residence_address'
+        )
+        return queryset
 
 
-class AddressDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
-        Return the detail of the address, destroy one or update one.
+        Return the detail of the registration, update or destroy it
     """
-    name = 'address-detail-update-delete'
-    queryset = Address.objects.all()
+    name = 'registration-detail-update-destroy'
+    queryset = Admission.objects.all()
+    serializer_class = RegistrationDetailSerializer
     lookup_field = 'uuid'
-
-    def get_serializer_class(self):
-        if self.request.method in ['PUT', 'PATCH']:
-            return AddressPostSerializer
-        return AddressSerializer

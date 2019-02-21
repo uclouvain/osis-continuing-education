@@ -75,8 +75,17 @@ class AdmissionFilePostSerializerTestCase(TestCase):
         cls.admission_file = AdmissionFileFactory(
             uploaded_by=cls.uploaded_by
         )
+
         url = reverse('continuing_education_api_v1:file-list-create', kwargs={'uuid': cls.admission.uuid})
         cls.serializer = AdmissionFilePostSerializer(cls.admission_file, context={'request': RequestFactory().get(url)})
+
+    def setUp(self):
+        self.patcher = patch(
+            "continuing_education.api.serializers.file.AdmissionFileSerializer.get_content",
+            return_value="Test"
+        )
+        self.mocked_get_content = self.patcher.start()
+        self.addCleanup(self.patcher.stop)
 
     def test_contains_expected_fields(self):
         expected_fields = [
@@ -87,6 +96,7 @@ class AdmissionFilePostSerializerTestCase(TestCase):
             'size',
             'created_date',
             'uploaded_by',
+            'content',
             'file_category',
             'file_category_text'
         ]

@@ -56,7 +56,7 @@ class AdmissionFileListCreate(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             return super().create(request, *args, **kwargs)
-        except ValidationError:
+        except ValidationError as e:
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
                 data=_("The name of the file is too long : maximum %(length)s characters.") % {

@@ -25,6 +25,7 @@
 ##############################################################################
 
 from django.db import models
+from django.db.models import Manager
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
@@ -34,9 +35,27 @@ from base.models.enums.entity_type import FACULTY
 from continuing_education.business.admission import send_state_changed_email, send_admission_submitted_email_to_admin, \
     send_admission_submitted_email_to_participant
 from continuing_education.models.enums import admission_state_choices, enums
-from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
+from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin, SerializableModelManager
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
+
+
+class RegistrationManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ])
+
+
+class AdmissionManager(SerializableModelManager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(state__in=[
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REGISTRATION_SUBMITTED,
+            admission_state_choices.VALIDATED
+        ])
 
 
 class AdmissionAdmin(SerializableModelAdmin):
@@ -46,6 +65,10 @@ class AdmissionAdmin(SerializableModelAdmin):
 class Admission(SerializableModel):
 
     CONTINUING_EDUCATION_TYPE = 8
+
+    objects = Manager()
+    admission_objects = AdmissionManager()
+    registration_objects = RegistrationManager()
 
     person_information = models.ForeignKey(
         'continuing_education.ContinuingEducationPerson',

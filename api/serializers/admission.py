@@ -25,16 +25,22 @@
 ##############################################################################
 from rest_framework import serializers
 
-from continuing_education.api.serializers.address import AddressSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from base.models.education_group_year import EducationGroupYear
+from base.models.person import Person
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
+from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from education_group.api.serializers.training import TrainingListSerializer
+from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
 class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:admission-detail',
+        view_name='continuing_education_api_v1:admission-detail-update-destroy',
         lookup_field='uuid'
     )
     person_information = ContinuingEducationPersonSerializer()
@@ -57,34 +63,22 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
-    person_information = ContinuingEducationPersonSerializer()
+class AdmissionDetailSerializer(AdmissionListSerializer):
+    citizenship = CountrySerializer()
 
-    citizenship = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-    )
-
-    main_address = AddressSerializer(source='address', read_only=True)
+    address = AddressSerializer()
 
     # Display human readable value
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
-    state_text = serializers.CharField(source='get_state_display', read_only=True)
-
-    formation = TrainingListSerializer()
 
     class Meta:
         model = Admission
-        fields = (
-            'uuid',
-            'person_information',
-
+        fields = AdmissionListSerializer.Meta.fields + (
             # CONTACTS
-            'main_address',
+            'address',
             'citizenship',
             'phone_mobile',
-            'email',
 
             # EDUCATION
             'high_school_diploma',
@@ -107,7 +101,6 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             # MOTIVATION
             'motivation',
             'professional_impact',
-            'formation',
 
             # AWARENESS
             'awareness_ucl_website',
@@ -118,44 +111,56 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             'awareness_customized_mail',
             'awareness_emailing',
             'awareness_other',
-
-            'state',
-            'state_text',
-
-            # # REGISTRATION
-            # # BILLING
-            # 'registration_type',
-            # 'registration_type_text',
-            # 'use_address_for_billing',
-            # 'billing_address',
-            # 'head_office_name',
-            # 'company_number',
-            # 'vat_number',
-            #
-            # # REGISTRATION
-            # 'national_registry_number',
-            # 'id_card_number',
-            # 'passport_number',
-            # 'marital_status',
-            # 'marital_status_text',
-            # 'spouse_name',
-            # 'children_number',
-            # 'previous_ucl_registration',
-            # 'previous_noma',
-            #
-            # # POST
-            # 'use_address_for_post',
-            # 'residence_address',
-            # 'residence_phone',
-            #
-            # # STUDENT SHEET
-            # 'ucl_registration_complete',
-            # 'noma',
-            # 'payment_complete',
-            # 'formation_spreading',
-            # 'prior_experience_validation',
-            # 'assessment_presented',
-            # 'assessment_succeeded',
-            # 'sessions'
-
         )
+
+
+class AdmissionPostSerializer(AdmissionDetailSerializer):
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=False
+    )
+    address = AddressPostSerializer(required=False)
+    person_information = ContinuingEducationPersonPostSerializer(required=True)
+    formation = serializers.SlugRelatedField(
+        queryset=EducationGroupYear.objects.all(),
+        slug_field='uuid',
+        required=True
+    )
+
+    def update(self, instance, validated_data):
+        self.update_field('address', validated_data, instance.address)
+        self.update_field('person_information', validated_data, instance.person_information)
+        self.update_field('formation', validated_data, instance.formation)
+
+        return super(AdmissionDetailSerializer, self).update(instance, validated_data)
+
+    def update_field(self, field, validated_data, instance):
+        if field in validated_data:
+            field_serializer = self.fields[field]
+            field_data = validated_data.pop(field)
+            field_serializer.update(instance, field_data)
+
+    def create(self, validated_data):
+        if 'person_information' in validated_data:
+            iufc_person_data = validated_data.pop('person_information')
+            person_data = iufc_person_data.pop('person')
+            person, created = Person.objects.get_or_create(**person_data)
+
+            iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
+                person=person,
+                **iufc_person_data
+            )
+            validated_data['person_information'] = iufc_person
+
+        formation_data = validated_data.pop('formation', None)
+        validated_data['formation'] = formation_data
+
+        if 'address' in validated_data:
+            address_data = validated_data.pop('address')
+            address, created = Address.objects.get_or_create(**address_data)
+            validated_data['address'] = address
+
+        admission = Admission(**validated_data)
+        admission.save()
+        return admission

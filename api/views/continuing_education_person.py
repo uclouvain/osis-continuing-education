@@ -25,19 +25,20 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
-class ContinuingEducationPersonList(generics.ListAPIView):
+class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     """
-       Return a list of continuing education persons with optional filtering.
+       Return a list of continuing education persons with optional filtering or create one.
     """
-    name = 'person-list'
+    name = 'person-list-create'
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
-    serializer_class = ContinuingEducationPersonSerializer
+
     filter_fields = (
         'birth_country',
     )
@@ -51,12 +52,17 @@ class ContinuingEducationPersonList(generics.ListAPIView):
         'person',
     )  # Default ordering
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ContinuingEducationPersonPostSerializer
+        return ContinuingEducationPersonSerializer
 
-class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
+
+class ContinuingEducationPersonDetailDestroy(generics.RetrieveDestroyAPIView):
     """
-        Return the detail of the continuing education person
+        Return the detail of the continuing education person or destroy it
     """
-    name = 'person-detail'
+    name = 'person-detail-delete'
     queryset = ContinuingEducationPerson.objects.all()
     serializer_class = ContinuingEducationPersonSerializer
     lookup_field = 'uuid'
