@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-18 14:49+0100\n"
+"POT-Creation-Date: 2019-02-21 13:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,7 +187,7 @@ msgstr ""
 msgid "Children number"
 msgstr ""
 
-#: forms/admission.py:31 forms/registration.py:13 models/admission.py:69
+#: forms/admission.py:32 forms/registration.py:13 models/admission.py:69
 #: templates/admission_form.html:80
 #: templates/fragment/section_identification.html:35
 msgid "Citizenship"
@@ -360,7 +360,7 @@ msgstr ""
 msgid "Health"
 msgstr ""
 
-#: business/admission.py:160 forms/admission.py:38 forms/registration.py:20
+#: business/admission.py:160 forms/admission.py:39 forms/registration.py:20
 #: models/admission.py:91 templates/admission_form.html:97
 #: templates/fragment/tab_admission.html:48 tests/business/test_admission.py:40
 msgid "High school diploma"
@@ -480,12 +480,12 @@ msgstr ""
 msgid "New admission"
 msgstr ""
 
-#: forms/admission.py:43
+#: forms/admission.py:44
 msgid "New person"
 msgstr ""
 
-#: business/admission.py:160 business/xls/xls_registration.py:70
-#: business/xls/xls_registration.py:71 forms/search.py:37
+#: business/admission.py:160 business/xls/xls_registration.py:71
+#: business/xls/xls_registration.py:72 forms/search.py:37
 #: models/enums/enums.py:4 templates/registrations.html:123
 #: templates/registrations.html:130 tests/business/test_admission.py:40
 #: tests/business/test_xls_registration.py:82
@@ -504,7 +504,7 @@ msgstr ""
 msgid "Notify participant by email"
 msgstr ""
 
-#: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:31
+#: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
 #: models/enums/enums.py:32 models/enums/enums.py:40
 #: templates/admission_form.html:174 templates/fragment/tab_admission.html:130
 msgid "Other"
@@ -516,11 +516,11 @@ msgstr ""
 msgid "Other educational background"
 msgstr ""
 
-#: forms/admission.py:118
+#: forms/admission.py:119
 msgid "Other rejection reason"
 msgstr ""
 
-#: forms/admission.py:171
+#: forms/admission.py:172
 msgid "Other waiting reason"
 msgstr ""
 
@@ -578,7 +578,7 @@ msgstr ""
 msgid "Postal code"
 msgstr ""
 
-#: forms/admission.py:114 forms/admission.py:167
+#: forms/admission.py:115 forms/admission.py:168
 msgid "Predefined reason"
 msgstr ""
 
@@ -805,14 +805,8 @@ msgstr ""
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr ""
 
-#: business/enums/rejected_reason.py:30
+#: business/enums/rejected_reason.py:30 business/enums/waiting_reason.py:28
 msgid "The programme is already complete"
-msgstr ""
-
-#: business/enums/waiting_reason.py:28
-msgid ""
-"The programme is already complete. We will contact you again for the next "
-"edition."
 msgstr ""
 
 #: models/file.py:104 tests/views/test_file.py:152
@@ -883,12 +877,20 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+#: business/enums/waiting_reason.py:29
+msgid "We will contact you again for the next edition"
+msgstr ""
+
+#: business/enums/waiting_reason.py:32
+msgid "We will report to you as soon as possible"
+msgstr ""
+
 #: models/enums/enums.py:16
 msgid "Widowed"
 msgstr ""
 
-#: business/admission.py:160 business/xls/xls_registration.py:70
-#: business/xls/xls_registration.py:71 forms/search.py:36
+#: business/admission.py:160 business/xls/xls_registration.py:71
+#: business/xls/xls_registration.py:72 forms/search.py:36
 #: models/enums/enums.py:5 templates/registrations.html:121
 #: templates/registrations.html:128 tests/business/test_admission.py:40
 #: tests/business/test_xls_registration.py:81
@@ -917,10 +919,8 @@ msgid ""
 "editable for the participant as well as invisible for you."
 msgstr ""
 
-#: business/enums/waiting_reason.py:29
-msgid ""
-"Your admission file is being verified by the responsible training jury. We "
-"will report to you as soon as possible."
+#: business/enums/waiting_reason.py:31
+msgid "Your admission file is being verified by the responsible training jury"
 msgstr ""
 
 #: business/enums/rejected_reason.py:28

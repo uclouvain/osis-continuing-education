@@ -25,13 +25,25 @@
 ##############################################################################
 from django.utils.translation import ugettext_lazy as _
 
-PROGRAM_COMPLETE = _('The programme is already complete. We will contact you again for the next edition.')
-VERIFICATION_IN_PROGRESS = _('Your admission file is being verified by the responsible training jury. '
-                             'We will report to you as soon as possible.')
+PROGRAM_COMPLETE_PART1 = _('The programme is already complete')
+PROGRAM_COMPLETE_PART2 = _('We will contact you again for the next edition')
+
+VERIFICATION_IN_PROGRESS_PART1 = _('Your admission file is being verified by the responsible training jury')
+VERIFICATION_IN_PROGRESS_PART2 = _('We will report to you as soon as possible')
+
+PROGRAM_COMPLETE = "{}. {}.".format(PROGRAM_COMPLETE_PART1, PROGRAM_COMPLETE_PART2)
+VERIFICATION_IN_PROGRESS = "{}. {}.".format(VERIFICATION_IN_PROGRESS_PART1, VERIFICATION_IN_PROGRESS_PART2)
 OTHER = _('Other')
 
 WAITING_REASON_CHOICES = (
     (PROGRAM_COMPLETE, PROGRAM_COMPLETE),
     (VERIFICATION_IN_PROGRESS, VERIFICATION_IN_PROGRESS),
+    (OTHER, OTHER),
+)
+
+
+WAITING_REASON_CHOICES_SHORTENED_DISPLAY = (
+    (PROGRAM_COMPLETE, PROGRAM_COMPLETE_PART1),
+    (VERIFICATION_IN_PROGRESS, VERIFICATION_IN_PROGRESS_PART1),
     (OTHER, OTHER),
 )

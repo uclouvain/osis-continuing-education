@@ -6,7 +6,8 @@ from base.models.academic_year import current_academic_year
 from base.models.education_group_year import EducationGroupYear
 from base.models.enums import education_group_categories
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
-from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES
+from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
+    WAITING_REASON_CHOICES_SHORTENED_DISPLAY
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -162,7 +163,7 @@ class RejectedAdmissionForm(ModelForm):
 class WaitingAdmissionForm(ModelForm):
 
     waiting_reason = forms.ChoiceField(
-        choices=WAITING_REASON_CHOICES,
+        choices=WAITING_REASON_CHOICES_SHORTENED_DISPLAY,
         required=True,
         label=_('Predefined reason'),
     )
