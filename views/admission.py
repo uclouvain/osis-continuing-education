@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import itertools
-from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -32,16 +31,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from base.models import entity_version
-from base.models.education_group_year import EducationGroupYear
-from base.models.entity_version import EntityVersion
-from base.models.enums import entity_type
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email
+from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm
 from continuing_education.forms.person import PersonForm
+from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
@@ -50,9 +47,7 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
     REGISTRATION_SUBMITTED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
-from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
-from continuing_education.business.xls.xls_admission import create_xls
 
 
 @login_required
@@ -202,7 +197,7 @@ def admission_form(request, admission_id=None):
         request,
         'admission_form.html',
         {
-            'admission_id': admission_id,
+            'admission': admission,
             'admission_form': adm_form,
             'person_form': person_form,
             'address_form': address_form,

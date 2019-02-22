@@ -33,108 +33,117 @@
 {% endif %}
 
 {% include "fragment/section_identification.html" %}
-
-<div class="panel-heading">{% trans 'Contact' %}</div>
-<div class="panel panel-body">
-    <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Mobile phone") %} <br/> {{ admission.phone_mobile | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Email") %} <br/> {{ admission.email | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Location") %} <br/> {{ admission.address.location | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Postal code") %} <br/> {{ admission.address.postal_code | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.address.city | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.address.country | default:"-" }} </div>
-    </div>
-</div>
-
-<div class="panel-heading">{% trans 'Education' %}</div>
-<div class="panel panel-body">
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("High school diploma") %} <br/> {{ admission.high_school_diploma | yesno }} </div>
-        <div class="col-md-4">{% bootstrap_label _("High school graduation year") %} <br/> {{ admission.high_school_graduation_year | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Last degree level") %} <br/> {{ admission.last_degree_level | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Last degree field") %} <br/> {{ admission.last_degree_field | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Last degree institution") %} <br/> {{ admission.last_degree_institution | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Last degree graduation year") %} <br/> {{ admission.last_degree_graduation_year | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Other educational background") %} <br/> {{ admission.other_educational_background | default:"-" }} </div>
-    </div>
-</div>
-
-<div class="panel-heading">{% trans 'Professional background' %}</div>
-<div class="panel panel-body">
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Professional status") %} <br/> {{ admission.get_professional_status_display | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Current occupation") %} <br/> {{ admission.current_occupation | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Current employer") %} <br/> {{ admission.current_employer | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.get_activity_sector_display | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Past professional activities") %} <br/> {{ admission.past_professional_activities | default:"-" }} </div>
-    </div>
-</div>
-
-<div class="panel-heading">{% trans 'Motivation' %}</div>
-<div class="panel panel-body">
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Motivation") %} <br/> {{ admission.motivation | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Professional impact") %} <br/> {{ admission.professional_impact | default:"-" }} </div>
-    </div>
-</div>
-
-<div class="panel-heading">{% trans 'Formation' %}</div>
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Contact' %}</h4></div>
     <div class="panel panel-body">
         <div class="row form-group">
-            <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation.acronym }} - {{ admission.formation.academic_year }} </div>
-            <div class="col-md-4">{% bootstrap_label _("Courses formula") %} <br/> {{ admission.courses_formula | default:"-" }} </div>
-            <div class="col-md-4">{% bootstrap_label _("Program code") %} <br/> {{ admission.program_code | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Mobile phone") %} <br/> {{ admission.phone_mobile | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Email") %} <br/> {{ admission.email | default:"-" }} </div>
         </div>
         <div class="row form-group">
-            <div class="col-md-4">{% bootstrap_label _("Faculty") %} <br/> {{ admission.get_faculty | default:"-" }} </div>
-            <div class="col-md-4">{% bootstrap_label _("Formation administrator") %} <br/> {{ admission.formation_administrator | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Location") %} <br/> {{ admission.address.location | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Postal code") %} <br/> {{ admission.address.postal_code | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.address.city | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.address.country | default:"-" }} </div>
         </div>
+    </div>
 </div>
 
-<div class="panel-heading">
-    {% trans 'Awareness' %}
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Education' %}</h4></div>
+    <div class="panel panel-body">
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("High school diploma") %} <br/> {{ admission.high_school_diploma | yesno }} </div>
+            <div class="col-md-4">{% bootstrap_label _("High school graduation year") %} <br/> {{ admission.high_school_graduation_year | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Last degree level") %} <br/> {{ admission.last_degree_level | default:"-" }} </div>
+            <div class="col-md-4">{% bootstrap_label _("Last degree field") %} <br/> {{ admission.last_degree_field | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Last degree institution") %} <br/> {{ admission.last_degree_institution | default:"-" }} </div>
+            <div class="col-md-4">{% bootstrap_label _("Last degree graduation year") %} <br/> {{ admission.last_degree_graduation_year | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Other educational background") %} <br/> {{ admission.other_educational_background | default:"-" }} </div>
+        </div>
+    </div>
 </div>
-<div class="panel panel-body">
-    <div class="row form-group">
-        <ul>
-            {% if admission.awareness_ucl_website %}
-            <li>{% trans 'Awareness UCL website' %}</li>
-            {% endif %}
-            {% if admission.awareness_formation_website %}
-            <li>{% trans 'Awareness formation website' %}</li>
-            {% endif %}
-            {% if admission.awareness_press %}
-            <li>{% trans 'Awareness press' %}</li>
-            {% endif %}
-            {% if admission.awareness_facebook %}
-            <li>{% trans 'Awareness Facebook' %}</li>
-            {% endif %}
-            {% if admission.awareness_linkedin %}
-            <li>{% trans 'Awareness LinkedIn' %}</li>
-            {% endif %}
-            {% if admission.awareness_customized_mail %}
-            <li>{% trans 'Awareness customized mail' %}</li>
-            {% endif %}
-            {% if admission.awareness_emailing %}
-            <li>{% trans 'Awareness emailing' %}</li>
-            {% endif %}
-            {% if admission.awareness_other %}
-            <li>{% trans 'Other' %}: {{ admission.awareness_other }}</li>
-            {% endif %}
-        </ul>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Professional background' %}</h4></div>
+    <div class="panel panel-body">
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Professional status") %} <br/> {{ admission.get_professional_status_display | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Current occupation") %} <br/> {{ admission.current_occupation | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Current employer") %} <br/> {{ admission.current_employer | default:"-" }} </div>
+            <div class="col-md-4">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.get_activity_sector_display | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Past professional activities") %} <br/> {{ admission.past_professional_activities | default:"-" }} </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Motivation' %}</h4></div>
+    <div class="panel panel-body">
+        <div class="row form-group">
+            <div class="col-md-4">{% bootstrap_label _("Motivation") %} <br/> {{ admission.motivation | default:"-" }} </div>
+            <div class="col-md-4">{% bootstrap_label _("Professional impact") %} <br/> {{ admission.professional_impact | default:"-" }} </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Formation' %}</h4></div>
+        <div class="panel panel-body">
+            <div class="row form-group">
+                <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation.acronym }} - {{ admission.formation.academic_year }} </div>
+                <div class="col-md-4">{% bootstrap_label _("Courses formula") %} <br/> {{ admission.courses_formula | default:"-" }} </div>
+                <div class="col-md-4">{% bootstrap_label _("Program code") %} <br/> {{ admission.program_code | default:"-" }} </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-4">{% bootstrap_label _("Faculty") %} <br/> {{ admission.get_faculty | default:"-" }} </div>
+                <div class="col-md-4">{% bootstrap_label _("Formation administrator") %} <br/> {{ admission.formation_administrator | default:"-" }} </div>
+            </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Awareness' %}</h4></div>
+    <div class="panel panel-body">
+        <div class="row form-group">
+            <ul>
+                {% if admission.awareness_ucl_website %}
+                <li>{% trans 'Awareness UCL website' %}</li>
+                {% endif %}
+                {% if admission.awareness_formation_website %}
+                <li>{% trans 'Awareness formation website' %}</li>
+                {% endif %}
+                {% if admission.awareness_press %}
+                <li>{% trans 'Awareness press' %}</li>
+                {% endif %}
+                {% if admission.awareness_facebook %}
+                <li>{% trans 'Awareness Facebook' %}</li>
+                {% endif %}
+                {% if admission.awareness_linkedin %}
+                <li>{% trans 'Awareness LinkedIn' %}</li>
+                {% endif %}
+                {% if admission.awareness_customized_mail %}
+                <li>{% trans 'Awareness customized mail' %}</li>
+                {% endif %}
+                {% if admission.awareness_emailing %}
+                <li>{% trans 'Awareness emailing' %}</li>
+                {% endif %}
+                {% if admission.awareness_other %}
+                <li>{% trans 'Other' %}: {{ admission.awareness_other }}</li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
 </div>

@@ -95,7 +95,10 @@ class ViewRegistrationTestCase(TestCase):
         form = RegistrationForm(admission_dict)
         form.is_valid()
         response = self.client.post(url, data=form.cleaned_data)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission_accepted.id]))
+        self.assertRedirects(
+            response,
+            reverse('admission_detail', args=[self.admission_accepted.id])+ "#registration"
+        )
         self.admission_accepted.refresh_from_db()
 
         # verifying that fields are correctly updated
