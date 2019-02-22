@@ -50,12 +50,7 @@
                 <div class="panel panel-body">
                     <div class="row">
                         {% bootstrap_field form.registration_type form_group_class="form-group col-md-4" label=_("Registration type") %}
-                        <div class="form-group col-md-6">
-                            {% bootstrap_label content="&nbsp;" label_class="show" %}
-                            <button id="copy_address_billing" class="btn btn-default" type="button">
-                                {% trans 'Use address for billing' %}
-                            </button>
-                        </div>
+                        {% bootstrap_field form.use_address_for_billing %}
                     </div>
                      <div id="billing_address" class="row">
                         {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-4" label=_("Location") %}
@@ -92,12 +87,7 @@
                 <div class="panel panel-body">
                     <div class="row">
                         {% bootstrap_field form.residence_phone form_group_class="form-group col-md-4" label=_("Residence phone") %}
-                        <div class="form-group col-md-6">
-                            {% bootstrap_label content="&nbsp;" label_class="show" %}
-                            <button id="copy_address_residence" class="btn btn-default" type="button">
-                                {% trans 'Use address for post' %}
-                            </button>
-                        </div>
+                        {% bootstrap_field form.use_address_for_post %}
                     </div>
                      <div id="residence_address"  class="row">
                         {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-4" label=_("Location") %}
@@ -138,26 +128,67 @@
 
 {% block script %}
     <script>
+        //reuse address
         let address = {
             location: "{{admission.address.location | escapejs}}",
             postal_code: "{{admission.address.postal_code | escapejs}}",
             city: "{{admission.address.city | escapejs}}",
             country: "{{admission.address.country_id | escapejs}}",
-        }
+        };
+        let billing_address = {
+            location: "{{admission.billing_address.location | escapejs}}",
+            postal_code: "{{admission.billing_address.postal_code | escapejs}}",
+            city: "{{admission.billing_address.city | escapejs}}",
+            country: "{{admission.billing_address.country_id | escapejs}}",
+        };
+        let residence_address = {
+            location: "{{admission.residence_address.location | escapejs}}",
+            postal_code: "{{admission.residence_address.postal_code | escapejs}}",
+            city: "{{admission.residence_address.city | escapejs}}",
+            country: "{{admission.residence_address.country_id | escapejs}}",
+        };
 
-        $("#copy_address_billing").click(()=>{
-            copy_address("billing");
+        $("#id_use_address_for_billing:checkbox").change(function(){
+            if(this.checked){
+                copy_address("billing");
+            } else {
+                empty_address("billing", billing_address);
+            }
         });
+        // check when page is loaded
+        $("#id_use_address_for_billing:checkbox").prop('checked')?copy_address("billing"):empty_address(("billing"), billing_address);
 
-        $("#copy_address_residence").click(()=>{
-            copy_address("residence")
+        $("#id_use_address_for_post:checkbox").change(function(){
+            if(this.checked){
+                copy_address("residence");
+            } else {
+                empty_address("residence", residence_address);
+            }
+        });
+        //check when page is loaded
+        $("#id_use_address_for_post:checkbox").prop('checked')?copy_address("residence"):empty_address(("residence"), residence_address);
+
+        //re-enable disabled field on form submit
+        $( "#form" ).submit(function( event ) {
+            enableFields(fields_to_enable);
         });
 
         function copy_address(e){
-            $("#id_"+e+"-location").val(address.location);
-            $("#id_"+e+"-postal_code").val(address.postal_code);
-            $("#id_"+e+"-city").val(address.city);
-            $("#id_"+e+"-country").val(address.country);
+            ["location", "postal_code", "city"].forEach(function(field) {
+                $("#id_"+e+"-"+field).val(address[field]);
+                $("#id_"+e+"-"+field).prop("readonly", true);
+            });
+            $("#id_"+e+"-country").val(address['country']);
+            $("#id_"+e+"-country").prop("disabled", true);
+        }
+
+        function empty_address(e, address){
+            ["location", "postal_code", "city"].forEach(function(field) {
+                $("#id_"+e+"-"+field).val(address[field]);
+                $("#id_"+e+"-"+field).prop("readonly", false);
+            });
+            $("#id_"+e+"-country").val(address['country']);
+            $("#id_"+e+"-country").prop("disabled", false);
         }
     </script>
 {% endblock %}

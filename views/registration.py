@@ -23,25 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from datetime import datetime
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
-from base.models import entity_version
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
-from base.models.enums import entity_type
+from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
+from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors
-from continuing_education.forms.search import RegistrationFilterForm
-from continuing_education.business.xls.xls_registration import create_xls_registration
 
 
 @login_required
@@ -90,15 +86,31 @@ def registration_edit(request, admission_id):
     form = RegistrationForm(request.POST or None, instance=admission)
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
     residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
+
+    address = admission.address
+    residence_address = admission.residence_address
+    billing_address = admission.billing_address
+
     errors = []
     if form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
-        billing_address, created = Address.objects.get_or_create(**billing_address_form.cleaned_data)
-        residence_address, created = Address.objects.get_or_create(**residence_address_form.cleaned_data)
+        use_address = {
+            'for_billing': form.cleaned_data['use_address_for_billing'],
+            'for_post': form.cleaned_data['use_address_for_post']
+        }
+        admission.residence_address = residence_address
+        admission.billing_address = billing_address
+        billing_address, residence_address = _update_or_create_billing_and_post_address(
+            address,
+            {'address': billing_address, 'form': billing_address_form},
+            {'address': residence_address, 'form': residence_address_form},
+            use_address,
+        )
         admission = form.save(commit=False)
+        admission.address = address
         admission.billing_address = billing_address
         admission.residence_address = residence_address
         admission.save()
-        return redirect(reverse('admission_detail', kwargs={'admission_id':admission_id}))
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}))
     else:
         errors.append(form.errors)
         display_errors(request, errors)
@@ -114,3 +126,20 @@ def registration_edit(request, admission_id):
             'errors': errors,
         }
     )
+
+
+def _update_or_create_billing_and_post_address(address, billing, residence, use_address):
+    if use_address['for_billing']:
+        billing['address'] = address
+    elif billing['address'] == address:
+        billing['address'], created = Address.objects.get_or_create(**billing['form'].cleaned_data)
+    else:
+        Address.objects.filter(id=billing['address'].id).update(**billing['form'].cleaned_data)
+
+    if use_address['for_post']:
+        residence['address'] = address
+    elif residence['address'] == address:
+        residence['address'], created = Address.objects.get_or_create(**residence['form'].cleaned_data)
+    else:
+        Address.objects.filter(id=residence['address'].id).update(**residence['form'].cleaned_data)
+    return billing['address'], residence['address']
