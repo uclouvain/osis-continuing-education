@@ -88,17 +88,19 @@
     <div class="panel-heading">{% trans 'Student sheet' %}</div>
     <div class="panel panel-body">
         <div class="row form-group">
-            <div class="col-md-3">{% bootstrap_label _("Registration complete") %} <br/> {{ admission.ucl_registration_complete | yesno }} </div>
-            <div class="col-md-3">{% bootstrap_label _("NOMA") %} <br/> {{ admission.noma | default:"-" }} </div>
-            <div class="col-md-3">{% bootstrap_label _("Payment complete") %} <br/> {{ admission.payment_complete | yesno }} </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-md-3">{% bootstrap_label _("Formation spreading") %} <br/> {{ admission.formation_spreading | yesno }} </div>
-            <div class="col-md-6">{% bootstrap_label _("Prior experience validation") %} <br/> {{ admission.prior_experience_validation | yesno }} </div>
-        </div>
-        <div class="row form-group">
-            <div class="col-md-3">{% bootstrap_label _("Assessment presented") %} <br/> {{ admission.assessment_presented | yesno }} </div>
-            <div class="col-md-6">{% bootstrap_label _("Assessment succeeded") %} <br/> {{ admission.assessment_succeeded | yesno }} </div>
+            <div class="col-md-4">
+                {% bootstrap_label _("Registration complete") %} : {{ admission.ucl_registration_complete | yesno }}
+                <br/> {% bootstrap_label _("Payment complete") %} : {{ admission.payment_complete | yesno }}
+                <br/> {% bootstrap_label _("NOMA") %} : {{ admission.noma | default:"-"}}
+            </div>
+            <div class="col-md-4">
+                {% bootstrap_label _("Formation spreading") %} : {{ admission.formation_spreading | yesno }}
+                <br/> {% bootstrap_label _("Prior experience validation") %} : {{ admission.prior_experience_validation | yesno }}
+            </div>
+            <div class="col-md-4">
+                {% bootstrap_label _("Assessment presented") %} : {{ admission.assessment_presented | yesno }}
+                <br/> {% bootstrap_label _("Assessment succeeded") %} : {{ admission.assessment_succeeded | yesno }}
+            </div>
         </div>
     </div>
 
