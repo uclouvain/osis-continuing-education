@@ -26,17 +26,19 @@
 * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-<div class="panel-heading">{% trans 'Identification' %}</div>
-<div class="panel panel-body">
-    <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("First name") %} <br/> {{ admission.person_information.person.first_name | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Last name") %} <br/> {{ admission.person_information.person.last_name | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.get_gender_display | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Citizenship") %} <br/> {{ admission.citizenship | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Birth date") %} <br/> {{ admission.person_information.birth_date | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Birth location") %} <br/> {{ admission.person_information.birth_location | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {{ admission.person_information.birth_country | default:"-" }} </div>
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Identification' %}</h4></div>
+    <div class="panel panel-body">
+        <div class="row form-group">
+            <div class="col-md-3">{% bootstrap_label _("First name") %} <br/> {{ admission.person_information.person.first_name | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Last name") %} <br/> {{ admission.person_information.person.last_name | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.get_gender_display | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Citizenship") %} <br/> {{ admission.citizenship | default:"-" }} </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-3">{% bootstrap_label _("Birth date") %} <br/> {{ admission.person_information.birth_date | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Birth location") %} <br/> {{ admission.person_information.birth_location | default:"-" }} </div>
+            <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {{ admission.person_information.birth_country | default:"-" }} </div>
+        </div>
     </div>
 </div>
