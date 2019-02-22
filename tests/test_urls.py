@@ -72,7 +72,7 @@ class UrlsTestCase(TestCase):
                 pattern_name="registration",
             ),
             dict(
-                url_path="/continuing_education/registration/edit/1",
+                url_path="/continuing_education/registration/edit/1/",
                 pattern_name='registration_edit',
                 kwargs={'admission_id': 1}
             ),
