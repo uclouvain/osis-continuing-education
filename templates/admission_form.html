@@ -36,14 +36,17 @@
 {% block content %}
     <div class="page-header">
         {% if admission_id %}
-            <button type="submit" form="form" class="btn btn-primary pull-right">
-                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
-            </button>
-            <a class="btn btn-default pull-right" style="margin-right: 10px;" id="cancel" href="{% url 'admission' %}">
+            <a class="btn btn-default pull-right" id="cancel" href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
+            <button type="submit" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+            </button>
         {% endif %}
-        <h2>{% trans 'Admission' context 'continuing_education' %}</h2>
+        <h3>
+            {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
+            &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
+        </h3>
     </div>
 
     <form id="form" method="POST" class="post-form">
@@ -188,15 +191,14 @@
 
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
-
-        <div class="panel panel-body">
-            <button type="submit" class="btn btn-primary" title="{%trans 'Save' %}">
-                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
-            </button>
-            <a class="btn btn-default" id="" href="{% url 'admission' %}">
+        {% if admission_id %}
+            <a class="btn btn-default pull-right" id="cancel_bottom" href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
-        </div>
+            <button type="submit" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+            </button>
+        {% endif %}
     </form>
 {% endblock %}
 
