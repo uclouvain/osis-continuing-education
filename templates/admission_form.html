@@ -35,18 +35,21 @@
 
 {% block content %}
     <div class="page-header">
-        {% if admission_id %}
+        {% if admission %}
             <a class="btn btn-default pull-right" id="cancel" href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
             <button type="submit" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;">
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
+            <h3>
+                {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
+                &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
+            </h3>
+        {% else %}
+            <h3>{% trans 'New admission' %}</h3>
         {% endif %}
-        <h3>
-            {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
-            &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
-        </h3>
+
     </div>
 
     <form id="form" method="POST" class="post-form">
@@ -54,7 +57,7 @@
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Identification' %}</h4></div>
             <div class="panel panel-body">
-                {% if admission_id is None %}
+                {% if admission is None %}
                 <div class="row">
                     {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("Person") %}
                 </div>
@@ -191,7 +194,7 @@
 
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
-        {% if admission_id %}
+        {% if admission %}
             <a class="btn btn-default pull-right" id="cancel_bottom" href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
