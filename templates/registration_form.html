@@ -34,21 +34,21 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <a class="btn btn-default pull-right" id="cancel_registration_edit" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
-        </a>
-        <button type="submit" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;">
-            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
-        </button>
-        <h3>
-            {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
-            &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
-        </h3>
-    </div>
-
     <form id="form" method="POST" class="post-form">
-        {% csrf_token %}
+    {% csrf_token %}
+        <div class="page-header">
+            <a class="btn btn-default pull-right" id="cancel_registration_edit" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
+            </a>
+            <button type="submit" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+            </button>
+            <h3>
+                {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
+                &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
+            </h3>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Billing' %}</h4></div>
             <div class="panel panel-body">
