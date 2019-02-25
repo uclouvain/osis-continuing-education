@@ -47,6 +47,12 @@
                 &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
             </h3>
         {% else %}
+            <a class="btn btn-default pull-right" id="cancel" href="{% url 'admission' %}">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
+            </a>
+            <button type="submit" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;">
+                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+            </button>
             <h3>{% trans 'New admission' %}</h3>
         {% endif %}
 
@@ -198,10 +204,15 @@
             <a class="btn btn-default pull-right" id="cancel_bottom" href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
-            <button type="submit" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;">
-                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
-            </button>
+        {% else %}
+            <a class="btn btn-default pull-right" id="cancel_bottom" href="{% url 'admission' %}">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
+            </a>
         {% endif %}
+        <button type="submit" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+        </button>
+
     </form>
 {% endblock %}
 
