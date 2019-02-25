@@ -393,7 +393,7 @@ class Admission(SerializableModel):
             if entity and entity.entity_type == FACULTY:
                 return management_entity
             else:
-                _get_faculty_parent(management_entity)
+                return _get_faculty_parent(management_entity)
         else:
             return None
 
