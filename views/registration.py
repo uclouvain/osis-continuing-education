@@ -83,27 +83,26 @@ def _get_formations_by_faculty(faculty):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def registration_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
+    address = admission.address
+    billing_address = admission.billing_address
+    residence_address = admission.residence_address
     form = RegistrationForm(request.POST or None, instance=admission)
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
     residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
 
-    address = admission.address
-    residence_address = admission.residence_address
-    billing_address = admission.billing_address
-
     errors = []
     if form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
-        use_address = {
-            'for_billing': form.cleaned_data['use_address_for_billing'],
-            'for_post': form.cleaned_data['use_address_for_post']
-        }
-        admission.residence_address = residence_address
-        admission.billing_address = billing_address
-        billing_address, residence_address = _update_or_create_billing_and_post_address(
-            address,
-            {'address': billing_address, 'form': billing_address_form},
-            {'address': residence_address, 'form': residence_address_form},
-            use_address,
+        billing_address = _update_or_create_specific_address(
+            admission.address,
+            billing_address,
+            billing_address_form,
+            form.cleaned_data['use_address_for_billing']
+        )
+        residence_address = _update_or_create_specific_address(
+            admission.address,
+            residence_address,
+            residence_address_form,
+            form.cleaned_data['use_address_for_post']
         )
         admission = form.save(commit=False)
         admission.address = address
@@ -128,18 +127,13 @@ def registration_edit(request, admission_id):
     )
 
 
-def _update_or_create_billing_and_post_address(address, billing, residence, use_address):
-    if use_address['for_billing']:
-        billing['address'] = address
-    elif billing['address'] == address:
-        billing['address'], created = Address.objects.get_or_create(**billing['form'].cleaned_data)
+def _update_or_create_specific_address(admission_address, specific_address, specific_address_form, use_address):
+    if use_address:
+        return admission_address
+    elif specific_address == admission_address:
+        # We must create a new specific address, not update the admission's address.
+        specific_address = Address.objects.create(**specific_address_form.cleaned_data)
+        return specific_address
     else:
-        Address.objects.filter(id=billing['address'].id).update(**billing['form'].cleaned_data)
-
-    if use_address['for_post']:
-        residence['address'] = address
-    elif residence['address'] == address:
-        residence['address'], created = Address.objects.get_or_create(**residence['form'].cleaned_data)
-    else:
-        Address.objects.filter(id=residence['address'].id).update(**residence['form'].cleaned_data)
-    return billing['address'], residence['address']
+        specific_address = specific_address_form.save()
+        return specific_address
