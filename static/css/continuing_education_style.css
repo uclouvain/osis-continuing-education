@@ -133,3 +133,7 @@ label.required:after{
 #button-state {
     pointer-events: none;
 }
+
+.panel-border-top{
+    border-top: 1px solid #DDDDDD;
+}
