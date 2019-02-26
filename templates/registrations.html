@@ -100,7 +100,7 @@
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="6">
+                        <td colspan="8">
                             {% bootstrap_pagination admissions extra=request.GET.urlencode %}
                         </td>
                     </tr>
@@ -154,7 +154,11 @@
                 "order": [[ 3, "asc" ]],
                 "paging": false,
                 "info": false,
-                "bFilter": false
+                "bFilter": false,
+                "language":
+                {
+                    "sEmptyTable": "{% trans 'No data available in table'%}",
+                }
             } );
         } );
 
