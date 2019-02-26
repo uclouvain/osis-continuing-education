@@ -97,9 +97,20 @@
                 </tfoot>
                 {% for archive in archives %}
                     <tr>
-                        <td><a href="{% url 'admission_detail' admission_id=archive.id %}">
-                            {{ archive.person_information.person.last_name }}
-                        </a>
+                        <td>
+                            {% if archive.is_admission %}
+                                <a href="{% url 'admission_detail' admission_id=archive.id %}">
+                                    {{ archive.person_information.person.last_name }}
+                                </a>
+                            {% endif %}
+                            {% if archive.is_registration %}
+                                <a href="{% url 'admission_detail' admission_id=archive.id %}#registration">
+                                    {{ archive.person_information.person.last_name }}
+                                </a>
+                            {% endif %}
+                            {% if not archive.is_admission and not archive.is_registration %}
+                                {{ archive.person_information.person.last_name }}
+                            {% endif %}
                         </td>
                         <td>{{ archive.person_information.person.first_name }}</td>
                         <td>{{ archive.email }}</td>
