@@ -399,15 +399,10 @@ class Admission(SerializableModel):
         return self.state == admission_state_choices.VALIDATED
 
     def is_registration(self):
-        if self.is_accepted() or self.is_validated() or self.is_registration_submitted():
-            return True
-        return False
+        return self.is_accepted() or self.is_validated() or self.is_registration_submitted()
 
     def is_admission(self):
-        if self.is_waiting() or self.is_rejected() or self.is_submitted():
-            return True
-        else:
-            return False
+        return self.is_waiting() or self.is_rejected() or self.is_submitted()
 
     def get_faculty(self):
         education_group_year = self.formation

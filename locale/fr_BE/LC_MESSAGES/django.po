@@ -522,7 +522,7 @@ msgstr "Non"
 #: templates/admissions.html:134 templates/archives.html:144
 #: templates/registrations.html:160
 msgid "No data"
-msgstr ""
+msgstr "Pas de données"
 
 #: templates/fragment/tab_documents.html:38
 msgid "No document available"
