@@ -74,7 +74,7 @@
                         </button>
                     </div>
                 </div>
-                <input type="hidden" id="xls_status" name="xls_status">
+                {% include 'blocks/xls_button.html' %}
             </form>
         </div>
         <div class="panel panel-body">
@@ -95,12 +95,12 @@
                         <th class="searchable">{% trans 'Faculty' %}</th>
                         <th class="searchable">{% trans 'Registered' %}</th>
                         <th class="searchable">{% trans 'Paid' %}</th>
-                        <th class="searchable">{% trans 'Status' %}</th>
+                        <th class="searchable">{% trans 'State' %}</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="6">
+                        <td colspan="8">
                             {% bootstrap_pagination admissions extra=request.GET.urlencode %}
                         </td>
                     </tr>
@@ -154,7 +154,11 @@
                 "order": [[ 3, "asc" ]],
                 "paging": false,
                 "info": false,
-                "bFilter": false
+                "bFilter": false,
+                "language":
+                {
+                    "sEmptyTable": "{% trans 'No data' %}",
+                }
             } );
         } );
 
@@ -162,12 +166,8 @@
             prepare_xls(e, 'xls_registrations');
         });
 
-        function prepare_xls(e, action_value){
-            e.preventDefault();
-            var status = $("#xls_status");
-            status.val(action_value);
-            $("#search_form").submit();
-            status.val('');
-        }
     </script>
+
+    <script src="{% static 'js/continuing_xls.js' %}"></script>
+
 {% endblock %}

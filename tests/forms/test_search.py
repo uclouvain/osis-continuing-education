@@ -30,17 +30,19 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.models.enums.admission_state_choices import REJECTED, ARCHIVE_STATE_CHOICES
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm
+from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, ArchiveFilterForm, \
+    STATES_FOR_ARCHIVE, ALL_CHOICE
 from base.models.enums.entity_type import FACULTY
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
+from operator import itemgetter
 
 
-class TestAdmissionFilterForm(TestCase):
+class TestFilterForm(TestCase):
 
     def setUp(self):
         current_academic_yr = create_current_academic_year()
@@ -96,6 +98,9 @@ class TestAdmissionFilterForm(TestCase):
                                                        state=REGISTRATION_SUBMITTED,
                                                        ucl_registration_complete=False,
                                                        payment_complete=True)
+        self.archived_submitted = AdmissionFactory(formation=self.education_group_yr_1,
+                                                   state=SUBMITTED,
+                                                   archived=True)
 
     def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
@@ -109,7 +114,7 @@ class TestAdmissionFilterForm(TestCase):
                                                                        self.education_group_yr_2,
                                                                        self.education_group_yr_4])
 
-    def test_queryset_state_init(self):
+    def test_queryset_registration_state_init(self):
         form = RegistrationFilterForm()
         self.assertListEqual(list(form.fields['state'].choices),
                              [('', pgettext_lazy("plural", "All")),
@@ -203,3 +208,17 @@ class TestAdmissionFilterForm(TestCase):
         if form.is_valid():
             results = form.get_registrations()
             self.assertCountEqual(results, [self.registration_accepted])
+
+    def test_get_archives_by_state_criteria(self):
+        form = ArchiveFilterForm({"state": SUBMITTED})
+        if form.is_valid():
+            results = form.get_archives()
+            self.assertCountEqual(results, [self.archived_submitted])
+            self.assertEqual(form.fields['state'].choices,
+                             [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
+
+    def test_get_archives_state_choices(self):
+        form = ArchiveFilterForm()
+        if form.is_valid():
+            self.assertEqual(form.fields['state'].choices,
+                             [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
