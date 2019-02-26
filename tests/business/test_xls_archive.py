@@ -23,15 +23,13 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import random
 
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
 
 from continuing_education.forms.search import ArchiveFilterForm
-
-from continuing_education.business.xls.xls_archive import ARCHIVE_TITLES, XLS_DESCRIPTION, XLS_FILENAME,  WORKSHEET_TITLE, \
-    create_xls, prepare_xls_content
+from continuing_education.business.xls.xls_archive import ARCHIVE_TITLES, XLS_DESCRIPTION, XLS_FILENAME,  \
+    WORKSHEET_TITLE, create_xls, prepare_xls_content
 from osis_common.document import xls_build
 from base.tests.factories.user import UserFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -40,7 +38,6 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
 from base.models.enums import entity_type
-from continuing_education.forms.search import STATES_FOR_ARCHIVE
 
 FACULTY_ACRONYM = "AGRO"
 
@@ -60,7 +57,7 @@ class TestArchiveXls(TestCase):
         )
         self.admission = AdmissionFactory(
             formation=self.formation,
-            state=random.choices(STATES_FOR_ARCHIVE),
+            state=SUBMITTED,
             archived=True
         )
 

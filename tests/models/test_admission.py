@@ -33,6 +33,11 @@ from continuing_education.models import admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from base.tests.factories.business.entities import create_entities_hierarchy
+from base.models.enums.entity_type import SCHOOL, FACULTY
+from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity import EntityFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 
 
 class TestAdmission(TestCase):
@@ -79,3 +84,31 @@ class TestAdmission(TestCase):
         self.assertIn(_(self.admission.state), str(message_content['template_base_data']))
         receivers = mock_send.call_args[0][0]['receivers']
         self.assertIn(self.admission.person_information.person.user.email, str(receivers))
+
+
+class TestAdmissionGetFaculty(TestCase):
+
+    def setUp(self):
+        entities = create_entities_hierarchy()
+        self.faculty = entities['child_one_entity_version']
+
+        child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
+        self.child_entity_version = EntityVersionFactory(acronym="CHILD_1_UNDER_FAC",
+                                                         parent=self.faculty.entity,
+                                                         entity_type=SCHOOL,
+                                                         end_date=None,
+                                                         entity=child_entity,
+                                                         start_date=entities['start_date'])
+
+    def test_get_faculty(self):
+        an_admission = AdmissionFactory(
+            formation=EducationGroupYearFactory(management_entity=self.faculty.entity)
+        )
+
+        self.assertEqual(an_admission.get_faculty(), self.faculty.entity)
+
+    def test_get_parent_faculty(self):
+        an_admission = AdmissionFactory(
+            formation=EducationGroupYearFactory(management_entity=self.child_entity_version.entity)
+        )
+        self.assertEqual(an_admission.get_faculty(), self.faculty.entity)

@@ -25,6 +25,7 @@ from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from operator import itemgetter
+from base.business.entity import get_entities_ids
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
@@ -178,16 +179,17 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
         qs = Admission.objects.all()
 
     if faculty:
-        formations = _get_formations_by_faculty(faculty)
-        qs = qs.filter(
-            formation__acronym__in=formations
+        qs = _get_filter_entity_management(
+            qs,
+            faculty.acronym,
+            True
         )
 
     if formation:
         qs = qs.filter(formation=formation)
 
     qs = qs.filter(archived=archived_status)
-
+    
     return qs.order_by('person_information')
 
 
@@ -214,3 +216,8 @@ def _build_formation_choices(field, states, archived_status=False):
 
 def _get_state_choices(choices):
     return [ALL_CHOICE] + sorted(choices, key=itemgetter(1))
+
+
+def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
+    entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
+    return qs.filter(formation__management_entity__in=entity_ids)

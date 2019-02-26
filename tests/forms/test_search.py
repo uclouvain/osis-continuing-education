@@ -37,6 +37,8 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, ArchiveFilterForm, \
     STATES_FOR_ARCHIVE, ALL_CHOICE
 from base.models.enums.entity_type import FACULTY
+from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm
+from base.models.enums.entity_type import FACULTY, SCHOOL
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
 from operator import itemgetter
@@ -65,10 +67,15 @@ class TestFilterForm(TestCase):
                                                   end_date=None,
                                                   start_date=self.start_date)
 
-        self.fac_3_version = EntityVersionFactory(acronym="ESPO",
-                                                  entity_type=FACULTY,
-                                                  end_date=None,
-                                                  start_date=self.start_date)
+        self.fac_3_version_with_child = EntityVersionFactory(acronym="ESPO",
+                                                             entity_type=FACULTY,
+                                                             end_date=None,
+                                                             start_date=self.start_date)
+        self.fac_3_child_version = EntityVersionFactory(acronym="ESPO_child",
+                                                        entity_type=SCHOOL,
+                                                        end_date=None,
+                                                        start_date=self.start_date,
+                                                        parent=self.fac_3_version_with_child.entity)
 
         self.education_group_yr_1 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='A_FORM',
                                                               management_entity=self.fac_1_version.entity)
@@ -77,9 +84,16 @@ class TestFilterForm(TestCase):
                                                               management_entity=self.fac_1_version.entity)
         self.education_group_yr_4 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='D_FORM',
                                                               management_entity=self.fac_2_version.entity)
-        self.education_group_yr_5 = EducationGroupYearFactory(academic_year=next_academic_yr,
-                                                              acronym='E_FORM',
-                                                              management_entity=self.fac_3_version.entity)
+        self.education_group_yr_on_faculty = EducationGroupYearFactory(
+            academic_year=next_academic_yr,
+            acronym='E_FORM',
+            management_entity=self.fac_3_version_with_child.entity
+        )
+        self.education_group_yr_on_faculty_child = EducationGroupYearFactory(
+            academic_year=next_academic_yr,
+            acronym='E_FORM_Child',
+            management_entity=self.fac_3_child_version.entity
+        )
 
         self.admission_submitted_1 = AdmissionFactory(formation=self.education_group_yr_1, state=SUBMITTED)
 
@@ -90,7 +104,7 @@ class TestFilterForm(TestCase):
         self.admission_draft = AdmissionFactory(formation=self.education_group_yr_4, state=DRAFT)
         self.admission_submitted_2 = AdmissionFactory(formation=self.education_group_yr_4, state=SUBMITTED)
 
-        self.registration_accepted = AdmissionFactory(formation=self.education_group_yr_5,
+        self.registration_accepted = AdmissionFactory(formation=self.education_group_yr_on_faculty,
                                                       state=ACCEPTED,
                                                       ucl_registration_complete=True,
                                                       payment_complete=False)
@@ -105,7 +119,7 @@ class TestFilterForm(TestCase):
     def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
         self.assertListEqual(list(form.fields['faculty'].queryset),
-                             [self.fac_2_version, self.fac_1_version, self.fac_3_version])
+                             [self.fac_2_version, self.fac_1_version, self.fac_3_version_with_child])
 
     def test_queryset_formation_init(self):
         form = AdmissionFilterForm()
@@ -145,6 +159,17 @@ class TestFilterForm(TestCase):
             results = form.get_admissions()
             self.assertCountEqual(results, [self.admission_submitted_1, self.admission_waiting])
 
+    def test_get_admissions_by_faculty_criteria_get_child_too(self):
+        an_admission_submitted_1 = AdmissionFactory(formation=self.education_group_yr_on_faculty,
+                                                    state=SUBMITTED)
+        an_admission_submitted_2 = AdmissionFactory(formation=self.education_group_yr_on_faculty_child,
+                                                    state=SUBMITTED)
+
+        form = AdmissionFilterForm({"faculty": self.fac_3_version_with_child})
+        if form.is_valid():
+            results = form.get_admissions()
+            self.assertCountEqual(results, [an_admission_submitted_1, an_admission_submitted_2])
+
     def test_get_admissions_by_faculty_and_formation_criteria(self):
         form = AdmissionFilterForm({"faculty": self.fac_1_version, "formation": self.education_group_yr_1})
         if form.is_valid():
@@ -181,7 +206,7 @@ class TestFilterForm(TestCase):
             results = form.get_registrations()
             self.assertCountEqual(results, [self.registration_submitted])
 
-        form = RegistrationFilterForm({"faculty": self.fac_1_version, "formation": self.education_group_yr_5})
+        form = RegistrationFilterForm({"faculty": self.fac_1_version, "formation": self.education_group_yr_on_faculty})
         if form.is_valid():
             results = form.get_registrations()
             self.assertCountEqual(results, [])
