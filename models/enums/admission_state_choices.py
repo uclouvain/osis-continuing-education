@@ -71,3 +71,12 @@ REGISTRATION_STATE_CHOICES = (
     (REGISTRATION_SUBMITTED, _('Registration submitted')),
     (VALIDATED, _('Validated')),
 )
+
+ARCHIVE_STATE_CHOICES = (
+    (ACCEPTED, _('Accepted')),
+    (REJECTED, _('Rejected')),
+    (WAITING, _('Waiting')),
+    (SUBMITTED, _('Submitted')),
+    (REGISTRATION_SUBMITTED, _('Registration submitted')),
+    (VALIDATED, _('Validated')),
+)

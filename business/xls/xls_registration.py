@@ -66,7 +66,7 @@ def extract_xls_data_from_registration(registration):
         registration.person_information.person.last_name,
         registration.person_information.person.first_name,
         registration.email,
-        registration.formation,
+        registration.formation_display,
         registration.get_faculty() if registration.get_faculty() else '',
         _('Yes') if registration.ucl_registration_complete else _('No'),
         _('Yes') if registration.payment_complete else _('No'),

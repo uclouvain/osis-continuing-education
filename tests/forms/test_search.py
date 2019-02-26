@@ -30,17 +30,21 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.models.enums.admission_state_choices import REJECTED, ARCHIVE_STATE_CHOICES
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, ArchiveFilterForm, \
+    STATES_FOR_ARCHIVE, ALL_CHOICE
+from base.models.enums.entity_type import FACULTY
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm
 from base.models.enums.entity_type import FACULTY, SCHOOL
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
+from operator import itemgetter
 
 
-class TestAdmissionFilterForm(TestCase):
+class TestFilterForm(TestCase):
 
     def setUp(self):
         current_academic_yr = create_current_academic_year()
@@ -64,14 +68,14 @@ class TestAdmissionFilterForm(TestCase):
                                                   start_date=self.start_date)
 
         self.fac_3_version_with_child = EntityVersionFactory(acronym="ESPO",
-                                                  entity_type=FACULTY,
-                                                  end_date=None,
-                                                  start_date=self.start_date)
+                                                             entity_type=FACULTY,
+                                                             end_date=None,
+                                                             start_date=self.start_date)
         self.fac_3_child_version = EntityVersionFactory(acronym="ESPO_child",
-                                                  entity_type=SCHOOL,
-                                                  end_date=None,
-                                                  start_date=self.start_date,
-                                                  parent=self.fac_3_version_with_child.entity)
+                                                        entity_type=SCHOOL,
+                                                        end_date=None,
+                                                        start_date=self.start_date,
+                                                        parent=self.fac_3_version_with_child.entity)
 
         self.education_group_yr_1 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='A_FORM',
                                                               management_entity=self.fac_1_version.entity)
@@ -80,12 +84,16 @@ class TestAdmissionFilterForm(TestCase):
                                                               management_entity=self.fac_1_version.entity)
         self.education_group_yr_4 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='D_FORM',
                                                               management_entity=self.fac_2_version.entity)
-        self.education_group_yr_on_faculty = EducationGroupYearFactory(academic_year=next_academic_yr,
-                                                              acronym='E_FORM',
-                                                              management_entity=self.fac_3_version_with_child.entity)
-        self.education_group_yr_on_faculty_child = EducationGroupYearFactory(academic_year=next_academic_yr,
-                                                              acronym='E_FORM_Child',
-                                                              management_entity=self.fac_3_child_version.entity)
+        self.education_group_yr_on_faculty = EducationGroupYearFactory(
+            academic_year=next_academic_yr,
+            acronym='E_FORM',
+            management_entity=self.fac_3_version_with_child.entity
+        )
+        self.education_group_yr_on_faculty_child = EducationGroupYearFactory(
+            academic_year=next_academic_yr,
+            acronym='E_FORM_Child',
+            management_entity=self.fac_3_child_version.entity
+        )
 
         self.admission_submitted_1 = AdmissionFactory(formation=self.education_group_yr_1, state=SUBMITTED)
 
@@ -104,6 +112,9 @@ class TestAdmissionFilterForm(TestCase):
                                                        state=REGISTRATION_SUBMITTED,
                                                        ucl_registration_complete=False,
                                                        payment_complete=True)
+        self.archived_submitted = AdmissionFactory(formation=self.education_group_yr_1,
+                                                   state=SUBMITTED,
+                                                   archived=True)
 
     def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
@@ -117,7 +128,7 @@ class TestAdmissionFilterForm(TestCase):
                                                                        self.education_group_yr_2,
                                                                        self.education_group_yr_4])
 
-    def test_queryset_state_init(self):
+    def test_queryset_registration_state_init(self):
         form = RegistrationFilterForm()
         self.assertListEqual(list(form.fields['state'].choices),
                              [('', pgettext_lazy("plural", "All")),
@@ -222,3 +233,17 @@ class TestAdmissionFilterForm(TestCase):
         if form.is_valid():
             results = form.get_registrations()
             self.assertCountEqual(results, [self.registration_accepted])
+
+    def test_get_archives_by_state_criteria(self):
+        form = ArchiveFilterForm({"state": SUBMITTED})
+        if form.is_valid():
+            results = form.get_archives()
+            self.assertCountEqual(results, [self.archived_submitted])
+            self.assertEqual(form.fields['state'].choices,
+                             [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
+
+    def test_get_archives_state_choices(self):
+        form = ArchiveFilterForm()
+        if form.is_valid():
+            self.assertEqual(form.fields['state'].choices,
+                             [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
