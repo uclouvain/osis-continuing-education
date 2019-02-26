@@ -364,6 +364,11 @@ class Admission(SerializableModel):
         verbose_name=_("Sessions")
     )
 
+    archived = models.BooleanField(
+        default=False,
+        verbose_name=_("Archived")
+    )
+
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
 
