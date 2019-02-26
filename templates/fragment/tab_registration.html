@@ -40,8 +40,6 @@
     <div class="panel panel-body">
         <div class="row form-group">
             <div class="col-md-3">{% bootstrap_label _("Registration type") %} <br/> {{ admission.registration_type | default:"-" }} </div>
-        </div>
-        <div class="row form-group">
             <div class="col-md-3">{% bootstrap_label _("Head office name") %} <br/> {{ admission.head_office_name | default:"-" }} </div>
             <div class="col-md-3">{% bootstrap_label _("Company number") %} <br/> {{ admission.company_number | default:"-" }} </div>
             <div class="col-md-3">{% bootstrap_label _("VAT number") %} <br/> {{ admission.vat_number | default:"-" }} </div>

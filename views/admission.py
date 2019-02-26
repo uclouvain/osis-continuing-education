@@ -182,6 +182,8 @@ def admission_form(request, admission_id=None):
 
         admission = adm_form.save(commit=False)
         admission.address = address
+        admission.billing_address = address
+        admission.residence_address = address
         if not admission.person_information:
             admission.person_information = person
         admission.save()
