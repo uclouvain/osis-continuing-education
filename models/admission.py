@@ -369,6 +369,14 @@ class Admission(SerializableModel):
         verbose_name=_("Archived")
     )
 
+    @property
+    def formation_display(self):
+        return "{}{} - {}".format(
+            "{} - ".format(self.formation.partial_acronym) if self.formation.partial_acronym else "",
+            self.formation.acronym,
+            self.formation.academic_year,
+        )
+
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
 
@@ -389,6 +397,12 @@ class Admission(SerializableModel):
 
     def is_validated(self):
         return self.state == admission_state_choices.VALIDATED
+
+    def is_registration(self):
+        return self.is_accepted() or self.is_validated() or self.is_registration_submitted()
+
+    def is_admission(self):
+        return self.is_waiting() or self.is_rejected() or self.is_submitted()
 
     def get_faculty(self):
         education_group_year = self.formation
