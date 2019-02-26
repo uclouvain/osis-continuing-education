@@ -214,4 +214,3 @@ def _build_formation_choices(field, states, archived_status=False):
 
 def _get_state_choices(choices):
     return [ALL_CHOICE] + sorted(choices, key=itemgetter(1))
-

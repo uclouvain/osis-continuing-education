@@ -56,4 +56,3 @@ def list_archives(request):
         'archives': archives,
         'search_form': search_form
     })
-
