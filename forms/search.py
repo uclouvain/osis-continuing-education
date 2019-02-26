@@ -189,7 +189,7 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
         qs = qs.filter(formation=formation)
 
     qs = qs.filter(archived=archived_status)
-    
+
     return qs.order_by('person_information')
 
 
