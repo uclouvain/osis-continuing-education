@@ -38,5 +38,6 @@ class RegistrationForm(ModelForm):
             'prior_experience_validation',
             'assessment_presented',
             'assessment_succeeded',
+            'registration_file_received',
             'sessions'
         ]

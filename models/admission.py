@@ -356,6 +356,10 @@ class Admission(SerializableModel):
         default=False,
         verbose_name=_("Assessment succeeded")
     )
+    registration_file_received = models.BooleanField(
+        default=False,
+        verbose_name=_("Registration file received")
+    )
 
     # TODO:: Add dates of followed courses
     sessions = models.CharField(
