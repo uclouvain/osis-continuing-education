@@ -23,19 +23,18 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+from django.contrib.admin import ModelAdmin
 from django.db import models
+from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
-from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
 
-
-class ProspectAdmin(SerializableModelAdmin):
+class ProspectAdmin(ModelAdmin):
     list_display = ('first_name', 'name', 'email', 'postal_code')
     search_fields = ['first_name', 'name', 'email', 'postal_code']
 
 
-class Prospect(SerializableModel):
+class Prospect(Model):
     name = models.CharField(
         max_length=250,
         blank=True,
