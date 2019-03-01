@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,21 +23,17 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from rest_framework import serializers
 
-from continuing_education.models.prospect import Prospect
+import factory
 
 
-class ProspectSerializer(serializers.HyperlinkedModelSerializer):
-
+class ProspectFactory(factory.DjangoModelFactory):
     class Meta:
-        model = Prospect
-        fields = (
-            'uuid',
-            'name',
-            'first_name',
-            'postal_code',
-            'city',
-            'email',
-            'phone_number'
-        )
+        model = 'continuing_education.prospect'
+
+    name = factory.Faker('name_test')
+    first_name = factory.Faker('first_name_test')
+    postal_code = factory.Faker('zipcode')
+    city = factory.Faker('city_of_test')
+    email = factory.Faker('test@test.test')
+    phone_number = factory.Faker('0400123456')
