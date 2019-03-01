@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,17 +23,28 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.test import TestCase, RequestFactory
+from django.urls import reverse
 
-import factory
+from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.tests.factories.prospect import ProspectFactory
 
 
-class ProspectFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = 'continuing_education.prospect'
+class ProspectSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.prospect = ProspectFactory()
+        url = reverse('continuing_education_api_v1:address-list-create')
+        cls.serializer = AddressSerializer(cls.prospect, context={'request': RequestFactory().get(url)})
 
-    name = factory.Faker('last_name')
-    first_name = factory.Faker('first_name')
-    postal_code = factory.Faker('zipcode')
-    city = factory.Faker('city')
-    email = factory.Faker('email')
-    phone_number = factory.Faker('phone_number')
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'uuid',
+            'name',
+            'first_name',
+            'postal_code',
+            'city',
+            'email',
+            'phone_number'
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
