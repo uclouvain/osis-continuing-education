@@ -26,7 +26,7 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from continuing_education.api.serializers.address import AddressSerializer
+from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.tests.factories.prospect import ProspectFactory
 
 
@@ -34,11 +34,12 @@ class ProspectSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.prospect = ProspectFactory()
-        url = reverse('continuing_education_api_v1:address-list-create')
-        cls.serializer = AddressSerializer(cls.prospect, context={'request': RequestFactory().get(url)})
+        url = reverse('continuing_education_api_v1:prospect-list-create')
+        cls.serializer = ProspectSerializer(cls.prospect, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
         expected_fields = [
+            'url',
             'uuid',
             'name',
             'first_name',

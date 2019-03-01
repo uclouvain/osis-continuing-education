@@ -29,10 +29,15 @@ from continuing_education.models.prospect import Prospect
 
 
 class ProspectSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='continuing_education_api_v1:prospect-detail-update-delete',
+        lookup_field='uuid'
+    )
 
     class Meta:
         model = Prospect
         fields = (
+            'url',
             'uuid',
             'name',
             'first_name',

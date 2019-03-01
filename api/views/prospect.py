@@ -25,6 +25,7 @@
 ##############################################################################
 from rest_framework import generics
 
+from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.models.prospect import Prospect
 
 
@@ -46,6 +47,7 @@ class ProspectListCreate(generics.ListCreateAPIView):
         'email',
         'postal_code'
     )
+    serializer_class = ProspectSerializer
 
 
 class ProspectDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -54,4 +56,5 @@ class ProspectDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
     name = 'prospect-detail-update-delete'
     queryset = Prospect.objects.all()
-    lookup_field = 'id'
+    lookup_field = 'uuid'
+    serializer_class = ProspectSerializer
