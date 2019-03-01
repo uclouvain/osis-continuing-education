@@ -24,28 +24,47 @@
 #
 ##############################################################################
 
-from django.contrib import admin
+from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.models import *
-from continuing_education.models import file
+from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
 
-admin.site.register(
-    admission.Admission,
-    admission.AdmissionAdmin
-)
-admin.site.register(
-    continuing_education_person.ContinuingEducationPerson,
-    continuing_education_person.ContinuingEducationPersonAdmin
-)
-admin.site.register(
-    address.Address,
-    address.AddressAdmin
-)
-admin.site.register(
-    file.AdmissionFile,
-    file.AdmissionFileAdmin
-)
-admin.site.register(
-    prospect.Prospect,
-    prospect.ProspectAdmin
-)
+
+class ProspectAdmin(SerializableModelAdmin):
+    list_display = ('first_name', 'name', 'email', 'postal_code')
+    search_fields = ['first_name', 'name', 'email', 'postal_code']
+
+
+class Prospect(SerializableModel):
+    name = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name=_('Name')
+    )
+    first_name = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name=_('First name')
+    )
+    postal_code = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name=_('Postal code')
+    )
+    city = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name=_('City')
+    )
+    email = models.EmailField(
+        max_length=255,
+        verbose_name=_("Email")
+    )
+    phone_number = models.CharField(
+        max_length=30,
+        blank=True,
+        verbose_name=_("Phone number")
+    )
+
+    def __str__(self):
+        return "{} - {} {}".format(self.id, self.first_name, self.name)
