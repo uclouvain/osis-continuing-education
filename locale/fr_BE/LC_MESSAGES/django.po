@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-27 13:42+0100\n"
+"POT-Creation-Date: 2019-03-01 14:07+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -105,12 +105,12 @@ msgid "Archives_list"
 msgstr "Liste_archives"
 
 #: models/admission.py:353 templates/fragment/tab_registration.html:107
-#: templates/registration_form.html:124
+#: templates/registration_form.html:125
 msgid "Assessment presented"
 msgstr "A présenté l'épreuve d'évaluation"
 
 #: models/admission.py:357 templates/fragment/tab_registration.html:108
-#: templates/registration_form.html:125
+#: templates/registration_form.html:126
 msgid "Assessment succeeded"
 msgstr "A réussi l'épreuve d'évaluation"
 
@@ -197,7 +197,7 @@ msgstr "Parcourir"
 #: templates/fragment/upload_file_modal.html:77
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:41
-#: templates/registration_form.html:137
+#: templates/registration_form.html:135
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -212,7 +212,7 @@ msgstr "Nombre d'enfants"
 msgid "Citizenship"
 msgstr "Nationalité"
 
-#: models/address.py:25 templates/admission_form.html:97
+#: models/address.py:25 models/prospect.py:57 templates/admission_form.html:97
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:51
 #: templates/fragment/tab_registration.html:83
@@ -313,9 +313,9 @@ msgstr "Education"
 
 #: business/xls/xls_admission.py:35 business/xls/xls_archive.py:35
 #: business/xls/xls_registration.py:36 models/admission.py:108
-#: templates/admission_form.html:91 templates/admissions.html:85
-#: templates/archives.html:85 templates/fragment/tab_admission.html:42
-#: templates/registrations.html:93
+#: models/prospect.py:61 templates/admission_form.html:91
+#: templates/admissions.html:85 templates/archives.html:85
+#: templates/fragment/tab_admission.html:42 templates/registrations.html:93
 msgid "Email"
 msgstr "Email"
 
@@ -347,8 +347,9 @@ msgstr "Le fichier a bien été supprimé"
 
 #: business/admission.py:158 business/xls/xls_admission.py:34
 #: business/xls/xls_archive.py:34 business/xls/xls_registration.py:35
-#: templates/admission_form.html:73 templates/admissions.html:84
-#: templates/archives.html:84 templates/fragment/section_identification.html:34
+#: models/prospect.py:47 templates/admission_form.html:73
+#: templates/admissions.html:84 templates/archives.html:84
+#: templates/fragment/section_identification.html:34
 #: templates/registrations.html:92 tests/business/test_admission.py:38
 msgid "First name"
 msgstr "Prénom"
@@ -369,7 +370,7 @@ msgid "Formation administrator"
 msgstr "Gestionnaire de formation"
 
 #: models/admission.py:345 templates/fragment/tab_registration.html:103
-#: templates/registration_form.html:120
+#: templates/registration_form.html:121
 msgid "Formation spreading"
 msgstr "Etalement de la formation"
 
@@ -487,12 +488,12 @@ msgid "Motivation"
 msgstr "Motivation"
 
 #: models/admission.py:337 templates/fragment/tab_registration.html:100
-#: templates/registration_form.html:117
+#: templates/registration_form.html:118
 msgid "NOMA"
 msgstr "NOMA"
 
 #: business/xls/xls_admission.py:33 business/xls/xls_archive.py:33
-#: business/xls/xls_registration.py:34 models/file.py:63
+#: business/xls/xls_registration.py:34 models/file.py:63 models/prospect.py:42
 #: templates/admissions.html:83 templates/archives.html:83
 #: templates/fragment/tab_documents.html:44 templates/registrations.html:91
 msgid "Name"
@@ -593,6 +594,10 @@ msgstr "Personne"
 msgid "Person information"
 msgstr "Informations personnelles"
 
+#: models/prospect.py:66
+msgid "Phone number"
+msgstr "Numéro de téléphone"
+
 #: templates/fragment/upload_file_modal.html:42
 msgid "Please select the file you want to upload and the file category."
 msgstr ""
@@ -604,7 +609,7 @@ msgstr ""
 msgid "Post"
 msgstr "Courrier"
 
-#: models/address.py:20 templates/admission_form.html:96
+#: models/address.py:20 models/prospect.py:52 templates/admission_form.html:96
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:50
 #: templates/fragment/tab_registration.html:82
@@ -627,7 +632,7 @@ msgid "Previous ucl registration"
 msgstr "Avez-vous déjà été inscrit(e) à l'UCL ?"
 
 #: models/admission.py:349 templates/fragment/tab_registration.html:104
-#: templates/registration_form.html:121
+#: templates/registration_form.html:122
 msgid "Prior experience validation"
 msgstr "Valorisation des Acquis d'Experience"
 
@@ -704,7 +709,7 @@ msgid "Registration complete"
 msgstr "En ordre d'inscription"
 
 #: models/admission.py:361 templates/fragment/tab_registration.html:99
-#: templates/registration_form.html:128
+#: templates/registration_form.html:117
 msgid "Registration file received"
 msgstr "Dossier d'inscription reçu"
 
@@ -759,8 +764,8 @@ msgstr "Téléphone fixe"
 
 #: templates/admission_form.html:43 templates/admission_form.html:54
 #: templates/admission_form.html:213 templates/registration_form.html:43
-#: templates/registration_form.html:44 templates/registration_form.html:139
-#: templates/registration_form.html:140
+#: templates/registration_form.html:44 templates/registration_form.html:137
+#: templates/registration_form.html:138
 msgid "Save"
 msgstr "Sauver"
 
