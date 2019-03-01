@@ -48,5 +48,7 @@ urlpatterns = [
     ])),
     url(r'^archive/', include([
         url(r'^$', archive.list_archives, name='archive'),
+        url(r'^list/to_archive/', archive.archives_procedure, name='archives_procedure'),
+        url(r'^to_archive/(?P<admission_id>[0-9]+)/', archive.archive_procedure, name='archive_procedure'),
     ])),
 ]

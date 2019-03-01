@@ -57,12 +57,21 @@
                   {% endfor %}
                 <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
                 </ul>
+                <div class="pull-right">
+                    {% if admission.archived %}
+                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission archived' %}" class="btn btn-default"><i class="fa fa-archive" style="color:green;"></i>&nbsp;{% trans 'Unarchiving' %}</a>
+                    {% else %}
+                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission is not archived' %}" class="btn btn-default"><i class="fa fa-archive" style="color:red;"></i>&nbsp;{% trans 'Archiving' %}</a>
+                    {% endif %}
+                </div>
+
             </div>
             {% bootstrap_form admission_form exclude="state_reason" form_group_class="hidden" %}
             {% include "fragment/waiting_reason_modal.html" %}
             {% include "fragment/warning_modal.html" %}
             {% include "fragment/rejected_reason_modal.html" %}
         </form>
+        <br>
         <h3>
             {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
             &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}

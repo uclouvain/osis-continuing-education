@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div class="dropdown  text-right" style="margin-right: 10px;">
+    <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+        <li>
+            {% include "blocks/button/xls.html" with button_title=button_title %}
+        </li>
+        <li>
+            {% include 'blocks/button/archive.html' %}
+        </li>
+    </ul>
+</div>

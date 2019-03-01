@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-26 13:05+0100\n"
+"POT-Creation-Date: 2019-03-01 13:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,10 +34,11 @@ msgstr ""
 #: models/enums/admission_state_choices.py:28
 #: models/enums/admission_state_choices.py:52
 #: models/enums/admission_state_choices.py:70
-#: models/enums/admission_state_choices.py:76 tests/forms/test_search.py:121
+#: models/enums/admission_state_choices.py:76 tests/forms/test_search.py:135
 msgid "Accepted"
 msgstr ""
 
+#: templates/blocks/dropdown/list_actions.html:6
 #: templates/fragment/tab_documents.html:49
 msgid "Actions"
 msgstr ""
@@ -57,14 +58,30 @@ msgstr ""
 msgid "Administrator"
 msgstr ""
 
-#: models/file.py:58 templates/admission_detail.html:86
+#: views/archive.py:100
+msgid "Admission"
+msgstr ""
+
+#: models/file.py:58 templates/admission_detail.html:95
 #: templates/admission_form.html:33
 msgctxt "continuing_education"
 msgid "Admission"
 msgstr ""
 
-#: templates/admission_detail.html:38 templates/admissions.html:37
-#: templates/admissions.html:42
+#: templates/admission_detail.html:62
+msgid "Admission archived"
+msgstr ""
+
+#: templates/admission_detail.html:64
+msgid "Admission is not archived"
+msgstr ""
+
+#: tests/views/test_archive.py:175
+msgid "Admission is now unarchived"
+msgstr ""
+
+#: templates/admission_detail.html:38 templates/admissions.html:38
+#: templates/admissions.html:43
 #: templates/continuing_education/admin_home.html:44
 msgctxt "continuing_education"
 msgid "Admissions"
@@ -80,8 +97,8 @@ msgstr ""
 msgid "Admissions_list"
 msgstr ""
 
-#: forms/search.py:35 forms/search.py:76 forms/search.py:84
-#: tests/forms/test_search.py:120
+#: forms/search.py:36 forms/search.py:77 forms/search.py:85
+#: tests/forms/test_search.py:134
 msgctxt "plural"
 msgid "All"
 msgstr ""
@@ -97,12 +114,16 @@ msgid "Archives"
 msgstr ""
 
 #: business/xls/xls_archive.py:41 business/xls/xls_archive.py:43
-#: tests/business/test_xls_archive.py:87 tests/business/test_xls_archive.py:92
+#: tests/business/test_xls_archive.py:84 tests/business/test_xls_archive.py:89
 msgid "Archives list"
 msgstr ""
 
-#: business/xls/xls_archive.py:42 tests/business/test_xls_archive.py:88
+#: business/xls/xls_archive.py:42 tests/business/test_xls_archive.py:85
 msgid "Archives_list"
+msgstr ""
+
+#: templates/admission_detail.html:64
+msgid "Archiving"
 msgstr ""
 
 #: models/admission.py:353 templates/fragment/tab_registration.html:105
@@ -202,6 +223,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: templates/admissions.html:85 templates/registrations.html:92
+msgid "Check All"
+msgstr ""
+
 #: models/admission.py:298 templates/fragment/tab_registration.html:67
 #: templates/registration_form.html:84
 msgid "Children number"
@@ -240,7 +265,7 @@ msgid "Contact"
 msgstr ""
 
 #: templates/admission_detail.html:37 templates/admission_form.html:32
-#: templates/admissions.html:36 templates/archives.html:36
+#: templates/admissions.html:37 templates/archives.html:36
 #: templates/continuing_education/admin_home.html:31
 #: templates/registration_form.html:32 templates/registrations.html:32
 msgid "Continuing Education"
@@ -287,7 +312,7 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: templates/admission_detail.html:88
+#: templates/admission_detail.html:97
 msgid "Documents"
 msgstr ""
 
@@ -314,9 +339,9 @@ msgstr ""
 
 #: business/xls/xls_admission.py:35 business/xls/xls_archive.py:35
 #: business/xls/xls_registration.py:36 models/admission.py:108
-#: templates/admission_form.html:91 templates/admissions.html:85
+#: templates/admission_form.html:91 templates/admissions.html:90
 #: templates/archives.html:85 templates/fragment/tab_admission.html:41
-#: templates/registrations.html:93
+#: templates/registrations.html:97
 msgid "Email"
 msgstr ""
 
@@ -325,11 +350,11 @@ msgid "Employee"
 msgstr ""
 
 #: business/xls/xls_admission.py:37 business/xls/xls_archive.py:37
-#: business/xls/xls_registration.py:38 forms/search.py:78
-#: templates/admissions.html:52 templates/admissions.html:87
+#: business/xls/xls_registration.py:38 forms/search.py:79
+#: templates/admissions.html:53 templates/admissions.html:92
 #: templates/archives.html:51 templates/archives.html:87
 #: templates/fragment/tab_admission.html:111 templates/registrations.html:47
-#: templates/registrations.html:95
+#: templates/registrations.html:99
 msgid "Faculty"
 msgstr ""
 
@@ -348,20 +373,20 @@ msgstr ""
 
 #: business/admission.py:158 business/xls/xls_admission.py:34
 #: business/xls/xls_archive.py:34 business/xls/xls_registration.py:35
-#: templates/admission_form.html:73 templates/admissions.html:84
+#: templates/admission_form.html:73 templates/admissions.html:89
 #: templates/archives.html:84 templates/fragment/section_identification.html:33
-#: templates/registrations.html:92 tests/business/test_admission.py:38
+#: templates/registrations.html:96 tests/business/test_admission.py:38
 msgid "First name"
 msgstr ""
 
 #: business/admission.py:159 business/xls/xls_admission.py:36
 #: business/xls/xls_archive.py:36 business/xls/xls_registration.py:37
-#: forms/search.py:86 models/admission.py:83 templates/admission_form.html:159
-#: templates/admission_form.html:162 templates/admissions.html:56
-#: templates/admissions.html:86 templates/archives.html:55
+#: forms/search.py:87 models/admission.py:83 templates/admission_form.html:159
+#: templates/admission_form.html:162 templates/admissions.html:57
+#: templates/admissions.html:91 templates/archives.html:55
 #: templates/archives.html:86 templates/fragment/tab_admission.html:103
 #: templates/fragment/tab_admission.html:106 templates/registrations.html:51
-#: templates/registrations.html:94 tests/business/test_admission.py:39
+#: templates/registrations.html:98 tests/business/test_admission.py:39
 msgid "Formation"
 msgstr ""
 
@@ -494,8 +519,8 @@ msgstr ""
 
 #: business/xls/xls_admission.py:33 business/xls/xls_archive.py:33
 #: business/xls/xls_registration.py:34 models/file.py:63
-#: templates/admissions.html:83 templates/archives.html:83
-#: templates/fragment/tab_documents.html:44 templates/registrations.html:91
+#: templates/admissions.html:88 templates/archives.html:83
+#: templates/fragment/tab_documents.html:44 templates/registrations.html:95
 msgid "Name"
 msgstr ""
 
@@ -504,7 +529,7 @@ msgstr ""
 msgid "National registry number"
 msgstr ""
 
-#: templates/admission_form.html:56 templates/admissions.html:69
+#: templates/admission_form.html:56 templates/admissions.html:70
 msgid "New admission"
 msgstr ""
 
@@ -513,15 +538,15 @@ msgid "New person"
 msgstr ""
 
 #: business/admission.py:160 business/xls/xls_registration.py:71
-#: business/xls/xls_registration.py:72 forms/search.py:40
-#: models/enums/enums.py:4 templates/registrations.html:123
-#: templates/registrations.html:130 tests/business/test_admission.py:40
+#: business/xls/xls_registration.py:72 forms/search.py:41
+#: models/enums/enums.py:4 templates/registrations.html:131
+#: templates/registrations.html:138 tests/business/test_admission.py:40
 #: tests/business/test_xls_registration.py:82
 msgid "No"
 msgstr ""
 
-#: templates/admissions.html:134 templates/archives.html:144
-#: templates/registrations.html:160
+#: templates/admissions.html:144 templates/archives.html:155
+#: templates/registrations.html:168
 msgid "No data"
 msgstr ""
 
@@ -557,8 +582,8 @@ msgstr ""
 msgid "Other waiting reason"
 msgstr ""
 
-#: business/xls/xls_registration.py:40 forms/search.py:110
-#: templates/registrations.html:63 templates/registrations.html:97
+#: business/xls/xls_registration.py:40 forms/search.py:111
+#: templates/registrations.html:63 templates/registrations.html:101
 msgid "Paid"
 msgstr ""
 
@@ -592,6 +617,14 @@ msgstr ""
 
 #: models/admission.py:77
 msgid "Person information"
+msgstr ""
+
+#: tests/views/test_archive.py:93 views/archive.py:126
+msgid "Please select at least one admission to archive"
+msgstr ""
+
+#: tests/views/test_archive.py:111 views/archive.py:124
+msgid "Please select at least one registration to archive"
 msgstr ""
 
 #: templates/fragment/upload_file_modal.html:42
@@ -634,7 +667,7 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: templates/admissions.html:75 templates/admissions.html:76
+#: templates/admissions.html:73
 msgid "Produce xls with list of admissions"
 msgstr ""
 
@@ -642,7 +675,7 @@ msgstr ""
 msgid "Produce xls with list of archives"
 msgstr ""
 
-#: templates/registrations.html:83 templates/registrations.html:84
+#: templates/registrations.html:81
 msgid "Produce xls with list of registrations"
 msgstr ""
 
@@ -682,18 +715,19 @@ msgstr ""
 msgid "Reason for waiting"
 msgstr ""
 
-#: templates/admission_detail.html:81
+#: templates/admission_detail.html:90
 msgid "Refusal state reason"
 msgstr ""
 
-#: business/xls/xls_registration.py:39 forms/search.py:105
-#: templates/registrations.html:59 templates/registrations.html:96
+#: business/xls/xls_registration.py:39 forms/search.py:106
+#: templates/registrations.html:59 templates/registrations.html:100
 msgid "Registered"
 msgstr ""
 
-#: templates/admission_detail.html:87
+#: templates/admission_detail.html:96
 #: templates/fragment/tab_registration.html:57
 #: templates/registration_form.html:33 templates/registration_form.html:74
+#: views/archive.py:100
 msgid "Registration"
 msgstr ""
 
@@ -702,10 +736,14 @@ msgstr ""
 msgid "Registration complete"
 msgstr ""
 
+#: tests/views/test_archive.py:155
+msgid "Registration is now archived"
+msgstr ""
+
 #: models/enums/admission_state_choices.py:18
 #: models/enums/admission_state_choices.py:38
 #: models/enums/admission_state_choices.py:71
-#: models/enums/admission_state_choices.py:80 tests/forms/test_search.py:122
+#: models/enums/admission_state_choices.py:80 tests/forms/test_search.py:136
 msgid "Registration submitted"
 msgstr ""
 
@@ -717,6 +755,10 @@ msgstr ""
 #: templates/continuing_education/admin_home.html:48
 #: templates/registrations.html:33 templates/registrations.html:38
 msgid "Registrations"
+msgstr ""
+
+#: tests/views/test_archive.py:136
+msgid "Registrations are now archived"
 msgstr ""
 
 #: business/xls/xls_registration.py:43 business/xls/xls_registration.py:45
@@ -757,7 +799,7 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: templates/admissions.html:62 templates/archives.html:65
+#: templates/admissions.html:63 templates/archives.html:65
 #: templates/registrations.html:73
 msgid "Search"
 msgstr ""
@@ -799,9 +841,9 @@ msgstr ""
 #: business/admission.py:174 business/xls/xls_admission.py:38
 #: business/xls/xls_archive.py:38 models/admission.py:225
 #: templates/admission_detail.html:47 templates/admission_detail.html:50
-#: templates/admission_form.html:201 templates/admissions.html:88
+#: templates/admission_form.html:201 templates/admissions.html:93
 #: templates/archives.html:59 templates/archives.html:88
-#: templates/registrations.html:67 templates/registrations.html:98
+#: templates/registrations.html:67 templates/registrations.html:102
 #: tests/business/test_admission.py:54
 msgid "State"
 msgstr ""
@@ -825,7 +867,7 @@ msgid "Student sheet"
 msgstr ""
 
 #: templates/admission_detail.html:36 templates/admission_form.html:31
-#: templates/admissions.html:35 templates/archives.html:35
+#: templates/admissions.html:36 templates/archives.html:35
 #: templates/continuing_education/admin_home.html:30
 #: templates/registration_form.html:31 templates/registrations.html:31
 msgid "Studies"
@@ -865,8 +907,16 @@ msgid ""
 "is an invoice available."
 msgstr ""
 
+#: templates/blocks/button/archive.html:5
+msgid "To archive"
+msgstr ""
+
 #: models/admission.py:332
 msgid "UCL registration complete"
+msgstr ""
+
+#: templates/admission_detail.html:62
+msgid "Unarchiving"
 msgstr ""
 
 #: forms/account.py:39
@@ -902,7 +952,7 @@ msgstr ""
 #: models/enums/admission_state_choices.py:19
 #: models/enums/admission_state_choices.py:45
 #: models/enums/admission_state_choices.py:72
-#: models/enums/admission_state_choices.py:81 tests/forms/test_search.py:123
+#: models/enums/admission_state_choices.py:81 tests/forms/test_search.py:137
 msgid "Validated"
 msgstr ""
 
@@ -913,7 +963,7 @@ msgstr ""
 msgid "Waiting"
 msgstr ""
 
-#: templates/admission_detail.html:75
+#: templates/admission_detail.html:84
 msgid "Waiting state reason"
 msgstr ""
 
@@ -934,9 +984,9 @@ msgid "Widowed"
 msgstr ""
 
 #: business/admission.py:160 business/xls/xls_registration.py:71
-#: business/xls/xls_registration.py:72 forms/search.py:39
-#: models/enums/enums.py:5 templates/registrations.html:121
-#: templates/registrations.html:128 tests/business/test_admission.py:40
+#: business/xls/xls_registration.py:72 forms/search.py:40
+#: models/enums/enums.py:5 templates/registrations.html:129
+#: templates/registrations.html:136 tests/business/test_admission.py:40
 #: tests/business/test_xls_registration.py:81
 msgid "Yes"
 msgstr ""
@@ -969,4 +1019,20 @@ msgstr ""
 
 #: business/enums/rejected_reason.py:28
 msgid "Your course is not adapted to the program of this training"
+msgstr ""
+
+#: views/archive.py:103
+msgid "archived"
+msgstr ""
+
+#: views/archive.py:102
+msgid "are now"
+msgstr ""
+
+#: views/archive.py:102
+msgid "is now"
+msgstr ""
+
+#: views/archive.py:103
+msgid "unarchived"
 msgstr ""
