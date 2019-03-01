@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-01 14:25+0100\n"
+"POT-Creation-Date: 2019-03-01 14:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -234,7 +234,7 @@ msgstr ""
 msgid "Citizenship"
 msgstr ""
 
-#: models/address.py:25 templates/admission_form.html:97
+#: models/address.py:25 models/prospect.py:56 templates/admission_form.html:97
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:51
 #: templates/fragment/tab_registration.html:83
@@ -335,9 +335,9 @@ msgstr ""
 
 #: business/xls/xls_admission.py:35 business/xls/xls_archive.py:35
 #: business/xls/xls_registration.py:36 models/admission.py:108
-#: templates/admission_form.html:91 templates/admissions.html:90
-#: templates/archives.html:85 templates/fragment/tab_admission.html:42
-#: templates/registrations.html:97
+#: models/prospect.py:60 templates/admission_form.html:91
+#: templates/admissions.html:90 templates/archives.html:85
+#: templates/fragment/tab_admission.html:42 templates/registrations.html:97
 msgid "Email"
 msgstr ""
 
@@ -369,8 +369,9 @@ msgstr ""
 
 #: business/admission.py:158 business/xls/xls_admission.py:34
 #: business/xls/xls_archive.py:34 business/xls/xls_registration.py:35
-#: templates/admission_form.html:73 templates/admissions.html:89
-#: templates/archives.html:84 templates/fragment/section_identification.html:34
+#: models/prospect.py:46 templates/admission_form.html:73
+#: templates/admissions.html:89 templates/archives.html:84
+#: templates/fragment/section_identification.html:34
 #: templates/registrations.html:96 tests/business/test_admission.py:38
 msgid "First name"
 msgstr ""
@@ -514,7 +515,7 @@ msgid "NOMA"
 msgstr ""
 
 #: business/xls/xls_admission.py:33 business/xls/xls_archive.py:33
-#: business/xls/xls_registration.py:34 models/file.py:63
+#: business/xls/xls_registration.py:34 models/file.py:63 models/prospect.py:41
 #: templates/admissions.html:88 templates/archives.html:83
 #: templates/fragment/tab_documents.html:44 templates/registrations.html:95
 msgid "Name"
@@ -615,6 +616,10 @@ msgstr ""
 msgid "Person information"
 msgstr ""
 
+#: models/prospect.py:65
+msgid "Phone number"
+msgstr ""
+
 #: tests/views/test_archive.py:95 views/archive.py:124
 msgid "Please select at least one admission to archive"
 msgstr ""
@@ -632,7 +637,7 @@ msgstr ""
 msgid "Post"
 msgstr ""
 
-#: models/address.py:20 templates/admission_form.html:96
+#: models/address.py:20 models/prospect.py:51 templates/admission_form.html:96
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:50
 #: templates/fragment/tab_registration.html:82
