@@ -30,6 +30,8 @@ from django.utils.translation import ugettext as _
 
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
+from base.models.entity_version import EntityVersion
+from base.models.enums.entity_type import FACULTY
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
@@ -187,3 +189,21 @@ def disable_existing_fields(form):
         form.fields[field].widget.attrs['readonly'] = True
         if field in fields_to_disable:
             form.fields[field].widget.attrs['disabled'] = True
+
+
+def get_management_faculty(education_group_yr):
+    if education_group_yr:
+        management_entity = education_group_yr.management_entity
+        entity = EntityVersion.objects.filter(entity=management_entity).first()
+        if entity and entity.entity_type == FACULTY:
+            return management_entity
+        else:
+            return _get_faculty_parent(management_entity)
+    else:
+        return None
+
+
+def _get_faculty_parent(management_entity):
+    faculty = EntityVersion.objects.filter(entity=management_entity).first()
+    if faculty:
+        return faculty.parent

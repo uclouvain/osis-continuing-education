@@ -26,6 +26,9 @@ from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from operator import itemgetter
 from base.business.entity import get_entities_ids
+from base.models.enums.education_group_types import TrainingType
+from base.models.academic_year import current_academic_year, AcademicYear
+from django.db.models import Q
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
@@ -40,6 +43,15 @@ BOOLEAN_CHOICES = (
     (True, _('Yes')),
     (False, _('No'))
 )
+
+PART_OF_CONTINUING_EDUCATION = [
+    TrainingType.AGGREGATION.name,
+    TrainingType.CERTIFICATE.name,
+    TrainingType.CERTIFICATE_OF_PARTICIPATION.name,
+    TrainingType.CERTIFICATE_OF_SUCCESS.name,
+    TrainingType.UNIVERSITY_FIRST_CYCLE_CERTIFICATE.name,
+    TrainingType.UNIVERSITY_SECOND_CYCLE_CERTIFICATE.name,
+]
 
 
 class BootstrapForm(forms.Form):
@@ -127,7 +139,8 @@ class RegistrationFilterForm(AdmissionFilterForm):
 
         qs = get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
                                                self.cleaned_data.get('formation'),
-                                               STATE_FOR_REGISTRATION, False)
+                                               STATE_FOR_REGISTRATION,
+                                               False)
 
         if registered:
             qs = qs.filter(ucl_registration_complete=registered)
@@ -166,6 +179,8 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status):
 
+    qs = Admission.objects.all()
+
     if states:
         if isinstance(states, list):
             qs = Admission.objects.filter(
@@ -175,8 +190,6 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
             qs = Admission.objects.filter(
                 state=states
             )
-    else:
-        qs = Admission.objects.all()
 
     if faculty:
         qs = _get_filter_entity_management(
@@ -221,3 +234,51 @@ def _get_state_choices(choices):
 def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
     entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
     return qs.filter(formation__management_entity__in=entity_ids)
+
+
+class FormationFilterForm(AdmissionFilterForm):
+    acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.all().order_by('year'),
+        widget=forms.Select(),
+        empty_label=None,
+        required=True
+    )
+    title = forms.CharField(max_length=50, required=False, label=_('Title'))
+
+    def get_formations(self, academic_yr=None):
+
+        if academic_yr:
+            academic_year = academic_yr
+            faculty = None
+            acronym = None
+            title = None
+        else:
+            academic_year = self.cleaned_data.get('academic_year', None)
+            faculty = self.cleaned_data.get('faculty', None)
+            acronym = self.cleaned_data.get('acronym', None)
+            title = self.cleaned_data.get('title', None)
+
+        qs = EducationGroupYear.objects.filter(education_group_type__name__in=PART_OF_CONTINUING_EDUCATION)
+
+        qs = qs.filter(academic_year=academic_year)
+
+        if faculty:
+            qs = _get_formation_filter_entity_management(
+                qs,
+                faculty.acronym,
+                True
+            )
+
+        if acronym:
+            qs = qs.filter(Q(acronym__icontains=acronym) | Q(partial_acronym__icontains=acronym))
+
+        if title:
+            qs = qs.filter(title__icontains=title)
+
+        return qs.order_by('acronym')
+
+
+def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
+    entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
+    return qs.filter(management_entity__in=entity_ids)

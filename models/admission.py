@@ -36,6 +36,7 @@ from continuing_education.business.admission import send_state_changed_email, se
     send_admission_submitted_email_to_participant
 from continuing_education.models.enums import admission_state_choices, enums
 from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin, SerializableModelManager
+from continuing_education.business.admission import get_management_faculty
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
 
@@ -378,10 +379,10 @@ class Admission(SerializableModel):
 
     @property
     def formation_display(self):
-        return "{}{} - {}".format(
-            "{} - ".format(self.formation.partial_acronym) if self.formation.partial_acronym else "",
+        return get_formation_display(
+            self.formation.partial_acronym,
             self.formation.acronym,
-            self.formation.academic_year,
+            self.formation.academic_year
         )
 
     def is_draft(self):
@@ -413,15 +414,7 @@ class Admission(SerializableModel):
 
     def get_faculty(self):
         education_group_year = self.formation
-        if education_group_year:
-            management_entity = education_group_year.management_entity
-            entity = EntityVersion.objects.filter(entity=management_entity).first()
-            if entity and entity.entity_type == FACULTY:
-                return management_entity
-            else:
-                return _get_faculty_parent(management_entity)
-        else:
-            return None
+        return get_management_faculty(education_group_year)
 
     class Meta:
         permissions = (
@@ -441,12 +434,6 @@ def search(**kwargs):
         qs = qs.filter(state=kwargs['state'])
 
     return qs
-
-
-def _get_faculty_parent(management_entity):
-    faculty = EntityVersion.objects.filter(entity=management_entity).first()
-    if faculty:
-        return faculty.parent
 
 
 # TODO :: dismiss use of signal when API is used
@@ -470,3 +457,11 @@ def admission_post_save_callback(sender, instance, created, **kwargs):
                 send_state_changed_email(instance)
     except AttributeError:
         pass
+
+
+def get_formation_display(partial_acronym, acronym, academic_year):
+    return "{}{} - {}".format(
+        "{} - ".format(partial_acronym) if partial_acronym else "",
+        acronym,
+        academic_year,
+    )
