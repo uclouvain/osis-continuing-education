@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import uuid
+
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
@@ -35,6 +37,7 @@ class ProspectAdmin(ModelAdmin):
 
 
 class Prospect(Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
     name = models.CharField(
         max_length=250,
         blank=True,
@@ -63,6 +66,11 @@ class Prospect(Model):
         max_length=30,
         blank=True,
         verbose_name=_("Phone number")
+    )
+    formation = models.ForeignKey(
+        'base.EducationGroupYear',
+        on_delete=models.PROTECT,
+        verbose_name=_("Formation")
     )
 
     def __str__(self):
