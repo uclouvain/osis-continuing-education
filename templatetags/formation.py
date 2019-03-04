@@ -24,11 +24,11 @@
 #
 ##############################################################################
 from django import template
+
 from continuing_education.business.admission import get_management_faculty
+from continuing_education.models.admission import get_formation_display
 
 register = template.Library()
-
-from continuing_education.models.admission import get_formation_display
 
 
 @register.filter

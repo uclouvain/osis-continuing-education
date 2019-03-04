@@ -42,9 +42,7 @@ def list_formations(request):
         if search_form.is_valid():
             formation_list = search_form.get_formations()
     else:
-        curr_academic_year = current_academic_year()
-        next_academic_year = curr_academic_year.next() if curr_academic_year else None
-
+        next_academic_year = _get_academic_year()
         search_form = FormationFilterForm(initial={'academic_year': next_academic_year})
         formation_list = search_form.get_formations(next_academic_year)
 
@@ -61,3 +59,10 @@ def list_formations(request):
         'formations': formations,
         'search_form': search_form
     })
+
+
+def _get_academic_year():
+    curr_academic_year = current_academic_year()
+    next_academic_year = curr_academic_year.next() if curr_academic_year else None
+    return next_academic_year
+
