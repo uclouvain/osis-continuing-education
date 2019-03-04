@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import uuid
+
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
@@ -30,11 +32,13 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ProspectAdmin(ModelAdmin):
-    list_display = ('first_name', 'name', 'email', 'postal_code')
-    search_fields = ['first_name', 'name', 'email', 'postal_code']
+    list_display = ('first_name', 'name', 'email', 'postal_code', 'formation')
+    search_fields = ['first_name', 'name', 'email', 'postal_code', 'formation']
+    raw_id_fields = ('formation',)
 
 
 class Prospect(Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     name = models.CharField(
         max_length=250,
         blank=True,
@@ -63,6 +67,11 @@ class Prospect(Model):
         max_length=30,
         blank=True,
         verbose_name=_("Phone number")
+    )
+    formation = models.ForeignKey(
+        'base.EducationGroupYear',
+        on_delete=models.PROTECT,
+        verbose_name=_("Formation")
     )
 
     def __str__(self):

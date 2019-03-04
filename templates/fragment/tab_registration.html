@@ -106,6 +106,7 @@
         <div class="col-md-4">
             {% bootstrap_label _("Assessment presented") %} : {{ admission.assessment_presented | yesno }}
             <br/> {% bootstrap_label _("Assessment succeeded") %} : {{ admission.assessment_succeeded | yesno }}
+            <br/> {% bootstrap_label _("Diploma produced") %} : {{ admission.diploma_produced | yesno }}
         </div>
     </div>
 </div>
