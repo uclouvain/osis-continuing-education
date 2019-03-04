@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-01 14:42+0100\n"
+"POT-Creation-Date: 2019-03-04 10:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,7 +99,7 @@ msgctxt "plural"
 msgid "All"
 msgstr ""
 
-#: models/admission.py:373
+#: models/admission.py:365
 msgid "Archived"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 #: templates/fragment/upload_file_modal.html:77
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:41
-#: templates/registration_form.html:135
+#: templates/registration_form.html:136
 msgid "Cancel"
 msgstr ""
 
@@ -234,7 +234,7 @@ msgstr ""
 msgid "Citizenship"
 msgstr ""
 
-#: models/address.py:25 models/prospect.py:56 templates/admission_form.html:97
+#: models/address.py:25 models/prospect.py:59 templates/admission_form.html:97
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:51
 #: templates/fragment/tab_registration.html:83
@@ -300,6 +300,11 @@ msgstr ""
 msgid "Delete document"
 msgstr ""
 
+#: models/admission.py:369 templates/fragment/tab_registration.html:109
+#: templates/registration_form.html:127
+msgid "Diploma produced"
+msgstr ""
+
 #: models/enums/enums.py:17
 msgid "Divorced"
 msgstr ""
@@ -335,7 +340,7 @@ msgstr ""
 
 #: business/xls/xls_admission.py:35 business/xls/xls_archive.py:35
 #: business/xls/xls_registration.py:36 models/admission.py:108
-#: models/prospect.py:60 templates/admission_form.html:91
+#: models/prospect.py:63 templates/admission_form.html:91
 #: templates/admissions.html:90 templates/archives.html:85
 #: templates/fragment/tab_admission.html:42 templates/registrations.html:97
 msgid "Email"
@@ -369,7 +374,7 @@ msgstr ""
 
 #: business/admission.py:158 business/xls/xls_admission.py:34
 #: business/xls/xls_archive.py:34 business/xls/xls_registration.py:35
-#: models/prospect.py:46 templates/admission_form.html:73
+#: models/prospect.py:49 templates/admission_form.html:73
 #: templates/admissions.html:89 templates/archives.html:84
 #: templates/fragment/section_identification.html:34
 #: templates/registrations.html:96 tests/business/test_admission.py:38
@@ -378,10 +383,11 @@ msgstr ""
 
 #: business/admission.py:159 business/xls/xls_admission.py:36
 #: business/xls/xls_archive.py:36 business/xls/xls_registration.py:37
-#: forms/search.py:87 models/admission.py:83 templates/admission_form.html:159
-#: templates/admission_form.html:162 templates/admissions.html:57
-#: templates/admissions.html:91 templates/archives.html:55
-#: templates/archives.html:86 templates/fragment/tab_admission.html:103
+#: forms/search.py:87 models/admission.py:83 models/prospect.py:73
+#: templates/admission_form.html:159 templates/admission_form.html:162
+#: templates/admissions.html:57 templates/admissions.html:91
+#: templates/archives.html:55 templates/archives.html:86
+#: templates/fragment/tab_admission.html:103
 #: templates/fragment/tab_admission.html:107 templates/registrations.html:51
 #: templates/registrations.html:98 tests/business/test_admission.py:39
 msgid "Formation"
@@ -515,7 +521,7 @@ msgid "NOMA"
 msgstr ""
 
 #: business/xls/xls_admission.py:33 business/xls/xls_archive.py:33
-#: business/xls/xls_registration.py:34 models/file.py:63 models/prospect.py:41
+#: business/xls/xls_registration.py:34 models/file.py:63 models/prospect.py:44
 #: templates/admissions.html:88 templates/archives.html:83
 #: templates/fragment/tab_documents.html:44 templates/registrations.html:95
 msgid "Name"
@@ -616,7 +622,7 @@ msgstr ""
 msgid "Person information"
 msgstr ""
 
-#: models/prospect.py:65
+#: models/prospect.py:68
 msgid "Phone number"
 msgstr ""
 
@@ -637,7 +643,7 @@ msgstr ""
 msgid "Post"
 msgstr ""
 
-#: models/address.py:20 models/prospect.py:51 templates/admission_form.html:96
+#: models/address.py:20 models/prospect.py:54 templates/admission_form.html:96
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:50
 #: templates/fragment/tab_registration.html:82
@@ -794,8 +800,8 @@ msgstr ""
 
 #: templates/admission_form.html:43 templates/admission_form.html:54
 #: templates/admission_form.html:213 templates/registration_form.html:43
-#: templates/registration_form.html:44 templates/registration_form.html:137
-#: templates/registration_form.html:138
+#: templates/registration_form.html:44 templates/registration_form.html:138
+#: templates/registration_form.html:139
 msgid "Save"
 msgstr ""
 
@@ -821,7 +827,7 @@ msgstr ""
 msgid "Separated"
 msgstr ""
 
-#: models/admission.py:368
+#: models/admission.py:376
 msgid "Sessions"
 msgstr ""
 

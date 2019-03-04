@@ -39,5 +39,6 @@ class RegistrationForm(ModelForm):
             'assessment_presented',
             'assessment_succeeded',
             'registration_file_received',
+            'diploma_produced',
             'sessions'
         ]
