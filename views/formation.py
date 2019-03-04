@@ -25,11 +25,11 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 
 from continuing_education.forms.search import FormationFilterForm
 from base.models.academic_year import current_academic_year
+from continuing_education.views.common import get_object_list
 
 
 @login_required
@@ -46,17 +46,8 @@ def list_formations(request):
         search_form = FormationFilterForm(initial={'academic_year': next_academic_year})
         formation_list = search_form.get_formations(next_academic_year)
 
-    paginator = Paginator(formation_list, 10)
-    page = request.GET.get('page')
-
-    try:
-        formations = paginator.page(page)
-    except PageNotAnInteger:
-        formations = paginator.page(1)
-    except EmptyPage:
-        formations = paginator.page(paginator.num_pages)
     return render(request, "formations.html", {
-        'formations': formations,
+        'formations': get_object_list(request, formation_list),
         'search_form': search_form
     })
 
@@ -65,4 +56,3 @@ def _get_academic_year():
     curr_academic_year = current_academic_year()
     next_academic_year = curr_academic_year.next() if curr_academic_year else None
     return next_academic_year
-

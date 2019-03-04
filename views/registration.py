@@ -25,7 +25,6 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -37,7 +36,7 @@ from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.views.common import display_errors
+from continuing_education.views.common import display_errors, get_object_list
 
 
 @login_required
@@ -51,16 +50,8 @@ def list_registrations(request):
     if request.POST.get('xls_status') == "xls_registrations":
         return create_xls_registration(request.user, admission_list, search_form)
 
-    paginator = Paginator(admission_list, 10)
-    page = request.GET.get('page')
-    try:
-        admissions = paginator.page(page)
-    except PageNotAnInteger:
-        admissions = paginator.page(1)
-    except EmptyPage:
-        admissions = paginator.page(paginator.num_pages)
     return render(request, "registrations.html", {
-        'admissions': admissions,
+        'admissions': get_object_list(request,admission_list),
         'search_form': search_form
     })
 
