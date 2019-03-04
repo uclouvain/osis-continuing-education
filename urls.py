@@ -26,7 +26,7 @@
 from django.conf.urls import url, include
 
 import continuing_education.views.file
-from continuing_education.views import (home, admission, registration, archive)
+from continuing_education.views import (home, admission, registration, archive, prospect)
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
@@ -51,4 +51,5 @@ urlpatterns = [
         url(r'^list/to_archive/', archive.archives_procedure, name='archives_procedure'),
         url(r'^to_archive/(?P<admission_id>[0-9]+)/', archive.archive_procedure, name='archive_procedure'),
     ])),
+    url(r'^prospects$', prospect.list_prospects, name='prospects'),
 ]
