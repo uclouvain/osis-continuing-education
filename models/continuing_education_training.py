@@ -32,6 +32,15 @@ from django.utils.translation import gettext_lazy as _
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
 
+CONTINUING_EDUCATION_TRAINING_TYPES = [
+    TrainingType.AGGREGATION.name,
+    TrainingType.CERTIFICATE.name,
+    TrainingType.CERTIFICATE_OF_PARTICIPATION.name,
+    TrainingType.CERTIFICATE_OF_SUCCESS.name,
+    TrainingType.UNIVERSITY_FIRST_CYCLE_CERTIFICATE.name,
+    TrainingType.UNIVERSITY_SECOND_CYCLE_CERTIFICATE.name,
+]
+
 
 class ContinuingEducationTrainingAdmin(ModelAdmin):
     list_display = ('education_group_year', 'active',)
@@ -41,7 +50,6 @@ class ContinuingEducationTrainingAdmin(ModelAdmin):
 
 
 class ContinuingEducationTraining(Model):
-
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     education_group_year = models.OneToOneField(
@@ -55,16 +63,6 @@ class ContinuingEducationTraining(Model):
     )
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
-
-    def continuing_education_types(self):
-        return [
-            TrainingType.AGGREGATION.name,
-            TrainingType.CERTIFICATE.name,
-            TrainingType.CERTIFICATE_OF_PARTICIPATION.name,
-            TrainingType.CERTIFICATE_OF_SUCCESS.name,
-            TrainingType.UNIVERSITY_FIRST_CYCLE_CERTIFICATE.name,
-            TrainingType.UNIVERSITY_SECOND_CYCLE_CERTIFICATE.name,
-        ]
 
     def __str__(self):
         return "{} - {}".format(self.education_group_year.acronym, self.education_group_year.title)
