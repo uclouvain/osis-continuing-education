@@ -30,3 +30,4 @@ from continuing_education.models import continuing_education_person
 from continuing_education.models import file
 from continuing_education.models import prospect
 from continuing_education.models import continuing_education_training
+from continuing_education.models import person_training
