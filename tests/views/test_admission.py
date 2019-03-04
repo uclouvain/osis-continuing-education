@@ -164,7 +164,7 @@ class ViewAdmissionTestCase(TestCase):
     def test_admission_detail_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
-        url = reverse('admission_detail', kwargs={'admission_id':self.admission.pk})
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -189,6 +189,11 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('download_file', kwargs={'admission_id': self.admission.pk, 'file_id': admission_file.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list(self):
+        response = self.client.post(reverse('admission'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['admissions'].object_list[0], self.admission)
 
 
 class InvoiceNotificationEmailTestCase(TestCase):
