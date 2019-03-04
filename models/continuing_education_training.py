@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,9 +24,29 @@
 #
 ##############################################################################
 
-from continuing_education.models import address
-from continuing_education.models import admission
-from continuing_education.models import continuing_education_person
-from continuing_education.models import file
-from continuing_education.models import prospect
-from continuing_education.models import continuing_education_training
+from django.contrib.admin import ModelAdmin
+from django.db import models
+from django.db.models import Model
+from django.utils.translation import gettext_lazy as _
+
+
+class ContinuingEducationTrainingAdmin(ModelAdmin):
+    list_display = ('education_group_year', 'active',)
+    search_fields = ['acronym']
+    list_filter = ('active', 'education_group_year__academic_year')
+    raw_id_fields = ("education_group_year",)
+
+
+class ContinuingEducationTraining(Model):
+    education_group_year = models.OneToOneField(
+        'base.EducationGroupYear',
+        on_delete=models.CASCADE
+    )
+
+    active = models.BooleanField(
+        default=False,
+        verbose_name=_("Active")
+    )
+
+    def __str__(self):
+        return "{} - {}".format(self.education_group_year.acronym, self.education_group_year.title)

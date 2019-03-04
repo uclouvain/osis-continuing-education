@@ -49,3 +49,7 @@ admin.site.register(
     prospect.Prospect,
     prospect.ProspectAdmin
 )
+admin.site.register(
+    continuing_education_training.ContinuingEducationTraining,
+    continuing_education_training.ContinuingEducationTrainingAdmin
+)
