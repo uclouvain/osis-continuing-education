@@ -25,15 +25,15 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.forms.search import ArchiveFilterForm
-from continuing_education.business.xls.xls_archive import create_xls
-from continuing_education.models.admission import Admission
 from base.views.common import display_success_messages, display_error_messages
+from continuing_education.business.xls.xls_archive import create_xls
+from continuing_education.forms.search import ArchiveFilterForm
+from continuing_education.models.admission import Admission
+from continuing_education.views.common import get_object_list
 
 
 @login_required
@@ -48,16 +48,8 @@ def list_archives(request):
     if request.POST.get('xls_status') == "xls_archives":
         return create_xls(request.user, archive_list, search_form)
 
-    paginator = Paginator(archive_list, 10)
-    page = request.GET.get('page')
-    try:
-        archives = paginator.page(page)
-    except PageNotAnInteger:
-        archives = paginator.page(1)
-    except EmptyPage:
-        archives = paginator.page(paginator.num_pages)
     return render(request, "archives.html", {
-        'archives': archives,
+        'archives': get_object_list(request, archive_list),
         'search_form': search_form
     })
 

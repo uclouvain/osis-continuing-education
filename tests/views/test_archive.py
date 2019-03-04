@@ -25,21 +25,20 @@
 ##############################################################################
 
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.views.archive import _switch_archived_state, _mark_as_archived
-from base.tests.factories.academic_year import create_current_academic_year
-from continuing_education.models.admission import Admission
-
 
 
 class ViewArchiveTestCase(TestCase):
@@ -80,37 +79,29 @@ class ViewArchiveTestCase(TestCase):
         response = self.client.post(reverse('archives_procedure'),
                                     data={},
                                     follow=True,
-                                    HTTP_REFERER=reverse(
-                                        'admission',
-                                        args=[
-
-                                        ]
-                                    ))
+                                    HTTP_REFERER=reverse('admission', args=[])
+                                    )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.ERROR, msg_level)
-        self.assertEqual(msg[0],_('Please select at least one admission to archive'))
+        self.assertEqual(msg[0], _('Please select at least one admission to archive'))
 
     def test_error_message_no_registration_selected(self):
         response = self.client.post(reverse('archives_procedure'),
                                     data={},
                                     follow=True,
-                                    HTTP_REFERER=reverse(
-                                        'registration',
-                                        args=[
-
-                                        ]
-                                    ))
+                                    HTTP_REFERER=reverse('registration', args=[])
+                                    )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.ERROR, msg_level)
-        self.assertEqual(msg[0],_('Please select at least one registration to archive'))
+        self.assertEqual(msg[0], _('Please select at least one registration to archive'))
 
     def test_mark_as_archived(self):
         _mark_as_archived(self.registration_1_unarchived.id)
@@ -124,14 +115,13 @@ class ViewArchiveTestCase(TestCase):
     def test_mark_registration_folders_as_archived_plural(self):
 
         response = self.client.post(reverse('archives_procedure'),
-                                    data={"selected_action": [str(self.registration_1_unarchived.id), str(self.registration_2_archived.id)]},
+                                    data={"selected_action": [
+                                        str(self.registration_1_unarchived.id),
+                                        str(self.registration_2_archived.id)
+                                    ]},
                                     follow=True,
-                                    HTTP_REFERER=reverse(
-                                        'registration',
-                                        args=[
-
-                                        ]
-                                    ))
+                                    HTTP_REFERER=reverse('registration', args=[])
+                                    )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
@@ -148,12 +138,8 @@ class ViewArchiveTestCase(TestCase):
         response = self.client.post(reverse('archives_procedure'),
                                     data={"selected_action": [str(self.registration_1_unarchived.id)]},
                                     follow=True,
-                                    HTTP_REFERER=reverse(
-                                        'registration',
-                                        args=[
-
-                                        ]
-                                    ))
+                                    HTTP_REFERER=reverse('registration', args=[])
+                                    )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
@@ -169,12 +155,8 @@ class ViewArchiveTestCase(TestCase):
         response = self.client.post(reverse('archives_procedure'),
                                     data={"selected_action": [str(self.admission_archived.id)]},
                                     follow=True,
-                                    HTTP_REFERER=reverse(
-                                        'admission',
-                                        args=[
-
-                                        ]
-                                    ))
+                                    HTTP_REFERER=reverse('admission', args=[])
+                                    )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
@@ -182,5 +164,13 @@ class ViewArchiveTestCase(TestCase):
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
         self.assertEqual(msg[0], "{} {} {}".format(_('Admission'),
-                                                     _('is now'),
-                                                _('archived')))
+                                                   _('is now'),
+                                                   _('archived')))
+
+    def test_list(self):
+        response = self.client.post(reverse('archive'))
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.context['archives'].object_list,
+                              [self.admission_archived,
+                               self.registration_2_archived]
+                              )

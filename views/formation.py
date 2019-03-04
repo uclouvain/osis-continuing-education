@@ -27,14 +27,32 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
-from continuing_education.models.prospect import Prospect
+from base.models.academic_year import current_academic_year
+from continuing_education.forms.search import FormationFilterForm
 from continuing_education.views.common import get_object_list
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-def list_prospects(request):
-    prospects_list = Prospect.objects.all()
-    return render(request, "prospects.html", {
-        'prospects': get_object_list(request, prospects_list),
+def list_formations(request):
+    formation_list = []
+
+    if request.POST:
+        search_form = FormationFilterForm(data=request.POST or None)
+        if search_form.is_valid():
+            formation_list = search_form.get_formations()
+    else:
+        next_academic_year = _get_academic_year()
+        search_form = FormationFilterForm(initial={'academic_year': next_academic_year})
+        formation_list = search_form.get_formations(next_academic_year)
+
+    return render(request, "formations.html", {
+        'formations': get_object_list(request, formation_list),
+        'search_form': search_form
     })
+
+
+def _get_academic_year():
+    curr_academic_year = current_academic_year()
+    next_academic_year = curr_academic_year.next() if curr_academic_year else None
+    return next_academic_year

@@ -26,7 +26,6 @@
 import itertools
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -47,6 +46,7 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
     REGISTRATION_SUBMITTED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
+from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 
 
@@ -62,16 +62,8 @@ def list_admissions(request):
     if request.POST.get('xls_status') == "xls_admissions":
         return create_xls(request.user, admission_list, search_form)
 
-    paginator = Paginator(admission_list, 10)
-    page = request.GET.get('page')
-    try:
-        admissions = paginator.page(page)
-    except PageNotAnInteger:
-        admissions = paginator.page(1)
-    except EmptyPage:
-        admissions = paginator.page(paginator.num_pages)
     return render(request, "admissions.html", {
-        'admissions': admissions,
+        'admissions': get_object_list(request, admission_list),
         'search_form': search_form,
         'active_faculty': faculty_filter
     })
