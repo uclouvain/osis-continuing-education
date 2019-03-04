@@ -23,16 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import datetime
 import random
 
 import factory
 
-import reference
-from base.models import entity_version
-from base.models.academic_year import current_academic_years
-from base.models.enums import entity_type
-from base.models.offer_year import OfferYear
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.tests.factories.address import AddressFactory
@@ -131,6 +125,9 @@ class AdmissionFactory(factory.DjangoModelFactory):
     prior_experience_validation = factory.fuzzy.FuzzyChoice([True, False])
     assessment_presented = factory.fuzzy.FuzzyChoice([True, False])
     assessment_succeeded = factory.fuzzy.FuzzyChoice([True, False])
-    # ajouter dates sessions cours suivies
-    sessions = "sessions"
+    registration_file_received = False
     archived = False
+    diploma_produced = False
+
+    # TODO:: For sessions, add dates of followed courses (see model)
+    sessions = "sessions"
