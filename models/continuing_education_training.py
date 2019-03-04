@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+import uuid as uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
@@ -41,6 +41,8 @@ class ContinuingEducationTrainingAdmin(ModelAdmin):
 
 
 class ContinuingEducationTraining(Model):
+
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     education_group_year = models.OneToOneField(
         'base.EducationGroupYear',
