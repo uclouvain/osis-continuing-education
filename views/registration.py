@@ -51,7 +51,7 @@ def list_registrations(request):
         return create_xls_registration(request.user, admission_list, search_form)
 
     return render(request, "registrations.html", {
-        'admissions': get_object_list(request,admission_list),
+        'admissions': get_object_list(request, admission_list),
         'search_form': search_form
     })
 
