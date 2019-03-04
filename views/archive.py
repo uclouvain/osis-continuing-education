@@ -25,14 +25,14 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.forms.search import ArchiveFilterForm
-from continuing_education.business.xls.xls_archive import create_xls
-from continuing_education.models.admission import Admission
 from base.views.common import display_success_messages, display_error_messages
+from continuing_education.business.xls.xls_archive import create_xls
+from continuing_education.forms.search import ArchiveFilterForm
+from continuing_education.models.admission import Admission
 from continuing_education.views.common import get_object_list
 
 

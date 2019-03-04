@@ -24,30 +24,28 @@
 #
 ##############################################################################
 import random
-
 from datetime import date
+from operator import itemgetter
 
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
-from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.models.enums.admission_state_choices import REJECTED, ARCHIVE_STATE_CHOICES
+from base.models.academic_year import AcademicYear
+from base.models.enums import education_group_types
+from base.models.enums.entity_type import FACULTY, SCHOOL
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, ArchiveFilterForm, \
-    STATES_FOR_ARCHIVE, ALL_CHOICE
-from base.models.enums.entity_type import FACULTY
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     PART_OF_CONTINUING_EDUCATION
-from base.models.enums.entity_type import FACULTY, SCHOOL
+from continuing_education.forms.search import ArchiveFilterForm, \
+    ALL_CHOICE
+from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
-from operator import itemgetter
-from base.models.academic_year import AcademicYear
-from base.tests.factories.education_group_type import EducationGroupTypeFactory
-from base.models.enums import education_group_types
+from continuing_education.tests.factories.admission import AdmissionFactory
 
 
 class TestFilterForm(TestCase):

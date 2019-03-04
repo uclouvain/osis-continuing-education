@@ -30,13 +30,11 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from base.models.entity_version import EntityVersion
-from base.models.enums.entity_type import FACULTY
+from continuing_education.business.admission import get_management_faculty
 from continuing_education.business.admission import send_state_changed_email, send_admission_submitted_email_to_admin, \
     send_admission_submitted_email_to_participant
 from continuing_education.models.enums import admission_state_choices, enums
 from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin, SerializableModelManager
-from continuing_education.business.admission import get_management_faculty
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
 

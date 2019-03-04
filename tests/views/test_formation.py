@@ -24,16 +24,15 @@
 #
 ##############################################################################
 
-from django.urls import reverse
 from django.test import TestCase
+from django.urls import reverse
 
-from base.tests.factories.person import PersonWithPermissionsFactory
+from base.models.enums import education_group_types
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.education_group_type import EducationGroupTypeFactory
-from base.models.enums import education_group_types
-from django.core import paginator as django_paginator
+from base.tests.factories.person import PersonWithPermissionsFactory
 
 
 class ViewFormationTestCase(TestCase):

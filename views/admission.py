@@ -46,8 +46,8 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
     REGISTRATION_SUBMITTED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
-from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from continuing_education.views.common import get_object_list
+from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 
 
 @login_required

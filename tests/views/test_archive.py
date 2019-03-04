@@ -25,20 +25,20 @@
 ##############################################################################
 
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.views.archive import _switch_archived_state, _mark_as_archived
-from base.tests.factories.academic_year import create_current_academic_year
-from continuing_education.models.admission import Admission
 
 
 class ViewArchiveTestCase(TestCase):

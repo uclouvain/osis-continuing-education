@@ -26,7 +26,7 @@
 from django.conf.urls import url, include
 
 import continuing_education.views.file
-from continuing_education.views import (home, admission, registration, archive, formation)
+from continuing_education.views import (home, admission, registration, archive, formation, prospect)
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
@@ -55,4 +55,5 @@ urlpatterns = [
         url(r'^$', formation.list_formations, name='formation'),
     ])),
 
+    url(r'^prospects$', prospect.list_prospects, name='prospects'),
 ]

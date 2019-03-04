@@ -1,34 +1,23 @@
 from datetime import datetime
+from operator import itemgetter
 
 from django import forms
-from django.forms import ModelForm, ChoiceField, ModelChoiceField
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy
-
-from base.models.academic_year import current_academic_year
-from base.models.education_group_year import EducationGroupYear
-from base.models.enums import education_group_categories
-from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
-from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES
-from continuing_education.forms.account import ContinuingEducationPersonChoiceField
-from continuing_education.models.admission import Admission
-from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
-from continuing_education.models.enums import enums
-from reference.models.country import Country
-from base.models.entity_version import search
+from django.db.models import Q
+from django.forms import ModelChoiceField
+from django.utils.translation import pgettext_lazy
 from django.utils.translation import ugettext_lazy as _, pgettext
-from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED, ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
-from base.models.entity_version import EntityVersion
+
+from base.business.entity import get_entities_ids
 from base.models import entity_version
+from base.models.academic_year import AcademicYear
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
-from operator import itemgetter
-from base.business.entity import get_entities_ids
 from base.models.enums.education_group_types import TrainingType
-from base.models.academic_year import current_academic_year, AcademicYear
-from django.db.models import Q
+from continuing_education.models.admission import Admission
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
+from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
+    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]

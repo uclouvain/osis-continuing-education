@@ -28,10 +28,10 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
-from osis_common.messaging import message_config
-from osis_common.messaging import send_message as message_service
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from osis_common.messaging import message_config
+from osis_common.messaging import send_message as message_service
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 

@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+* OSIS stands for Open Student Information System. It's an application
+* designed to manage the core business of higher education institutions,
+* such as universities, faculties, institutes and professional schools.
+* The core business involves the administration of students, teachers,
+* courses, programs and so on.
+*
+* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* A copy of this license - GNU General Public License - is available
+* at the root of the source code of this program.  If not,
+* see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/continuing_education_style.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li class="active">{% trans 'Prospects' %}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h2>{% trans 'Prospects' %}</h2>
+    </div>
+
+    <div class="panel panel-default">
+
+        <div class="panel panel-body">
+             <table class="table table-striped table-hover" id="order_prospect">
+                <thead>
+                    <tr>
+                        <th class="searchable">{% trans 'Name' %}</th>
+                        <th class="searchable">{% trans 'First name' %}</th>
+                        <th class="searchable">{% trans 'Email' %}</th>
+                        <th class="searchable">{% trans 'Postal code' %}</th>
+                        <th class="searchable">{% trans 'Formation' %}</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            {% bootstrap_pagination prospects extra=request.GET.urlencode %}
+                        </td>
+                    </tr>
+                </tfoot>
+                {% for prospect in prospects %}
+                    <tr>
+                        <td>{{ prospect.name }}</td>
+                        <td>{{ prospect.first_name }}</td>
+                        <td>{{ prospect.email }}</td>
+                        <td>{{ prospect.postal_code }}</td>
+                        <td>{{ prospect.formation.acronym }} - {{ prospect.formation.academic_year.year }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $('#order_prospect').DataTable( {
+                "order": [[ 4, "desc" ]],
+                "paging": false,
+                "info": false,
+                "bFilter": false,
+                "language":
+                    {
+                        "sEmptyTable": "{% trans 'No data' %}"
+                    }
+            } );
+        } );
+    </script>
+{% endblock %}
