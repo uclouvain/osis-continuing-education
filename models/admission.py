@@ -376,8 +376,6 @@ class Admission(SerializableModel):
         verbose_name=_("Sessions")
     )
 
-
-
     @property
     def formation_display(self):
         return "{}{} - {}".format(
