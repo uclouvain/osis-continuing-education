@@ -76,7 +76,11 @@ urlpatterns = [
         ProspectDetailUpdateDestroy.as_view(),
         name=ProspectDetailUpdateDestroy.name
     ),
-    url(r'^training/$', ContinuingEducationTrainingListCreate.as_view(), name=ContinuingEducationTrainingListCreate.name),
+    url(
+        r'^training/$',
+        ContinuingEducationTrainingListCreate.as_view(),
+        name=ContinuingEducationTrainingListCreate.name
+    ),
     url(
         r'^training/(?P<uuid>[0-9a-f-]+)$',
         ContinuingEducationTrainingDetailUpdateDestroy.as_view(),
