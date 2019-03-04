@@ -26,6 +26,7 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
+from base.tests.factories.education_group_year import TrainingFactory
 from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.tests.factories.prospect import ProspectFactory
 
@@ -33,7 +34,8 @@ from continuing_education.tests.factories.prospect import ProspectFactory
 class ProspectSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.prospect = ProspectFactory()
+        formation = TrainingFactory()
+        cls.prospect = ProspectFactory(formation=formation)
         url = reverse('continuing_education_api_v1:prospect-list-create')
         cls.serializer = ProspectSerializer(cls.prospect, context={'request': RequestFactory().get(url)})
 
@@ -46,6 +48,7 @@ class ProspectSerializerTestCase(TestCase):
             'postal_code',
             'city',
             'email',
-            'phone_number'
+            'phone_number',
+            'formation'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)

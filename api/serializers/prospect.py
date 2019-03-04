@@ -25,6 +25,7 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.models.education_group_year import EducationGroupYear
 from continuing_education.models.prospect import Prospect
 
 
@@ -32,6 +33,11 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:prospect-detail-update-delete',
         lookup_field='uuid'
+    )
+    formation = serializers.SlugRelatedField(
+        queryset=EducationGroupYear.objects.all(),
+        slug_field='uuid',
+        required=True
     )
 
     class Meta:
@@ -44,5 +50,6 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
             'postal_code',
             'city',
             'email',
-            'phone_number'
+            'phone_number',
+            'formation'
         )

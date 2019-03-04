@@ -30,6 +30,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from base.tests.factories.education_group_year import TrainingFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.models.prospect import Prospect
@@ -41,8 +42,8 @@ class ProspectListCreateTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:prospect-list-create')
-
-        cls.prospect = ProspectFactory()
+        formation = TrainingFactory()
+        cls.prospect = ProspectFactory(formation=formation)
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -86,7 +87,8 @@ class ProspectListCreateTestCase(APITestCase):
             'postal_code': self.prospect.postal_code,
             'city': self.prospect.city,
             'email': self.prospect.email,
-            'phone_number': self.prospect.phone_number
+            'phone_number': self.prospect.phone_number,
+            'formation': TrainingFactory().uuid
         }
         response = self.client.post(self.url, data=data, format='json')
         serializer = ProspectSerializer(
@@ -101,8 +103,8 @@ class ProspectListCreateTestCase(APITestCase):
 class ProspectDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
-
-        cls.prospect = ProspectFactory()
+        formation = TrainingFactory()
+        cls.prospect = ProspectFactory(formation=formation)
         cls.user = UserFactory()
         cls.url = reverse(
             'continuing_education_api_v1:prospect-detail-update-delete',
@@ -156,7 +158,8 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
         data = {
             'city': 'Dinant',
             'name': 'Pompidou',
-            'email': 'fake@d.be'
+            'email': 'fake@d.be',
+            'formation': TrainingFactory().uuid
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
