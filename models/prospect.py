@@ -67,6 +67,11 @@ class Prospect(Model):
         blank=True,
         verbose_name=_("Phone number")
     )
+    formation = models.ForeignKey(
+        'base.EducationGroupYear',
+        on_delete=models.PROTECT,
+        verbose_name=_("Formation")
+    )
 
     def __str__(self):
         return "{} - {} {}".format(self.id, self.first_name, self.name)
