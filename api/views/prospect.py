@@ -39,13 +39,15 @@ class ProspectListCreate(generics.ListCreateAPIView):
         'first_name',
         'name',
         'email',
-        'postal_code'
+        'postal_code',
+        'formation'
     )
     search_fields = (
         'first_name',
         'name',
         'email',
-        'postal_code'
+        'postal_code',
+        'formation'
     )
     serializer_class = ProspectSerializer
 
