@@ -68,7 +68,7 @@
                         <td>{{ prospect.first_name }}</td>
                         <td>{{ prospect.email }}</td>
                         <td>{{ prospect.postal_code }}</td>
-                        <td>{{ prospect.formation.acronym }}</td>
+                        <td>{{ prospect.formation.acronym }} - {{ prospect.formation.academic_year.year }}</td>
                     </tr>
                 {% endfor %}
             </table>
