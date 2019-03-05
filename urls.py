@@ -54,10 +54,6 @@ urlpatterns = [
     url(r'^formation/', include([
         url(r'^$', formation.list_formations, name='formation'),
     ])),
-
     url(r'^prospects$', prospect.list_prospects, name='prospects'),
+    url(r'^tasks/$', tasks.list_tasks, name='tasks'),
 ]
-    url(r'^tasks/', include([
-            url(r'^$', tasks.list_tasks, name='tasks'),
-        ])),
-    ]
