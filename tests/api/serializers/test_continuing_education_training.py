@@ -28,18 +28,16 @@ from django.urls import reverse
 
 from base.tests.factories.education_group_year import TrainingFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
-from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.prospect import ProspectFactory
 
 
 class ContinuingEducationTrainingSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         training = TrainingFactory()
-        cls.prospect = ContinuingEducationTrainingFactory(education_group_year=training)
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group_year=training)
         url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
-        cls.serializer = ContinuingEducationTrainingSerializer(cls.prospect, context={'request': RequestFactory().get(url)})
+        cls.serializer = ContinuingEducationTrainingSerializer(cls.continuing_education_training, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
         expected_fields = [

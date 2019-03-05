@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import uuid
-
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
@@ -33,11 +32,8 @@ from rest_framework.test import APITestCase
 from base.tests.factories.education_group_year import TrainingFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
-from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.prospect import Prospect
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.prospect import ProspectFactory
 
 
 class ContinuingEducationTrainingListCreateTestCase(APITestCase):
@@ -83,7 +79,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         self.assertEqual(response.data['count'], expected_count)
 
 
-class ProspectDetailUpdateDestroyTestCase(APITestCase):
+class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         formation = TrainingFactory()
@@ -159,7 +155,7 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = ProspectSerializer(
+        serializer = ContinuingEducationTrainingSerializer(
             self.continuing_education_training,
             context={'request': RequestFactory().get(self.url)},
         )
