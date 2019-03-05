@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-05 10:07+0100\n"
+"POT-Creation-Date: 2019-03-05 10:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,6 +106,10 @@ msgctxt "plural"
 msgid "All"
 msgstr ""
 
+#: templates/admission_detail.html:67
+msgid "Archive"
+msgstr ""
+
 #: models/admission.py:364
 msgid "Archived"
 msgstr ""
@@ -123,10 +127,6 @@ msgstr ""
 
 #: business/xls/xls_archive.py:42 tests/business/test_xls_archive.py:85
 msgid "Archives_list"
-msgstr ""
-
-#: templates/admission_detail.html:67
-msgid "Archiving"
 msgstr ""
 
 #: models/admission.py:352 templates/fragment/tab_registration.html:107
@@ -988,7 +988,7 @@ msgid "UCL registration complete"
 msgstr ""
 
 #: templates/admission_detail.html:65
-msgid "Unarchiving"
+msgid "Unarchive"
 msgstr ""
 
 #: forms/account.py:39

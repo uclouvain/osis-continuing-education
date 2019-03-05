@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-05 10:07+0100\n"
+"POT-Creation-Date: 2019-03-05 10:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,6 +108,10 @@ msgctxt "plural"
 msgid "All"
 msgstr "Toutes"
 
+#: templates/admission_detail.html:67
+msgid "Archive"
+msgstr "Archiver"
+
 #: models/admission.py:364
 msgid "Archived"
 msgstr "Archivé"
@@ -126,10 +130,6 @@ msgstr "Liste des archives"
 #: business/xls/xls_archive.py:42 tests/business/test_xls_archive.py:85
 msgid "Archives_list"
 msgstr "Liste_archives"
-
-#: templates/admission_detail.html:67
-msgid "Archiving"
-msgstr "A archivé"
 
 #: models/admission.py:352 templates/fragment/tab_registration.html:107
 #: templates/registration_form.html:125
@@ -966,13 +966,17 @@ msgstr ""
 msgid ""
 "This page contains the Registrations for which the diploma must be produced "
 "by IUFC."
-msgstr "Cette page reprend les Inscriptions pour lesquelles le diplôme doit être produit par l'IUFC."
+msgstr ""
+"Cette page reprend les Inscriptions pour lesquelles le diplôme doit être "
+"produit par l'IUFC."
 
 #: templates/fragment/tasks/registrations_to_validate.html:6
 msgid ""
 "This page contains the Registrations submitted by the participants. These "
 "must be validated by IUFC."
-msgstr "Cette page reprend les Inscriptions soumises par les participants. Celles-ci doivent être validées par l'IUFC."
+msgstr ""
+"Cette page reprend les Inscriptions soumises par les participants. Celles-ci "
+"doivent être validées par l'IUFC."
 
 #: templates/fragment/send_notification_mail_modal.html:40
 msgid ""
@@ -996,8 +1000,8 @@ msgid "UCL registration complete"
 msgstr "En ordre d'inscription UCL"
 
 #: templates/admission_detail.html:65
-msgid "Unarchiving"
-msgstr "A désarchiver"
+msgid "Unarchive"
+msgstr "Désarchivé"
 
 #: forms/account.py:39
 msgid "Unknown birth place"
