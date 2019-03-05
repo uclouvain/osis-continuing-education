@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,37 +23,34 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from rest_framework import serializers
 
-from django.contrib import admin
+from base.models.education_group_year import EducationGroupYear
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from education_group.api.serializers.training import TrainingDetailSerializer
 
-from continuing_education.models import *
-from continuing_education.models import file
 
-admin.site.register(
-    admission.Admission,
-    admission.AdmissionAdmin
-)
-admin.site.register(
-    continuing_education_person.ContinuingEducationPerson,
-    continuing_education_person.ContinuingEducationPersonAdmin
-)
-admin.site.register(
-    address.Address,
-    address.AddressAdmin
-)
-admin.site.register(
-    file.AdmissionFile,
-    file.AdmissionFileAdmin
-)
-admin.site.register(
-    prospect.Prospect,
-    prospect.ProspectAdmin
-)
-admin.site.register(
-    continuing_education_training.ContinuingEducationTraining,
-    continuing_education_training.ContinuingEducationTrainingAdmin
-)
-admin.site.register(
-    person_training.PersonTraining,
-    person_training.PersonTrainingAdmin
-)
+class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='continuing_education_api_v1:continuing-education-training-detail-update-delete',
+        lookup_field='uuid'
+    )
+    education_group_year = TrainingDetailSerializer()
+
+    class Meta:
+        model = ContinuingEducationTraining
+        fields = (
+            'url',
+            'uuid',
+            'education_group_year',
+            'active',
+            'managers'
+        )
+
+
+class ContinuingEducationTrainingPostSerializer(ContinuingEducationTrainingSerializer):
+    education_group_year = serializers.SlugRelatedField(
+        queryset=EducationGroupYear.objects.all(),
+        slug_field='uuid',
+        required=True
+    )

@@ -24,36 +24,24 @@
 #
 ##############################################################################
 
-from django.contrib import admin
+from django.contrib.admin import ModelAdmin
+from django.db import models
+from django.db.models import Model
 
-from continuing_education.models import *
-from continuing_education.models import file
 
-admin.site.register(
-    admission.Admission,
-    admission.AdmissionAdmin
-)
-admin.site.register(
-    continuing_education_person.ContinuingEducationPerson,
-    continuing_education_person.ContinuingEducationPersonAdmin
-)
-admin.site.register(
-    address.Address,
-    address.AddressAdmin
-)
-admin.site.register(
-    file.AdmissionFile,
-    file.AdmissionFileAdmin
-)
-admin.site.register(
-    prospect.Prospect,
-    prospect.ProspectAdmin
-)
-admin.site.register(
-    continuing_education_training.ContinuingEducationTraining,
-    continuing_education_training.ContinuingEducationTrainingAdmin
-)
-admin.site.register(
-    person_training.PersonTraining,
-    person_training.PersonTrainingAdmin
-)
+class PersonTrainingAdmin(ModelAdmin):
+    list_display = ('person', 'training',)
+    search_fields = ['person']
+    raw_id_fields = ('person', 'training',)
+
+
+class PersonTraining(Model):
+    person = models.ForeignKey(
+        'base.Person',
+        on_delete=models.CASCADE
+    )
+
+    training = models.ForeignKey(
+        'continuing_education.ContinuingEducationTraining',
+        on_delete=models.CASCADE
+    )

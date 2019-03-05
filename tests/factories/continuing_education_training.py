@@ -23,37 +23,13 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import random
 
-from django.contrib import admin
+import factory
 
-from continuing_education.models import *
-from continuing_education.models import file
 
-admin.site.register(
-    admission.Admission,
-    admission.AdmissionAdmin
-)
-admin.site.register(
-    continuing_education_person.ContinuingEducationPerson,
-    continuing_education_person.ContinuingEducationPersonAdmin
-)
-admin.site.register(
-    address.Address,
-    address.AddressAdmin
-)
-admin.site.register(
-    file.AdmissionFile,
-    file.AdmissionFileAdmin
-)
-admin.site.register(
-    prospect.Prospect,
-    prospect.ProspectAdmin
-)
-admin.site.register(
-    continuing_education_training.ContinuingEducationTraining,
-    continuing_education_training.ContinuingEducationTrainingAdmin
-)
-admin.site.register(
-    person_training.PersonTraining,
-    person_training.PersonTrainingAdmin
-)
+class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'continuing_education.ContinuingEducationTraining'
+
+    active = random.choice([True, False])
