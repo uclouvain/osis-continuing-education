@@ -24,13 +24,13 @@
 #
 ##############################################################################
 import uuid
-from django.forms import model_to_dict
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
     ContinuingEducationTrainingPostSerializer
@@ -43,8 +43,9 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
-        formation = TrainingFactory()
-        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group_year=formation)
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -83,7 +84,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
     def test_create_valid_continuing_education_training(self):
         self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
         data = {
-            'education_group_year': EducationGroupYearFactory().uuid,
+            'education_group': EducationGroupFactory().uuid,
             'active': True,
         }
         response = self.client.post(self.url, data=data, format='json')
@@ -99,8 +100,9 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
 class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        formation = TrainingFactory()
-        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group_year=formation)
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
         cls.user = UserFactory()
         cls.url = reverse(
             'continuing_education_api_v1:continuing-education-training-detail-update-delete',
@@ -152,7 +154,7 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
     def test_update_valid_continuing_education_training(self):
         self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
         data = {
-            'education_group_year': self.continuing_education_training.education_group_year.uuid,
+            'education_group': self.continuing_education_training.education_group.uuid,
             'active': False,
         }
         response = self.client.put(self.url, data=data)

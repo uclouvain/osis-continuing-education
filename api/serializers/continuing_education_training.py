@@ -23,9 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.forms import model_to_dict
 from rest_framework import serializers
 
-from base.models.education_group_year import EducationGroupYear
+from base.models.education_group import EducationGroup
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from education_group.api.serializers.training import TrainingDetailSerializer
 
@@ -35,22 +36,29 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
         view_name='continuing_education_api_v1:continuing-education-training-detail-update-delete',
         lookup_field='uuid'
     )
-    education_group_year = TrainingDetailSerializer()
+    education_group = serializers.SerializerMethodField()
 
     class Meta:
         model = ContinuingEducationTraining
         fields = (
             'url',
             'uuid',
-            'education_group_year',
+            'education_group',
             'active',
             'managers'
         )
 
+    def get_education_group(self, obj):
+        # return last education_group_year
+        return TrainingDetailSerializer(
+            obj.get_most_recent_education_group_year(),
+            context={'request': self.context['request']}
+        ).data
+
 
 class ContinuingEducationTrainingPostSerializer(ContinuingEducationTrainingSerializer):
-    education_group_year = serializers.SlugRelatedField(
-        queryset=EducationGroupYear.objects.all(),
+    education_group = serializers.SlugRelatedField(
+        queryset=EducationGroup.objects.all(),
         slug_field='uuid',
         required=True
     )

@@ -37,11 +37,11 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
     name = 'continuing-education-training-list-create'
     queryset = ContinuingEducationTraining.objects.all()
     filter_fields = (
-        'education_group_year',
+        'education_group',
         'active',
     )
     search_fields = (
-        'education_group_year',
+        'education_group',
     )
 
     def get_serializer_class(self):
