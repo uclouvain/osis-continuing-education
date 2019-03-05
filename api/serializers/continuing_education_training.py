@@ -27,7 +27,6 @@ from rest_framework import serializers
 
 from base.models.education_group_year import EducationGroupYear
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.prospect import Prospect
 from education_group.api.serializers.training import TrainingDetailSerializer
 
 
@@ -47,3 +46,11 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
             'active',
             'managers'
         )
+
+
+class ContinuingEducationTrainingPostSerializer(ContinuingEducationTrainingSerializer):
+    education_group_year = serializers.SlugRelatedField(
+        queryset=EducationGroupYear.objects.all(),
+        slug_field='uuid',
+        required=True
+    )

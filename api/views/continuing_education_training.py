@@ -25,10 +25,9 @@
 ##############################################################################
 from rest_framework import generics
 
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
-from continuing_education.api.serializers.prospect import ProspectSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
+    ContinuingEducationTrainingPostSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.prospect import Prospect
 
 
 class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
@@ -44,7 +43,11 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
     search_fields = (
         'education_group_year',
     )
-    serializer_class = ContinuingEducationTrainingSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ContinuingEducationTrainingPostSerializer
+        return ContinuingEducationTrainingSerializer
 
 
 class ContinuingEducationTrainingDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -54,4 +57,8 @@ class ContinuingEducationTrainingDetailUpdateDestroy(generics.RetrieveUpdateDest
     name = 'continuing-education-training-detail-update-delete'
     queryset = ContinuingEducationTraining.objects.all()
     lookup_field = 'uuid'
-    serializer_class = ContinuingEducationTrainingSerializer
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return ContinuingEducationTrainingPostSerializer
+        return ContinuingEducationTrainingSerializer

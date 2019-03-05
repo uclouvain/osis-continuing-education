@@ -24,14 +24,16 @@
 #
 ##############################################################################
 import uuid
+from django.forms import model_to_dict
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
+    ContinuingEducationTrainingPostSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
@@ -135,12 +137,12 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
     def test_update_valid_continuing_education_training(self):
         self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
         data = {
+            'education_group_year': self.continuing_education_training.education_group_year.uuid,
             'active': False,
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        serializer = ContinuingEducationTrainingSerializer(
+        serializer = ContinuingEducationTrainingPostSerializer(
             ContinuingEducationTraining.objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )
