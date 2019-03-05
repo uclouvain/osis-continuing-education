@@ -72,4 +72,9 @@ class ContinuingEducationTrainingPostSerializerTestCase(TestCase):
             'managers',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
-        self.assertEqual(type(self.serializer.data['education_group_year']), UUID)
+
+    def test_ensure_education_group_year_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['education_group_year'],
+            self.continuing_education_training.education_group_year.uuid
+        )
