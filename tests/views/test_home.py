@@ -40,7 +40,7 @@ class ViewHomeTestCase(TestCase):
         url = reverse('continuing_education')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'continuing_education/admin_home.html')
+        self.assertTemplateUsed(response, 'admin_home.html')
 
     def test_admission_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
