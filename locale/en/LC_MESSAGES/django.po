@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-05 10:48+0100\n"
+"POT-Creation-Date: 2019-03-05 14:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,6 +50,10 @@ msgstr ""
 #: templates/blocks/dropdown/list_actions.html:6
 #: templates/fragment/tab_documents.html:49
 msgid "Actions"
+msgstr ""
+
+#: models/continuing_education_training.py:62
+msgid "Active"
 msgstr ""
 
 #: business/admission.py:172 models/admission.py:166
@@ -106,7 +110,7 @@ msgctxt "plural"
 msgid "All"
 msgstr ""
 
-#: templates/admission_detail.html:67
+#: templates/admission_detail.html:67 templates/blocks/button/archive.html:5
 msgid "Archive"
 msgstr ""
 
@@ -977,10 +981,6 @@ msgstr ""
 #: forms/search.py:236 templates/formations.html:60
 #: templates/formations.html:83
 msgid "Title"
-msgstr ""
-
-#: templates/blocks/button/archive.html:5
-msgid "To archive"
 msgstr ""
 
 #: models/admission.py:331
