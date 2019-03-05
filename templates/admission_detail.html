@@ -62,9 +62,9 @@
                 </ul>
                 <div class="pull-right">
                     {% if admission.archived %}
-                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission archived' %}" class="btn btn-default"><i class="fa fa-archive" style="color:green;"></i>&nbsp;{% trans 'Unarchiving' %}</a>
+                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission archived' %}" class="btn btn-default"><i class="fa fa-folder"></i>&nbsp;{% trans 'Unarchive' %}</a>
                     {% else %}
-                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission is not archived' %}" class="btn btn-default"><i class="fa fa-archive" style="color:red;"></i>&nbsp;{% trans 'Archiving' %}</a>
+                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission is not archived' %}" class="btn btn-default"><i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}</a>
                     {% endif %}
                 </div>
 
