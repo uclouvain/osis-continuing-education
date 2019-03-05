@@ -55,5 +55,5 @@ urlpatterns = [
         url(r'^$', formation.list_formations, name='formation'),
     ])),
     url(r'^prospects$', prospect.list_prospects, name='prospects'),
-    url(r'^tasks/$', tasks.list_tasks, name='tasks'),
+    url(r'^tasks/$', tasks.list_tasks, name='list_tasks'),
 ]
