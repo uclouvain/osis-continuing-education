@@ -30,4 +30,4 @@ from django.shortcuts import render
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def main_view(request):
-    return render(request, "continuing_education/admin_home.html")
+    return render(request, "admin_home.html")
