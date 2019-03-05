@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.forms import model_to_dict
 from rest_framework import serializers
 
 from base.models.education_group import EducationGroup

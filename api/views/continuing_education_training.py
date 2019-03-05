@@ -35,7 +35,9 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
        Return a list of all the trainings with optional filtering or create a training.
     """
     name = 'continuing-education-training-list-create'
-    queryset = ContinuingEducationTraining.objects.all()
+    queryset = ContinuingEducationTraining.objects.all().order_by(
+        'education_group__educationgroupyear__acronym'
+    ).distinct('education_group__educationgroupyear__acronym')
     filter_fields = (
         'education_group',
         'active',
@@ -55,7 +57,9 @@ class ContinuingEducationTrainingDetailUpdateDestroy(generics.RetrieveUpdateDest
         Return the detail of the training, destroy one or update one.
     """
     name = 'continuing-education-training-detail-update-delete'
-    queryset = ContinuingEducationTraining.objects.all()
+    queryset = ContinuingEducationTraining.objects.all().order_by(
+        'education_group__educationgroupyear__acronym'
+    ).distinct('education_group__educationgroupyear__acronym')
     lookup_field = 'uuid'
 
     def get_serializer_class(self):
