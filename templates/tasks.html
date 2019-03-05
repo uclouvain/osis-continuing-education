@@ -47,7 +47,6 @@
           <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
         </ul>
         <div class="tab-content">
-            {% csrf_token %}
             <div role="tabpanel" class="tab-pane active" id="diploma-to-produce">
                 {% include "fragment/tasks/registrations_to_validate.html" %}
             </div>
