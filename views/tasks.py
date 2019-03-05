@@ -26,8 +26,29 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
+from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
+
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-def main_view(request):
-    return render(request, "admin_home.html")
+def list_tasks(request):
+    all_admissions = Admission.objects.select_related(
+        'person_information__person', 'formation__academic_year'
+    ).order_by(
+        'person_information__person__last_name', 'person_information__person__first_name'
+    )
+
+    registrations_to_validate = all_admissions.filter(
+        state=admission_state_choices.REGISTRATION_SUBMITTED
+    )
+
+    admissions_diploma_to_produce = all_admissions.filter(
+        state=admission_state_choices.VALIDATED,
+        diploma_produced=False
+    )
+
+    return render(request, "tasks.html", {
+        'registrations_to_validate': registrations_to_validate,
+        'admissions_diploma_to_produce': admissions_diploma_to_produce,
+    })
