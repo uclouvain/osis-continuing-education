@@ -1001,7 +1001,7 @@ msgstr "En ordre d'inscription UCL"
 
 #: templates/admission_detail.html:65
 msgid "Unarchive"
-msgstr "Désarchivé"
+msgstr "Désarchiver"
 
 #: forms/account.py:39
 msgid "Unknown birth place"
