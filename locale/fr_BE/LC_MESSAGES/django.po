@@ -1131,6 +1131,3 @@ msgstr "est maintenant"
 #: views/archive.py:95
 msgid "unarchived"
 msgstr "non-archivé"
-
-#~ msgid "To archive"
-#~ msgstr "A archivé"
