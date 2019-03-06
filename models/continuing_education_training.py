@@ -29,6 +29,8 @@ from django.db import models
 from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
+from base.models.academic_year import current_academic_year
+from base.models.education_group_year import EducationGroupYear
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
 

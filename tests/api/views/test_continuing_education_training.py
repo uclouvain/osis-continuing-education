@@ -81,6 +81,14 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         expected_count = ContinuingEducationTraining.objects.all().count()
         self.assertEqual(response.data['count'], expected_count)
 
+    def test_get_all_training_ensure_default_order(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        admissions = ContinuingEducationTraining.objects.all().order_by('education_group__educationgroupyear__acronym')
+        serializer = AdmissionListSerializer(admissions, many=True, context={'request': RequestFactory().get(self.url)})
+        self.assertEqual(response.data['results'], serializer.data)
+
     def test_create_valid_continuing_education_training(self):
         self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
         data = {
