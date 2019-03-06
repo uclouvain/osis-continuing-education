@@ -24,10 +24,19 @@
 #
 ##############################################################################
 from rest_framework import generics
+from django_filters import rest_framework as filters
 
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
     ContinuingEducationTrainingPostSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+
+
+class ContinuingEducationTrainingFilter(filters.FilterSet):
+    acronym = filters.CharFilter(field_name="education_group__educationgroupyear__acronym")
+
+    class Meta:
+        model = ContinuingEducationTraining
+        fields = ['education_group', 'active']
 
 
 class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
@@ -35,12 +44,11 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
        Return a list of all the trainings with optional filtering or create a training.
     """
     name = 'continuing-education-training-list-create'
+    queryset = ContinuingEducationTraining.objects.all().distinct()
+    filter_class = ContinuingEducationTrainingFilter
     search_fields = (
-        'education_group__educationgroupyear__acronym'
+        'education_group__educationgroupyear__acronym',
     )
-    ordering_fields = {
-        'education_group__educationgroupyear__acronym'
-    }
     ordering = (
         'education_group__educationgroupyear__acronym',
     )
@@ -49,10 +57,6 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return ContinuingEducationTrainingPostSerializer
         return ContinuingEducationTrainingSerializer
-
-    def get_queryset(self):
-        queryset = ContinuingEducationTraining.objects.all()
-        return queryset
 
 
 class ContinuingEducationTrainingDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
