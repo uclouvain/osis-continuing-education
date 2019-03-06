@@ -27,7 +27,7 @@ from rest_framework import serializers
 
 from base.models.education_group import EducationGroup
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from education_group.api.serializers.training import TrainingDetailSerializer
+from education_group.api.serializers.training import TrainingListSerializer
 
 
 class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializer):
@@ -49,7 +49,7 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
 
     def get_education_group(self, obj):
         # return last education_group_year
-        return TrainingDetailSerializer(
+        return TrainingListSerializer(
             obj.get_most_recent_education_group_year(),
             context={'request': self.context['request']}
         ).data
