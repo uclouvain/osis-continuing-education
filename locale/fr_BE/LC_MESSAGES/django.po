@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-05 14:28+0100\n"
+"POT-Creation-Date: 2019-03-06 13:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "Actions"
 msgstr "Actions"
 
-#: models/continuing_education_training.py:62
+#: models/continuing_education_training.py:64
 msgid "Active"
 msgstr "Actif"
 
@@ -70,7 +70,6 @@ msgid "Administrator"
 msgstr "Gestionnaire"
 
 #: tests/views/test_archive.py:166 views/archive.py:92
-#, fuzzy
 #| msgctxt "continuing_education"
 #| msgid "Admission"
 msgid "Admission"
@@ -360,6 +359,10 @@ msgstr "Modifier informations inscription"
 #: templates/admission_form.html:106 templates/fragment/tab_admission.html:53
 msgid "Education"
 msgstr "Education"
+
+#: models/continuing_education_training.py:71
+msgid "EducationGroup must have at least one EducationGroupYear"
+msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 
 #: business/xls/xls_admission.py:35 business/xls/xls_archive.py:35
 #: business/xls/xls_registration.py:36 models/admission.py:107

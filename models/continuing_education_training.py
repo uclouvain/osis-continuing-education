@@ -25,6 +25,7 @@
 ##############################################################################
 import uuid as uuid
 from django.contrib.admin import ModelAdmin
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
@@ -43,18 +44,19 @@ CONTINUING_EDUCATION_TRAINING_TYPES = [
 
 
 class ContinuingEducationTrainingAdmin(ModelAdmin):
-    list_display = ('education_group_year', 'active',)
+    list_display = ('education_group', 'active',)
     search_fields = ['acronym']
-    list_filter = ('active', 'education_group_year__academic_year')
-    raw_id_fields = ("education_group_year",)
+    list_filter = ('active',)
+    raw_id_fields = ('education_group',)
 
 
 class ContinuingEducationTraining(Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
-    education_group_year = models.OneToOneField(
-        'base.EducationGroupYear',
-        on_delete=models.CASCADE
+    education_group = models.OneToOneField(
+        'base.EducationGroup',
+        on_delete=models.CASCADE,
+        default=None
     )
 
     active = models.BooleanField(
@@ -64,5 +66,12 @@ class ContinuingEducationTraining(Model):
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
 
-    def __str__(self):
-        return "{} - {}".format(self.education_group_year.acronym, self.education_group_year.title)
+    def clean(self):
+        if not self.education_group.educationgroupyear_set.exists():
+            raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
+        super().clean(self)
+
+    def get_most_recent_education_group_year(self):
+        return self.education_group.educationgroupyear_set.filter(
+            education_group_id=self.education_group.pk
+        ).latest('academic_year__year')
