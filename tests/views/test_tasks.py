@@ -50,7 +50,10 @@ class ViewTasksTestCase(TestCase):
             AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False)
             for _ in range(2)
         ]
-        self.no_diploma_to_produce = AdmissionFactory(diploma_produced=True)
+        self.no_diploma_to_produce = AdmissionFactory(
+            state=admission_state_choices.VALIDATED,
+            diploma_produced=True
+        )
 
     def test_list_tasks(self):
         response = self.client.post(reverse('list_tasks'))
@@ -63,6 +66,7 @@ class ViewTasksTestCase(TestCase):
             response.context['registrations_to_validate'],
             self.registrations_to_validate
         )
+
         self.assertNotIn(
             self.registration_not_to_validate,
             response.context['registrations_to_validate']

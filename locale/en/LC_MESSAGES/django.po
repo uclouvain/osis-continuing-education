@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-06 12:05+0100\n"
+"POT-Creation-Date: 2019-03-05 14:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,7 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: models/continuing_education_training.py:64
+#: models/continuing_education_training.py:62
 msgid "Active"
 msgstr ""
 
@@ -110,7 +110,7 @@ msgctxt "plural"
 msgid "All"
 msgstr ""
 
-#: templates/admission_detail.html:67
+#: templates/admission_detail.html:67 templates/blocks/button/archive.html:5
 msgid "Archive"
 msgstr ""
 
@@ -357,10 +357,6 @@ msgstr ""
 
 #: templates/admission_form.html:106 templates/fragment/tab_admission.html:53
 msgid "Education"
-msgstr ""
-
-#: models/continuing_education_training.py:71
-msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr ""
 
 #: business/xls/xls_admission.py:35 business/xls/xls_archive.py:35
@@ -985,10 +981,6 @@ msgstr ""
 #: forms/search.py:236 templates/formations.html:60
 #: templates/formations.html:83
 msgid "Title"
-msgstr ""
-
-#: templates/blocks/button/archive.html:5
-msgid "To archive"
 msgstr ""
 
 #: models/admission.py:331
