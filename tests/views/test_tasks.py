@@ -25,6 +25,7 @@
 ##############################################################################
 
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.test import TestCase
 
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -56,8 +57,8 @@ class ViewTasksTestCase(TestCase):
         )
 
     def test_list_tasks(self):
-        response = self.client.post(reverse('list_tasks'))
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('list_tasks'))
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertTemplateUsed(response, 'tasks.html')
         self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
         self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
@@ -80,3 +81,15 @@ class ViewTasksTestCase(TestCase):
             self.no_diploma_to_produce,
             response.context['admissions_diploma_to_produce']
         )
+
+    def test_validate_registrations(self):
+        post_data = {
+            "selected_registration": [str(registration.pk) for registration in self.registrations_to_validate]
+        }
+        response = self.client.post(reverse('validate_registrations'), data=post_data)
+
+        for registration in self.registrations_to_validate:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.VALIDATED)
+
+        self.assertRedirects(response, reverse('list_tasks'))

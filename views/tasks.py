@@ -24,8 +24,13 @@
 #
 ##############################################################################
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_http_methods
 
+from base.views.common import display_error_messages, display_success_messages
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 
@@ -52,3 +57,28 @@ def list_tasks(request):
         'registrations_to_validate': registrations_to_validate,
         'admissions_diploma_to_produce': admissions_diploma_to_produce,
     })
+
+
+@login_required
+@require_http_methods(['POST'])
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def validate_registrations(request):
+    selected_registration_ids = request.POST.getlist("selected_registration", default=[])
+    if selected_registration_ids:
+        _validate_registrations_list(selected_registration_ids)
+        msg = _('Successfully validated %s registrations.') % len(selected_registration_ids)
+        display_success_messages(request, msg)
+    else:
+        display_error_messages(request, _('Please select at least one registration to validate.'))
+
+    return redirect(reverse("list_tasks"))
+
+
+def _validate_registrations_list(registrations_ids_list):
+    registrations_list = Admission.objects.filter(id__in=registrations_ids_list)
+
+    registrations_list_states = registrations_list.values_list('state', flat=True)
+    if not all(state == admission_state_choices.REGISTRATION_SUBMITTED for state in registrations_list_states):
+        raise PermissionDenied(_('The registration must be submitted to be validated.'))
+
+    registrations_list.update(state=admission_state_choices.VALIDATED)
