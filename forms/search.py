@@ -266,10 +266,7 @@ class FormationFilterForm(AdmissionFilterForm):
 def _build_active_parameter(qs, state):
     active_state = None
     if state in (ACTIVE, INACTIVE):
-        if state == ACTIVE:
-            active_state = True
-        else:
-            active_state = False
+        active_state = state == ACTIVE
     if isinstance(active_state, bool):
         return qs.filter(continuingeducationtraining__active=active_state)
     elif state == NOT_ORGANIZED:

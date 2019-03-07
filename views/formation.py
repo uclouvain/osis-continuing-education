@@ -45,9 +45,3 @@ def list_formations(request):
         'formations': get_object_list(request, formation_list),
         'search_form': search_form
     })
-
-
-def _get_academic_year():
-    curr_academic_year = current_academic_year()
-    next_academic_year = curr_academic_year.next() if curr_academic_year else None
-    return next_academic_year

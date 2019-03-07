@@ -40,7 +40,7 @@ msgstr "Accepté"
 #: forms/search.py:231 templates/formations.html:52
 #: templates/formations.html:81
 msgid "Acronym"
-msgstr ""
+msgstr "Acronyme"
 
 #: templates/blocks/dropdown/list_actions.html:6
 #: templates/fragment/tab_documents.html:49
@@ -476,7 +476,7 @@ msgstr "Identification"
 
 #: forms/search.py:43 templatetags/formation.py:61
 msgid "Inactive"
-msgstr "Actif"
+msgstr "Inactif"
 
 #: models/enums/file_category_choices.py:35
 msgid "Invoice"
