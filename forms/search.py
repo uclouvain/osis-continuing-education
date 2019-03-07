@@ -238,23 +238,12 @@ class FormationFilterForm(AdmissionFilterForm):
         faculty = self.cleaned_data.get('faculty', None)
         acronym = self.cleaned_data.get('acronym', None)
         title = self.cleaned_data.get('title', None)
-        state = self.cleaned_data.get('state', None)
-
-        active_state = None
-        if state in (ACTIVE, INACTIVE):
-            if state == ACTIVE:
-                active_state = True
-            else:
-                active_state = False
 
         qs = EducationGroup.objects.filter(
             educationgroupyear__education_group_type__name__in=CONTINUING_EDUCATION_TRAINING_TYPES,
         )
 
-        if isinstance(active_state, bool):
-            qs = qs.filter(continuingeducationtraining__active=active_state)
-        elif state == NOT_ORGANIZED:
-            qs = qs.filter(continuingeducationtraining__isnull=True).distinct()
+        qs = _build_active_parameter(qs, self.cleaned_data.get('state', None))
 
         if faculty:
             qs = _get_formation_filter_entity_management(
@@ -272,6 +261,20 @@ class FormationFilterForm(AdmissionFilterForm):
             qs = qs.filter(educationgroupyear__title__icontains=title)
 
         return qs.order_by('educationgroupyear__acronym').distinct()
+
+
+def _build_active_parameter(qs, state):
+    active_state = None
+    if state in (ACTIVE, INACTIVE):
+        if state == ACTIVE:
+            active_state = True
+        else:
+            active_state = False
+    if isinstance(active_state, bool):
+        return qs.filter(continuingeducationtraining__active=active_state)
+    elif state == NOT_ORGANIZED:
+        return qs.filter(continuingeducationtraining__isnull=True).distinct()
+    return qs
 
 
 def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
