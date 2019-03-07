@@ -49,10 +49,6 @@
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-2">
-                        <label for="academic_year_id">{% trans 'Academic year' %}</label>
-                        {{ search_form.academic_year }}
-                    </div>
-                    <div class="col-md-2">
                         <label for="acronym_id">{% trans 'Acronym' %}</label>
                         {{ search_form.acronym }}
                     </div>
@@ -63,6 +59,10 @@
                     <div class="col-md-2">
                         <label for="faculty_id">{% trans 'Faculty' %}</label>
                         {{ search_form.faculty }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="state_id">{% trans 'State' %}</label>
+                        {{ search_form.state }}
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-default" style="margin-top: 26px;">
@@ -81,11 +81,12 @@
                         <th class="searchable">{% trans 'Acronym' %}</th>
                         <th class="searchable">{% trans 'Faculty' %}</th>
                         <th class="searchable">{% trans 'Title' %}</th>
+                        <th class="searchable">{% trans 'State' %}</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="4">
                             {% bootstrap_pagination formations extra=request.GET.urlencode %}
                         </td>
                     </tr>
@@ -93,9 +94,10 @@
              <tbody>
                 {% for formation in formations %}
                     <tr>
-                        <td>{{ formation|get_formation_denomination }}</td>
+                        <td>{{ formation.most_recent_acronym }}</td>
                         <td>{{ formation|get_formation_faculty  | default_if_none:''}}</td>
-                        <td>{{ formation.title | default_if_none:'' }}</td>
+                        <td>{{ formation|get_formation_title | default_if_none:'' }}</td>
+                        <td>{{ formation|get_active_continuing_education_formation }}</td>
                     </tr>
 
                 {% endfor %}
