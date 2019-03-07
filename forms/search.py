@@ -232,7 +232,7 @@ class FormationFilterForm(AdmissionFilterForm):
 
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
 
-    state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('_State'))
+    state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
 
     def get_formations(self):
         faculty = self.cleaned_data.get('faculty', None)
