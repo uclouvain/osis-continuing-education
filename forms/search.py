@@ -5,16 +5,17 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelChoiceField
 from django.utils.translation import pgettext_lazy
+
 from django.utils.translation import ugettext_lazy as _, pgettext
 
 from base.business.entity import get_entities_ids
 from base.models import entity_version
-from base.models.academic_year import AcademicYear
+from base.models.education_group import EducationGroup
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
-from base.models.enums.education_group_types import TrainingType
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
@@ -33,13 +34,14 @@ BOOLEAN_CHOICES = (
     (False, _('No'))
 )
 
-PART_OF_CONTINUING_EDUCATION = [
-    TrainingType.AGGREGATION.name,
-    TrainingType.CERTIFICATE.name,
-    TrainingType.CERTIFICATE_OF_PARTICIPATION.name,
-    TrainingType.CERTIFICATE_OF_SUCCESS.name,
-    TrainingType.UNIVERSITY_FIRST_CYCLE_CERTIFICATE.name,
-    TrainingType.UNIVERSITY_SECOND_CYCLE_CERTIFICATE.name,
+ACTIVE = "ACTIVE"
+INACTIVE = "INACTIVE"
+NOT_ORGANIZED = "NOT_ORGANIZED"
+FORMATION_STATE_CHOICES = [
+    ALL_CHOICE,
+    (ACTIVE, _('Active')),
+    (INACTIVE, _('Inactive')),
+    (NOT_ORGANIZED, _('Not organized')),
 ]
 
 
@@ -227,30 +229,32 @@ def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_su
 
 class FormationFilterForm(AdmissionFilterForm):
     acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
-    academic_year = forms.ModelChoiceField(
-        queryset=AcademicYear.objects.all().order_by('year'),
-        widget=forms.Select(),
-        empty_label=None,
-        required=True
-    )
+
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
 
-    def get_formations(self, academic_yr=None):
+    state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('_State'))
 
-        if academic_yr:
-            academic_year = academic_yr
-            faculty = None
-            acronym = None
-            title = None
-        else:
-            academic_year = self.cleaned_data.get('academic_year', None)
-            faculty = self.cleaned_data.get('faculty', None)
-            acronym = self.cleaned_data.get('acronym', None)
-            title = self.cleaned_data.get('title', None)
+    def get_formations(self):
+        faculty = self.cleaned_data.get('faculty', None)
+        acronym = self.cleaned_data.get('acronym', None)
+        title = self.cleaned_data.get('title', None)
+        state = self.cleaned_data.get('state', None)
 
-        qs = EducationGroupYear.objects.filter(education_group_type__name__in=PART_OF_CONTINUING_EDUCATION)
+        active_state = None
+        if state in (ACTIVE, INACTIVE):
+            if state == ACTIVE:
+                active_state = True
+            else:
+                active_state = False
 
-        qs = qs.filter(academic_year=academic_year)
+        qs = EducationGroup.objects.filter(
+            educationgroupyear__education_group_type__name__in=CONTINUING_EDUCATION_TRAINING_TYPES,
+        )
+
+        if isinstance(active_state, bool):
+            qs = qs.filter(continuingeducationtraining__active=active_state)
+        elif state == NOT_ORGANIZED:
+            qs = qs.filter(continuingeducationtraining__isnull=True).distinct()
 
         if faculty:
             qs = _get_formation_filter_entity_management(
@@ -260,14 +264,16 @@ class FormationFilterForm(AdmissionFilterForm):
             )
 
         if acronym:
-            qs = qs.filter(Q(acronym__icontains=acronym) | Q(partial_acronym__icontains=acronym))
+            qs = qs.filter(
+                Q(educationgroupyear__acronym__icontains=acronym) |
+                Q(educationgroupyear__partial_acronym__icontains=acronym))
 
         if title:
-            qs = qs.filter(title__icontains=title)
+            qs = qs.filter(educationgroupyear__title__icontains=title)
 
-        return qs.order_by('acronym')
+        return qs.order_by('educationgroupyear__acronym').distinct()
 
 
 def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
     entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
-    return qs.filter(management_entity__in=entity_ids)
+    return qs.filter(educationgroupyear__management_entity__in=entity_ids)

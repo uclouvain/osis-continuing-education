@@ -37,14 +37,9 @@ from continuing_education.views.common import get_object_list
 def list_formations(request):
     formation_list = []
 
-    if request.POST:
-        search_form = FormationFilterForm(data=request.POST or None)
-        if search_form.is_valid():
-            formation_list = search_form.get_formations()
-    else:
-        next_academic_year = _get_academic_year()
-        search_form = FormationFilterForm(initial={'academic_year': next_academic_year})
-        formation_list = search_form.get_formations(next_academic_year)
+    search_form = FormationFilterForm(request.POST)
+    if search_form.is_valid():
+        formation_list = search_form.get_formations()
 
     return render(request, "formations.html", {
         'formations': get_object_list(request, formation_list),
