@@ -343,3 +343,31 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
     def test_update_invalid_admission(self):
         response = self.client.put(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class FilterAdmissionTestCase(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = UserFactory()
+        cls.url = reverse('continuing_education_api_v1:admission-list-create')
+        cls.admission = AdmissionFactory()
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_admission_case_filter_person_params(self):
+        query_string = {'person': str(self.admission.person_information.person.uuid)}
+
+        response = self.client.get(self.url, data=query_string)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        admissions = Admission.admission_objects.filter(
+            person_information__person__uuid=query_string['person']
+        )
+
+        serializer = AdmissionListSerializer(
+            admissions,
+            many=True,
+            context={'request': RequestFactory().get(self.url, query_string)},
+        )
+        self.assertEqual(response.data['results'], serializer.data)
