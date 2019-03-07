@@ -41,6 +41,7 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
 
     filter_fields = (
         'birth_country',
+        'person'
     )
     search_fields = (
         'person',

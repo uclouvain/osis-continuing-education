@@ -23,10 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django_filters import rest_framework as filters
 from rest_framework import generics
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
 from continuing_education.models.admission import Admission
+
+
+class RegistrationFilter(filters.FilterSet):
+    person = filters.CharFilter(field_name="person_information__person__uuid")
+
+    class Meta:
+        model = Admission
+        fields = ['person_information', 'formation', 'state']
 
 
 class RegistrationList(generics.ListAPIView):
@@ -36,11 +45,8 @@ class RegistrationList(generics.ListAPIView):
     name = 'registration-list'
 
     serializer_class = RegistrationListSerializer
-    filter_fields = (
-        'person_information',
-        'formation',
-        'state',
-    )
+    filter_class = RegistrationFilter
+
     search_fields = (
         'person_information',
         'formation',

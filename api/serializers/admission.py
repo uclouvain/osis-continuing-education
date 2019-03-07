@@ -131,8 +131,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)
         self.update_field('person_information', validated_data, instance.person_information)
-        self.update_field('formation', validated_data, instance.formation)
-
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
 
     def update_field(self, field, validated_data, instance):
@@ -145,8 +143,7 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         if 'person_information' in validated_data:
             iufc_person_data = validated_data.pop('person_information')
             person_data = iufc_person_data.pop('person')
-            person, created = Person.objects.get_or_create(**person_data)
-
+            person = Person.objects.get(**person_data)
             iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
                 person=person,
                 **iufc_person_data
@@ -160,7 +157,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
             address_data = validated_data.pop('address')
             address, created = Address.objects.get_or_create(**address_data)
             validated_data['address'] = address
-
         admission = Admission(**validated_data)
         admission.save()
         return admission

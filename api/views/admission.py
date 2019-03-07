@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django_filters import rest_framework as filters
 from rest_framework import generics
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
@@ -30,16 +31,21 @@ from continuing_education.api.serializers.admission import AdmissionDetailSerial
 from continuing_education.models.admission import Admission
 
 
+class AdmissionFilter(filters.FilterSet):
+    person = filters.CharFilter(field_name="person_information__person__uuid")
+
+    class Meta:
+        model = Admission
+        fields = ['person_information', 'formation', 'state']
+
+
 class AdmissionListCreate(generics.ListCreateAPIView):
     """
        Return a list of all the admission with optional filtering or create one.
     """
     name = 'admission-list-create'
-    filter_fields = (
-        'person_information',
-        'formation',
-        'state',
-    )
+    filter_class = AdmissionFilter
+
     search_fields = (
         'person_information',
         'formation',
