@@ -187,3 +187,31 @@ class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
         invalid_url = reverse('continuing_education_api_v1:person-detail-delete', kwargs={'uuid':  uuid.uuid4()})
         response = self.client.get(invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class FilterContinuingEducationPersonTestCase(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = UserFactory()
+        cls.url = reverse('continuing_education_api_v1:registration-list')
+        cls.person = ContinuingEducationPerson()
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_registration_case_filter_person_params(self):
+        query_string = {'person': str(self.person.uuid)}
+
+        response = self.client.get(self.url, data=query_string)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        persons = ContinuingEducationPerson.objects.filter(
+            person__uuid=query_string['person']
+        )
+
+        serializer = ContinuingEducationPersonSerializer(
+            persons,
+            many=True,
+            context={'request': RequestFactory().get(self.url, query_string)},
+        )
+        self.assertEqual(response.data['results'], serializer.data)

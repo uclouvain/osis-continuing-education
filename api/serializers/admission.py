@@ -130,7 +130,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
 
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)
-        self.update_field('person_information', validated_data, instance.person_information)
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
 
     def update_field(self, field, validated_data, instance):

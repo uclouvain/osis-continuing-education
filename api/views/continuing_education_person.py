@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django_filters import rest_framework as filters
 from rest_framework import generics
 
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
@@ -30,17 +31,22 @@ from continuing_education.api.serializers.continuing_education_person import Con
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
+class ContinuingEducationPersonFilter(filters.FilterSet):
+    person = filters.CharFilter(field_name="person__uuid")
+
+    class Meta:
+        model = ContinuingEducationPerson
+        fields = ['person', 'birth_country']
+
+
 class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     """
        Return a list of continuing education persons with optional filtering or create one.
     """
     name = 'person-list-create'
-    queryset = ContinuingEducationPerson.objects.all().select_related(
-        'person'
-    )
+    filter_class = ContinuingEducationPersonFilter
 
-    filter_fields = (
-        'birth_country',
+    queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
     search_fields = (
