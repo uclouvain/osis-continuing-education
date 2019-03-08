@@ -103,6 +103,6 @@ def _mark_diplomas_produced_list(registrations_ids_list):
 
     registrations_list_states = registrations_list.values_list('state', flat=True)
     if not all(state == admission_state_choices.VALIDATED for state in registrations_list_states):
-        raise PermissionDenied(_('The registration must be validated to mark diploma as produced.'))
+        raise PermissionDenied(_('The registrations must be validated to mark diploma as produced.'))
 
     registrations_list.update(diploma_produced=True)
