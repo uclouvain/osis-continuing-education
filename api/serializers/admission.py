@@ -130,6 +130,8 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
 
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)
+        if 'person_information' in validated_data:
+            validated_data.pop('person_information')
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
 
     def update_field(self, field, validated_data, instance):
