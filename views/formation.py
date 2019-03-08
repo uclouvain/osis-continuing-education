@@ -34,6 +34,7 @@ from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
 from base.views.common import display_success_messages, display_error_messages
+from continuing_education.business.xls.xls_formation import create_xls
 
 
 @login_required
@@ -44,6 +45,9 @@ def list_formations(request):
     search_form = FormationFilterForm(request.POST)
     if search_form.is_valid():
         formation_list = search_form.get_formations()
+
+    if request.POST.get('xls_status') == "xls_formations":
+        return create_xls(request.user, formation_list, search_form)
 
     return render(request, "formations.html", {
         'formations': get_object_list(request, formation_list),

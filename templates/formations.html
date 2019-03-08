@@ -71,6 +71,7 @@
                         </button>
                     </div>
                 </div>
+                {% include 'blocks/button/xls_hidden.html' %}
             </form>
         </div>
         <div class="dropdown  text-right" style="margin-right: 10px;">
@@ -89,6 +90,11 @@
                     <a id="btn_disable" style="margin-right:10px;">
                         &nbsp;{% trans 'Disable' %}
                     </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+                    {% trans 'Produce xls with list of formations' as title_xls_trans %}
+                    {% include "blocks/button/xls.html" with button_title=title_xls_trans %}
                 </li>
             </ul>
         </div>
@@ -120,16 +126,18 @@
                     </tfoot>
                     <tbody>
                     {% for formation in formations %}
+                        {% with most_recent_education_group=formation|get_most_recent_education_group %}
                         <tr>
                             <td>
                                 <input type="checkbox" name="selected_action" class="selected_object"
                                        value="{{ formation.id }}"/>
                             </td>
                             <td>{{ formation.most_recent_acronym }}</td>
-                            <td>{{ formation|get_formation_faculty  | default_if_none:'' }}</td>
-                            <td>{{ formation|get_formation_title | default_if_none:'' }}</td>
+                            <td>{{ most_recent_education_group|get_faculty  | default_if_none:'' }}</td>
+                            <td>{{ most_recent_education_group.title | default_if_none:'' }}</td>
                             <td>{{ formation|get_active_continuing_education_formation }}</td>
                         </tr>
+                        {% endwith %}
 
                     {% endfor %}
                     </tbody>
@@ -152,6 +160,14 @@
                 }
             } );
         } );
+
+        $("#btn_produce_xls").click(function(e) {
+            prepare_xls(e, 'xls_formations');
+        });
+
     </script>
+
+    <script src="{% static 'js/continuing_xls.js' %}"></script>
     <script src="{% static 'js/formation.js' %}"></script>
+
 {% endblock %}
