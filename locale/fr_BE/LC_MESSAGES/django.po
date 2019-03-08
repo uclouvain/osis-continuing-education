@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-07 14:05+0100\n"
+"POT-Creation-Date: 2019-03-08 09:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,14 +38,18 @@ msgid "Accepted"
 msgstr "Accepté"
 
 #: forms/search.py:231 templates/formations.html:52
-#: templates/formations.html:81
+#: templates/formations.html:108
 msgid "Acronym"
 msgstr "Acronyme"
 
-#: templates/blocks/dropdown/list_actions.html:6
+#: templates/blocks/dropdown/list_actions.html:6 templates/formations.html:79
 #: templates/fragment/tab_documents.html:49
 msgid "Actions"
 msgstr "Actions"
+
+#: templates/formations.html:85
+msgid "Activate"
+msgstr "Activer"
 
 #: forms/search.py:42 models/continuing_education_training.py:65
 #: templatetags/formation.py:61
@@ -66,7 +70,7 @@ msgstr "Adresse"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#: tests/views/test_archive.py:166 views/archive.py:92
+#: tests/views/test_archive.py:166 views/archive.py:88
 msgid "Admission"
 msgstr "Admission"
 
@@ -226,7 +230,8 @@ msgstr "Parcourir"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: templates/admissions.html:85 templates/registrations.html:92
+#: templates/admissions.html:85 templates/formations.html:105
+#: templates/registrations.html:92
 msgid "Check All"
 msgstr ""
 
@@ -322,6 +327,10 @@ msgstr "Diplôme produit"
 msgid "Diplomas to produce"
 msgstr "Diplômes à produire"
 
+#: templates/formations.html:90
+msgid "Disable"
+msgstr "Désactiver"
+
 #: models/enums/enums.py:17
 msgid "Divorced"
 msgstr "Divorcé"
@@ -378,7 +387,7 @@ msgstr "Employé"
 #: business/xls/xls_registration.py:38 forms/search.py:82
 #: templates/admissions.html:53 templates/admissions.html:92
 #: templates/archives.html:51 templates/archives.html:87
-#: templates/formations.html:60 templates/formations.html:82
+#: templates/formations.html:60 templates/formations.html:109
 #: templates/fragment/tab_admission.html:112 templates/registrations.html:47
 #: templates/registrations.html:99
 msgid "Faculty"
@@ -427,6 +436,23 @@ msgstr "Formation"
 #: templates/fragment/tab_admission.html:113
 msgid "Formation administrator"
 msgstr "Gestionnaire de formation"
+
+#: tests/views/test_formation.py:158 views/formation.py:113
+msgid "Formation are now active"
+msgstr "Les formations sont maintenant actives"
+
+#: tests/views/test_formation.py:185 views/formation.py:115
+msgid "Formation are now inactive"
+msgstr "Les formations sont maintenant inactives"
+
+#: tests/views/test_formation.py:142 tests/views/test_formation.py:196
+#: views/formation.py:108
+msgid "Formation is now active"
+msgstr "La formation est maintenant active"
+
+#: tests/views/test_formation.py:169 views/formation.py:110
+msgid "Formation is now inactive"
+msgstr "La formation est maintenant inactive"
 
 #: models/admission.py:344 templates/fragment/tab_registration.html:103
 #: templates/registration_form.html:121
@@ -592,7 +618,7 @@ msgid "No"
 msgstr "Non"
 
 #: templates/admissions.html:144 templates/archives.html:155
-#: templates/formations.html:119 templates/prospects.html:89
+#: templates/formations.html:151 templates/prospects.html:89
 #: templates/registrations.html:168
 msgid "No data"
 msgstr "Pas de données"
@@ -604,6 +630,14 @@ msgstr "Aucun document disponible"
 #: templates/fragment/upload_file_modal.html:48
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
+
+#: views/formation.py:121
+msgid "No formation activated"
+msgstr "Aucune formation activée"
+
+#: views/formation.py:123
+msgid "No formation inactivated"
+msgstr "Aucune formation inactivée"
 
 #: forms/search.py:44 templatetags/formation.py:62
 msgid "Not organized"
@@ -674,13 +708,17 @@ msgstr "Informations personnelles"
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: tests/views/test_archive.py:90 views/archive.py:116
+#: tests/views/test_archive.py:90 views/archive.py:112
 msgid "Please select at least one admission to archive"
-msgstr ""
+msgstr "Veuillez sélectionner au moins une admission à archiver"
 
-#: tests/views/test_archive.py:104 views/archive.py:114
+#: tests/views/test_formation.py:130 views/formation.py:64
+msgid "Please select at least one formation"
+msgstr "Veuillez sélectionner au moins une formation"
+
+#: tests/views/test_archive.py:104 views/archive.py:110
 msgid "Please select at least one registration to archive"
-msgstr ""
+msgstr "Veuillez sélectionner au moins une inscription à archiver"
 
 #: templates/fragment/upload_file_modal.html:42
 msgid "Please select the file you want to upload and the file category."
@@ -789,7 +827,7 @@ msgstr "Inscrit"
 #: templates/admission_detail.html:99
 #: templates/fragment/tab_registration.html:57
 #: templates/registration_form.html:33 templates/registration_form.html:74
-#: tests/views/test_archive.py:150 views/archive.py:92
+#: tests/views/test_archive.py:150 views/archive.py:88
 msgid "Registration"
 msgstr "Inscription"
 
@@ -907,7 +945,7 @@ msgstr "Nom du conjoint"
 #: templates/admission_detail.html:50 templates/admission_detail.html:53
 #: templates/admission_form.html:201 templates/admissions.html:93
 #: templates/archives.html:59 templates/archives.html:88
-#: templates/formations.html:64 templates/formations.html:84
+#: templates/formations.html:64 templates/formations.html:111
 #: templates/registrations.html:67 templates/registrations.html:102
 #: tests/business/test_admission.py:54
 msgid "State"
@@ -998,7 +1036,7 @@ msgstr ""
 "facture est disponible."
 
 #: forms/search.py:233 templates/formations.html:56
-#: templates/formations.html:83
+#: templates/formations.html:110
 msgid "Title"
 msgstr ""
 
@@ -1122,19 +1160,19 @@ msgid "Your course is not adapted to the program of this training"
 msgstr "Votre parcours n’est pas adapté au programme de cette formation"
 
 #: tests/views/test_archive.py:134 tests/views/test_archive.py:152
-#: tests/views/test_archive.py:168 views/archive.py:95
+#: tests/views/test_archive.py:168 views/archive.py:91
 msgid "archived"
 msgstr "archivé"
 
-#: tests/views/test_archive.py:133 views/archive.py:94
+#: tests/views/test_archive.py:133 views/archive.py:90
 msgid "are now"
 msgstr "sont maintenant"
 
 #: tests/views/test_archive.py:151 tests/views/test_archive.py:167
-#: views/archive.py:94
+#: views/archive.py:90
 msgid "is now"
 msgstr "est maintenant"
 
-#: views/archive.py:95
+#: views/archive.py:91
 msgid "unarchived"
 msgstr "non-archivé"
