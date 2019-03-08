@@ -53,6 +53,7 @@ urlpatterns = [
     ])),
     url(r'^formation/', include([
         url(r'^$', formation.list_formations, name='formation'),
+        url(r'^list/to_activate/', formation.formations_activate, name='formations_procedure'),
     ])),
     url(r'^prospects$', prospect.list_prospects, name='prospects'),
     url(r'^tasks/$', tasks.list_tasks, name='list_tasks'),
