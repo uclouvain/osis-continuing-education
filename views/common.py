@@ -47,3 +47,7 @@ def get_object_list(request, objects):
     except EmptyPage:
         object_list = paginator.page(paginator.num_pages)
     return object_list
+
+
+def has_selected_items(selected_items):
+    return len(selected_items) > 0

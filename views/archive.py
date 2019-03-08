@@ -33,7 +33,7 @@ from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
 from continuing_education.models.admission import Admission
-from continuing_education.views.common import get_object_list
+from continuing_education.views.common import get_object_list, has_selected_items
 
 
 @login_required
@@ -69,16 +69,12 @@ def archives_procedure(request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
     redirection = request.META.get('HTTP_REFERER')
     is_registration = 'registration' in redirection
-    if _has_selected_items(selected_admissions_id):
+    if has_selected_items(selected_admissions_id):
         _mark_folders_as_archived(is_registration, request, selected_admissions_id)
         return redirect(reverse('archive'))
     else:
         _set_error_message(is_registration, request)
         return HttpResponseRedirect(redirection)
-
-
-def _has_selected_items(selected_items):
-    return len(selected_items) > 0
 
 
 def _mark_folders_as_archived(is_registration, request, selected_admissions_id):

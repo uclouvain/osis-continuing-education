@@ -27,9 +27,12 @@ import random
 
 import factory
 
+from base.tests.factories.education_group import EducationGroupFactory
+
 
 class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.ContinuingEducationTraining'
 
     active = random.choice([True, False])
+    education_group = factory.SubFactory(EducationGroupFactory)
