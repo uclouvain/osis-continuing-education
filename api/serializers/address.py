@@ -48,5 +48,7 @@ class AddressPostSerializer(AddressSerializer):
     country = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
-        required=False
+        required=False,
+        allow_null=True
+
     )

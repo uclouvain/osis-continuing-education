@@ -118,9 +118,10 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
     citizenship = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
-        required=False
+        required=False,
+        allow_null=True
     )
-    address = AddressPostSerializer(required=False)
+    address = AddressPostSerializer(required=False, allow_null=True)
     person_information = ContinuingEducationPersonPostSerializer(required=True)
     formation = serializers.SlugRelatedField(
         queryset=EducationGroupYear.objects.all(),
@@ -155,7 +156,7 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         validated_data['formation'] = formation_data
         if 'address' in validated_data:
             address_data = validated_data.pop('address')
-            address, created = Address.objects.get_or_create(**address_data)
+            address = Address.objects.create(**address_data)
             validated_data['address'] = address
         admission = Admission(**validated_data)
         admission.save()
