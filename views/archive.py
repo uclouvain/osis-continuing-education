@@ -69,16 +69,12 @@ def archives_procedure(request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
     redirection = request.META.get('HTTP_REFERER')
     is_registration = 'registration' in redirection
-    if _has_selected_items(selected_admissions_id):
+    if selected_admissions_id:
         _mark_folders_as_archived(is_registration, request, selected_admissions_id)
         return redirect(reverse('archive'))
     else:
         _set_error_message(is_registration, request)
         return HttpResponseRedirect(redirection)
-
-
-def _has_selected_items(selected_items):
-    return len(selected_items) > 0
 
 
 def _mark_folders_as_archived(is_registration, request, selected_admissions_id):

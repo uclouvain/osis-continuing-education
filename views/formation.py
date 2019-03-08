@@ -25,11 +25,15 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
-from base.models.academic_year import current_academic_year
+from base.models.education_group import EducationGroup
 from continuing_education.forms.search import FormationFilterForm
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
+from base.views.common import display_success_messages, display_error_messages
 
 
 @login_required
@@ -45,3 +49,76 @@ def list_formations(request):
         'formations': get_object_list(request, formation_list),
         'search_form': search_form
     })
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def formations_activate(request):
+    # Function to activate or desactivate
+    selected_formations_id = request.POST.getlist("selected_action", default=[])
+    new_state = _get_new_state(request)
+    if new_state is not None:
+        if selected_formations_id:
+            _formation_activate(request, selected_formations_id, new_state)
+        else:
+            display_error_messages(request, _('Please select at least one formation'))
+
+    return redirect(reverse('formation'))
+
+
+def _get_new_state(request):
+    new_state = request.POST.get("new_state")
+    if new_state == "true":
+        return True
+    elif new_state == "false":
+        return False
+    return None
+
+
+def _formation_activate(request, selected_formations_id, new_state):
+    activated_count = 0
+    for formation_id in selected_formations_id:
+
+        continuing_education_training = ContinuingEducationTraining.objects.filter(
+            education_group__id=formation_id).first()
+        if continuing_education_training and continuing_education_training.active != new_state:
+            continuing_education_training.active = new_state
+            continuing_education_training.save()
+            activated_count += 1
+        else:
+            education_grp = EducationGroup.objects.get(id=formation_id)
+            if education_grp:
+                ContinuingEducationTraining(education_group=education_grp,
+                                            active=new_state).save()
+                activated_count += 1
+
+    _set_information_message(activated_count, request, new_state)
+
+
+def _set_information_message(count, request, new_state):
+
+    if count > 0:
+        _set_success_message(count, new_state, request)
+    else:
+        _set_error_message(new_state, request)
+
+
+def _set_success_message(count, new_state, request):
+    if new_state:
+        success_msg = _("Formation is now active")
+    else:
+        success_msg = _("Formation is now inactive")
+    if count > 1:
+        if new_state:
+            success_msg = _("Formation are now active")
+        else:
+            success_msg = _("Formation are now inactive")
+    display_success_messages(request, success_msg)
+
+
+def _set_error_message(new_state, request):
+    if new_state:
+        msg = _('No formation activated')
+    else:
+        msg = _('No formation inactivated')
+    display_error_messages(request, msg)
