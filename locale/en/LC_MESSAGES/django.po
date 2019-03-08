@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 09:55+0100\n"
+"POT-Creation-Date: 2019-03-08 12:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,22 +38,23 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
-#: forms/search.py:231 templates/formations.html:52
-#: templates/formations.html:108
+#: business/xls/xls_formation.py:35 forms/search.py:231
+#: templates/formations.html:52 templates/formations.html:114
 msgid "Acronym"
 msgstr ""
 
-#: templates/blocks/dropdown/list_actions.html:6 templates/formations.html:79
+#: templates/blocks/dropdown/list_actions.html:6 templates/formations.html:80
 #: templates/fragment/tab_documents.html:49
 msgid "Actions"
 msgstr ""
 
-#: templates/formations.html:85
+#: templates/formations.html:86
 msgid "Activate"
 msgstr ""
 
-#: forms/search.py:42 models/continuing_education_training.py:65
-#: templatetags/formation.py:61
+#: forms/search.py:37 forms/search.py:42
+#: models/continuing_education_training.py:65 templatetags/formation.py:42
+#: tests/business/test_xls_formation.py:71
 msgid "Active"
 msgstr ""
 
@@ -233,7 +234,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: templates/admissions.html:85
+#: templates/admissions.html:85 templates/formations.html:111
 #: templates/fragment/tasks/diplomas_to_produce.html:19
 #: templates/fragment/tasks/registrations_to_validate.html:20
 #: templates/registrations.html:92
@@ -332,7 +333,7 @@ msgstr ""
 msgid "Diplomas to produce"
 msgstr ""
 
-#: templates/formations.html:90
+#: templates/formations.html:91
 msgid "Disable"
 msgstr ""
 
@@ -389,10 +390,10 @@ msgid "Employee"
 msgstr ""
 
 #: business/xls/xls_admission.py:37 business/xls/xls_archive.py:37
-#: business/xls/xls_registration.py:38 forms/search.py:82
-#: templates/admissions.html:53 templates/admissions.html:92
+#: business/xls/xls_formation.py:36 business/xls/xls_registration.py:38
+#: forms/search.py:82 templates/admissions.html:53 templates/admissions.html:92
 #: templates/archives.html:51 templates/archives.html:87
-#: templates/formations.html:60 templates/formations.html:109
+#: templates/formations.html:60 templates/formations.html:115
 #: templates/fragment/tab_admission.html:112 templates/registrations.html:47
 #: templates/registrations.html:99
 msgid "Faculty"
@@ -442,20 +443,20 @@ msgstr ""
 msgid "Formation administrator"
 msgstr ""
 
-#: tests/views/test_formation.py:158 views/formation.py:113
+#: tests/views/test_formation.py:158 views/formation.py:117
 msgid "Formation are now active"
 msgstr ""
 
-#: tests/views/test_formation.py:185 views/formation.py:115
+#: tests/views/test_formation.py:185 views/formation.py:119
 msgid "Formation are now inactive"
 msgstr ""
 
 #: tests/views/test_formation.py:142 tests/views/test_formation.py:196
-#: views/formation.py:108
+#: views/formation.py:112
 msgid "Formation is now active"
 msgstr ""
 
-#: tests/views/test_formation.py:169 views/formation.py:110
+#: tests/views/test_formation.py:169 views/formation.py:114
 msgid "Formation is now inactive"
 msgstr ""
 
@@ -467,6 +468,16 @@ msgstr ""
 #: templates/formations.html:38 templates/formations.html:43
 msgctxt "continuing_education"
 msgid "Formations"
+msgstr ""
+
+#: business/xls/xls_formation.py:41 business/xls/xls_formation.py:43
+#: tests/business/test_xls_formation.py:76
+#: tests/business/test_xls_formation.py:81
+msgid "Formations list"
+msgstr ""
+
+#: business/xls/xls_formation.py:42 tests/business/test_xls_formation.py:77
+msgid "Formations_list"
 msgstr ""
 
 #: templates/admission_form.html:75
@@ -505,7 +516,7 @@ msgstr ""
 msgid "Identification"
 msgstr ""
 
-#: forms/search.py:43 templatetags/formation.py:61
+#: forms/search.py:38 forms/search.py:43 templatetags/formation.py:42
 msgid "Inactive"
 msgstr ""
 
@@ -627,7 +638,7 @@ msgid "No"
 msgstr ""
 
 #: templates/admissions.html:144 templates/archives.html:155
-#: templates/formations.html:151 templates/prospects.html:89
+#: templates/formations.html:159 templates/prospects.html:89
 #: templates/registrations.html:168
 msgid "No data"
 msgstr ""
@@ -640,15 +651,15 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-#: views/formation.py:121
+#: views/formation.py:125
 msgid "No formation activated"
 msgstr ""
 
-#: views/formation.py:123
+#: views/formation.py:127
 msgid "No formation inactivated"
 msgstr ""
 
-#: forms/search.py:44 templatetags/formation.py:62
+#: forms/search.py:39 forms/search.py:44 templatetags/formation.py:43
 msgid "Not organized"
 msgstr ""
 
@@ -721,7 +732,7 @@ msgstr ""
 msgid "Please select at least one admission to archive"
 msgstr ""
 
-#: tests/views/test_formation.py:130 views/formation.py:64
+#: tests/views/test_formation.py:130 views/formation.py:68
 msgid "Please select at least one formation"
 msgstr ""
 
@@ -783,6 +794,10 @@ msgstr ""
 
 #: templates/archives.html:76 templates/archives.html:77
 msgid "Produce xls with list of archives"
+msgstr ""
+
+#: templates/formations.html:96
+msgid "Produce xls with list of formations"
 msgstr ""
 
 #: templates/registrations.html:81
@@ -960,11 +975,12 @@ msgid "Spouse name"
 msgstr ""
 
 #: business/admission.py:176 business/xls/xls_admission.py:38
-#: business/xls/xls_archive.py:38 forms/search.py:235 models/admission.py:224
+#: business/xls/xls_archive.py:38 business/xls/xls_formation.py:38
+#: forms/search.py:235 models/admission.py:224
 #: templates/admission_detail.html:50 templates/admission_detail.html:53
 #: templates/admission_form.html:201 templates/admissions.html:93
 #: templates/archives.html:59 templates/archives.html:88
-#: templates/formations.html:64 templates/formations.html:111
+#: templates/formations.html:64 templates/formations.html:117
 #: templates/registrations.html:67 templates/registrations.html:102
 #: tests/business/test_admission.py:54
 msgid "State"
@@ -1074,8 +1090,8 @@ msgstr ""
 msgid "This will validate all selected registrations. Are you sure ?"
 msgstr ""
 
-#: forms/search.py:233 templates/formations.html:56
-#: templates/formations.html:110
+#: business/xls/xls_formation.py:37 forms/search.py:233
+#: templates/formations.html:56 templates/formations.html:116
 msgid "Title"
 msgstr ""
 
