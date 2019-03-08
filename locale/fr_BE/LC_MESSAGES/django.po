@@ -1131,7 +1131,7 @@ msgstr "Numéro de TVA"
 
 #: templates/fragment/tasks/registrations_to_validate_modal.html:33
 msgid "Validate all selected registrations ?"
-msgstr ""
+msgstr "Valider les inscriptions sélectionnées ?"
 
 #: templates/fragment/tasks/registrations_to_validate.html:9
 msgid "Validate selected registrations"
