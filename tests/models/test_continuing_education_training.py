@@ -1,12 +1,12 @@
 ##############################################################################
 #
-#    OSIS stands for Open Student Information System. It's an application
+# OSIS stands for Open Student Information System. It's an application
 #    designed to manage the core business of higher education institutions,
 #    such as universities, faculties, institutes and professional schools.
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #    GNU General Public License for more details.
 #
 #    A copy of this license - GNU General Public License - is available
@@ -24,24 +24,18 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render
+from django.core.exceptions import ValidationError
+from django.test import TestCase
 
-from base.models.academic_year import current_academic_year
-from continuing_education.forms.search import FormationFilterForm
-from continuing_education.views.common import get_object_list
+from base.tests.factories.education_group import EducationGroupFactory
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
-@login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
-def list_formations(request):
-    formation_list = []
+class TestContinuingEducationTraining(TestCase):
+    def setUp(self):
+        self.education_group = EducationGroupFactory()
 
-    search_form = FormationFilterForm(request.POST)
-    if search_form.is_valid():
-        formation_list = search_form.get_formations()
-
-    return render(request, "formations.html", {
-        'formations': get_object_list(request, formation_list),
-        'search_form': search_form
-    })
+    def test_validation_error_raised_for_training_without_education_group_year(self):
+        training = ContinuingEducationTraining(education_group=self.education_group)
+        with self.assertRaises(ValidationError):
+            training.clean()

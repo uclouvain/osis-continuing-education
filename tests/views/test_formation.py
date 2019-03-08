@@ -75,21 +75,16 @@ class ViewFormationTestCase(TestCase):
         response = self.client.get(reverse('formation'))
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA)
-        self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB)
-        self.assertEqual(response.context['formations'].object_list[2], self.formation_BBBB)
-
-    def test_formation_list_no_result(self):
-        response = self.client.post(reverse('formation'), data={'academic_year': self.previous_acad_year})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['formations'].object_list, [])
+        self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA.education_group)
+        self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
+        self.assertEqual(response.context['formations'].object_list[2], self.formation_BBBB.education_group)
 
     def test_formation_list(self):
         response = self.client.get(reverse('formation'),
-                                   data={'academic_year': self.previous_acad_year, 'acronym': 'A'})
+                                   data={'acronym': 'A'})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA)
-        self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB)
+        self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA.education_group)
+        self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
 
 

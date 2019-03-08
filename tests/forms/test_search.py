@@ -28,24 +28,25 @@ from datetime import date
 from operator import itemgetter
 
 from django.test import TestCase
+
 from django.utils import timezone
+
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
-from base.models.academic_year import AcademicYear
-from base.models.enums import education_group_types
 from base.models.enums.entity_type import FACULTY, SCHOOL
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
-    PART_OF_CONTINUING_EDUCATION
-from continuing_education.forms.search import ArchiveFilterForm, \
-    ALL_CHOICE
+    ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class TestFilterForm(TestCase):
@@ -252,62 +253,95 @@ class TestFilterForm(TestCase):
             self.assertEqual(form.fields['state'].choices,
                              [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
 
-    def test_get_academic_years_choices(self):
-        academic_years = AcademicYear.objects.all()
-        form = FormationFilterForm()
-        if form.is_valid():
-            self.assertEqual(form.fields['state'].queryset,
-                             academic_years)
 
-    def test_formation_filter(self):
-        title_acronym_12 = 'Acronym 12'
-        continuing_education_group_type = EducationGroupTypeFactory(name=random.choice(PART_OF_CONTINUING_EDUCATION))
-        no_continuing_education_group_type = EducationGroupTypeFactory(
-            name=education_group_types.TrainingType.BACHELOR.name)
+class TestFormationFilterForm(TestCase):
 
-        previous_academic_yr = AcademicYearFactory(year=self.current_academic_yr.year - 1)
+    def setUp(self):
 
-        entity_version = EntityVersionFactory(acronym="ENTITY_PREV",
-                                              entity_type=FACULTY,
-                                              end_date=None,
-                                              start_date=self.start_date)
-        entity_version_2 = EntityVersionFactory(acronym="ENTITY_PREV2",
-                                                entity_type=FACULTY,
-                                                end_date=None,
-                                                start_date=self.start_date)
-        iufc_education_group_yr_ACRO_10 = EducationGroupYearFactory(
-            academic_year=previous_academic_yr,
+        self.title_acronym_12 = 'Acronym 12'
+        continuing_education_group_type = EducationGroupTypeFactory(
+            name=random.choice(CONTINUING_EDUCATION_TRAINING_TYPES)
+        )
+
+        self.entity_version = create_entity_version("ENTITY_PREV")
+        entity_version_2 = create_entity_version("ENTITY_PREV2")
+
+        self.iufc_education_group_yr_ACRO_10 = EducationGroupYearFactory(
             acronym="ACRO_10",
             education_group_type=continuing_education_group_type,
             title='Acronym 10',
-            management_entity=entity_version.entity
+            management_entity=self.entity_version.entity
         )
-        iufc_education_group_yr_ACRO_12 = EducationGroupYearFactory(
-            academic_year=previous_academic_yr,
+        self.iufc_education_group_yr_ACRO_12 = EducationGroupYearFactory(
             acronym="ACRO_12",
             education_group_type=continuing_education_group_type,
-            title=title_acronym_12,
+            title=self.title_acronym_12,
             management_entity=entity_version_2.entity
         )
-        EducationGroupYearFactory(academic_year=previous_academic_yr,
-                                  acronym="ACRO_12",
-                                  education_group_type=no_continuing_education_group_type,
-                                  title=title_acronym_12,
-                                  management_entity=entity_version.entity)
 
-        self._assert_results_count_equal({'academic_year': previous_academic_yr},
-                                         [iufc_education_group_yr_ACRO_10, iufc_education_group_yr_ACRO_12])
-        self._assert_results_count_equal({'acronym': 'ACRO', 'academic_year': previous_academic_yr},
-                                         [iufc_education_group_yr_ACRO_10, iufc_education_group_yr_ACRO_12])
-        self._assert_results_count_equal({'acronym': 'ACRO_12', 'academic_year': previous_academic_yr},
-                                         [iufc_education_group_yr_ACRO_12])
-        self._assert_results_count_equal({'title': title_acronym_12, 'academic_year': previous_academic_yr},
-                                         [iufc_education_group_yr_ACRO_12])
-        self._assert_results_count_equal({'faculty': entity_version, 'academic_year': previous_academic_yr},
-                                         [iufc_education_group_yr_ACRO_10])
+        education_group_not_organized = EducationGroupFactory()
+        self.education_group_yr_not_organized = EducationGroupYearFactory(
+            acronym="CODE_12",
+            education_group_type=continuing_education_group_type,
+            title="Other title",
+            management_entity=self.entity_version.entity,
+            education_group=education_group_not_organized)
+        self.active_continuing_education_training = ContinuingEducationTrainingFactory(
+            education_group=self.iufc_education_group_yr_ACRO_10.education_group,
+            active=True,
+        )
+        self.inactive_continuing_education_training = ContinuingEducationTrainingFactory(
+            education_group=self.iufc_education_group_yr_ACRO_12.education_group,
+            active=False,
+        )
+
+    def test_get_state_choices(self):
+        form = FormationFilterForm()
+        if form.is_valid():
+            self.assertCountEqual(form.fields['state'].queryset, FORMATION_STATE_CHOICES)
+
+    def test_formation_filter_by_state(self):
+
+        self._assert_results_count_equal({'state': ACTIVE},
+                                         [self.active_continuing_education_training.education_group])
+        self._assert_results_count_equal({'state': INACTIVE},
+                                         [self.inactive_continuing_education_training.education_group])
+
+        self._assert_results_count_equal({'state': NOT_ORGANIZED},
+                                         [self.education_group_yr_not_organized.education_group])
+
+    def test_formation_filter_by_acronym(self):
+        self._assert_results_count_equal({'acronym': 'ACRO'},
+                                         [self.iufc_education_group_yr_ACRO_10.education_group,
+                                          self.iufc_education_group_yr_ACRO_12.education_group])
+        self._assert_results_count_equal({'acronym': 'ACRO_12'},
+                                         [self.iufc_education_group_yr_ACRO_12.education_group])
+
+    def test_formation_filter_by_title(self):
+        self._assert_results_count_equal({'title': self.title_acronym_12},
+                                         [self.iufc_education_group_yr_ACRO_12.education_group])
+
+    def test_formation_filter_by_faculty(self):
+        self._assert_results_count_equal({'faculty': self.entity_version},
+                                         [self.iufc_education_group_yr_ACRO_10.education_group])
 
     def _assert_results_count_equal(self, data, expected_results):
         form = FormationFilterForm(data)
         if form.is_valid():
             results = form.get_formations()
             self.assertCountEqual(results, expected_results)
+
+    def test_formation_filter_by_multiple(self):
+        self._assert_results_count_equal({'acronym': 'ZZZ', 'faculty': self.entity_version},
+                                         [])
+        self._assert_results_count_equal({'acronym': 'ACRO_10', 'faculty': self.entity_version},
+                                         [self.iufc_education_group_yr_ACRO_10.education_group])
+
+
+def create_entity_version(an_acronym):
+    start_date = date.today().replace(year=2010)
+    entity_version = EntityVersionFactory(acronym=an_acronym,
+                                          entity_type=FACULTY,
+                                          end_date=None,
+                                          start_date=start_date)
+    return entity_version

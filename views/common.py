@@ -35,6 +35,8 @@ def display_errors(request, errors):
 
 
 def get_object_list(request, objects):
+    if objects is None:
+        objects = []
     paginator = Paginator(objects, 10)
     page = request.GET.get('page')
 
