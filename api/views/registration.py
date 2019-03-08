@@ -26,8 +26,8 @@
 from django_filters import rest_framework as filters
 from rest_framework import generics
 
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
-    RegistrationPostSerializer
+from continuing_education.api.serializers.registration import RegistrationListSerializer, \
+    RegistrationDetailSerializer, RegistrationPostSerializer
 from continuing_education.models.admission import Admission
 
 
