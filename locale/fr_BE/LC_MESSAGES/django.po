@@ -685,15 +685,15 @@ msgstr "Numéro de téléphone"
 
 #: tests/views/test_archive.py:90 views/archive.py:116
 msgid "Please select at least one admission to archive"
-msgstr ""
+msgstr "Veuillez sélectionner au moins une admission à archiver."
 
 #: tests/views/test_archive.py:104 views/archive.py:114
 msgid "Please select at least one registration to archive"
-msgstr ""
+msgstr "Veuillez sélectionner au moins une inscription à archiver."
 
 #: views/tasks.py:72
 msgid "Please select at least one registration to validate."
-msgstr ""
+msgstr "Veuillez sélectionner au moins une inscription à valider."
 
 #: views/tasks.py:97
 msgid "Please select at least one registration."
