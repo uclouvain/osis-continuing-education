@@ -117,7 +117,7 @@ class ViewUpdateTasksTestCase(TestCase):
             self.assertEqual(registration.state, admission_state_choices.VALIDATED)
             self.assertEqual(registration.diploma_produced, True)
 
-        self.assertRedirects(response, reverse('list_tasks'))
+        self.assertRedirects(response, reverse('list_tasks') + '#diploma_to_produce')
 
     def test_mark_diplomas_produced_incorrect_state(self):
         post_data = {
