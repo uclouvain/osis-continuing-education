@@ -43,16 +43,28 @@
     </div>
     <div class="panel panel-default">
         <ul id="tabs" class="nav nav-tabs">
-          <li role="presentation" class="active"><a href="#diploma-to-produce" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
-          <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
+          <li role="presentation" class="active"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
+          <li role="presentation"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="diploma-to-produce">
+            <div role="tabpanel" class="tab-pane active" id="registration_to_validate">
                 {% include "fragment/tasks/registrations_to_validate.html" %}
             </div>
-            <div role="tabpanel" class="tab-pane" id="registration">
+            <div role="tabpanel" class="tab-pane" id="diploma_to_produce">
                 {% include "fragment/tasks/diplomas_to_produce.html" %}
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        var anchor = location.hash;
+        $('#tabs a[href="' + anchor + '"]').tab('show');
+        if(anchor){
+            setTimeout(function() {
+                window.scrollTo(0, 0);
+              }, 1);
+        }
+    </script>
 {% endblock %}

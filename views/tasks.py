@@ -95,7 +95,7 @@ def mark_diplomas_produced(request):
         display_success_messages(request, msg)
     else:
         display_error_messages(request, _('Please select at least one registration.'))
-    return redirect(reverse("list_tasks"))
+    return redirect(reverse("list_tasks") + '#diploma_to_produce')
 
 
 def _mark_diplomas_produced_list(registrations_ids_list):
