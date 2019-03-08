@@ -85,10 +85,11 @@ def _formation_activate(request, selected_formations_id, new_state):
 
         continuing_education_training = ContinuingEducationTraining.objects.filter(
             education_group__id=formation_id).first()
-        if continuing_education_training and continuing_education_training.active != new_state:
-            continuing_education_training.active = new_state
-            continuing_education_training.save()
-            activated_count += 1
+        if continuing_education_training:
+            if continuing_education_training.active != new_state:
+                continuing_education_training.active = new_state
+                continuing_education_training.save()
+                activated_count += 1
         else:
             education_grp = EducationGroup.objects.get(id=formation_id)
             if education_grp:
