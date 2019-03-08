@@ -40,7 +40,7 @@
 
     <div class="panel panel-default">
         <div class="panel panel-body">
-            <form style="display: inline;" action="{% url 'registration' %}" method="post" class="" id="search_form">
+            <form style="display: inline;" action="{% url 'registration' %}" method="get" class="" id="search_form">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-3">

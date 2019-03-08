@@ -53,11 +53,10 @@ from continuing_education.views.file import _get_file_category_choices_with_disa
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_admissions(request):
-    search_form = AdmissionFilterForm(data=request.POST)
+    search_form = AdmissionFilterForm(request.GET)
     admission_list = []
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
-        faculty_filter = search_form.cleaned_data['faculty']
 
     if request.POST.get('xls_status') == "xls_admissions":
         return create_xls(request.user, admission_list, search_form)
@@ -65,7 +64,6 @@ def list_admissions(request):
     return render(request, "admissions.html", {
         'admissions': get_object_list(request, admission_list),
         'search_form': search_form,
-        'active_faculty': faculty_filter
     })
 
 
