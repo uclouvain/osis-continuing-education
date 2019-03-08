@@ -33,14 +33,13 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
-class ViewTasksTestCase(TestCase):
+class ViewUpdateTasksTestCase(TestCase):
     def setUp(self):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
 
         self.registrations_to_validate = [
-            AdmissionFactory(state=admission_state_choices.REGISTRATION_SUBMITTED)
-            for _ in range(2)
+            AdmissionFactory(state=admission_state_choices.REGISTRATION_SUBMITTED) for _ in range(2)
         ]
         self.registration_not_to_validate = AdmissionFactory(
             state=admission_state_choices.DRAFT,
@@ -48,8 +47,7 @@ class ViewTasksTestCase(TestCase):
         )
 
         self.diplomas_to_produce = [
-            AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False)
-            for _ in range(2)
+            AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False) for _ in range(2)
         ]
         self.no_diploma_to_produce = AdmissionFactory(
             state=admission_state_choices.WAITING,
@@ -95,7 +93,7 @@ class ViewTasksTestCase(TestCase):
 
         self.assertRedirects(response, reverse('list_tasks'))
 
-    def test_validate_registrations_forbidden(self):
+    def test_validate_registrations_incorrect_state(self):
         post_data = {
             "selected_registrations_to_validate":
                 [str(self.registration_not_to_validate.pk)]
@@ -121,7 +119,7 @@ class ViewTasksTestCase(TestCase):
 
         self.assertRedirects(response, reverse('list_tasks'))
 
-    def test_mark_diplomas_produced_forbidden(self):
+    def test_mark_diplomas_produced_incorrect_state(self):
         post_data = {
             "selected_diplomas_to_produce":
                 [str(self.no_diploma_to_produce.pk)]
@@ -130,5 +128,46 @@ class ViewTasksTestCase(TestCase):
 
         self.no_diploma_to_produce.refresh_from_db()
         self.assertEqual(self.no_diploma_to_produce.state, admission_state_choices.WAITING)
+
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+
+class UpdateTasksPermissionsTestCase(TestCase):
+    def setUp(self):
+        person_without_change_perm = PersonWithPermissionsFactory('can_access_admission')
+        self.client.force_login(person_without_change_perm.user)
+
+        self.registrations_to_validate = [
+            AdmissionFactory(state=admission_state_choices.REGISTRATION_SUBMITTED) for _ in range(2)
+        ]
+
+        self.diplomas_to_produce = [
+            AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False) for _ in range(2)
+        ]
+
+    def test_validate_registrations_without_permission(self):
+        post_data = {
+            "selected_registrations_to_validate":
+                [str(registration.pk) for registration in self.registrations_to_validate]
+        }
+        response = self.client.post(reverse('validate_registrations'), data=post_data)
+
+        for registration in self.registrations_to_validate:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.REGISTRATION_SUBMITTED)
+
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_mark_diplomas_produced_without_permission(self):
+        post_data = {
+            "selected_diplomas_to_produce":
+                [str(registration.pk) for registration in self.diplomas_to_produce]
+        }
+        response = self.client.post(reverse('mark_diplomas_produced'), data=post_data)
+
+        for registration in self.diplomas_to_produce:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.VALIDATED)
+            self.assertEqual(registration.diploma_produced, False)
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)

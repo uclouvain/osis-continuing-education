@@ -61,7 +61,7 @@ def list_tasks(request):
 
 @login_required
 @require_http_methods(['POST'])
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.change_admission', raise_exception=True)
 def validate_registrations(request):
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
@@ -86,7 +86,7 @@ def _validate_registrations_list(registrations_ids_list):
 
 @login_required
 @require_http_methods(['POST'])
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.change_admission', raise_exception=True)
 def mark_diplomas_produced(request):
     selected_registration_ids = request.POST.getlist("selected_diplomas_to_produce", default=[])
     if selected_registration_ids:
