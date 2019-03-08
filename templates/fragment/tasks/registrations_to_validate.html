@@ -5,7 +5,7 @@
     <div class="alert alert-info" style="display:inline-block;">
         <i class="fa fa-info-circle"></i> {% trans 'This page contains the Registrations submitted by the participants. These must be validated by IUFC.' %}
     </div>
-    <a class="btn btn-primary pull-right" id="btn_validate_registrations" data-toggle="modal" data-target="#confirm_task_modal">
+    <a class="btn btn-primary pull-right" id="btn_validate_registrations" data-toggle="modal" data-target="#registrations_to_validate_modal">
         <i class="fa fa-check-circle"></i> {% trans 'Validate selected registrations' %}
     </a>
 </div>
@@ -16,7 +16,7 @@
     <tr>
         <th>
             {% if registrations_to_validate %}
-                <input id="id_check_all" type="checkbox" name="check_all"
+                <input id="id_check_all_registrations_to_validate" type="checkbox" name="check_all"
                        title="{% trans 'Check All' %}"/>
             {% endif %}
         </th>
@@ -28,11 +28,12 @@
     </thead>
     <tbody>
         <form id="registrations_to_validate_form" method="post" action="{% url 'validate_registrations' %}">
-                    {% csrf_token %}
+        {% csrf_token %}
         {% for admission in registrations_to_validate %}
             <tr>
                 <td>
-                    <input type="checkbox" name="selected_registration" class="selected_object" value="{{ admission.id }}" />
+                    <input type="checkbox" name="selected_registrations_to_validate" class="selected_registrations_to_validate" value="{{ admission.id }}" />
+                </td>
                 <td>
                     <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
                         {{ admission.person_information.person.last_name }}
@@ -47,12 +48,12 @@
     </tbody>
 </table>
 
-{% include "fragment/tasks/confirm_task_modal.html" %}
+{% include "fragment/tasks/registrations_to_validate_modal.html" %}
 
 {% block script %}
     <script>
-        $("#id_check_all").click(function(){
-            $('input:checkbox.selected_object').not(this).prop('checked', this.checked);
+        $("#id_check_all_registrations_to_validate").click(function(){
+            $('input:checkbox.selected_registrations_to_validate').not(this).prop('checked', this.checked);
         });
     </script>
 {% endblock %}

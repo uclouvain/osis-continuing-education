@@ -58,5 +58,6 @@ urlpatterns = [
     url(r'^tasks/', include([
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
+        url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
     ])),
 ]

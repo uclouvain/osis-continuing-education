@@ -63,7 +63,7 @@ def list_tasks(request):
 @require_http_methods(['POST'])
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def validate_registrations(request):
-    selected_registration_ids = request.POST.getlist("selected_registration", default=[])
+    selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
         _validate_registrations_list(selected_registration_ids)
         msg = _('Successfully validated %s registrations.') % len(selected_registration_ids)
@@ -82,3 +82,27 @@ def _validate_registrations_list(registrations_ids_list):
         raise PermissionDenied(_('The registration must be submitted to be validated.'))
 
     registrations_list.update(state=admission_state_choices.VALIDATED)
+
+
+@login_required
+@require_http_methods(['POST'])
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def mark_diplomas_produced(request):
+    selected_registration_ids = request.POST.getlist("selected_diplomas_to_produce", default=[])
+    if selected_registration_ids:
+        _mark_diplomas_produced_list(selected_registration_ids)
+        msg = _('Successfully marked diploma as produced for %s registrations.') % len(selected_registration_ids)
+        display_success_messages(request, msg)
+    else:
+        display_error_messages(request, _('Please select at least one registration.'))
+    return redirect(reverse("list_tasks"))
+
+
+def _mark_diplomas_produced_list(registrations_ids_list):
+    registrations_list = Admission.objects.filter(id__in=registrations_ids_list)
+
+    registrations_list_states = registrations_list.values_list('state', flat=True)
+    if not all(state == admission_state_choices.VALIDATED for state in registrations_list_states):
+        raise PermissionDenied(_('The registration must be validated to mark diploma as produced.'))
+
+    registrations_list.update(diploma_produced=True)

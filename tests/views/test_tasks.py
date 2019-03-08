@@ -25,7 +25,7 @@
 ##############################################################################
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
 
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -43,7 +43,7 @@ class ViewTasksTestCase(TestCase):
             for _ in range(2)
         ]
         self.registration_not_to_validate = AdmissionFactory(
-            state=admission_state_choices.VALIDATED,
+            state=admission_state_choices.DRAFT,
             diploma_produced=True
         )
 
@@ -52,7 +52,7 @@ class ViewTasksTestCase(TestCase):
             for _ in range(2)
         ]
         self.no_diploma_to_produce = AdmissionFactory(
-            state=admission_state_choices.VALIDATED,
+            state=admission_state_choices.WAITING,
             diploma_produced=True
         )
 
@@ -84,7 +84,8 @@ class ViewTasksTestCase(TestCase):
 
     def test_validate_registrations(self):
         post_data = {
-            "selected_registration": [str(registration.pk) for registration in self.registrations_to_validate]
+            "selected_registrations_to_validate":
+                [str(registration.pk) for registration in self.registrations_to_validate]
         }
         response = self.client.post(reverse('validate_registrations'), data=post_data)
 
@@ -93,3 +94,41 @@ class ViewTasksTestCase(TestCase):
             self.assertEqual(registration.state, admission_state_choices.VALIDATED)
 
         self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_validate_registrations_forbidden(self):
+        post_data = {
+            "selected_registrations_to_validate":
+                [str(self.registration_not_to_validate.pk)]
+        }
+        response = self.client.post(reverse('validate_registrations'), data=post_data)
+
+        self.registration_not_to_validate.refresh_from_db()
+        self.assertEqual(self.registration_not_to_validate.state, admission_state_choices.DRAFT)
+
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_mark_diplomas_produced(self):
+        post_data = {
+            "selected_diplomas_to_produce":
+                [str(registration.pk) for registration in self.diplomas_to_produce]
+        }
+        response = self.client.post(reverse('mark_diplomas_produced'), data=post_data)
+
+        for registration in self.diplomas_to_produce:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.VALIDATED)
+            self.assertEqual(registration.diploma_produced, True)
+
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_mark_diplomas_produced_forbidden(self):
+        post_data = {
+            "selected_diplomas_to_produce":
+                [str(self.no_diploma_to_produce.pk)]
+        }
+        response = self.client.post(reverse('mark_diplomas_produced'), data=post_data)
+
+        self.no_diploma_to_produce.refresh_from_db()
+        self.assertEqual(self.no_diploma_to_produce.state, admission_state_choices.WAITING)
+
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
