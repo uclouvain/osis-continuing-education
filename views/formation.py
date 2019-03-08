@@ -32,7 +32,7 @@ from django.utils.translation import ugettext_lazy as _
 from base.models.education_group import EducationGroup
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.views.common import get_object_list, has_selected_items
+from continuing_education.views.common import get_object_list
 from base.views.common import display_success_messages, display_error_messages
 
 
@@ -58,7 +58,7 @@ def formations_activate(request):
     selected_formations_id = request.POST.getlist("selected_action", default=[])
     new_state = _get_new_state(request)
     if new_state is not None:
-        if has_selected_items(selected_formations_id):
+        if selected_formations_id:
             _formation_activate(request, selected_formations_id, new_state)
         else:
             display_error_messages(request, _('Please select at least one formation'))
