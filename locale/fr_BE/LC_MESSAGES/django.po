@@ -223,6 +223,8 @@ msgstr "Parcourir"
 #: templates/admission_form.html:205 templates/admission_form.html:209
 #: templates/fragment/rejected_reason_modal.html:49
 #: templates/fragment/send_notification_mail_modal.html:44
+#: templates/fragment/tasks/diplomas_to_produce_modal.html:42
+#: templates/fragment/tasks/registrations_to_validate_modal.html:42
 #: templates/fragment/upload_file_modal.html:77
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:41
@@ -230,7 +232,9 @@ msgstr "Parcourir"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: templates/admissions.html:85 templates/formations.html:105
+#: templates/admissions.html:85
+#: templates/fragment/tasks/diplomas_to_produce.html:19
+#: templates/fragment/tasks/registrations_to_validate.html:20
 #: templates/registrations.html:92
 msgid "Check All"
 msgstr ""
@@ -373,8 +377,8 @@ msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 #: models/prospect.py:64 templates/admission_form.html:91
 #: templates/admissions.html:90 templates/archives.html:85
 #: templates/fragment/tab_admission.html:42
-#: templates/fragment/tasks/diplomas_to_produce.html:13
-#: templates/fragment/tasks/registrations_to_validate.html:13
+#: templates/fragment/tasks/diplomas_to_produce.html:24
+#: templates/fragment/tasks/registrations_to_validate.html:25
 #: templates/prospects.html:53 templates/registrations.html:97
 msgid "Email"
 msgstr "Email"
@@ -411,8 +415,8 @@ msgstr "Le fichier a bien été supprimé"
 #: models/prospect.py:50 templates/admission_form.html:73
 #: templates/admissions.html:89 templates/archives.html:84
 #: templates/fragment/section_identification.html:34
-#: templates/fragment/tasks/diplomas_to_produce.html:12
-#: templates/fragment/tasks/registrations_to_validate.html:12
+#: templates/fragment/tasks/diplomas_to_produce.html:23
+#: templates/fragment/tasks/registrations_to_validate.html:24
 #: templates/prospects.html:52 templates/registrations.html:96
 #: tests/business/test_admission.py:38
 msgid "First name"
@@ -426,8 +430,8 @@ msgstr "Prénom"
 #: templates/archives.html:55 templates/archives.html:86
 #: templates/fragment/tab_admission.html:103
 #: templates/fragment/tab_admission.html:107
-#: templates/fragment/tasks/diplomas_to_produce.html:14
-#: templates/fragment/tasks/registrations_to_validate.html:14
+#: templates/fragment/tasks/diplomas_to_produce.html:25
+#: templates/fragment/tasks/registrations_to_validate.html:26
 #: templates/prospects.html:55 templates/registrations.html:51
 #: templates/registrations.html:98 tests/business/test_admission.py:39
 msgid "Formation"
@@ -565,6 +569,10 @@ msgstr "Homme"
 msgid "Marital status"
 msgstr "Etat civil"
 
+#: templates/fragment/tasks/diplomas_to_produce_modal.html:33
+msgid "Mark diplomas produced for selected registrations ?"
+msgstr "Indiquer le diplôme produit pour les inscriptions sélectionnées ?"
+
 #: models/enums/enums.py:15
 msgid "Married"
 msgstr "Marié"
@@ -590,8 +598,8 @@ msgstr "NOMA"
 #: business/xls/xls_registration.py:34 models/file.py:63 models/prospect.py:45
 #: templates/admissions.html:88 templates/archives.html:83
 #: templates/fragment/tab_documents.html:44
-#: templates/fragment/tasks/diplomas_to_produce.html:11
-#: templates/fragment/tasks/registrations_to_validate.html:11
+#: templates/fragment/tasks/diplomas_to_produce.html:22
+#: templates/fragment/tasks/registrations_to_validate.html:23
 #: templates/prospects.html:51 templates/registrations.html:95
 msgid "Name"
 msgstr "Nom"
@@ -719,6 +727,14 @@ msgstr "Veuillez sélectionner au moins une formation"
 #: tests/views/test_archive.py:104 views/archive.py:110
 msgid "Please select at least one registration to archive"
 msgstr "Veuillez sélectionner au moins une inscription à archiver"
+
+#: views/tasks.py:72
+msgid "Please select at least one registration to validate."
+msgstr "Veuillez sélectionner au moins une inscription à valider"
+
+#: views/tasks.py:97
+msgid "Please select at least one registration."
+msgstr "Veuillez sélectionner au moins une inscription"
 
 #: templates/fragment/upload_file_modal.html:42
 msgid "Please select the file you want to upload and the file category."
@@ -927,6 +943,10 @@ msgstr "Séparé"
 msgid "Sessions"
 msgstr "Sessions"
 
+#: templates/fragment/tasks/diplomas_to_produce.html:10
+msgid "Set diploma produced for selected registrations"
+msgstr "Indiquer le diplôme produit pour les inscriptions sélectionnées"
+
 #: models/enums/enums.py:14
 msgid "Single"
 msgstr "Célibataire"
@@ -984,6 +1004,16 @@ msgstr "Etudes"
 msgid "Submitted"
 msgstr "Soumis"
 
+#: views/tasks.py:94
+#, python-format
+msgid "Successfully marked diploma as produced for %s registrations."
+msgstr "Le diplôme a été marqué \"produit\" pour %s inscriptions."
+
+#: views/tasks.py:69
+#, python-format
+msgid "Successfully validated %s registrations."
+msgstr "%s inscriptions ont été validées avec succès."
+
 #: templates/admin_home.html:55 templates/tasks.html:37 templates/tasks.html:42
 msgid "Tasks"
 msgstr "Tâches"
@@ -1001,6 +1031,16 @@ msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"
 
+#: views/tasks.py:82
+#, fuzzy
+#| msgid "Registrations to validate"
+msgid "The registration must be submitted to be validated."
+msgstr "Inscriptions à valider"
+
+#: views/tasks.py:106
+msgid "The registrations must be validated to mark diploma as produced."
+msgstr "Les inscriptions doivent être validées pour marquer le diplôme comme \"produit\"."
+
 #: models/file.py:104 tests/views/test_file.py:152
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr "L'admission doit être en statut Accepté pour uploader une facture."
@@ -1011,7 +1051,7 @@ msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
 "pas été envoyé"
 
-#: templates/fragment/tasks/diplomas_to_produce.html:6
+#: templates/fragment/tasks/diplomas_to_produce.html:7
 msgid ""
 "This page contains the Registrations for which the diploma must be produced "
 "by IUFC."
@@ -1027,6 +1067,12 @@ msgstr ""
 "Cette page reprend les Inscriptions soumises par les participants. Celles-ci "
 "doivent être validées par l'IUFC."
 
+#: templates/fragment/tasks/diplomas_to_produce_modal.html:38
+msgid ""
+"This will check the \"diploma produced\" box for all selected registrations. "
+"Are you sure ?"
+msgstr "Le diplôme va être indiqué comme \"produit\" pour les inscriptions sélectionnées. Êtes-vous certain·e de vouloir continuer ?"
+
 #: templates/fragment/send_notification_mail_modal.html:40
 msgid ""
 "This will send an notification email to the participant, saying that there "
@@ -1036,7 +1082,12 @@ msgstr ""
 "facture est disponible."
 
 #: forms/search.py:233 templates/formations.html:56
-#: templates/formations.html:110
+#: templates/fragment/tasks/registrations_to_validate_modal.html:38
+msgid "This will validate all selected registrations. Are you sure ?"
+msgstr "Les inscriptions sélectionnées vont être validées. Êtes-vous certain·e de vouloir continuer ?"
+
+#: forms/search.py:236 templates/formations.html:60
+#: templates/formations.html:83
 msgid "Title"
 msgstr ""
 
@@ -1077,6 +1128,14 @@ msgstr "Utiliser l'adresse enregistrée pour le courrier"
 #: templates/registration_form.html:60
 msgid "VAT number"
 msgstr "Numéro de TVA"
+
+#: templates/fragment/tasks/registrations_to_validate_modal.html:33
+msgid "Validate all selected registrations ?"
+msgstr ""
+
+#: templates/fragment/tasks/registrations_to_validate.html:9
+msgid "Validate selected registrations"
+msgstr "Valider les inscriptions sélectionnées"
 
 #: models/enums/admission_state_choices.py:19
 #: models/enums/admission_state_choices.py:45
@@ -1121,6 +1180,14 @@ msgstr "Veuf(ve)"
 #: tests/business/test_xls_registration.py:81
 msgid "Yes"
 msgstr "Oui"
+
+#: templates/fragment/tasks/diplomas_to_produce_modal.html:43
+msgid "Yes, mark diplomas produced for selected registrations"
+msgstr "Oui, marquer le diplôme comme \"poduit\" pour les inscriptions sélectionnées."
+
+#: templates/fragment/tasks/registrations_to_validate_modal.html:43
+msgid "Yes, validate all selected registrations"
+msgstr "Oui, valider les inscriptions sélectionnées."
 
 #: templates/fragment/waiting_reason_modal.html:38
 msgid "You can enter a reason to put this admission on hold"

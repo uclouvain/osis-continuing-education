@@ -75,7 +75,7 @@
 }
 
 .alert {
-    display: block !important;
+    display: block;
 }
 
 .custom-file {
