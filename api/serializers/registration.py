@@ -57,18 +57,18 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
-    person_information = ContinuingEducationPersonSerializer(required=False)
+    person_information = ContinuingEducationPersonSerializer()
 
-    main_address = AddressSerializer(source='address', required=False)
-    billing_address = AddressSerializer(required=False)
-    residence_address = AddressSerializer(required=False)
+    address = AddressSerializer()
+    billing_address = AddressSerializer()
+    residence_address = AddressSerializer()
 
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
-    formation = TrainingListSerializer(required=False)
+    formation = TrainingListSerializer()
 
     class Meta:
         model = Admission
@@ -78,7 +78,7 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
             'formation',
 
             # CONTACTS
-            'main_address',
+            'address',
 
             'state',
             'state_text',

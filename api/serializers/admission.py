@@ -153,7 +153,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
 
         formation_data = validated_data.pop('formation', None)
         validated_data['formation'] = formation_data
-
         if 'address' in validated_data:
             address_data = validated_data.pop('address')
             address, created = Address.objects.get_or_create(**address_data)
