@@ -30,12 +30,25 @@ from continuing_education.models.continuing_education_training import Continuing
 from education_group.api.serializers.training import TrainingListSerializer
 
 
+class PersonTrainingListField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        return {
+            "uuid": value.uuid,
+            "first_name": value.first_name,
+            "last_name": value.last_name,
+            "email": value.email
+        }
+
+
 class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:continuing-education-training-detail-update-delete',
         lookup_field='uuid'
     )
     education_group = serializers.SerializerMethodField()
+
+    managers = PersonTrainingListField(many=True, read_only=True)
 
     class Meta:
         model = ContinuingEducationTraining
