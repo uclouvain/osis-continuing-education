@@ -2,6 +2,7 @@ from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
 from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -94,11 +95,12 @@ class AdmissionPostSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         cls.citizenship = CountryFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
-        new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        cls.formation = EducationGroupYearFactory(
+        )
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person_information,
+            formation=cls.formation
         )
         url = reverse(
             'continuing_education_api_v1:admission-detail-update-destroy',
@@ -144,3 +146,9 @@ class AdmissionPostSerializerTestCase(TestCase):
             'awareness_other',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+    def test_ensure_formation_field_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['formation'],
+            self.formation.uuid
+        )

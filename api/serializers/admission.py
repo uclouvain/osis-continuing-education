@@ -144,7 +144,7 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         if 'person_information' in validated_data:
             iufc_person_data = validated_data.pop('person_information')
             person_data = iufc_person_data.pop('person')
-            person = Person.objects.get(**person_data)
+            person, created = Person.objects.get_or_create(**person_data)
             iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
                 person=person,
                 **iufc_person_data

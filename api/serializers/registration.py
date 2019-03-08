@@ -25,14 +25,15 @@
 ##############################################################################
 from rest_framework import serializers
 
-from continuing_education.api.serializers.address import AddressSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from base.models.education_group_year import EducationGroupYear
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
 from continuing_education.models.admission import Admission
 from education_group.api.serializers.training import TrainingListSerializer
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
-
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:registration-detail-update-destroy',
         lookup_field='uuid'
@@ -56,8 +57,7 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
-    person_information = ContinuingEducationPersonSerializer()
+class RegistrationDetailSerializer(RegistrationListSerializer):
 
     address = AddressSerializer()
     billing_address = AddressSerializer()
@@ -66,22 +66,13 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
-    state_text = serializers.CharField(source='get_state_display', read_only=True)
-
-    formation = TrainingListSerializer()
 
     class Meta:
         model = Admission
-        fields = (
-            'uuid',
-            'person_information',
-            'formation',
+        fields = RegistrationListSerializer.Meta.fields + (
 
             # CONTACTS
             'address',
-
-            'state',
-            'state_text',
 
             # REGISTRATION
             # BILLING
@@ -120,6 +111,20 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
             'sessions'
 
         )
+
+
+class RegistrationPostSerializer(RegistrationDetailSerializer):
+    person_information = ContinuingEducationPersonPostSerializer(required=False)
+
+    address = AddressPostSerializer(required=False)
+    billing_address = AddressPostSerializer(required=False)
+    residence_address = AddressPostSerializer(required=False)
+
+    formation = serializers.SlugRelatedField(
+        queryset=EducationGroupYear.objects.all(),
+        slug_field='uuid',
+        required=False
+    )
 
     def update(self, instance, validated_data):
         self.update_field('billing_address', validated_data, instance.billing_address)

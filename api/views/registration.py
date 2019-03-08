@@ -26,7 +26,8 @@
 from django_filters import rest_framework as filters
 from rest_framework import generics
 
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
+from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
+    RegistrationPostSerializer
 from continuing_education.models.admission import Admission
 
 
@@ -71,6 +72,11 @@ class RegistrationList(generics.ListAPIView):
         )
         return queryset
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RegistrationPostSerializer
+        return RegistrationListSerializer
+
 
 class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -80,3 +86,8 @@ class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Admission.objects.all()
     serializer_class = RegistrationDetailSerializer
     lookup_field = 'uuid'
+
+    def get_serializer_class(self):
+        if self.request.method in ['PATCH', 'PUT']:
+            return RegistrationPostSerializer
+        return RegistrationDetailSerializer

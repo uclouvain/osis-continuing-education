@@ -35,7 +35,8 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.education_group_year import TrainingFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
+from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
+    RegistrationPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, DRAFT, \
     REGISTRATION_SUBMITTED, VALIDATED
@@ -211,8 +212,8 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = RegistrationDetailSerializer(
-            Admission.objects.all().first(),
+        serializer = RegistrationPostSerializer(
+            Admission.registration_objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
@@ -229,7 +230,7 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = RegistrationDetailSerializer(
+        serializer = RegistrationPostSerializer(
             Admission.registration_objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )
