@@ -39,7 +39,7 @@ from continuing_education.views.common import get_object_list
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_archives(request):
-    search_form = ArchiveFilterForm(data=request.POST)
+    search_form = ArchiveFilterForm(request.GET)
     archive_list = []
 
     if search_form.is_valid():

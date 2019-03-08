@@ -42,7 +42,7 @@ from continuing_education.business.xls.xls_formation import create_xls
 def list_formations(request):
     formation_list = []
 
-    search_form = FormationFilterForm(request.POST)
+    search_form = FormationFilterForm(request.GET)
     if search_form.is_valid():
         formation_list = search_form.get_formations()
 

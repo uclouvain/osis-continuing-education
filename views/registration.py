@@ -42,7 +42,7 @@ from continuing_education.views.common import display_errors, get_object_list
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_registrations(request):
-    search_form = RegistrationFilterForm(data=request.POST)
+    search_form = RegistrationFilterForm(request.GET)
 
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
