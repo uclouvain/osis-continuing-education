@@ -148,4 +148,3 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             if to_update:
                 return field_serializer.update(getattr(instance, field), field_data, instance.address)
         return getattr(instance, field)
-
