@@ -44,6 +44,7 @@ WORKSHEET_TITLE = _('Formations list')
 
 
 def create_xls(user, formation_list, form):
+    print('create_xls')
     filters = form_filters(form)
 
     working_sheets_data = prepare_xls_content(formation_list)

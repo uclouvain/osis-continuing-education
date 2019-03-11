@@ -47,7 +47,7 @@ def list_registrations(request):
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
 
-    if request.POST.get('xls_status') == "xls_registrations":
+    if request.GET.get('xls_status') == "xls_registrations":
         return create_xls_registration(request.user, admission_list, search_form)
 
     return render(request, "registrations.html", {

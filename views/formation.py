@@ -46,7 +46,8 @@ def list_formations(request):
     if search_form.is_valid():
         formation_list = search_form.get_formations()
 
-    if request.POST.get('xls_status') == "xls_formations":
+    if request.GET.get('xls_status') == "xls_formations":
+        print('ici')
         return create_xls(request.user, formation_list, search_form)
 
     return render(request, "formations.html", {

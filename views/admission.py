@@ -58,7 +58,7 @@ def list_admissions(request):
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
 
-    if request.POST.get('xls_status') == "xls_admissions":
+    if request.GET.get('xls_status') == "xls_admissions":
         return create_xls(request.user, admission_list, search_form)
 
     return render(request, "admissions.html", {

@@ -45,7 +45,7 @@ def list_archives(request):
     if search_form.is_valid():
         archive_list = search_form.get_archives()
 
-    if request.POST.get('xls_status') == "xls_archives":
+    if request.GET.get('xls_status') == "xls_archives":
         return create_xls(request.user, archive_list, search_form)
 
     return render(request, "archives.html", {
