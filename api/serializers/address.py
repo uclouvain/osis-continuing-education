@@ -50,5 +50,12 @@ class AddressPostSerializer(AddressSerializer):
         queryset=Country.objects.all(),
         required=False,
         allow_null=True
-
     )
+
+    def update(self, instance, validated_data, main_address):
+        if instance == main_address:
+            address = Address.objects.create(**validated_data)
+        else:
+            Address.objects.filter(uuid=instance.uuid).update(**validated_data)
+            address = Address.objects.get(uuid=instance.uuid)
+        return address

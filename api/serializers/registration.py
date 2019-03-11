@@ -127,12 +127,25 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
     )
 
     def update(self, instance, validated_data):
-        self.update_field('billing_address', validated_data, instance.billing_address)
-        self.update_field('residence_address', validated_data, instance.residence_address)
+        instance.billing_address = self.update_addresses(
+            'billing_address',
+            validated_data,
+            instance,
+            not validated_data['use_address_for_billing']
+        )
+        instance.residence_address = self.update_addresses(
+            'residence_address',
+            validated_data,
+            instance,
+            not validated_data['use_address_for_post']
+        )
         return super().update(instance, validated_data)
 
-    def update_field(self, field, validated_data, instance):
+    def update_addresses(self, field, validated_data, instance, to_update):
         if field in validated_data:
             field_serializer = self.fields[field]
             field_data = validated_data.pop(field)
-            field_serializer.update(instance, field_data)
+            if to_update:
+                return field_serializer.update(getattr(instance, field), field_data, instance.address)
+        return getattr(instance, field)
+
