@@ -37,6 +37,7 @@ from rest_framework.test import APITestCase
 
 from base.models.person import Person
 from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
@@ -166,7 +167,8 @@ class AdmissionListCreateTestCase(APITestCase):
             'person_information': {
                 'uuid': self.admission.person_information.uuid,
                 'person': {
-                    'uuid': self.admission.person_information.person.uuid
+                    'uuid': self.admission.person_information.person.uuid,
+                    'email': self.admission.person_information.person.email,
                 },
                 'birth_country': self.admission.person_information.birth_country.iso_code
 
@@ -185,6 +187,7 @@ class AdmissionListCreateTestCase(APITestCase):
         self.assertEqual(3, Admission.admission_objects.all().count())
         self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(4, Person.objects.all().count())
+        PersonFactory(email='b@d.be')
         data = {
             'person_information': {
                 'birth_date': datetime.date.today(),

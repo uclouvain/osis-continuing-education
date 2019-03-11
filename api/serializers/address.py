@@ -52,7 +52,7 @@ class AddressPostSerializer(AddressSerializer):
         allow_null=True
     )
 
-    def update(self, instance, validated_data, main_address):
+    def update(self, instance, validated_data, main_address=None):
         if instance == main_address:
             address = Address.objects.create(**validated_data)
         else:

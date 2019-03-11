@@ -207,6 +207,8 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         data = {
             'vat_number': '123456',
             'id_card_number': '0000000',
+            'use_address_for_billing': True,
+            'use_address_for_post': True
         }
 
         response = self.client.put(self.url, data=data)
@@ -222,9 +224,11 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
     def test_update_valid_registration_billing_address(self):
         self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
+            'use_address_for_billing': False,
             'billing_address': {
                 'location': 'PERDU'
-            }
+            },
+            'use_address_for_post': True
         }
 
         response = self.client.put(self.url, data=data)
