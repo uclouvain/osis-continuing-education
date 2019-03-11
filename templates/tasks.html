@@ -59,7 +59,7 @@
 
 {% block script %}
     <script>
-        var anchor = location.hash;
+        let anchor = location.hash;
         $('#tabs a[href="' + anchor + '"]').tab('show');
         if(anchor){
             setTimeout(function() {
