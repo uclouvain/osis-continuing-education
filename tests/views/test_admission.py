@@ -68,6 +68,9 @@ class ViewAdmissionTestCase(TestCase):
         group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.manager.user.groups.add(group)
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.training_manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
         EntityVersionFactory(
             entity=self.formation.management_entity
@@ -106,6 +109,13 @@ class ViewAdmissionTestCase(TestCase):
             'admission_id': 0,
         }))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_admission_detail_access_denied(self):
+        self.client.force_login(self.training_manager.user)
+        url = reverse('admission_detail', args=[self.admission.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTemplateUsed(response, 'admission_detail.html')
 
     def test_admission_new(self):
         url = reverse('admission_new')
