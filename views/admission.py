@@ -156,7 +156,14 @@ def admission_form(request, admission_id=None):
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
     state = admission.state if admission else SUBMITTED
-    adm_form = AdmissionForm(request.POST or None, instance=admission, initial={'state': state})
+    adm_form = AdmissionForm(
+        data=request.POST or None,
+        user=request.user,
+        instance=admission,
+        initial={
+            'state': state
+        }
+    )
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission.state if admission else None

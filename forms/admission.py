@@ -11,6 +11,7 @@ from continuing_education.models.continuing_education_person import ContinuingEd
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
+from continuing_education.models.person_training import PersonTraining
 from reference.models.country import Country
 
 
@@ -39,8 +40,16 @@ class AdmissionForm(ModelForm):
         empty_label=_("New person")
     )
 
-    def __init__(self, data, **kwargs):
+    def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
+        qs = self.fields['formation'].queryset
+        if user and not user.groups.filter(name='continuing_education_managers').exists():
+            qs = qs.filter(
+                managers=user.person
+            )
+        self.fields['formation'].queryset = qs.order_by(
+            'education_group__educationgroupyear__acronym'
+        ).distinct()
 
     class Meta:
         model = Admission

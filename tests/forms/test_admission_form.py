@@ -28,9 +28,12 @@ from django.test import TestCase
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
 from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from reference.models import country
@@ -40,17 +43,38 @@ ANY_REASON = 'Anything'
 
 class TestAdmissionForm(TestCase):
 
-    def test_valid_form(self):
+    def test_valid_form_for_managers(self):
         self.education_group = EducationGroupFactory()
         education_group_year = EducationGroupYearFactory(education_group=self.education_group)
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
         admission = AdmissionFactory(formation=self.formation)
-
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
         data = admission.__dict__
         data['formation'] = admission.formation.pk
-        form = AdmissionForm(data)
+        form = AdmissionForm(data=data, user=self.manager.user)
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_valid_form_for_training_managers(self):
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+
+        admission = AdmissionFactory(formation=self.formation)
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        PersonTraining(person=self.manager, training=self.formation).save()
+        self.client.force_login(self.manager.user)
+        data = admission.__dict__
+        data['formation'] = admission.formation.pk
+        form = AdmissionForm(data=data, user=self.manager.user)
         self.assertTrue(form.is_valid(), form.errors)
 
 
