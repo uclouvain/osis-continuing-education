@@ -31,10 +31,12 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
     ContinuingEducationTrainingPostSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
@@ -46,6 +48,8 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(education_group=education_group)
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
+        cls.training_manager = PersonFactory()
+        PersonTraining(person=cls.training_manager, training=cls.continuing_education_training).save()
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -88,6 +92,14 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         trainings = ContinuingEducationTraining.objects.all().order_by('education_group__educationgroupyear__acronym')
         serializer = ContinuingEducationTrainingSerializer(trainings, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'], serializer.data)
+
+    def test_get_all_training_with_associated_training_managers(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        trainings = ContinuingEducationTraining.objects.all().order_by('education_group__educationgroupyear__acronym')
+        serializer = ContinuingEducationTrainingSerializer(trainings, many=True, context={'request': RequestFactory().get(self.url)})
+        self.assertEqual(response.data['results'][0]['managers'], serializer.data[0]['managers'])
 
     def test_create_valid_continuing_education_training(self):
         self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
