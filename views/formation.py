@@ -58,8 +58,8 @@ def list_formations(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def formations_activate(request):
-    # Function to activate or desactivate
-    selected_formations_id = request.POST.getlist("selected_action", default=[])
+    # Function to activate or deactivate
+    selected_formations_id = request.GET.getlist("selected_action", default=[])
     new_state = _get_new_state(request)
     if new_state is not None:
         if selected_formations_id:
@@ -71,7 +71,7 @@ def formations_activate(request):
 
 
 def _get_new_state(request):
-    new_state = request.POST.get("new_state")
+    new_state = request.GET.get("new_state")
     if new_state == "true":
         return True
     elif new_state == "false":

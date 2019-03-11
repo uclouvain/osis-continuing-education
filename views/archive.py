@@ -59,7 +59,7 @@ def list_archives(request):
 def archive_procedure(request, admission_id):
     redirection = request.META.get('HTTP_REFERER')
     admission = _switch_archived_state(admission_id)
-    _set_success_message(request, admission.is_registration, False, admission.archived)
+    _set_success_message(request, False, admission.archived)
     return HttpResponseRedirect(redirection)
 
 
@@ -68,26 +68,23 @@ def archive_procedure(request, admission_id):
 def archives_procedure(request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
     redirection = request.META.get('HTTP_REFERER')
-    is_registration = 'registration' in redirection
     if selected_admissions_id:
-        _mark_folders_as_archived(is_registration, request, selected_admissions_id)
+        _mark_folders_as_archived(request, selected_admissions_id)
         return redirect(reverse('archive'))
     else:
-        _set_error_message(is_registration, request)
+        _set_error_message(request)
         return HttpResponseRedirect(redirection)
 
 
-def _mark_folders_as_archived(is_registration, request, selected_admissions_id):
+def _mark_folders_as_archived(request, selected_admissions_id):
     for admission_id in selected_admissions_id:
         _mark_as_archived(admission_id)
-    _set_success_message(request, is_registration, len(selected_admissions_id) > 1)
+    _set_success_message(request, len(selected_admissions_id) > 1)
 
 
-def _set_success_message(request, is_registration, is_plural, admission_archived=True):
-    success_msg = "{}{} {} {}".format(
-        _('Registration') if is_registration else _('Admission'),
-        's' if is_plural else '',
-        _('are now') if is_plural else _('is now'),
+def _set_success_message(request, is_plural, admission_archived=True):
+    success_msg = "{} {}".format(
+        _('Files are now') if is_plural else _('File is now'),
         _('archived') if admission_archived else _('unarchived')
     )
 
@@ -105,11 +102,8 @@ def _set_archived_state(admission, archived_state):
         admission.save()
 
 
-def _set_error_message(is_registration, request):
-    if is_registration:
-        error_msg = _('Please select at least one registration to archive')
-    else:
-        error_msg = _('Please select at least one admission to archive')
+def _set_error_message(request):
+    error_msg = _('Please select at least one file to archive')
     display_error_messages(request, error_msg)
 
 
