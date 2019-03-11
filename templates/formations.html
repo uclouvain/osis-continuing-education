@@ -5,27 +5,27 @@
 {% load formation %}
 
 {% comment "License" %}
-* OSIS stands for Open Student Information System. It's an application
-* designed to manage the core business of higher education institutions,
-* such as universities, faculties, institutes and professional schools.
-* The core business involves the administration of students, teachers,
-* courses, programs and so on.
-*
-* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
-*
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* A copy of this license - GNU General Public License - is available
-* at the root of the source code of this program.  If not,
-* see http://www.gnu.org/licenses/.
+    * OSIS stands for Open Student Information System. It's an application
+    * designed to manage the core business of higher education institutions,
+    * such as universities, faculties, institutes and professional schools.
+    * The core business involves the administration of students, teachers,
+    * courses, programs and so on.
+    *
+    * Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+    *
+    * This program is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * This program is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    * GNU General Public License for more details.
+    *
+    * A copy of this license - GNU General Public License - is available
+    * at the root of the source code of this program.  If not,
+    * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
 {% block style %}
@@ -45,13 +45,9 @@
 
     <div class="panel panel-default">
         <div class="panel panel-body">
-            <form style="display: inline;" action="{% url 'formation' %}" method="post" class="" id="search_form">
+            <form style="display: inline;" action="{% url 'formation' %}" method="get" class="" id="search_form">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-md-2">
-                        <label for="academic_year_id">{% trans 'Academic year' %}</label>
-                        {{ search_form.academic_year }}
-                    </div>
                     <div class="col-md-2">
                         <label for="acronym_id">{% trans 'Acronym' %}</label>
                         {{ search_form.acronym }}
@@ -64,6 +60,10 @@
                         <label for="faculty_id">{% trans 'Faculty' %}</label>
                         {{ search_form.faculty }}
                     </div>
+                    <div class="col-md-2">
+                        <label for="state_id">{% trans 'State' %}</label>
+                        {{ search_form.state }}
+                    </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-default" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -71,36 +71,78 @@
                         </button>
                     </div>
                 </div>
+                {% include 'blocks/button/xls_hidden.html' %}
             </form>
         </div>
+        <div class="dropdown  text-right" style="margin-right: 10px;">
+            <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                <li>
+                    <a id="btn_activate" style="margin-right:10px;">
+                        &nbsp;{% trans 'Activate' %}
+                    </a>
+                </li>
+                <li>
+                    <a id="btn_disable" style="margin-right:10px;">
+                        &nbsp;{% trans 'Disable' %}
+                    </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+                    {% trans 'Produce xls with list of formations' as title_xls_trans %}
+                    {% include "blocks/button/xls.html" with button_title=title_xls_trans %}
+                </li>
+            </ul>
+        </div>
         <div class="panel panel-body">
-
-             <table class="table table-striped table-hover" id="formations_table">
-                <thead>
+            <form id="formations_form" method="get" action="{% url 'formations_procedure' %}">
+                {% csrf_token %}
+                <input name="new_state" id="new_state" value="" type="hidden"/>
+                <table class="table table-striped table-hover" id="formations_table">
+                    <thead>
                     <tr>
+                        <th>
+                            {% if formations %}
+                                <input id="id_check_all" type="checkbox" name="check_all"
+                                       title="{% trans 'Check All' %}"/>
+                            {% endif %}
+                        </th>
                         <th class="searchable">{% trans 'Acronym' %}</th>
                         <th class="searchable">{% trans 'Faculty' %}</th>
                         <th class="searchable">{% trans 'Title' %}</th>
+                        <th class="searchable">{% trans 'State' %}</th>
                     </tr>
-                </thead>
-                <tfoot>
+                    </thead>
+                    <tfoot>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="5">
                             {% bootstrap_pagination formations extra=request.GET.urlencode %}
                         </td>
                     </tr>
-                </tfoot>
-             <tbody>
-                {% for formation in formations %}
-                    <tr>
-                        <td>{{ formation|get_formation_denomination }}</td>
-                        <td>{{ formation|get_formation_faculty  | default_if_none:''}}</td>
-                        <td>{{ formation.title | default_if_none:'' }}</td>
-                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for formation in formations %}
+                        {% with most_recent_education_group=formation|get_most_recent_education_group %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selected_action" class="selected_object"
+                                       value="{{ formation.id }}"/>
+                            </td>
+                            <td>{{ formation.most_recent_acronym }}</td>
+                            <td>{{ most_recent_education_group|get_faculty  | default_if_none:'' }}</td>
+                            <td>{{ most_recent_education_group.title | default_if_none:'' }}</td>
+                            <td>{{ formation|get_active_continuing_education_formation }}</td>
+                        </tr>
+                        {% endwith %}
 
-                {% endfor %}
-             </tbody>
-            </table>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -113,10 +155,19 @@
                 "info": false,
                 "bFilter": false,
                 "language":
-                    {
-                        "sEmptyTable": "{% trans 'No data' %}",
-                    }
+                {
+                    "sEmptyTable": "{% trans 'No data' %}",
+                }
             } );
         } );
+
+        $("#btn_produce_xls").click(function(e) {
+            prepare_xls(e, 'xls_formations');
+        });
+
     </script>
+
+    <script src="{% static 'js/continuing_xls.js' %}"></script>
+    <script src="{% static 'js/formation.js' %}"></script>
+
 {% endblock %}

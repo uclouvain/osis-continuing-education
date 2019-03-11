@@ -24,18 +24,31 @@
 #
 ##############################################################################
 from django import template
+from django.utils.translation import gettext_lazy as _
 
 from continuing_education.business.admission import get_management_faculty
 from continuing_education.models.admission import get_formation_display
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 register = template.Library()
 
 
 @register.filter
-def get_formation_denomination(formation):
-    return get_formation_display(formation.partial_acronym, formation.acronym, formation.academic_year)
+def get_active_continuing_education_formation(formation):
+    continuing_education_training = ContinuingEducationTraining.objects.filter(
+        education_group=formation
+    ).first()
+    if continuing_education_training:
+        return _('Active') if continuing_education_training.active else _('Inactive')
+    return _('Not organized')
 
 
 @register.filter
-def get_formation_faculty(formation):
-    return get_management_faculty(formation)
+def get_most_recent_education_group(formation):
+    return formation.educationgroupyear_set.filter(education_group_id=formation.id)\
+        .select_related('academic_year').latest('academic_year__year')
+
+
+@register.filter
+def get_faculty(most_recent_education_group):
+    return get_management_faculty(most_recent_education_group)

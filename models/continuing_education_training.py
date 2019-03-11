@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import uuid as uuid
+
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -69,7 +70,7 @@ class ContinuingEducationTraining(Model):
     def clean(self):
         if not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
-        super().clean(self)
+        super().clean()
 
     def get_most_recent_education_group_year(self):
         return self.education_group.educationgroupyear_set.filter(

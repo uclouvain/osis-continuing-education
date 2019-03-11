@@ -42,6 +42,7 @@ from continuing_education.views.archive import _switch_archived_state, _mark_as_
 
 
 class ViewArchiveTestCase(TestCase):
+
     def setUp(self):
         current_acad_year = create_current_academic_year()
         self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
@@ -87,7 +88,7 @@ class ViewArchiveTestCase(TestCase):
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.ERROR, msg_level)
-        self.assertEqual(msg[0], _('Please select at least one admission to archive'))
+        self.assertEqual(msg[0], _('Please select at least one file to archive'))
 
     def test_error_message_no_registration_selected(self):
         response = self.client.post(reverse('archives_procedure'),
@@ -101,7 +102,7 @@ class ViewArchiveTestCase(TestCase):
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.ERROR, msg_level)
-        self.assertEqual(msg[0], _('Please select at least one registration to archive'))
+        self.assertEqual(msg[0], _('Please select at least one file to archive'))
 
     def test_mark_as_archived(self):
         _mark_as_archived(self.registration_1_unarchived.id)
@@ -129,9 +130,8 @@ class ViewArchiveTestCase(TestCase):
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
 
-        self.assertEqual(msg[0], "{} {} {}".format(_('Registrations'),
-                                                   _('are now'),
-                                                   _('archived')))
+        self.assertEqual(msg[0], "{} {}".format(_('Files are now'),
+                                                _('archived')))
 
     def test_mark_registration_folders_as_archived_single(self):
 
@@ -147,9 +147,8 @@ class ViewArchiveTestCase(TestCase):
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
 
-        self.assertEqual(msg[0], "{} {} {}".format(_('Registration'),
-                                                   _('is now'),
-                                                   _('archived')))
+        self.assertEqual(msg[0], "{} {}".format(_('File is now'),
+                                                _('archived')))
 
     def test_archive_procedure(self):
         response = self.client.post(reverse('archives_procedure'),
@@ -163,8 +162,7 @@ class ViewArchiveTestCase(TestCase):
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
-        self.assertEqual(msg[0], "{} {} {}".format(_('Admission'),
-                                                   _('is now'),
+        self.assertEqual(msg[0], "{} {}".format(_('File is now'),
                                                    _('archived')))
 
     def test_list(self):

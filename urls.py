@@ -53,7 +53,12 @@ urlpatterns = [
     ])),
     url(r'^formation/', include([
         url(r'^$', formation.list_formations, name='formation'),
+        url(r'^list/to_activate/', formation.formations_activate, name='formations_procedure'),
     ])),
     url(r'^prospects$', prospect.list_prospects, name='prospects'),
-    url(r'^tasks/$', tasks.list_tasks, name='list_tasks'),
+    url(r'^tasks/', include([
+        url(r'^$', tasks.list_tasks, name='list_tasks'),
+        url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
+        url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
+    ])),
 ]
