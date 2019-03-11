@@ -75,8 +75,7 @@ def list_admissions(request):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    if admission not in _filter_authorized_admissions(request.user, Admission.objects.all()):
-        raise PermissionDenied
+    _can_access_admission(request.user, admission)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     if not request.user.has_perm('continuing_education.can_validate_registration') and \
@@ -242,6 +241,11 @@ def _filter_authorized_admissions(user, admission_list):
         person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
         admission_list = admission_list.filter(formation_id__in=person_trainings)
     return admission_list
+
+
+def _can_access_admission(user, admission):
+    if admission not in _filter_authorized_admissions(user, Admission.objects.all()):
+        raise PermissionDenied
 
 
 def _is_continuing_education_manager(user):
