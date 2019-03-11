@@ -25,13 +25,15 @@
 ##############################################################################
 from django.test import TestCase
 
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
-from continuing_education.tests.factories.admission import AdmissionFactory
-from reference.models import country
-from continuing_education.models.enums.admission_state_choices import REJECTED
-from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
+from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from reference.models import country
 
 ANY_REASON = 'Anything'
 
@@ -39,9 +41,12 @@ ANY_REASON = 'Anything'
 class TestAdmissionForm(TestCase):
 
     def test_valid_form(self):
-        current_academic_yr = create_current_academic_year()
-        next_academic_yr = AcademicYearFactory(year=current_academic_yr.year+1)
-        admission = AdmissionFactory(formation=EducationGroupYearFactory(academic_year=next_academic_yr))
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        admission = AdmissionFactory(formation=self.formation)
 
         data = admission.__dict__
         data['formation'] = admission.formation.pk

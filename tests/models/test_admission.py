@@ -29,9 +29,11 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.utils.translation import gettext as _
 
+from base.tests.factories.education_group import EducationGroupFactory
 from continuing_education.models import admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from base.tests.factories.business.entities import create_entities_hierarchy
 from base.models.enums.entity_type import SCHOOL, FACULTY
@@ -42,8 +44,13 @@ from base.tests.factories.entity_version import EntityVersionFactory
 
 class TestAdmission(TestCase):
     def setUp(self):
-        self.admission = AdmissionFactory()
-        self.submitted_admission = AdmissionFactory(state=admission_state_choices.SUBMITTED)
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        self.admission = AdmissionFactory(formation=self.formation)
+        self.submitted_admission = AdmissionFactory(state=admission_state_choices.SUBMITTED, formation=self.formation)
         self.person = ContinuingEducationPersonFactory()
 
     def test_search(self):
@@ -91,24 +98,24 @@ class TestAdmissionGetFaculty(TestCase):
     def setUp(self):
         entities = create_entities_hierarchy()
         self.faculty = entities['child_one_entity_version']
-
-        child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
+        self.child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
         self.child_entity_version = EntityVersionFactory(acronym="CHILD_1_UNDER_FAC",
                                                          parent=self.faculty.entity,
                                                          entity_type=SCHOOL,
                                                          end_date=None,
-                                                         entity=child_entity,
+                                                         entity=self.child_entity,
                                                          start_date=entities['start_date'])
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(
+            education_group=self.education_group,
+            management_entity=self.child_entity
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
 
     def test_get_faculty(self):
         an_admission = AdmissionFactory(
-            formation=EducationGroupYearFactory(management_entity=self.faculty.entity)
+            formation=self.formation
         )
-
-        self.assertEqual(an_admission.get_faculty(), self.faculty.entity)
-
-    def test_get_parent_faculty(self):
-        an_admission = AdmissionFactory(
-            formation=EducationGroupYearFactory(management_entity=self.child_entity_version.entity)
-        )
-        self.assertEqual(an_admission.get_faculty(), self.faculty.entity)
+        self.assertEqual(an_admission.get_faculty(), self.child_entity)

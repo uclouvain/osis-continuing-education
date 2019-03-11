@@ -33,6 +33,7 @@ from continuing_education.api.serializers.continuing_education_person import Con
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from education_group.api.serializers.training import TrainingListSerializer
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
@@ -123,7 +124,7 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
     address = AddressPostSerializer(required=False)
     person_information = ContinuingEducationPersonPostSerializer(required=True)
     formation = serializers.SlugRelatedField(
-        queryset=EducationGroupYear.objects.all(),
+        queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
         required=True
     )

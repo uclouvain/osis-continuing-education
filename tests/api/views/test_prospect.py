@@ -30,10 +30,12 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.models.prospect import Prospect
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
 
 
@@ -42,7 +44,11 @@ class ProspectListCreateTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:prospect-list-create')
-        formation = TrainingFactory()
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+        formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
+        )
         cls.prospect = ProspectFactory(formation=formation)
 
     def setUp(self):
@@ -81,6 +87,8 @@ class ProspectListCreateTestCase(APITestCase):
 
     def test_create_valid_prospect(self):
         self.assertEqual(1, Prospect.objects.all().count())
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
         data = {
             'name': self.prospect.name,
             'first_name': self.prospect.first_name,
@@ -88,7 +96,9 @@ class ProspectListCreateTestCase(APITestCase):
             'city': self.prospect.city,
             'email': self.prospect.email,
             'phone_number': self.prospect.phone_number,
-            'formation': TrainingFactory().uuid
+            'formation': ContinuingEducationTrainingFactory(
+                education_group=education_group
+            ).uuid
         }
         response = self.client.post(self.url, data=data, format='json')
         serializer = ProspectSerializer(
@@ -103,7 +113,11 @@ class ProspectListCreateTestCase(APITestCase):
 class ProspectDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        formation = TrainingFactory()
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+        formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
+        )
         cls.prospect = ProspectFactory(formation=formation)
         cls.user = UserFactory()
         cls.url = reverse(
@@ -155,11 +169,15 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
 
     def test_update_valid_prospect(self):
         self.assertEqual(1, Prospect.objects.all().count())
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
         data = {
             'city': 'Dinant',
             'name': 'Pompidou',
             'email': 'fake@d.be',
-            'formation': TrainingFactory().uuid
+            'formation': ContinuingEducationTrainingFactory(
+                education_group=education_group
+            ).uuid
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

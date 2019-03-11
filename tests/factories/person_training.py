@@ -23,17 +23,20 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import random
-
 import factory
 
-from base.tests.factories.education_group import EducationGroupFactory
-from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from base.tests.factories.person import PersonFactory
+from continuing_education.models.person_training import PersonTraining
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
-class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
+class PersonTrainingFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = ContinuingEducationTraining
+        model = PersonTraining
 
-    active = random.choice([True, False])
-    education_group = factory.SubFactory(EducationGroupFactory)
+    person = factory.SubFactory(PersonFactory)
+    training = factory.SubFactory(ContinuingEducationTrainingFactory)
+
+
+class PersonWithTraining(PersonFactory):
+    training = factory.RelatedFactory(PersonTrainingFactory, 'training')

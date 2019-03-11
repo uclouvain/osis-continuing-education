@@ -26,13 +26,19 @@
 from django.test import TestCase
 from django.utils.translation import gettext as _
 
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.business.admission import _get_formatted_admission_data
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class TestAdmission(TestCase):
     def test_get_formatted_admission_data(self):
-        admission = AdmissionFactory()
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
+        training = ContinuingEducationTrainingFactory(education_group=education_group)
+        admission = AdmissionFactory(formation=training)
         expected_list = [
             "{} : {}".format(_('Last name'), admission.person_information.person.last_name),
             "{} : {}".format(_('First name'), admission.person_information.person.first_name),

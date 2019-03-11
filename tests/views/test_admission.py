@@ -28,7 +28,7 @@ import random
 from unittest.mock import patch
 
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -38,8 +38,10 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
@@ -47,6 +49,7 @@ from continuing_education.models.enums import file_category_choices, admission_s
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
@@ -57,9 +60,14 @@ class ViewAdmissionTestCase(TestCase):
     def setUp(self):
         current_acad_year = create_current_academic_year()
         self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
-
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
         EntityVersionFactory(
             entity=self.formation.management_entity
@@ -198,15 +206,18 @@ class ViewAdmissionTestCase(TestCase):
 
 class InvoiceNotificationEmailTestCase(TestCase):
     def setUp(self):
-        current_acad_year = create_current_academic_year()
-        next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        formation = EducationGroupYearFactory(academic_year=next_acad_year)
-
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
 
         self.admission = AdmissionFactory(
-            formation=formation,
+            formation=self.formation,
             state=ACCEPTED
         )
         self.admission_file = AdmissionFileFactory(
@@ -256,15 +267,21 @@ class AdmissionStateChangedTestCase(TestCase):
     def setUp(self):
         current_acad_year = create_current_academic_year()
         self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
+        group = GroupFactory(name='continuing_education_managers')
+        group.user_set.add(self.manager.user)
         self.client.force_login(self.manager.user)
         EntityVersionFactory(
-            entity=self.formation.management_entity
+            entity=education_group_year.management_entity
         )
         self.admission = AdmissionFactory(
             formation=self.formation,

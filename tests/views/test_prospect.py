@@ -28,8 +28,10 @@ from django.test import TestCase
 from django.urls import reverse
 
 from base.tests.factories.academic_year import create_current_academic_year
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
 
 
@@ -39,22 +41,37 @@ class ProspectListTestCase(TestCase):
         self.client.force_login(self.manager.user)
 
     def test_prospect_list_ordered_by_formation(self):
-        current_acad_year = create_current_academic_year()
+        self.education_group_1 = EducationGroupFactory()
+        self.education_group_2 = EducationGroupFactory()
+        self.education_group_3 = EducationGroupFactory()
+
         formation_1 = EducationGroupYearFactory(
             acronym="AAAA",
-            academic_year=current_acad_year
+            education_group=self.education_group_1
         )
         formation_2 = EducationGroupYearFactory(
             acronym="BBA",
-            academic_year=current_acad_year
+            education_group=self.education_group_2
         )
         formation_3 = EducationGroupYearFactory(
             acronym="CAA",
-            academic_year=current_acad_year
+            education_group=self.education_group_3
         )
-        prospect_1 = ProspectFactory(formation=formation_1)
-        prospect_2 = ProspectFactory(formation=formation_2)
-        prospect_3 = ProspectFactory(formation=formation_3)
+        prospect_1 = ProspectFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_1
+            )
+        )
+        prospect_2 = ProspectFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_2
+            )
+        )
+        prospect_3 = ProspectFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_3
+            )
+        )
 
         response = self.client.get(reverse('prospects'))
         self.assertEqual(response.status_code, 200)

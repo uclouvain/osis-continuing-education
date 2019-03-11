@@ -36,7 +36,8 @@ from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
 from base.models.person import Person
-from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
@@ -46,6 +47,7 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -62,31 +64,42 @@ class AdmissionListCreateTestCase(APITestCase):
             birth_country=cls.citizenship
         )
         cls.address = AddressFactory()
-        cls.formation = TrainingFactory()
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=education_group)
+
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person,
             address=cls.address,
             state=DRAFT,
-            formation=cls.formation
+            formation=ContinuingEducationTrainingFactory(education_group=education_group)
         )
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
         AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=ContinuingEducationPersonFactory(),
             state=SUBMITTED,
-            formation=TrainingFactory()
+            formation=ContinuingEducationTrainingFactory(education_group=education_group)
         )
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
         AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=ContinuingEducationPersonFactory(),
             state=ACCEPTED,
-            formation=TrainingFactory()
+            formation=ContinuingEducationTrainingFactory(education_group=education_group)
         )
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
         AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=ContinuingEducationPersonFactory(),
             state=REJECTED,
-            formation=TrainingFactory()
+            formation=ContinuingEducationTrainingFactory(education_group=education_group)
         )
 
     def setUp(self):
@@ -238,10 +251,13 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
     def setUpTestData(cls):
         cls.citizenship = CountryFactory()
 
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=education_group)
+
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=ContinuingEducationPersonFactory(),
-            formation=TrainingFactory(),
+            formation=ContinuingEducationTrainingFactory(education_group=education_group),
             state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
 
         )

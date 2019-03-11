@@ -81,45 +81,103 @@ class TestFilterForm(TestCase):
                                                         end_date=None,
                                                         start_date=self.start_date,
                                                         parent=self.fac_3_version_with_child.entity)
+        self.education_group_1 = EducationGroupFactory()
+        self.education_group_2 = EducationGroupFactory()
+        self.education_group_3 = EducationGroupFactory()
+        self.education_group_4 = EducationGroupFactory()
+        self.education_group_5 = EducationGroupFactory()
+        self.education_group_6 = EducationGroupFactory()
+        self.education_group_7 = EducationGroupFactory()
+        self.education_group_8 = EducationGroupFactory()
 
         self.education_group_yr_1 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='A_FORM',
-                                                              management_entity=self.fac_1_version.entity)
-        self.education_group_yr_2 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='C_FORM')
+                                                              management_entity=self.fac_1_version.entity,
+                                                              education_group=self.education_group_1)
+        self.education_group_yr_2 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='C_FORM',
+                                                              education_group=self.education_group_2)
         self.education_group_yr_3 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='B_FORM',
-                                                              management_entity=self.fac_1_version.entity)
+                                                              management_entity=self.fac_1_version.entity,
+                                                              education_group=self.education_group_3)
         self.education_group_yr_4 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='D_FORM',
-                                                              management_entity=self.fac_2_version.entity)
+                                                              management_entity=self.fac_2_version.entity,
+                                                              education_group=self.education_group_4)
+        self.education_group_yr_5 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='E_FORM',
+                                                              management_entity=self.fac_2_version.entity,
+                                                              education_group=self.education_group_5)
+        self.education_group_yr_6 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='F_FORM',
+                                                              management_entity=self.fac_2_version.entity,
+                                                              education_group=self.education_group_6)
+        self.education_group_yr_7 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='G_FORM',
+                                                              management_entity=self.fac_2_version.entity,
+                                                              education_group=self.education_group_7)
+        self.education_group_yr_8 = EducationGroupYearFactory(academic_year=next_academic_yr, acronym='H_FORM',
+                                                              management_entity=self.fac_2_version.entity,
+                                                              education_group=self.education_group_8)
+
+        self.education_group_on_faculty = EducationGroupFactory()
+        self.education_group_on_faculty_child = EducationGroupFactory()
+
         self.education_group_yr_on_faculty = EducationGroupYearFactory(
             academic_year=next_academic_yr,
             acronym='E_FORM',
-            management_entity=self.fac_3_version_with_child.entity
+            management_entity=self.fac_3_version_with_child.entity,
+            education_group=self.education_group_on_faculty
         )
         self.education_group_yr_on_faculty_child = EducationGroupYearFactory(
             academic_year=next_academic_yr,
             acronym='E_FORM_Child',
-            management_entity=self.fac_3_child_version.entity
+            management_entity=self.fac_3_child_version.entity,
+            education_group=self.education_group_on_faculty_child
         )
 
-        self.admission_submitted_1 = AdmissionFactory(formation=self.education_group_yr_1, state=SUBMITTED)
+        self.admission_submitted_1 = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(education_group=self.education_group_1),
+            state=SUBMITTED
+        )
 
-        self.admission_rejected = AdmissionFactory(formation=self.education_group_yr_2, state=REJECTED)
+        self.admission_rejected = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(education_group=self.education_group_2),
+            state=REJECTED
+        )
 
-        self.admission_waiting = AdmissionFactory(formation=self.education_group_yr_3, state=WAITING)
+        self.admission_waiting = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(education_group=self.education_group_3),
+            state=WAITING
+        )
 
-        self.admission_draft = AdmissionFactory(formation=self.education_group_yr_4, state=DRAFT)
-        self.admission_submitted_2 = AdmissionFactory(formation=self.education_group_yr_4, state=SUBMITTED)
+        self.admission_draft = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(education_group=self.education_group_4),
+            state=DRAFT
+        )
 
-        self.registration_accepted = AdmissionFactory(formation=self.education_group_yr_on_faculty,
-                                                      state=ACCEPTED,
-                                                      ucl_registration_complete=True,
-                                                      payment_complete=False)
-        self.registration_submitted = AdmissionFactory(formation=self.education_group_yr_1,
-                                                       state=REGISTRATION_SUBMITTED,
-                                                       ucl_registration_complete=False,
-                                                       payment_complete=True)
-        self.archived_submitted = AdmissionFactory(formation=self.education_group_yr_1,
-                                                   state=SUBMITTED,
-                                                   archived=True)
+        self.admission_submitted_2 = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(education_group=self.education_group_5),
+            state=SUBMITTED
+        )
+
+        self.registration_accepted = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_6,
+            ),
+            state=ACCEPTED,
+            ucl_registration_complete=True,
+            payment_complete=False
+        )
+        self.registration_submitted = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_7,
+            ),
+            state=REGISTRATION_SUBMITTED,
+            ucl_registration_complete=False,
+            payment_complete=True
+        )
+        self.archived_submitted = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_8,
+            ),
+            state=SUBMITTED,
+            archived=True
+        )
 
     def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
@@ -128,10 +186,10 @@ class TestFilterForm(TestCase):
 
     def test_queryset_formation_init(self):
         form = AdmissionFilterForm()
-        self.assertListEqual(list(form.fields['formation'].queryset), [self.education_group_yr_1,
-                                                                       self.education_group_yr_3,
-                                                                       self.education_group_yr_2,
-                                                                       self.education_group_yr_4])
+        self.assertListEqual(list(form.fields['formation'].queryset), [self.admission_submitted_1.formation,
+                                                                       self.admission_waiting.formation,
+                                                                       self.admission_rejected.formation,
+                                                                       self.admission_submitted_2.formation])
 
     def test_queryset_registration_state_init(self):
         form = RegistrationFilterForm()
@@ -165,10 +223,18 @@ class TestFilterForm(TestCase):
             self.assertCountEqual(results, [self.admission_submitted_1, self.admission_waiting])
 
     def test_get_admissions_by_faculty_criteria_get_child_too(self):
-        an_admission_submitted_1 = AdmissionFactory(formation=self.education_group_yr_on_faculty,
-                                                    state=SUBMITTED)
-        an_admission_submitted_2 = AdmissionFactory(formation=self.education_group_yr_on_faculty_child,
-                                                    state=SUBMITTED)
+        an_admission_submitted_1 = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_on_faculty
+            ),
+            state=SUBMITTED
+        )
+        an_admission_submitted_2 = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(
+                education_group=self.education_group_on_faculty_child
+            ),
+            state=SUBMITTED
+        )
 
         form = AdmissionFilterForm({"faculty": self.fac_3_version_with_child})
         if form.is_valid():

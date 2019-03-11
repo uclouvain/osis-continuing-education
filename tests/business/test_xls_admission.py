@@ -27,10 +27,12 @@
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
 
+from base.tests.factories.education_group import EducationGroupFactory
 from continuing_education.forms.search import AdmissionFilterForm
 
 from continuing_education.business.xls.xls_admission import ADMISSION_TITLES, XLS_DESCRIPTION, XLS_FILENAME,  WORKSHEET_TITLE, \
     create_xls, prepare_xls_content
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from osis_common.document import xls_build
 from base.tests.factories.user import UserFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -50,7 +52,11 @@ class TestAdmissionXls(TestCase):
         current_acad_year = create_current_academic_year()
         self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
         self.admission = AdmissionFactory()
-        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.entity_version = EntityVersionFactory(
             entity=self.formation.management_entity,
             acronym=FACULTY_ACRONYM,

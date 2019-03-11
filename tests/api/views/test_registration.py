@@ -33,7 +33,8 @@ from rest_framework import status
 from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
-from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
 from continuing_education.models.admission import Admission
@@ -41,6 +42,7 @@ from continuing_education.models.enums.admission_state_choices import ACCEPTED, 
     REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -54,27 +56,43 @@ class RegistrationListTestCase(APITestCase):
         new_country = CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
-        cls.formation = TrainingFactory()
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
+        )
         cls.admission = AdmissionFactory(
             person_information=cls.person,
             address=cls.address,
             state=DRAFT,
             formation=cls.formation
         )
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
         AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
             state=VALIDATED,
-            formation=TrainingFactory()
+            formation=ContinuingEducationTrainingFactory(
+                education_group=cls.education_group
+            )
         )
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
         AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
             state=ACCEPTED,
-            formation=TrainingFactory()
+            formation=ContinuingEducationTrainingFactory(
+                education_group=cls.education_group
+            )
         )
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
         AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
             state=REGISTRATION_SUBMITTED,
-            formation=TrainingFactory()
+            formation=ContinuingEducationTrainingFactory(
+                education_group=cls.education_group
+            )
         )
 
     def setUp(self):
@@ -136,9 +154,13 @@ class RegistrationListTestCase(APITestCase):
 class RegistrationDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        cls.education_group = EducationGroupFactory()
+        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
         cls.admission = AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(),
-            formation=TrainingFactory(),
+            formation=ContinuingEducationTrainingFactory(
+                education_group=cls.education_group
+            ),
             state=random.choice([ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED])
         )
 
