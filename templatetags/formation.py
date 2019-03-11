@@ -34,25 +34,6 @@ register = template.Library()
 
 
 @register.filter
-def get_formation_denomination(formation):
-    return get_formation_display(formation.partial_acronym, formation.acronym, formation.academic_year)
-
-
-@register.filter
-def get_formation_faculty(formation):
-    most_recent_education_group = formation.educationgroupyear_set.filter(education_group_id=formation.id) \
-        .latest('academic_year__year')
-    return get_management_faculty(most_recent_education_group)
-
-
-@register.filter
-def get_formation_title(formation):
-    most_recent_education_group = formation.educationgroupyear_set.filter(education_group_id=formation.id) \
-        .latest('academic_year__year')
-    return most_recent_education_group.title
-
-
-@register.filter
 def get_active_continuing_education_formation(formation):
     continuing_education_training = ContinuingEducationTraining.objects.filter(
         education_group=formation
@@ -60,3 +41,14 @@ def get_active_continuing_education_formation(formation):
     if continuing_education_training:
         return _('Active') if continuing_education_training.active else _('Inactive')
     return _('Not organized')
+
+
+@register.filter
+def get_most_recent_education_group(formation):
+    return formation.educationgroupyear_set.filter(education_group_id=formation.id)\
+        .select_related('academic_year').latest('academic_year__year')
+
+
+@register.filter
+def get_faculty(most_recent_education_group):
+    return get_management_faculty(most_recent_education_group)

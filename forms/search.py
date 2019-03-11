@@ -35,9 +35,9 @@ BOOLEAN_CHOICES = (
     (False, _('No'))
 )
 
-ACTIVE = "ACTIVE"
-INACTIVE = "INACTIVE"
-NOT_ORGANIZED = "NOT_ORGANIZED"
+ACTIVE = _("Active")
+INACTIVE = _("Inactive")
+NOT_ORGANIZED = _("Not organized")
 FORMATION_STATE_CHOICES = [
     ALL_CHOICE,
     (ACTIVE, _('Active')),

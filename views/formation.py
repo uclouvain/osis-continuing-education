@@ -34,6 +34,7 @@ from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
 from base.views.common import display_success_messages, display_error_messages
+from continuing_education.business.xls.xls_formation import create_xls
 
 
 @login_required
@@ -41,9 +42,12 @@ from base.views.common import display_success_messages, display_error_messages
 def list_formations(request):
     formation_list = []
 
-    search_form = FormationFilterForm(request.POST)
+    search_form = FormationFilterForm(request.GET)
     if search_form.is_valid():
         formation_list = search_form.get_formations()
+
+    if request.GET.get('xls_status') == "xls_formations":
+        return create_xls(request.user, formation_list, search_form)
 
     return render(request, "formations.html", {
         'formations': get_object_list(request, formation_list),
@@ -54,8 +58,8 @@ def list_formations(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def formations_activate(request):
-    # Function to activate or desactivate
-    selected_formations_id = request.POST.getlist("selected_action", default=[])
+    # Function to activate or deactivate
+    selected_formations_id = request.GET.getlist("selected_action", default=[])
     new_state = _get_new_state(request)
     if new_state is not None:
         if selected_formations_id:
@@ -67,7 +71,7 @@ def formations_activate(request):
 
 
 def _get_new_state(request):
-    new_state = request.POST.get("new_state")
+    new_state = request.GET.get("new_state")
     if new_state == "true":
         return True
     elif new_state == "false":
@@ -81,10 +85,10 @@ def _formation_activate(request, selected_formations_id, new_state):
 
         continuing_education_training = ContinuingEducationTraining.objects.filter(
             education_group__id=formation_id).first()
-        if continuing_education_training and continuing_education_training.active != new_state:
-            continuing_education_training.active = new_state
-            continuing_education_training.save()
-            activated_count += 1
+        if continuing_education_training:
+            activated_count = _edit_continuing_education_training(activated_count,
+                                                                  continuing_education_training,
+                                                                  new_state)
         else:
             education_grp = EducationGroup.objects.get(id=formation_id)
             if education_grp:
@@ -93,6 +97,14 @@ def _formation_activate(request, selected_formations_id, new_state):
                 activated_count += 1
 
     _set_information_message(activated_count, request, new_state)
+
+
+def _edit_continuing_education_training(activated_count, continuing_education_training, new_state):
+    if continuing_education_training.active != new_state:
+        continuing_education_training.active = new_state
+        continuing_education_training.save()
+        activated_count += 1
+    return activated_count
 
 
 def _set_information_message(count, request, new_state):
