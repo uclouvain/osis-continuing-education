@@ -120,7 +120,7 @@ class FormationActivateTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_error_message_no_formation_selected(self):
-        response = self.client.post(reverse('formations_procedure'), data={'new_state': 'false'})
+        response = self.client.get(reverse('formations_procedure'), data={'new_state': 'false'})
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
@@ -187,7 +187,7 @@ class FormationActivateTestCase(TestCase):
         self.assertFalse(ContinuingEducationTraining.objects.get(id=self.formation1_to_deactivate.id).active)
         self.assertFalse(ContinuingEducationTraining.objects.get(id=self.formation2_to_deactivate.id).active)
 
-    def test_activate_educcation_group_year_not_organized_yet(self):
+    def test_activate_education_group_year_not_organized_yet(self):
 
         data = {
             "new_state": TO_ACTIVATE,
@@ -202,7 +202,7 @@ class FormationActivateTestCase(TestCase):
         self.assertTrue(new_continuing_education_training.active)
 
     def _assert_activation_success_msg(self, data_dict, msg_expected):
-        response = self.client.post(reverse('formations_procedure'), data=data_dict)
+        response = self.client.get(reverse('formations_procedure'), data=data_dict)
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         msg = [m.message for m in get_messages(response.wsgi_request)]
         msg_level = [m.level for m in get_messages(response.wsgi_request)]

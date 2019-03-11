@@ -8,10 +8,11 @@
     </button>
     <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
         <li>
-            {% include "blocks/button/xls.html" with button_title=button_title %}
-        </li>
-        <li>
             {% include 'blocks/button/archive.html' %}
+        </li>
+        <li role="separator" class="divider"></li>
+        <li>
+            {% include "blocks/button/xls.html" with button_title=button_title %}
         </li>
     </ul>
 </div>

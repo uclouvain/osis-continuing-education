@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 12:03+0100\n"
+"POT-Creation-Date: 2019-03-11 08:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: tests/views/test_admission.py:229 tests/views/test_admission.py:249
-#: tests/views/test_file.py:83 views/admission.py:134 views/file.py:71
+#: tests/views/test_file.py:83 views/admission.py:132 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr "Un email de notification a été envoyé au participant"
 
@@ -70,10 +70,6 @@ msgstr "Adresse"
 #: templates/admin_home.html:32 templates/admin_home.html:37
 msgid "Administrator"
 msgstr "Gestionnaire"
-
-#: tests/views/test_archive.py:166 views/archive.py:88
-msgid "Admission"
-msgstr "Admission"
 
 #: models/file.py:58 templates/admission_detail.html:98
 #: templates/admission_form.html:33
@@ -290,7 +286,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
-#: tests/views/test_registration.py:186 views/admission.py:232
+#: tests/views/test_registration.py:186 views/admission.py:230
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
@@ -411,6 +407,15 @@ msgstr "Catégorie de fichier"
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
+#: tests/views/test_archive.py:150 tests/views/test_archive.py:165
+#: views/archive.py:87
+msgid "File is now"
+msgstr "Le dossier est maintenant"
+
+#: tests/views/test_archive.py:133 views/archive.py:87
+msgid "Files are now"
+msgstr "Les dossiers sont maintenant"
+
 #: business/admission.py:160 business/xls/xls_admission.py:34
 #: business/xls/xls_archive.py:34 business/xls/xls_registration.py:35
 #: models/prospect.py:50 templates/admission_form.html:73
@@ -442,20 +447,20 @@ msgstr "Formation"
 msgid "Formation administrator"
 msgstr "Gestionnaire de formation"
 
-#: tests/views/test_formation.py:158 views/formation.py:117
+#: tests/views/test_formation.py:158 views/formation.py:127
 msgid "Formation are now active"
 msgstr "Les formations sont maintenant actives"
 
-#: tests/views/test_formation.py:185 views/formation.py:119
+#: tests/views/test_formation.py:185 views/formation.py:129
 msgid "Formation are now inactive"
 msgstr "Les formations sont maintenant inactives"
 
 #: tests/views/test_formation.py:142 tests/views/test_formation.py:196
-#: views/formation.py:112
+#: views/formation.py:122
 msgid "Formation is now active"
 msgstr "La formation est maintenant active"
 
-#: tests/views/test_formation.py:169 views/formation.py:114
+#: tests/views/test_formation.py:169 views/formation.py:124
 msgid "Formation is now inactive"
 msgstr "La formation est maintenant inactive"
 
@@ -650,11 +655,11 @@ msgstr "Aucun document disponible"
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
 
-#: views/formation.py:125
+#: views/formation.py:135
 msgid "No formation activated"
 msgstr "Aucune formation activée"
 
-#: views/formation.py:127
+#: views/formation.py:137
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
@@ -727,17 +732,17 @@ msgstr "Informations personnelles"
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: tests/views/test_archive.py:90 views/archive.py:112
+#: tests/views/test_archive.py:91
 msgid "Please select at least one admission to archive"
 msgstr "Veuillez sélectionner au moins une admission à archiver"
 
-#: tests/views/test_formation.py:130 views/formation.py:68
+#: tests/views/test_archive.py:105 views/archive.py:106
+msgid "Please select at least one file to archive"
+msgstr "Veuillez sélectionner au moins un dossier à archiver"
+
+#: tests/views/test_formation.py:130 views/formation.py:70
 msgid "Please select at least one formation"
 msgstr "Veuillez sélectionner au moins une formation"
-
-#: tests/views/test_archive.py:104 views/archive.py:110
-msgid "Please select at least one registration to archive"
-msgstr "Veuillez sélectionner au moins une inscription à archiver"
 
 #: views/tasks.py:72
 msgid "Please select at least one registration to validate."
@@ -858,7 +863,6 @@ msgstr "Inscrit"
 #: templates/admission_detail.html:99
 #: templates/fragment/tab_registration.html:57
 #: templates/registration_form.html:33 templates/registration_form.html:74
-#: tests/views/test_archive.py:150 views/archive.py:88
 msgid "Registration"
 msgstr "Inscription"
 
@@ -886,7 +890,6 @@ msgstr "Inscription à titre"
 
 #: templates/admin_home.html:48 templates/admission_detail.html:39
 #: templates/registrations.html:33 templates/registrations.html:38
-#: tests/views/test_archive.py:132
 msgid "Registrations"
 msgstr "Inscriptions"
 
@@ -1063,7 +1066,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr "L'admission doit être en statut Accepté pour uploader une facture."
 
-#: tests/views/test_admission.py:245 views/admission.py:136
+#: tests/views/test_admission.py:245 views/admission.py:134
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
@@ -1248,20 +1251,20 @@ msgstr "Votre dossier est en cours de vérification par le jury de la formation"
 msgid "Your course is not adapted to the program of this training"
 msgstr "Votre parcours n’est pas adapté au programme de cette formation"
 
-#: tests/views/test_archive.py:134 tests/views/test_archive.py:152
-#: tests/views/test_archive.py:168 views/archive.py:91
+#: tests/views/test_archive.py:134 tests/views/test_archive.py:151
+#: tests/views/test_archive.py:166 views/archive.py:88
 msgid "archived"
 msgstr "archivé"
 
-#: tests/views/test_archive.py:133 views/archive.py:90
-msgid "are now"
-msgstr "sont maintenant"
-
-#: tests/views/test_archive.py:151 tests/views/test_archive.py:167
-#: views/archive.py:90
-msgid "is now"
-msgstr "est maintenant"
-
-#: views/archive.py:91
+#: views/archive.py:88
 msgid "unarchived"
 msgstr "non-archivé"
+
+#~ msgid "Please select at least one registration to archive"
+#~ msgstr "Veuillez sélectionner au moins une inscription à archiver"
+
+#~ msgid "are now"
+#~ msgstr "sont maintenant"
+
+#~ msgid "Admission"
+#~ msgstr "Admission"
