@@ -49,11 +49,12 @@ class RegistrationDetailSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
+            'url',
             'person_information',
             'formation',
-            'address',
             'state',
             'state_text',
+            'address',
             'registration_type',
             'registration_type_text',
             'use_address_for_billing',
@@ -103,11 +104,12 @@ class RegistrationPostSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
+            'url',
             'person_information',
             'formation',
-            'address',
             'state',
             'state_text',
+            'address',
             'registration_type',
             'registration_type_text',
             'use_address_for_billing',
