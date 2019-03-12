@@ -24,15 +24,13 @@
 #
 ##############################################################################
 import uuid as uuid
-
-from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
+from osis_common.models.serializable_model import SerializableModelAdmin, SerializableModel
 
 CONTINUING_EDUCATION_TRAINING_TYPES = [
     TrainingType.AGGREGATION.name,
@@ -44,14 +42,14 @@ CONTINUING_EDUCATION_TRAINING_TYPES = [
 ]
 
 
-class ContinuingEducationTrainingAdmin(ModelAdmin):
+class ContinuingEducationTrainingAdmin(SerializableModelAdmin):
     list_display = ('acronym', 'active',)
     search_fields = ['education_group__educationgroupyear__acronym']
     list_filter = ('active',)
     raw_id_fields = ('education_group',)
 
 
-class ContinuingEducationTraining(Model):
+class ContinuingEducationTraining(SerializableModel):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     education_group = models.OneToOneField(
