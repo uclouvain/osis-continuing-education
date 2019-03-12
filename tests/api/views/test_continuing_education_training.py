@@ -52,7 +52,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         cls.training_manager = PersonFactory()
         PersonTraining(person=cls.training_manager, training=cls.continuing_education_training).save()
 
@@ -131,7 +131,7 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         cls.user = UserFactory()
         cls.url = reverse(
             'continuing_education_api_v1:continuing-education-training-detail-update-delete',

@@ -46,7 +46,7 @@ class ContinuingEducationTrainingSerializerTestCase(TestCase):
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
         cls.serializer = ContinuingEducationTrainingSerializer(
             cls.continuing_education_training,
