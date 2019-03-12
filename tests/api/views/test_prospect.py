@@ -30,6 +30,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
@@ -44,8 +45,12 @@ class ProspectListCreateTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:prospect-list-create')
+        cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
+        )
         formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
@@ -88,7 +93,10 @@ class ProspectListCreateTestCase(APITestCase):
     def test_create_valid_prospect(self):
         self.assertEqual(1, Prospect.objects.all().count())
         education_group = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=education_group)
+        EducationGroupYearFactory(
+            education_group=education_group,
+            academic_year = self.academic_year
+        )
         data = {
             'name': self.prospect.name,
             'first_name': self.prospect.first_name,
@@ -113,8 +121,12 @@ class ProspectListCreateTestCase(APITestCase):
 class ProspectDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year = cls.academic_year
+        )
         formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
@@ -170,13 +182,17 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
     def test_update_valid_prospect(self):
         self.assertEqual(1, Prospect.objects.all().count())
         education_group = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=education_group)
+        EducationGroupYearFactory(
+            education_group=education_group,
+            academic_year=self.academic_year
+        )
         data = {
             'city': 'Dinant',
             'name': 'Pompidou',
             'email': 'fake@d.be',
             'formation': ContinuingEducationTrainingFactory(
-                education_group=education_group
+                education_group=education_group,
+                academic_year=self.academic_year
             ).uuid
         }
         response = self.client.put(self.url, data=data)

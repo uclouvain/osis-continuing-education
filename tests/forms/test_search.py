@@ -148,7 +148,6 @@ class TestFilterForm(TestCase):
 
     def test_queryset_formation_init(self):
         form = AdmissionFilterForm()
-        print(self.archived_submitted.formation)
         self.assertListEqual(list(form.fields['formation'].queryset), [
             a.formation for a in self.admissions if a.state != DRAFT
         ])

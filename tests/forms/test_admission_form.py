@@ -25,7 +25,7 @@
 ##############################################################################
 from django.test import TestCase
 
-from base.tests.factories.academic_year import create_current_academic_year
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -42,13 +42,18 @@ ANY_REASON = 'Anything'
 
 
 class TestAdmissionForm(TestCase):
-
-    def test_valid_form_for_managers(self):
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
+
+    def test_valid_form_for_managers(self):
         admission = AdmissionFactory(formation=self.formation)
         group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
@@ -60,12 +65,6 @@ class TestAdmissionForm(TestCase):
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_valid_form_for_training_managers(self):
-        self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
-        )
-
         admission = AdmissionFactory(formation=self.formation)
         group = GroupFactory(name='continuing_education_training_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
@@ -81,13 +80,24 @@ class TestAdmissionForm(TestCase):
 class TestRejectedAdmissionForm(TestCase):
 
     def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.rejected_admission_other = AdmissionFactory(
             state=REJECTED,
             state_reason=ANY_REASON,
+            formation=self.formation
         )
         self.rejected_admission_not_other = AdmissionFactory(
             state=REJECTED,
             state_reason=NOT_ENOUGH_EXPERIENCE,
+            formation=self.formation
         )
 
     def test_init_rejected_init_not_other(self):

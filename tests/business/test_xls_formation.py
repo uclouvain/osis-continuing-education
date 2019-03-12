@@ -27,6 +27,7 @@
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.business.xls.xls_formation import TITLES, XLS_DESCRIPTION, XLS_FILENAME,  WORKSHEET_TITLE, \
     create_xls, prepare_xls_content
@@ -48,12 +49,16 @@ class TestFormationXls(TestCase):
             entity_type=entity_type.FACULTY
 
         )
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group_yr = EducationGroupYearFactory(
             acronym="ACRO",
-            management_entity=self.entity_version.entity
+            management_entity=self.entity_version.entity,
+            academic_year=self.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group_yr.education_group,
-                                                            active=True)
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group_yr.education_group,
+            active=True
+        )
 
     def test_prepare_xls_content_no_data(self):
         self.assertEqual(prepare_xls_content([]), [])

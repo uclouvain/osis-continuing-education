@@ -51,10 +51,12 @@ class ViewRegistrationTestCase(TestCase):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
-        current_acad_year = create_current_academic_year()
-        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
@@ -140,10 +142,12 @@ class ViewRegistrationTestCase(TestCase):
 
 class RegistrationStateChangedTestCase(TestCase):
     def setUp(self):
-        current_acad_year = create_current_academic_year()
-        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.faculty_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',

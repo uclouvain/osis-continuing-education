@@ -29,6 +29,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.utils.translation import gettext as _
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from continuing_education.models import admission
 from continuing_education.models.enums import admission_state_choices
@@ -44,8 +45,12 @@ from base.tests.factories.entity_version import EntityVersionFactory
 
 class TestAdmission(TestCase):
     def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
@@ -105,13 +110,15 @@ class TestAdmissionGetFaculty(TestCase):
                                                          end_date=None,
                                                          entity=self.child_entity,
                                                          start_date=entities['start_date'])
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(
+        EducationGroupYearFactory(
             education_group=self.education_group,
+            academic_year=self.academic_year,
             management_entity=self.child_entity
         )
         self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+            education_group=self.education_group,
         )
 
     def test_get_faculty(self):

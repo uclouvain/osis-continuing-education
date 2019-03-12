@@ -27,7 +27,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from base.tests.factories.academic_year import create_current_academic_year
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -41,45 +41,31 @@ class ProspectListTestCase(TestCase):
         self.client.force_login(self.manager.user)
 
     def test_prospect_list_ordered_by_formation(self):
-        self.education_group_1 = EducationGroupFactory()
-        self.education_group_2 = EducationGroupFactory()
-        self.education_group_3 = EducationGroupFactory()
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_groups = [EducationGroupFactory() for _ in range(1, 3)]
 
-        formation_1 = EducationGroupYearFactory(
-            acronym="AAAA",
-            education_group=self.education_group_1
-        )
-        formation_2 = EducationGroupYearFactory(
-            acronym="BBA",
-            education_group=self.education_group_2
-        )
-        formation_3 = EducationGroupYearFactory(
-            acronym="CAA",
-            education_group=self.education_group_3
-        )
-        prospect_1 = ProspectFactory(
-            formation=ContinuingEducationTrainingFactory(
-                education_group=self.education_group_1
+        acronyms = ['AAA', 'BBA', 'CAA']
+        for index, education_group in enumerate(self.education_groups):
+            EducationGroupYearFactory(
+                acronym=acronyms[index],
+                education_group=education_group,
+                academic_year=self.academic_year
             )
-        )
-        prospect_2 = ProspectFactory(
-            formation=ContinuingEducationTrainingFactory(
-                education_group=self.education_group_2
-            )
-        )
-        prospect_3 = ProspectFactory(
-            formation=ContinuingEducationTrainingFactory(
-                education_group=self.education_group_3
-            )
-        )
+
+        prospects = [
+            ProspectFactory(
+                formation=ContinuingEducationTrainingFactory(
+                    education_group=education_group
+                )
+            ) for education_group in self.education_groups
+        ]
 
         response = self.client.get(reverse('prospects'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'prospects.html')
 
-        self.assertEqual(response.context['prospects'].object_list[0], prospect_1)
-        self.assertEqual(response.context['prospects'].object_list[1], prospect_2)
-        self.assertEqual(response.context['prospects'].object_list[2], prospect_3)
+        for index, object in enumerate(response.context['prospects'].object_list):
+            self.assertEqual(response.context['prospects'].object_list[index], prospects[index])
 
     def test_prospect_list_no_result(self):
         response = self.client.post(reverse('prospects'))

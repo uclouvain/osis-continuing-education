@@ -28,6 +28,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -43,8 +44,12 @@ class ViewUpdateTasksTestCase(TestCase):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )

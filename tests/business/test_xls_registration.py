@@ -50,8 +50,12 @@ class TestRegistrationXls(TestCase):
         current_academic_yr = create_current_academic_year()
         self.next_academic_yr = AcademicYearFactory(year=current_academic_yr.year + 1)
         self.registration = AdmissionFactory()
+        self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
-        education_group_year = EducationGroupYearFactory(education_group=self.education_group)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
