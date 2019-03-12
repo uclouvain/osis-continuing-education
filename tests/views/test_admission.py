@@ -134,7 +134,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_detail', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertTemplateUsed(response, 'admission_detail.html')
+        self.assertTemplateUsed(response, 'access_denied.html')
 
     def test_admission_new(self):
         url = reverse('admission_new')
