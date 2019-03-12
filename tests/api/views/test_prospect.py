@@ -192,7 +192,6 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
             'email': 'fake@d.be',
             'formation': ContinuingEducationTrainingFactory(
                 education_group=education_group,
-                academic_year=self.academic_year
             ).uuid
         }
         response = self.client.put(self.url, data=data)
