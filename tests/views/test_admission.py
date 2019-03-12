@@ -28,7 +28,7 @@ import random
 from unittest.mock import patch
 
 from django.contrib import messages
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -48,6 +48,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
@@ -90,6 +91,24 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertEqual(len(response.context['admissions'].object_list), 1)
+
+    def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
+        self.client.force_login(self.training_manager.user)
+        url = reverse('admission')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.context['admissions'].object_list), 0)
+        self.assertTemplateUsed(response, 'admissions.html')
+
+    def test_list_admissions_filtered_by_training_manager_with_admission(self):
+        PersonTraining(person=self.training_manager, training=self.formation).save()
+        self.client.force_login(self.training_manager.user)
+        url = reverse('admission')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.context['admissions'].object_list), 1)
         self.assertTemplateUsed(response, 'admissions.html')
 
     def test_list_admissions_pagination_empty_page(self):
