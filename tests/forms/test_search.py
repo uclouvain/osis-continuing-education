@@ -289,6 +289,7 @@ class TestFormationFilterForm(TestCase):
             name=random.choice(CONTINUING_EDUCATION_TRAINING_TYPES)
         )
 
+        self.academic_year = AcademicYearFactory(year=2018)
         self.entity_version = create_entity_version("ENTITY_PREV")
         entity_version_2 = create_entity_version("ENTITY_PREV2")
 
@@ -296,13 +297,15 @@ class TestFormationFilterForm(TestCase):
             acronym="ACRO_10",
             education_group_type=continuing_education_group_type,
             title='Acronym 10',
-            management_entity=self.entity_version.entity
+            management_entity=self.entity_version.entity,
+            academic_year=self.academic_year
         )
         self.iufc_education_group_yr_ACRO_12 = EducationGroupYearFactory(
             acronym="ACRO_12",
             education_group_type=continuing_education_group_type,
             title=self.title_acronym_12,
-            management_entity=entity_version_2.entity
+            management_entity=entity_version_2.entity,
+            academic_year=self.academic_year
         )
 
         education_group_not_organized = EducationGroupFactory()
@@ -311,7 +314,9 @@ class TestFormationFilterForm(TestCase):
             education_group_type=continuing_education_group_type,
             title="Other title",
             management_entity=self.entity_version.entity,
-            education_group=education_group_not_organized)
+            education_group=education_group_not_organized,
+            academic_year=self.academic_year
+        )
         self.active_continuing_education_training = ContinuingEducationTrainingFactory(
             education_group=self.iufc_education_group_yr_ACRO_10.education_group,
             active=True,

@@ -29,6 +29,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonFactory
@@ -45,8 +46,12 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
-        education_group = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=education_group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
+        )
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
         cls.training_manager = PersonFactory()
         PersonTraining(person=cls.training_manager, training=cls.continuing_education_training).save()
@@ -120,8 +125,12 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
 class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        education_group = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=education_group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
+        )
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
         cls.user = UserFactory()
         cls.url = reverse(
@@ -210,8 +219,12 @@ class FilterContinuingEducationTrainingTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
+        cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        cls.education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+        cls.education_group_year = EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
+        )
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
 
     def setUp(self):

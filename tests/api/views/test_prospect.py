@@ -95,7 +95,7 @@ class ProspectListCreateTestCase(APITestCase):
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,
-            academic_year = self.academic_year
+            academic_year=self.academic_year
         )
         data = {
             'name': self.prospect.name,
@@ -125,7 +125,7 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
-            academic_year = cls.academic_year
+            academic_year=cls.academic_year
         )
         formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
