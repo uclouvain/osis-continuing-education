@@ -45,8 +45,8 @@ CONTINUING_EDUCATION_TRAINING_TYPES = [
 
 
 class ContinuingEducationTrainingAdmin(ModelAdmin):
-    list_display = ('education_group', 'active',)
-    search_fields = ['acronym']
+    list_display = ('get_acronym', 'active',)
+    search_fields = ['education_group__educationgroupyear__acronym']
     list_filter = ('active',)
     raw_id_fields = ('education_group',)
 
@@ -76,3 +76,10 @@ class ContinuingEducationTraining(Model):
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk
         ).latest('academic_year__year')
+
+    def get_acronym(self):
+        return self.get_most_recent_education_group_year().acronym
+
+    def __str__(self):
+        education_group_year = self.get_most_recent_education_group_year()
+        return "{} - {}".format(education_group_year.acronym, education_group_year.title)
