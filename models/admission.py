@@ -23,17 +23,18 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Manager
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.business.admission import get_management_faculty
 from continuing_education.business.admission import send_state_changed_email, send_admission_submitted_email_to_admin, \
     send_admission_submitted_email_to_participant
 from continuing_education.models.enums import admission_state_choices, enums
+from continuing_education.models.person_training import PersonTraining
 from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin, SerializableModelManager
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -464,3 +465,20 @@ def get_formation_display(partial_acronym, acronym, academic_year):
         acronym,
         academic_year,
     )
+
+
+def filter_authorized_admissions(user, admission_list):
+    if not _is_continuing_education_manager(user):
+        person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
+        admission_list = admission_list.filter(formation_id__in=person_trainings)
+    return admission_list
+
+
+def can_access_admission(user, admission_id):
+    admission = get_object_or_404(Admission, pk=admission_id)
+    if admission not in filter_authorized_admissions(user, Admission.objects.all()):
+        raise PermissionDenied
+
+
+def _is_continuing_education_manager(user):
+    return user.groups.filter(name='continuing_education_managers').exists()
