@@ -29,18 +29,18 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.utils.translation import gettext as _
 
+from base.models.enums.entity_type import SCHOOL
 from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.business.entities import create_entities_hierarchy
 from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity import EntityFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.models import admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
-from base.tests.factories.business.entities import create_entities_hierarchy
-from base.models.enums.entity_type import SCHOOL, FACULTY
-from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.entity import EntityFactory
-from base.tests.factories.entity_version import EntityVersionFactory
 
 
 class TestAdmission(TestCase):

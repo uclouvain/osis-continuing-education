@@ -27,6 +27,7 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
+from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -34,6 +35,8 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
@@ -195,3 +198,86 @@ class UpdateTasksPermissionsTestCase(TestCase):
             self.assertEqual(registration.diploma_produced, False)
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+
+class ViewTasksTrainingManagerTestCase(TestCase):
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.training_manager.user.groups.add(group)
+        self.client.force_login(self.training_manager.user)
+        self.registration_to_validate = AdmissionFactory(
+            formation=self.formation,
+            state=REGISTRATION_SUBMITTED,
+        )
+        self.admission_diploma_to_produce = AdmissionFactory(
+            formation=self.formation,
+            state=VALIDATED,
+        )
+
+    def test_list_with_no_task_visible(self):
+        response = self.client.post(reverse('list_tasks'))
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.context['registrations_to_validate'], [])
+
+    def test_list_with_tasks(self):
+        PersonTraining(training=self.formation, person=self.training_manager).save()
+        response = self.client.post(reverse('list_tasks'))
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(response.context['registrations_to_validate'], [self.registration_to_validate])
+        self.assertCountEqual(response.context['admissions_diploma_to_produce'], [self.admission_diploma_to_produce])
+
+    def test_validate_registration_denied(self):
+        post_data = {
+            "selected_registrations_to_validate":
+                [str(self.registration_to_validate.pk)]
+        }
+        response = self.client.post(
+            reverse('validate_registrations'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_validate_registration_authorized(self):
+        PersonTraining(training=self.formation, person=self.training_manager).save()
+        post_data = {
+            "selected_registrations_to_validate":
+                [str(self.registration_to_validate.pk)]
+        }
+        response = self.client.post(
+            reverse('validate_registrations'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+    def test_produce_diploma_denied(self):
+        post_data = {
+            "selected_diplomas_to_produce":
+                [str(self.admission_diploma_to_produce.pk)]
+        }
+        response = self.client.post(
+            reverse('mark_diplomas_produced'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_produce_diploma_authorized(self):
+        PersonTraining(training=self.formation, person=self.training_manager).save()
+        post_data = {
+            "selected_diplomas_to_produce":
+                [str(self.admission_diploma_to_produce.pk)]
+        }
+        response = self.client.post(
+            reverse('mark_diplomas_produced'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
