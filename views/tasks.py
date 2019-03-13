@@ -31,18 +31,23 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.models.admission import Admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_tasks(request):
+    if not is_continuing_education_manager(request.user):
+        raise PermissionDenied
     all_admissions = Admission.objects.select_related(
         'person_information__person', 'formation__education_group'
     ).order_by(
         'person_information__person__last_name', 'person_information__person__first_name'
     )
+
+    all_admissions = filter_authorized_admissions(request.user, all_admissions)
 
     registrations_to_validate = all_admissions.filter(
         state=admission_state_choices.REGISTRATION_SUBMITTED
@@ -63,6 +68,8 @@ def list_tasks(request):
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def validate_registrations(request):
+    if not is_continuing_education_manager(request.user):
+        raise PermissionDenied
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
         _validate_registrations_list(selected_registration_ids)
@@ -88,6 +95,8 @@ def _validate_registrations_list(registrations_ids_list):
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def mark_diplomas_produced(request):
+    if not is_continuing_education_manager(request.user):
+        raise PermissionDenied
     selected_registration_ids = request.POST.getlist("selected_diplomas_to_produce", default=[])
     if selected_registration_ids:
         _mark_diplomas_produced_list(selected_registration_ids)

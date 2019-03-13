@@ -35,7 +35,7 @@ from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.views.common import display_errors, get_object_list
 
 
@@ -46,6 +46,8 @@ def list_registrations(request):
 
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
+
+    admission_list = filter_authorized_admissions(request.user, admission_list)
 
     if request.GET.get('xls_status') == "xls_registrations":
         return create_xls_registration(request.user, admission_list, search_form)
@@ -73,6 +75,7 @@ def _get_formations_by_faculty(faculty):
 @login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def registration_edit(request, admission_id):
+    can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
     address = admission.address
     billing_address = admission.billing_address

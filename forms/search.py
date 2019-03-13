@@ -215,7 +215,7 @@ def _build_formation_choices(field, states, archived_status=False):
     field.queryset = ContinuingEducationTraining.objects \
         .filter(id__in=Admission.objects.filter(state__in=states, archived=archived_status)
                 .values_list('formation', flat=False).distinct('formation')
-                ).order_by('education_group__educationgroupyear__acronym')
+                ).order_by('education_group__educationgroupyear__acronym').distinct()
 
 
 def _get_state_choices(choices):
