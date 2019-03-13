@@ -26,8 +26,13 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
+from continuing_education.models.admission import is_continuing_education_manager
+
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def main_view(request):
-    return render(request, "admin_home.html")
+    continuing_education_manager = is_continuing_education_manager(request.user)
+    return render(request, "admin_home.html", {
+        'continuing_education_manager': continuing_education_manager
+    })

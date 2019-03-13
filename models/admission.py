@@ -468,7 +468,7 @@ def get_formation_display(partial_acronym, acronym, academic_year):
 
 
 def filter_authorized_admissions(user, admission_list):
-    if not _is_continuing_education_manager(user):
+    if not is_continuing_education_manager(user):
         person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
         admission_list = admission_list.filter(formation_id__in=person_trainings)
     return admission_list
@@ -480,5 +480,5 @@ def can_access_admission(user, admission_id):
         raise PermissionDenied
 
 
-def _is_continuing_education_manager(user):
+def is_continuing_education_manager(user):
     return user.groups.filter(name='continuing_education_managers').exists()
