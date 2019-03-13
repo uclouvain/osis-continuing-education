@@ -50,10 +50,12 @@
             </div>
             <br>
             <div class="row">
+                {% if continuing_education_manager %}
                 <div class="col-md-1"><i class="fa fa-tasks" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
                     <h4 class="media-heading"><a href="{% url 'list_tasks' %}">{% trans 'Tasks' %}</a></h4>
                 </div>
+                {% endif %}
                 <div class="col-md-1"><i class="fa fa-archive" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
                     <h4 class="media-heading"><a href="{% url 'archive' %}">{% trans 'Archives' context 'continuing_education' %}</a></h4>
