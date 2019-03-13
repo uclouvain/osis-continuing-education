@@ -53,10 +53,3 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
             'phone_number',
             'formation'
         )
-
-    def create(self, validated_data):
-        formation = validated_data.pop('formation')
-        prospect = Prospect(**validated_data)
-        prospect.formation = formation
-        prospect.save()
-        return prospect
