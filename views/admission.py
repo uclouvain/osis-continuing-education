@@ -26,6 +26,7 @@
 import itertools
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -45,6 +46,7 @@ from continuing_education.models.enums import admission_state_choices, file_cate
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED
 from continuing_education.models.file import AdmissionFile
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import display_errors
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
@@ -57,6 +59,8 @@ def list_admissions(request):
     admission_list = []
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
+
+    admission_list = _filter_authorized_admissions(request.user, admission_list)
 
     if request.GET.get('xls_status') == "xls_admissions":
         return create_xls(request.user, admission_list, search_form)
@@ -71,6 +75,7 @@ def list_admissions(request):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
+    _can_access_admission(request.user, admission)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     if not request.user.has_perm('continuing_education.can_validate_registration') and \
@@ -151,7 +156,14 @@ def admission_form(request, admission_id=None):
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
     state = admission.state if admission else SUBMITTED
-    adm_form = AdmissionForm(request.POST or None, instance=admission, initial={'state': state})
+    adm_form = AdmissionForm(
+        data=request.POST or None,
+        user=request.user,
+        instance=admission,
+        initial={
+            'state': state
+        }
+    )
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission.state if admission else None
@@ -229,3 +241,19 @@ def _validate_admission(request, adm_form):
             request,
             _("Continuing education managers only are allowed to validate a registration")
         )
+
+
+def _filter_authorized_admissions(user, admission_list):
+    if not _is_continuing_education_manager(user):
+        person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
+        admission_list = admission_list.filter(formation_id__in=person_trainings)
+    return admission_list
+
+
+def _can_access_admission(user, admission):
+    if admission not in _filter_authorized_admissions(user, Admission.objects.all()):
+        raise PermissionDenied
+
+
+def _is_continuing_education_manager(user):
+    return user.groups.filter(name='continuing_education_managers').exists()

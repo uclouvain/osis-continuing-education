@@ -23,12 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from collections import OrderedDict
 
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from rest_framework.utils.serializer_helpers import ReturnDict
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
@@ -39,9 +39,13 @@ from continuing_education.tests.factories.continuing_education_training import C
 class ContinuingEducationTrainingSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        education_group = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=education_group)
-        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
+        )
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
         cls.serializer = ContinuingEducationTrainingSerializer(
             cls.continuing_education_training,

@@ -26,18 +26,19 @@
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.forms.search import RegistrationFilterForm
-
-from continuing_education.business.xls.xls_registration import TITLES, XLS_DESCRIPTION, XLS_FILENAME,  \
-    WORKSHEET_TITLE, create_xls_registration, prepare_xls_content
-from osis_common.document import xls_build
-from base.tests.factories.user import UserFactory
-from continuing_education.tests.factories.admission import AdmissionFactory
+from base.models.enums import entity_type
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.user import UserFactory
+from continuing_education.business.xls.xls_registration import TITLES, XLS_DESCRIPTION, XLS_FILENAME, \
+    WORKSHEET_TITLE, create_xls_registration, prepare_xls_content
+from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.enums.admission_state_choices import ACCEPTED
-from base.models.enums import entity_type
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from osis_common.document import xls_build
 
 FACULTY_ACRONYM = "AGRO"
 
@@ -49,7 +50,15 @@ class TestRegistrationXls(TestCase):
         current_academic_yr = create_current_academic_year()
         self.next_academic_yr = AcademicYearFactory(year=current_academic_yr.year + 1)
         self.registration = AdmissionFactory()
-        self.formation = EducationGroupYearFactory(academic_year=self.next_academic_yr)
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.entity_version = EntityVersionFactory(
             entity=self.formation.management_entity,
             acronym=FACULTY_ACRONYM,

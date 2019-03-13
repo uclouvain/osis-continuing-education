@@ -69,7 +69,7 @@ class Prospect(Model):
         verbose_name=_("Phone number")
     )
     formation = models.ForeignKey(
-        'base.EducationGroupYear',
+        'continuing_education.ContinuingEducationTraining',
         on_delete=models.PROTECT,
         verbose_name=_("Formation")
     )

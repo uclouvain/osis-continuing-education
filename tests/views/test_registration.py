@@ -31,23 +31,35 @@ from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class ViewRegistrationTestCase(TestCase):
     def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
-        current_acad_year = create_current_academic_year()
-        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.admission_accepted = AdmissionFactory(
             state=admission_state_choices.ACCEPTED,
             formation=self.formation
@@ -85,7 +97,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertTemplateUsed(response, 'registration_form.html')
 
     def test_edit_post_registration_found(self):
-        admission = AdmissionFactory()
+        admission = AdmissionFactory(formation=self.formation)
         admission_dict = model_to_dict(admission)
         admission_dict['billing_address'] = admission.billing_address
         admission_dict['residence_address'] = admission.residence_address
@@ -130,18 +142,27 @@ class ViewRegistrationTestCase(TestCase):
 
 class RegistrationStateChangedTestCase(TestCase):
     def setUp(self):
-        current_acad_year = create_current_academic_year()
-        self.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        self.formation = EducationGroupYearFactory(academic_year=self.next_acad_year)
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
         self.faculty_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
         )
+        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group)
+        PersonTraining(person=self.faculty_manager, training=self.formation).save()
+        training_manager_group = GroupFactory(name='continuing_education_training_managers')
+        self.faculty_manager.user.groups.add(training_manager_group)
+        group = GroupFactory(name='continuing_education_managers')
         self.continuing_education_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
+        self.continuing_education_manager.user.groups.add(group)
         EntityVersionFactory(
             entity=self.formation.management_entity
         )

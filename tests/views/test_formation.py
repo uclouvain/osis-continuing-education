@@ -24,11 +24,11 @@
 #
 ##############################################################################
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
 from rest_framework import status
 
 from base.models.enums import education_group_types
@@ -102,6 +102,8 @@ class FormationActivateTestCase(TestCase):
     def setUp(self):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
+        self.current_acad_year = create_current_academic_year()
+        self.next_acad_year = AcademicYearFactory(year=self.current_acad_year.year + 1)
 
         self.formation1_to_activate = ContinuingEducationTrainingFactory(active=False)
         self.formation2_to_activate = ContinuingEducationTrainingFactory(active=False)
@@ -109,7 +111,9 @@ class FormationActivateTestCase(TestCase):
         self.formation1_to_deactivate = ContinuingEducationTrainingFactory(active=True)
         self.formation2_to_deactivate = ContinuingEducationTrainingFactory(active=True)
 
-        self.education_group_yr_not_organized_yet = EducationGroupYearFactory()
+        self.education_group_yr_not_organized_yet = EducationGroupYearFactory(
+            academic_year=self.next_acad_year
+        )
 
     def test_formation_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')

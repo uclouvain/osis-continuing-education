@@ -7,28 +7,37 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
 from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.views.test_admission import FILE_CONTENT
 
 
 class UploadFileTestCase(TestCase):
     def setUp(self):
-        current_acad_year = create_current_academic_year()
-        next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        formation = EducationGroupYearFactory(academic_year=next_acad_year)
-
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
-
         self.admission = AdmissionFactory(
-            formation=formation,
+            formation=self.formation,
             state=SUBMITTED
         )
         self.admission_file = SimpleUploadedFile(
@@ -156,18 +165,26 @@ class UploadFileTestCase(TestCase):
 
 class DeleteFileTestCase(TestCase):
     def setUp(self):
-        current_acad_year = create_current_academic_year()
-        next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
-        formation = EducationGroupYearFactory(academic_year=next_acad_year,)
-
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
-
         self.admission = AdmissionFactory(
-            formation=formation,
+            formation=self.formation,
             state=SUBMITTED
         )
-        self.admission_file = AdmissionFileFactory()
+        self.admission_file = AdmissionFileFactory(
+            admission=self.admission
+        )
 
     def test_delete_file(self):
         self.assertEqual(AdmissionFile.objects.all().count(), 1)

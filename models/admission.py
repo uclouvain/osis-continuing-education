@@ -30,7 +30,6 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.business.admission import get_management_faculty
 from continuing_education.business.admission import send_state_changed_email, send_admission_submitted_email_to_admin, \
     send_admission_submitted_email_to_participant
 from continuing_education.models.enums import admission_state_choices, enums
@@ -77,7 +76,7 @@ class Admission(SerializableModel):
     )
 
     formation = models.ForeignKey(
-        'base.EducationGroupYear',
+        'continuing_education.ContinuingEducationTraining',
         on_delete=models.PROTECT,
         verbose_name=_("Formation")
     )
@@ -377,10 +376,11 @@ class Admission(SerializableModel):
 
     @property
     def formation_display(self):
+        education_group_year = self.formation.get_most_recent_education_group_year()
         return get_formation_display(
-            self.formation.partial_acronym,
-            self.formation.acronym,
-            self.formation.academic_year
+            education_group_year.partial_acronym,
+            education_group_year.acronym,
+            education_group_year.academic_year
         )
 
     def is_draft(self):
@@ -411,8 +411,8 @@ class Admission(SerializableModel):
         return self.is_waiting() or self.is_rejected() or self.is_submitted()
 
     def get_faculty(self):
-        education_group_year = self.formation
-        return get_management_faculty(education_group_year)
+        education_group_year = self.formation.get_most_recent_education_group_year()
+        return education_group_year.management_entity
 
     class Meta:
         permissions = (

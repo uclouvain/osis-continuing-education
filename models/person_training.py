@@ -24,18 +24,18 @@
 #
 ##############################################################################
 
-from django.contrib.admin import ModelAdmin
 from django.db import models
-from django.db.models import Model
+
+from osis_common.models.serializable_model import SerializableModelAdmin, SerializableModel
 
 
-class PersonTrainingAdmin(ModelAdmin):
+class PersonTrainingAdmin(SerializableModelAdmin):
     list_display = ('person', 'training',)
     search_fields = ['person']
     raw_id_fields = ('person', 'training',)
 
 
-class PersonTraining(Model):
+class PersonTraining(SerializableModel):
     person = models.ForeignKey(
         'base.Person',
         on_delete=models.CASCADE

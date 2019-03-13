@@ -5,7 +5,6 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelChoiceField
 from django.utils.translation import pgettext_lazy
-
 from django.utils.translation import ugettext_lazy as _, pgettext
 
 from base.business.entity import get_entities_ids
@@ -15,7 +14,8 @@ from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from continuing_education.models.admission import Admission
-from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
+from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
+    ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
@@ -212,10 +212,10 @@ def _get_formations_by_faculty(faculty):
 
 
 def _build_formation_choices(field, states, archived_status=False):
-    field.queryset = EducationGroupYear.objects \
+    field.queryset = ContinuingEducationTraining.objects \
         .filter(id__in=Admission.objects.filter(state__in=states, archived=archived_status)
                 .values_list('formation', flat=False).distinct('formation')
-                ).order_by('acronym')
+                ).order_by('education_group__educationgroupyear__acronym')
 
 
 def _get_state_choices(choices):
@@ -224,7 +224,7 @@ def _get_state_choices(choices):
 
 def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
     entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
-    return qs.filter(formation__management_entity__in=entity_ids)
+    return qs.filter(formation__education_group__educationgroupyear__management_entity__in=entity_ids)
 
 
 class FormationFilterForm(AdmissionFilterForm):

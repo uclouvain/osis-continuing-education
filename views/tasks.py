@@ -39,7 +39,7 @@ from continuing_education.models.enums import admission_state_choices
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def list_tasks(request):
     all_admissions = Admission.objects.select_related(
-        'person_information__person', 'formation__academic_year'
+        'person_information__person', 'formation__education_group'
     ).order_by(
         'person_information__person__last_name', 'person_information__person__first_name'
     )

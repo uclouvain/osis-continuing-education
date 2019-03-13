@@ -26,15 +26,26 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.prospect import ProspectSerializer
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
 
 
 class ProspectSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        formation = TrainingFactory()
+        academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=academic_year
+        )
+        formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
+        )
         cls.prospect = ProspectFactory(formation=formation)
         url = reverse('continuing_education_api_v1:prospect-list-create')
         cls.serializer = ProspectSerializer(cls.prospect, context={'request': RequestFactory().get(url)})

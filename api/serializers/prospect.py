@@ -25,7 +25,7 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.models.education_group_year import EducationGroupYear
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.prospect import Prospect
 
 
@@ -35,7 +35,7 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='uuid'
     )
     formation = serializers.SlugRelatedField(
-        queryset=EducationGroupYear.objects.all(),
+        queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
         required=True
     )
