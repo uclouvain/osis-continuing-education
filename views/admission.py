@@ -147,6 +147,8 @@ def _invoice_file_exists_for_admission(admission):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
+    if admission:
+        can_access_admission(request.user, admission_id)
     states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
