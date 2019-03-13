@@ -2,9 +2,12 @@ from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
 from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -13,8 +16,12 @@ class AdmissionListSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
+            formation=ContinuingEducationTrainingFactory(education_group= ed)
         )
         url = reverse('continuing_education_api_v1:admission-list-create')
         cls.serializer = AdmissionListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
@@ -39,9 +46,12 @@ class AdmissionDetailSerializerTestCase(TestCase):
         cls.citizenship = CountryFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
         new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person_information,
+            formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
         url = reverse(
             'continuing_education_api_v1:admission-detail-update-destroy',
