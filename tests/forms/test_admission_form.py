@@ -25,40 +25,79 @@
 ##############################################################################
 from django.test import TestCase
 
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
-from continuing_education.tests.factories.admission import AdmissionFactory
-from reference.models import country
-from continuing_education.models.enums.admission_state_choices import REJECTED
-from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
+from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.models.person_training import PersonTraining
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from reference.models import country
 
 ANY_REASON = 'Anything'
 
 
 class TestAdmissionForm(TestCase):
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
 
-    def test_valid_form(self):
-        current_academic_yr = create_current_academic_year()
-        next_academic_yr = AcademicYearFactory(year=current_academic_yr.year+1)
-        admission = AdmissionFactory(formation=EducationGroupYearFactory(academic_year=next_academic_yr))
-
+    def test_valid_form_for_managers(self):
+        admission = AdmissionFactory(formation=self.formation)
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
         data = admission.__dict__
         data['formation'] = admission.formation.pk
-        form = AdmissionForm(data)
+        form = AdmissionForm(data=data, user=self.manager.user)
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_valid_form_for_training_managers(self):
+        admission = AdmissionFactory(formation=self.formation)
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        PersonTraining(person=self.manager, training=self.formation).save()
+        self.client.force_login(self.manager.user)
+        data = admission.__dict__
+        data['formation'] = admission.formation.pk
+        form = AdmissionForm(data=data, user=self.manager.user)
         self.assertTrue(form.is_valid(), form.errors)
 
 
 class TestRejectedAdmissionForm(TestCase):
 
     def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.rejected_admission_other = AdmissionFactory(
             state=REJECTED,
             state_reason=ANY_REASON,
+            formation=self.formation
         )
         self.rejected_admission_not_other = AdmissionFactory(
             state=REJECTED,
             state_reason=NOT_ENOUGH_EXPERIENCE,
+            formation=self.formation
         )
 
     def test_init_rejected_init_not_other(self):

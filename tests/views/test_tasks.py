@@ -28,30 +28,54 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
 
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class ViewUpdateTasksTestCase(TestCase):
     def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
-
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
         self.registrations_to_validate = [
-            AdmissionFactory(state=admission_state_choices.REGISTRATION_SUBMITTED) for _ in range(2)
+            AdmissionFactory(
+                state=admission_state_choices.REGISTRATION_SUBMITTED,
+                formation=self.formation
+            ) for _ in range(2)
         ]
         self.registration_not_to_validate = AdmissionFactory(
             state=admission_state_choices.DRAFT,
-            diploma_produced=True
+            diploma_produced=True,
+            formation=self.formation
         )
 
         self.diplomas_to_produce = [
-            AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False) for _ in range(2)
+            AdmissionFactory(
+                state=admission_state_choices.VALIDATED,
+                diploma_produced=False,
+                formation=self.formation
+            ) for _ in range(2)
         ]
         self.no_diploma_to_produce = AdmissionFactory(
             state=admission_state_choices.WAITING,
-            diploma_produced=True
+            diploma_produced=True,
+            formation=self.formation
         )
 
     def test_list_tasks(self):

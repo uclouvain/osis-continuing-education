@@ -36,7 +36,9 @@ from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
 from base.models.person import Person
-from base.tests.factories.education_group_year import TrainingFactory
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
@@ -46,6 +48,7 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -62,32 +65,22 @@ class AdmissionListCreateTestCase(APITestCase):
             birth_country=cls.citizenship
         )
         cls.address = AddressFactory()
-        cls.formation = TrainingFactory()
-        cls.admission = AdmissionFactory(
-            citizenship=cls.citizenship,
-            person_information=cls.person,
-            address=cls.address,
-            state=DRAFT,
-            formation=cls.formation
-        )
-        AdmissionFactory(
-            citizenship=cls.citizenship,
-            person_information=ContinuingEducationPersonFactory(),
-            state=SUBMITTED,
-            formation=TrainingFactory()
-        )
-        AdmissionFactory(
-            citizenship=cls.citizenship,
-            person_information=ContinuingEducationPersonFactory(),
-            state=ACCEPTED,
-            formation=TrainingFactory()
-        )
-        AdmissionFactory(
-            citizenship=cls.citizenship,
-            person_information=ContinuingEducationPersonFactory(),
-            state=REJECTED,
-            formation=TrainingFactory()
-        )
+        cls.academic_year = AcademicYearFactory(year=2018)
+
+        for state in [SUBMITTED, ACCEPTED, REJECTED, DRAFT]:
+            education_group = EducationGroupFactory()
+            EducationGroupYearFactory(
+                education_group=education_group,
+                academic_year=cls.academic_year
+            )
+            cls.formation = ContinuingEducationTrainingFactory(education_group=education_group)
+            cls.admission = AdmissionFactory(
+                citizenship=cls.citizenship,
+                person_information=ContinuingEducationPersonFactory(),
+                address=cls.address,
+                state=state,
+                formation=cls.formation
+            )
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
@@ -160,8 +153,8 @@ class AdmissionListCreateTestCase(APITestCase):
 
     def test_create_valid_admission_with_existing_person(self):
         self.assertEqual(3, Admission.admission_objects.all().count())
-        self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(4, Person.objects.all().count())
+        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(5, Person.objects.all().count())
         data = {
             'person_information': {
                 'uuid': self.admission.person_information.uuid,
@@ -178,13 +171,13 @@ class AdmissionListCreateTestCase(APITestCase):
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(4, Admission.admission_objects.all().count())
-        self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(4, Person.objects.all().count())
+        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(5, Person.objects.all().count())
 
     def test_create_valid_admission_with_new_person_and_person_info(self):
         self.assertEqual(3, Admission.admission_objects.all().count())
-        self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(4, Person.objects.all().count())
+        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(5, Person.objects.all().count())
         data = {
             'person_information': {
                 'birth_date': datetime.date.today(),
@@ -204,8 +197,8 @@ class AdmissionListCreateTestCase(APITestCase):
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(4, Admission.admission_objects.all().count())
-        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(5, Person.objects.all().count())
+        self.assertEqual(6, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(6, Person.objects.all().count())
 
     def test_create_admission_missing_formation(self):
         data = {
@@ -238,10 +231,17 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
     def setUpTestData(cls):
         cls.citizenship = CountryFactory()
 
+        cls.academic_year = AcademicYearFactory(year=2018)
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=education_group,
+            academic_year=cls.academic_year
+        )
+
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=ContinuingEducationPersonFactory(),
-            formation=TrainingFactory(),
+            formation=ContinuingEducationTrainingFactory(education_group=education_group),
             state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
 
         )

@@ -30,6 +30,7 @@ import factory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.tests.factories.address import AddressFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.tests.utils.utils import get_enum_keys
 from reference.tests.factories.country import CountryFactory
@@ -76,7 +77,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     professional_impact = "professional impact"
 
     # Formation
-    formation = factory.SubFactory(EducationGroupYearFactory)
+    formation = factory.SubFactory(ContinuingEducationTrainingFactory)
 
     # Awareness
     awareness_ucl_website = factory.fuzzy.FuzzyChoice([True, False])
