@@ -25,7 +25,7 @@
 ##############################################################################
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.test import TestCase
 from rest_framework import status
 
@@ -226,13 +226,13 @@ class ViewTasksTrainingManagerTestCase(TestCase):
 
     def test_list_with_no_task_visible(self):
         response = self.client.post(reverse('list_tasks'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['registrations_to_validate'], [])
 
     def test_list_with_tasks(self):
         PersonTraining(training=self.formation, person=self.training_manager).save()
         response = self.client.post(reverse('list_tasks'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['registrations_to_validate'], [self.registration_to_validate])
         self.assertCountEqual(response.context['admissions_diploma_to_produce'], [self.admission_diploma_to_produce])
 
@@ -245,7 +245,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             reverse('validate_registrations'),
             data=post_data
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_validate_registration_authorized(self):
         PersonTraining(training=self.formation, person=self.training_manager).save()
@@ -257,7 +257,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             reverse('validate_registrations'),
             data=post_data
         )
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
     def test_produce_diploma_denied(self):
         post_data = {
@@ -268,7 +268,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             reverse('mark_diplomas_produced'),
             data=post_data
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_produce_diploma_authorized(self):
         PersonTraining(training=self.formation, person=self.training_manager).save()
@@ -280,4 +280,4 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             reverse('mark_diplomas_produced'),
             data=post_data
         )
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)

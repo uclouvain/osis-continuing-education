@@ -27,6 +27,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
+from django.http import HttpResponse
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
@@ -248,7 +249,7 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
     def test_list_with_no_registrations_visible(self):
         url = reverse('registration')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['admissions'], [])
         self.assertTemplateUsed(response, 'registrations.html')
 
@@ -256,6 +257,6 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         PersonTraining(training=self.formation, person=self.training_manager).save()
         url = reverse('registration')
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['admissions'], [self.registration])
         self.assertTemplateUsed(response, 'registrations.html')

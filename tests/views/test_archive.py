@@ -27,6 +27,7 @@
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -216,8 +217,9 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
 
     def test_list_with_no_archive_visible(self):
         self.admission.archived = True
+        self.admission.save()
         response = self.client.post(reverse('archive'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['archives'].object_list, [])
 
     def test_list_with_archive(self):
@@ -225,18 +227,18 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
         self.admission.save()
         PersonTraining(training=self.admission.formation, person=self.training_manager).save()
         response = self.client.post(reverse('archive'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['archives'].object_list, [self.admission])
 
     def test_archive_procedure_denied(self):
         response = self.client.post(
             reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
         )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_archive_procedure_authorized(self):
         PersonTraining(training=self.admission.formation, person=self.training_manager).save()
         response = self.client.post(
             reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
         )
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
