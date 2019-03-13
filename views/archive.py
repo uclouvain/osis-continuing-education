@@ -32,7 +32,7 @@ from django.utils.translation import ugettext_lazy as _
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
-from continuing_education.models.admission import Admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.views.common import get_object_list
 
 
@@ -44,6 +44,8 @@ def list_archives(request):
 
     if search_form.is_valid():
         archive_list = search_form.get_archives()
+
+    archive_list = filter_authorized_admissions(request.user, archive_list)
 
     if request.GET.get('xls_status') == "xls_archives":
         return create_xls(request.user, archive_list, search_form)
@@ -57,6 +59,7 @@ def list_archives(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def archive_procedure(request, admission_id):
+    can_access_admission(request.user, admission_id)
     redirection = request.META.get('HTTP_REFERER')
     admission = _switch_archived_state(admission_id)
     _set_success_message(request, False, admission.archived)
@@ -67,6 +70,8 @@ def archive_procedure(request, admission_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def archives_procedure(request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
+    for admission_id in selected_admissions_id:
+        can_access_admission(request.user, admission_id)
     redirection = request.META.get('HTTP_REFERER')
     if selected_admissions_id:
         _mark_folders_as_archived(request, selected_admissions_id)

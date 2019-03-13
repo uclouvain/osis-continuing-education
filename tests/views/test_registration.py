@@ -27,6 +27,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms import model_to_dict
+from django.http import HttpResponse
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
@@ -223,3 +224,39 @@ class RegistrationStateChangedTestCase(TestCase):
             response = self.client.get(url)
             self.assertTemplateUsed(response, 'admission_detail.html')
             self.assertEqual(len(response.context['states']), 0)
+
+
+class ViewRegistrationsTrainingManagerTestCase(TestCase):
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.training_manager.user.groups.add(group)
+        self.client.force_login(self.training_manager.user)
+        self.registration = AdmissionFactory(
+            formation=self.formation,
+            state=REGISTRATION_SUBMITTED,
+        )
+
+    def test_list_with_no_registrations_visible(self):
+        url = reverse('registration')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertCountEqual(response.context['admissions'], [])
+        self.assertTemplateUsed(response, 'registrations.html')
+
+    def test_list_with_registrations(self):
+        PersonTraining(training=self.formation, person=self.training_manager).save()
+        url = reverse('registration')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertCountEqual(response.context['admissions'], [self.registration])
+        self.assertTemplateUsed(response, 'registrations.html')

@@ -26,18 +26,23 @@
 
 from django.contrib import messages
 from django.contrib.messages import get_messages
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING, SUBMITTED
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.views.archive import _switch_archived_state, _mark_as_archived
@@ -63,8 +68,9 @@ class ViewArchiveTestCase(TestCase):
         self.formation_2 = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
-
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
         EntityVersionFactory(
             entity=self.formation_1.management_entity
@@ -187,3 +193,52 @@ class ViewArchiveTestCase(TestCase):
                               [self.admission_archived,
                                self.registration_2_archived]
                               )
+
+
+class ViewArchiveTrainingManagerTestCase(TestCase):
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.training_manager.user.groups.add(group)
+        self.client.force_login(self.training_manager.user)
+        self.admission = AdmissionFactory(
+            formation=self.formation,
+            state=SUBMITTED,
+        )
+
+    def test_list_with_no_archive_visible(self):
+        self.admission.archived = True
+        self.admission.save()
+        response = self.client.post(reverse('archive'))
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertCountEqual(response.context['archives'].object_list, [])
+
+    def test_list_with_archive(self):
+        self.admission.archived = True
+        self.admission.save()
+        PersonTraining(training=self.admission.formation, person=self.training_manager).save()
+        response = self.client.post(reverse('archive'))
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertCountEqual(response.context['archives'].object_list, [self.admission])
+
+    def test_archive_procedure_denied(self):
+        response = self.client.post(
+            reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
+        )
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_archive_procedure_authorized(self):
+        PersonTraining(training=self.admission.formation, person=self.training_manager).save()
+        response = self.client.post(
+            reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
+        )
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
