@@ -26,7 +26,7 @@
 from django.conf.urls import url, include
 
 import continuing_education.views.file
-from continuing_education.views import (home, admission, registration, archive, formation, prospect, tasks)
+from continuing_education.views import (home, admission, registration, archive, formation, prospect, tasks, managers)
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
@@ -60,5 +60,8 @@ urlpatterns = [
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
+    ])),
+    url(r'^managers/', include([
+        url(r'^$', managers.list_managers, name='list_managers')
     ])),
 ]

@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load formation %}
+
+{% comment "License" %}
+    * OSIS stands for Open Student Information System. It's an application
+    * designed to manage the core business of higher education institutions,
+    * such as universities, faculties, institutes and professional schools.
+    * The core business involves the administration of students, teachers,
+    * courses, programs and so on.
+    *
+    * Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+    *
+    * This program is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * This program is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    * GNU General Public License for more details.
+    *
+    * A copy of this license - GNU General Public License - is available
+    * at the root of the source code of this program.  If not,
+    * see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/continuing_education_style.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li class="active">{% trans 'Training Managers' %}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h2>{% trans 'Training Managers' %}</h2>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel panel-body">
+            <form style="display: inline;" action="{% url 'formation' %}" method="get" class="" id="search_form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="acronym_id">{% trans 'Training' %}</label>
+                        {{ search_form.acronym }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="faculty_id">{% trans 'Faculty' %}</label>
+                        {{ search_form.faculty }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-default" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            {% trans 'Search' %}
+                        </button>
+                    </div>
+                </div>
+                {% include 'blocks/button/xls_hidden.html' %}
+            </form>
+        </div>
+        <div class="dropdown  text-right" style="margin-right: 10px;">
+            <button type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Assign manager to training' %}
+            </button>
+        </div>
+        <div class="panel panel-body">
+            <form id="formations_form" method="get" action="{% url 'formations_procedure' %}">
+                {% csrf_token %}
+                <input name="new_state" id="new_state" value="" type="hidden"/>
+                <table class="table table-striped table-hover" id="formations_table">
+                    <thead>
+                    <tr>
+                        <th class="searchable">{% trans 'Name' %}</th>
+                        <th class="searchable">{% trans 'First name' %}</th>
+                        <th class="searchable">{% trans 'Formation' %}</th>
+                    </tr>
+                    </thead>
+{#                    <tfoot>#}
+{#                    <tr>#}
+{#                        <td colspan="5">#}
+{#                            {% bootstrap_pagination formations extra=request.GET.urlencode %}#}
+{#                        </td>#}
+{#                    </tr>#}
+{#                    </tfoot>#}
+                    <tbody>
+                    {% for manager in managers %}
+                        <tr>
+                            <td>{{ manager.last_name }}</td>
+                            <td>{{ manager.first_name }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
