@@ -48,10 +48,11 @@ class AdmissionDetailSerializerTestCase(TestCase):
         new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person_information,
-            formation=ContinuingEducationTrainingFactory(education_group=ed)
+            formation=cls.formation
         )
         url = reverse(
             'continuing_education_api_v1:admission-detail-update-destroy',
@@ -104,8 +105,9 @@ class AdmissionPostSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         cls.citizenship = CountryFactory()
-        cls.formation = EducationGroupYearFactory(
-        )
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person_information,

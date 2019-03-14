@@ -353,7 +353,11 @@ class FilterAdmissionTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:admission-list-create')
-        cls.admission = AdmissionFactory()
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        cls.admission = AdmissionFactory(
+            formation=ContinuingEducationTrainingFactory(education_group=ed)
+        )
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)

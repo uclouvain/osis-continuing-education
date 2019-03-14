@@ -2,10 +2,12 @@ from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
 from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.registration import RegistrationDetailSerializer, RegistrationListSerializer, \
     RegistrationPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
@@ -90,7 +92,9 @@ class RegistrationPostSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
-        cls.formation = EducationGroupYearFactory()
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.registration = AdmissionFactory(
             person_information=cls.person_information,
             formation=cls.formation
