@@ -272,7 +272,7 @@ class TestFilterForm(TestCase):
                              [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
 
     def test_get_archives_state_choices(self):
-        form = ArchiveFilterForm()
+        form = ArchiveFilterForm(data={})
         if form.is_valid():
             self.assertEqual(form.fields['state'].choices,
                              [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))

@@ -151,10 +151,14 @@ class ArchiveFilterForm(AdmissionFilterForm):
         required=False
     )
 
-    def __init__(self, *args, **kwargs):
-        super(ArchiveFilterForm, self).__init__(*args, **kwargs)
+    def __init__(self, data, user=None, *args, **kwargs):
+        super(ArchiveFilterForm, self).__init__(data, *args, **kwargs)
         self.fields['state'].choices = _get_state_choices(ARCHIVE_STATE_CHOICES)
         _build_formation_choices(self.fields['formation'], STATES_FOR_ARCHIVE, True)
+        if user and not user.groups.filter(name='continuing_education_managers').exists():
+            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
+                managers=user.person
+            ).order_by('education_group__educationgroupyear__acronym').distinct()
 
     def get_archives(self):
         a_state = self.cleaned_data.get('state')

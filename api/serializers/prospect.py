@@ -37,7 +37,7 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
     formation = serializers.SlugRelatedField(
         queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
-        required=True
+        required=True,
     )
 
     class Meta:
