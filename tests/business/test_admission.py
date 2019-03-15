@@ -97,10 +97,9 @@ class SendEmailTest(TestCase):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
         self.manager = PersonFactory(last_name="AAA")
-        manager_2 = PersonFactory(last_name="BBB")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=self.manager, training=cet)
-        PersonTrainingFactory(person=manager_2, training=cet)
+        PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)
         self.admission = AdmissionFactory(formation=cet)
 
     @patch('continuing_education.business.admission.send_email')
