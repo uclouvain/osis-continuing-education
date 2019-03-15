@@ -217,5 +217,5 @@ def _get_faculty_parent(management_entity):
 
 def _get_managers_mails(formation):
     managers_mail = formation.managers.all().order_by('last_name').values_list('email', flat=True) \
-        if formation else None
+        if formation else []
     return _(" or ").join(managers_mail)
