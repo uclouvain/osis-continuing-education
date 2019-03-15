@@ -36,7 +36,7 @@ from osis_common.messaging import send_message as message_service
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
 
-def send_state_changed_email(admission):
+def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     send_email(
         template_references={
@@ -60,6 +60,7 @@ def send_state_changed_email(admission):
                 None
             )
         ],
+        connected_user=connected_user
     )
 
 
@@ -138,7 +139,7 @@ def send_invoice_uploaded_email(admission):
     )
 
 
-def send_email(template_references, receivers, template_data, subject_data):
+def send_email(template_references, receivers, template_data, subject_data, connected_user=None):
     message_content = message_config.create_message_content(
         template_references['html'],
         template_references['txt'],
@@ -147,7 +148,7 @@ def send_email(template_references, receivers, template_data, subject_data):
         template_data,
         subject_data
     )
-    message_service.send_messages(message_content)
+    message_service.send_messages(message_content, connected_user)
 
 
 def _get_continuing_education_managers():
