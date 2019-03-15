@@ -5,7 +5,6 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelChoiceField
 from django.utils.translation import pgettext_lazy
-
 from django.utils.translation import ugettext_lazy as _, pgettext
 
 from base.business.entity import get_entities_ids
@@ -17,7 +16,8 @@ from base.models.enums import entity_type
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
+    ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
 
@@ -90,16 +90,30 @@ class AdmissionFilterForm(BootstrapForm):
         required=False,
         label=_('Formation')
     )
+    state = forms.ChoiceField(
+        choices=STATE_CHOICES,
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         super(AdmissionFilterForm, self).__init__(*args, **kwargs)
+        self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
         _build_formation_choices(self.fields['formation'], STATE_TO_DISPLAY)
 
     def get_admissions(self):
-        return get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
-                                                 self.cleaned_data.get('formation'),
-                                                 STATE_TO_DISPLAY,
-                                                 False)
+        a_state = self.cleaned_data.get('state')
+
+        qs = get_queryset_by_faculty_formation(
+            self.cleaned_data['faculty'],
+            self.cleaned_data.get('formation'),
+            STATE_TO_DISPLAY,
+            False
+        )
+
+        if a_state:
+            qs = qs.filter(state=a_state)
+
+        return qs
 
 
 class RegistrationFilterForm(AdmissionFilterForm):
