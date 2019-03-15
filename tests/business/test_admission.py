@@ -87,7 +87,7 @@ class TestAdmission(TestCase):
         PersonTrainingFactory(person=manager, training=cet)
         PersonTrainingFactory(person=manager_2, training=cet)
         admission = AdmissionFactory(formation=cet)
-        expected_mails = "{} {}{} ".format(manager.email, _(" or "), manager_2.email)
+        expected_mails = "{}{}{}".format(manager.email, _(" or "), manager_2.email)
 
         self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
 

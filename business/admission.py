@@ -217,9 +217,8 @@ def _get_faculty_parent(management_entity):
 
 def _get_managers_mails(formation):
     managers = formation.managers.all().order_by('last_name') if formation else None
-    mails = ""
+    mails = _(" or ")
+    mails_list = []
     for manager in managers:
-        mails = mails + manager.email + " "
-        if manager != managers.last():
-            mails = mails + str(_(" or "))
-    return mails
+        mails_list.append(manager.email)
+    return mails.join(mails_list)
