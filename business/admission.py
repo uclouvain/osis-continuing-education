@@ -38,6 +38,7 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
 def send_state_changed_email(admission):
     person = admission.person_information.person
+    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_state_changed_{}_html'.format(admission.state.lower()),
@@ -49,6 +50,7 @@ def send_state_changed_email(admission):
             'formation': admission.formation,
             'state': _(admission.state),
             'reason': admission.state_reason if admission.state_reason else '-',
+            'mails': mails
         },
         subject_data={
             'state': _(admission.state)
@@ -97,6 +99,7 @@ def send_admission_submitted_email_to_admin(admission):
 
 def send_admission_submitted_email_to_participant(admission):
     participant = admission.person_information.person
+    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_admission_submitted_html',
@@ -104,7 +107,8 @@ def send_admission_submitted_email_to_participant(admission):
         },
         template_data={
             'formation': admission.formation.acronym,
-            'admission_data': _get_formatted_admission_data(admission)
+            'admission_data': _get_formatted_admission_data(admission),
+            'mails': mails
         },
         subject_data={},
         receivers=[
@@ -119,6 +123,7 @@ def send_admission_submitted_email_to_participant(admission):
 
 def send_invoice_uploaded_email(admission):
     participant = admission.person_information.person
+    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_invoice_uploaded_html',
@@ -126,6 +131,7 @@ def send_invoice_uploaded_email(admission):
         },
         template_data={
             'formation': admission.formation.acronym,
+            'mails': mails
         },
         subject_data={},
         receivers=[
@@ -207,3 +213,9 @@ def _get_faculty_parent(management_entity):
     faculty = EntityVersion.objects.filter(entity=management_entity).first()
     if faculty:
         return faculty.parent
+
+
+def _get_managers_mails(formation):
+    managers_mail = formation.managers.all().order_by('last_name').values_list('email', flat=True) \
+        if formation else []
+    return _(" or ").join(managers_mail)
