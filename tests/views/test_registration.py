@@ -32,7 +32,7 @@ from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -181,6 +181,7 @@ class RegistrationStateChangedTestCase(TestCase):
         registration = {
             'state': VALIDATED,
             'formation': self.formation.pk,
+            'person_information': self.registration_submitted.person_information.pk
         }
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
