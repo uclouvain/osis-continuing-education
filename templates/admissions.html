@@ -66,12 +66,31 @@
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
             </form>
-            <a class="btn btn-default pull-right" href="{% url 'admission_new'%}" style="margin-top: 26px; margin-right: 10px;">
-                {% trans 'New admission' %}
-            </a>
+
         </div>
-        {% trans 'Produce xls with list of admissions' as title_xls_trans %}
-        {% include 'blocks/dropdown/list_actions.html' with button_title=title_xls_trans %}
+        {% trans 'Produce xls' as button_title %}
+        <div class="dropdown  text-right" style="margin-right: 10px;">
+            <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                <li>
+                    <a id="btn_new" style="margin-right:10px;"href="{% url 'admission_new'%}">
+                        {% trans 'New admission' %}
+                    </a>
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+                    {% include 'blocks/button/archive.html' %}
+                </li>
+                <li role="separator" class="divider"></li>
+                <li>
+                    {% include "blocks/button/xls.html" with button_title=button_title %}
+                </li>
+            </ul>
+        </div>
         <div class="panel panel-body">
 
             <form id="admissions_form" method="post" action="{% url 'archives_procedure' %}">

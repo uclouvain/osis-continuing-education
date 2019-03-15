@@ -70,13 +70,20 @@
 
             </form>
         </div>
+        {% trans 'Produce xls' as button_title %}
         <div class="panel panel-body">
-            <button id="btn_produce_xls" style="margin-right:10px;"
-                    class="pull-right"
-                    title="{% trans 'Produce xls with list of archives' %}">
-                &nbsp;{% trans 'Produce xls with list of archives' %}
-                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-            </button>
+            <div class="dropdown  text-right" style="margin-right: 10px;">
+                <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                    <li>
+                        {% include "blocks/button/xls.html" with button_title=button_title %}
+                    </li>
+                </ul>
+            </div>
              <table class="table table-striped table-hover" id="order_archive">
                 <thead>
                     <tr>
