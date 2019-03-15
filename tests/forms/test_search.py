@@ -28,9 +28,7 @@ from datetime import date
 from operator import itemgetter
 
 from django.test import TestCase
-
 from django.utils import timezone
-
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 
 from base.models.enums.entity_type import FACULTY, SCHOOL
@@ -41,11 +39,11 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED
+from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
@@ -152,6 +150,18 @@ class TestFilterForm(TestCase):
             a.formation for a in self.admissions if a.state != DRAFT
         ])
 
+    def test_queryset_admission_state_init(self):
+        form = AdmissionFilterForm()
+        self.assertListEqual(
+            list(form.fields['state'].choices),
+            [
+                ('', pgettext_lazy("plural", "All")),
+                ('Waiting', _('Waiting')),
+                ('Rejected', _('Rejected')),
+                ('Submitted', _('Submitted'))
+            ]
+        )
+
     def test_queryset_registration_state_init(self):
         form = RegistrationFilterForm()
         self.assertListEqual(
@@ -212,6 +222,12 @@ class TestFilterForm(TestCase):
         if form.is_valid():
             results = form.get_admissions()
             self.assertCountEqual(results, [])
+
+    def test_get_admission_by_state(self):
+        form = AdmissionFilterForm({"state": REJECTED})
+        if form.is_valid():
+            results = form.get_admissions()
+            self.assertCountEqual(results, [self.admissions[1]])
 
     def test_get_registrations_no_criteria(self):
         form = RegistrationFilterForm({})
