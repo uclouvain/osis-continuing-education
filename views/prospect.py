@@ -37,4 +37,5 @@ def list_prospects(request):
     prospects_list = list(Prospect.objects.all())
     return render(request, "prospects.html", {
         'prospects': get_object_list(request, prospects_list),
+        'prospects_count': len(prospects_list)
     })

@@ -80,6 +80,13 @@
         <div class="panel panel-body">
             {% trans 'Produce xls with list of registrations' as title_xls_trans %}
             {% include 'blocks/dropdown/list_actions.html' with button_title=title_xls_trans %}
+            {% if admissions %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong style="margin-left:10px;color:grey;"> {{ admissions_number }} {% trans 'Registrations'|lower %} </strong>
+                    </div>
+                </div>
+            {% endif %}
             <form id="admissions_form" method="post" action="{% url 'archives_procedure' %}">
                 {% csrf_token %}
 

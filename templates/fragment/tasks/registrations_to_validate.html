@@ -8,6 +8,13 @@
     <a class="btn btn-primary pull-right" id="btn_validate_registrations" data-toggle="modal" data-target="#registrations_to_validate_modal">
         <i class="fa fa-check-circle"></i> {% trans 'Validate selected registrations' %}
     </a>
+    {% if registrations_to_validate %}
+        <div class="row">
+            <div class="col-md-6">
+                <strong style="margin-left:10px;color:grey;"> {{ to_validate_count }} {% trans 'Registrations to validate'|lower %} </strong>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 <form id="registrations_to_validate_form" method="post" action="{% url 'validate_registrations' %}">

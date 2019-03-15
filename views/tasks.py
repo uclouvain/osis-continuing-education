@@ -31,7 +31,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
 
@@ -57,10 +57,11 @@ def list_tasks(request):
         state=admission_state_choices.VALIDATED,
         diploma_produced=False
     )
-
     return render(request, "tasks.html", {
         'registrations_to_validate': registrations_to_validate,
+        'to_validate_count': registrations_to_validate.count(),
         'admissions_diploma_to_produce': admissions_diploma_to_produce,
+        'diplomas_count': admissions_diploma_to_produce.count()
     })
 
 
