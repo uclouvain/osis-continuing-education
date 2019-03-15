@@ -29,9 +29,11 @@ from django.utils.translation import gettext as _
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from continuing_education.business.admission import _get_formatted_admission_data
+from base.tests.factories.person import PersonFactory
+from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.person_training import PersonTrainingFactory
 
 
 class TestAdmission(TestCase):
@@ -68,3 +70,16 @@ class TestAdmission(TestCase):
             _get_formatted_admission_data(admission),
             expected_list
         )
+
+    def test_get_managers_mail(self):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        manager = PersonFactory(last_name="AAA")
+        manager_2 = PersonFactory(last_name="BBB")
+        cet = ContinuingEducationTrainingFactory(education_group=ed)
+        PersonTrainingFactory(person=manager, training=cet)
+        PersonTrainingFactory(person=manager_2, training=cet)
+        admission = AdmissionFactory(formation=cet)
+        expected_mails = "{} {}{} ".format(manager.email, _(" or "), manager_2.email)
+
+        self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
