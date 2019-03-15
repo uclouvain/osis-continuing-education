@@ -43,15 +43,17 @@ def send_state_changed_email(admission, connected_user=None):
             'html': 'iufc_participant_state_changed_{}_html'.format(admission.state.lower()),
             'txt': 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower()),
         },
-        template_data={
-            'first_name': admission.person_information.person.first_name,
-            'last_name': admission.person_information.person.last_name,
-            'formation': admission.formation,
-            'state': _(admission.state),
-            'reason': admission.state_reason if admission.state_reason else '-',
-        },
-        subject_data={
-            'state': _(admission.state)
+        data={
+            'template': {
+                'first_name': admission.person_information.person.first_name,
+                'last_name': admission.person_information.person.last_name,
+                'formation': admission.formation,
+                'state': _(admission.state),
+                'reason': admission.state_reason if admission.state_reason else '-',
+            },
+            'subject': {
+                'state': _(admission.state)
+            }
         },
         receivers=[
             message_config.create_receiver(
@@ -75,15 +77,17 @@ def send_admission_submitted_email_to_admin(admission):
             'html': 'iufc_admin_admission_submitted_html',
             'txt': 'iufc_admin_admission_submitted_txt',
         },
-        template_data={
-            'first_name': admission.person_information.person.first_name,
-            'last_name': admission.person_information.person.last_name,
-            'formation': admission.formation,
-            'state': _(admission.state),
-            'formation_link': formation_url,
-        },
-        subject_data={
-            'formation': admission.formation.acronym,
+        data={
+            'template': {
+                'first_name': admission.person_information.person.first_name,
+                'last_name': admission.person_information.person.last_name,
+                'formation': admission.formation,
+                'state': _(admission.state),
+                'formation_link': formation_url,
+            },
+            'subject': {
+                'formation': admission.formation.acronym,
+            }
         },
         receivers=[
             message_config.create_receiver(
@@ -103,11 +107,13 @@ def send_admission_submitted_email_to_participant(admission):
             'html': 'iufc_participant_admission_submitted_html',
             'txt': 'iufc_participant_admission_submitted_txt',
         },
-        template_data={
-            'formation': admission.formation.acronym,
-            'admission_data': _get_formatted_admission_data(admission)
+        data={
+            'template': {
+                'formation': admission.formation.acronym,
+                'admission_data': _get_formatted_admission_data(admission)
+            },
+            'subject': {}
         },
-        subject_data={},
         receivers=[
             message_config.create_receiver(
                 participant.id,
@@ -125,10 +131,12 @@ def send_invoice_uploaded_email(admission):
             'html': 'iufc_participant_invoice_uploaded_html',
             'txt': 'iufc_participant_invoice_uploaded_txt',
         },
-        template_data={
-            'formation': admission.formation.acronym,
+        data={
+            'template': {
+                'formation': admission.formation.acronym,
+            },
+            'subject': {}
         },
-        subject_data={},
         receivers=[
             message_config.create_receiver(
                 participant.id,
@@ -139,14 +147,14 @@ def send_invoice_uploaded_email(admission):
     )
 
 
-def send_email(template_references, receivers, template_data, subject_data, connected_user=None):
+def send_email(template_references, receivers, data, connected_user=None):
     message_content = message_config.create_message_content(
         template_references['html'],
         template_references['txt'],
         [],
         receivers,
-        template_data,
-        subject_data
+        data['template'],
+        data['subject']
     )
     message_service.send_messages(message_content, connected_user)
 
