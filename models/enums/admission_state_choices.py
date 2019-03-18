@@ -70,7 +70,6 @@ ADMISSION_STATE_CHOICES = (
     (SUBMITTED, _('Submitted')),
     (REJECTED, _('Rejected')),
     (WAITING, _('Waiting')),
-
 )
 REGISTRATION_STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
