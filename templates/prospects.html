@@ -45,6 +45,13 @@
     <div class="panel panel-default">
 
         <div class="panel panel-body">
+            {% if prospects %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong style="margin-left:10px;color:grey;"> {{ prospects_count }} {% trans 'Prospects'|lower %} </strong>
+                    </div>
+                </div>
+            {% endif %}
              <table class="table table-striped table-hover" id="order_prospect">
                 <thead>
                     <tr>

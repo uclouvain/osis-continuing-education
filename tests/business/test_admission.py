@@ -107,30 +107,30 @@ class SendEmailTest(TestCase):
         admission.send_state_changed_email(self.admission)
         args = mock_send.call_args[1]
 
-        self.assertEqual(_(self.admission.state), args.get('subject_data').get('state'))
+        self.assertEqual(_(self.admission.state), args.get('data').get('subject').get('state'))
         self.assertEqual(
             _get_managers_mails(self.admission.formation),
-            args.get('template_data').get('mails')
+            args.get('data').get('template').get('mails')
         )
         self.assertEqual(
             self.admission.person_information.person.first_name,
-            args.get('template_data').get('first_name')
+            args.get('data').get('template').get('first_name')
         )
         self.assertEqual(
             self.admission.person_information.person.last_name,
-            args.get('template_data').get('last_name')
+            args.get('data').get('template').get('last_name')
         )
         self.assertEqual(
             self.admission.formation,
-            args.get('template_data').get('formation')
+            args.get('data').get('template').get('formation')
         )
         self.assertEqual(
             _(self.admission.state),
-            args.get('template_data').get('state')
+            args.get('data').get('template').get('state')
         )
         self.assertEqual(
             self.admission.state_reason if self.admission.state_reason else "-",
-            args.get('template_data').get('reason')
+            args.get('data').get('template').get('reason')
         )
         self.assertEqual(len(args.get('receivers')), 1)
         self.assertIsNone(args.get('attachment'))
@@ -141,28 +141,28 @@ class SendEmailTest(TestCase):
         self.manager.user.groups.add(group)
         admission.send_admission_submitted_email_to_admin(self.admission)
         args = mock_send.call_args[1]
-        self.assertEqual(_(self.admission.formation.acronym), args.get('subject_data').get('formation'))
+        self.assertEqual(_(self.admission.formation.acronym), args.get('data').get('subject').get('formation'))
         self.assertEqual(
             self.admission.person_information.person.first_name,
-            args.get('template_data').get('first_name')
+            args.get('data').get('template').get('first_name')
         )
         self.assertEqual(
             self.admission.person_information.person.last_name,
-            args.get('template_data').get('last_name')
+            args.get('data').get('template').get('last_name')
         )
         self.assertEqual(
             self.admission.formation,
-            args.get('template_data').get('formation')
+            args.get('data').get('template').get('formation')
         )
         self.assertEqual(
             _(self.admission.state),
-            args.get('template_data').get('state')
+            args.get('data').get('template').get('state')
         )
         relative_path = reverse('admission_detail', kwargs={'admission_id': self.admission.id})
         url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
         self.assertEqual(
             url,
-            args.get('template_data').get('formation_link')
+            args.get('data').get('template').get('formation_link')
         )
         self.assertEqual(len(args.get('receivers')), 1)
         self.assertIsNone(args.get('attachment'))
@@ -172,18 +172,18 @@ class SendEmailTest(TestCase):
         admission.send_admission_submitted_email_to_participant(self.admission)
         args = mock_send.call_args[1]
 
-        self.assertEqual({}, args.get('subject_data'))
+        self.assertEqual({}, args.get('data').get('subject'))
         self.assertEqual(
             _get_managers_mails(self.admission.formation),
-            args.get('template_data').get('mails')
+            args.get('data').get('template').get('mails')
         )
         self.assertEqual(
             self.admission.formation.acronym,
-            args.get('template_data').get('formation')
+            args.get('data').get('template').get('formation')
         )
         self.assertEqual(
             _get_formatted_admission_data(self.admission),
-            args.get('template_data').get('admission_data')
+            args.get('data').get('template').get('admission_data')
         )
         self.assertEqual(len(args.get('receivers')), 1)
         self.assertIsNone(args.get('attachment'))
@@ -193,14 +193,14 @@ class SendEmailTest(TestCase):
         admission.send_invoice_uploaded_email(self.admission)
         args = mock_send.call_args[1]
 
-        self.assertEqual({}, args.get('subject_data'))
+        self.assertEqual({}, args.get('data').get('subject'))
         self.assertEqual(
             _get_managers_mails(self.admission.formation),
-            args.get('template_data').get('mails')
+            args.get('data').get('template').get('mails')
         )
         self.assertEqual(
             self.admission.formation.acronym,
-            args.get('template_data').get('formation')
+            args.get('data').get('template').get('formation')
         )
         self.assertEqual(len(args.get('receivers')), 1)
         self.assertIsNone(args.get('attachment'))
