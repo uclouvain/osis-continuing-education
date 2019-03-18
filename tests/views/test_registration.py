@@ -181,6 +181,7 @@ class RegistrationStateChangedTestCase(TestCase):
         registration = {
             'state': VALIDATED,
             'formation': self.formation.pk,
+            'person_information': self.registration_submitted.person_information.pk
         }
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])

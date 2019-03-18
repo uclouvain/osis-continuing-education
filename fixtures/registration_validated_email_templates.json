@@ -1,0 +1,22 @@
+[
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_state_changed_validated_html",
+        "subject": "IUFC - Demande d'inscription validée",
+        "template": "<p>Votre demande d'inscription pour la formation {{formation}} a été validée.</p> \n\n <p> Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+        "format": "HTML",
+        "language": "fr-be"
+    }
+},
+{
+    "model": "osis_common.messagetemplate",
+    "fields": {
+        "reference": "iufc_participant_state_changed_validated_txt",
+        "subject": "IUFC - Demande d'inscription validée",
+        "template": "Votre demande d'inscription pour la formation {{formation}} a été validée. \n\n Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+        "format": "PLAIN",
+        "language": "fr-be"
+    }
+}
+]
