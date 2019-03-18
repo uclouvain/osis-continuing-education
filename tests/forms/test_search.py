@@ -29,7 +29,7 @@ from operator import itemgetter
 
 from django.test import TestCase
 from django.utils import timezone
-from django.utils.translation import pgettext_lazy as _
+from django.utils.translation import pgettext_lazy, gettext_lazy as _
 
 from base.models.enums.entity_type import FACULTY, SCHOOL
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
@@ -155,7 +155,7 @@ class TestFilterForm(TestCase):
         self.assertListEqual(
             list(form.fields['state'].choices),
             [
-                ('', _("plural", "All")),
+                ('', pgettext_lazy("plural", "All")),
                 ('Waiting', _('Waiting')),
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
@@ -167,7 +167,7 @@ class TestFilterForm(TestCase):
         self.assertListEqual(
             list(form.fields['state'].choices),
             [
-                ('', _("plural", "All")),
+                ('', pgettext_lazy("plural", "All")),
                 ('Accepted', _('Accepted')),
                 ('Registration submitted',  _('Registration submitted')),
                 ('Validated', _('Validated'))
