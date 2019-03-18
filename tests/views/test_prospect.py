@@ -66,6 +66,7 @@ class ProspectListTestCase(TestCase):
 
         for index, object in enumerate(response.context['prospects'].object_list):
             self.assertEqual(response.context['prospects'].object_list[index], prospects[index])
+        self.assertEqual(response.context['prospects_count'], len(prospects))
 
     def test_prospect_list_no_result(self):
         response = self.client.post(reverse('prospects'))

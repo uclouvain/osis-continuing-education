@@ -36,22 +36,26 @@ from osis_common.messaging import send_message as message_service
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
 
-def send_state_changed_email(admission):
+def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
+    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_state_changed_{}_html'.format(admission.state.lower()),
             'txt': 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower()),
         },
-        template_data={
-            'first_name': admission.person_information.person.first_name,
-            'last_name': admission.person_information.person.last_name,
-            'formation': admission.formation,
-            'state': _(admission.state),
-            'reason': admission.state_reason if admission.state_reason else '-',
-        },
-        subject_data={
-            'state': _(admission.state)
+        data={
+            'template': {
+                'first_name': admission.person_information.person.first_name,
+                'last_name': admission.person_information.person.last_name,
+                'formation': admission.formation,
+                'state': _(admission.state),
+                'reason': admission.state_reason if admission.state_reason else '-',
+                'mails': mails
+            },
+            'subject': {
+                'state': _(admission.state)
+            }
         },
         receivers=[
             message_config.create_receiver(
@@ -60,6 +64,7 @@ def send_state_changed_email(admission):
                 None
             )
         ],
+        connected_user=connected_user
     )
 
 
@@ -74,15 +79,17 @@ def send_admission_submitted_email_to_admin(admission):
             'html': 'iufc_admin_admission_submitted_html',
             'txt': 'iufc_admin_admission_submitted_txt',
         },
-        template_data={
-            'first_name': admission.person_information.person.first_name,
-            'last_name': admission.person_information.person.last_name,
-            'formation': admission.formation,
-            'state': _(admission.state),
-            'formation_link': formation_url,
-        },
-        subject_data={
-            'formation': admission.formation.acronym,
+        data={
+            'template': {
+                'first_name': admission.person_information.person.first_name,
+                'last_name': admission.person_information.person.last_name,
+                'formation': admission.formation,
+                'state': _(admission.state),
+                'formation_link': formation_url,
+            },
+            'subject': {
+                'formation': admission.formation.acronym,
+            }
         },
         receivers=[
             message_config.create_receiver(
@@ -97,16 +104,20 @@ def send_admission_submitted_email_to_admin(admission):
 
 def send_admission_submitted_email_to_participant(admission):
     participant = admission.person_information.person
+    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_admission_submitted_html',
             'txt': 'iufc_participant_admission_submitted_txt',
         },
-        template_data={
-            'formation': admission.formation.acronym,
-            'admission_data': _get_formatted_admission_data(admission)
+        data={
+            'template': {
+                'formation': admission.formation.acronym,
+                'admission_data': _get_formatted_admission_data(admission),
+                'mails': mails
+            },
+            'subject': {}
         },
-        subject_data={},
         receivers=[
             message_config.create_receiver(
                 participant.id,
@@ -119,15 +130,19 @@ def send_admission_submitted_email_to_participant(admission):
 
 def send_invoice_uploaded_email(admission):
     participant = admission.person_information.person
+    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_invoice_uploaded_html',
             'txt': 'iufc_participant_invoice_uploaded_txt',
         },
-        template_data={
-            'formation': admission.formation.acronym,
+        data={
+            'template': {
+                'formation': admission.formation.acronym,
+                'mails': mails
+            },
+            'subject': {}
         },
-        subject_data={},
         receivers=[
             message_config.create_receiver(
                 participant.id,
@@ -138,16 +153,16 @@ def send_invoice_uploaded_email(admission):
     )
 
 
-def send_email(template_references, receivers, template_data, subject_data):
+def send_email(template_references, receivers, data, connected_user=None):
     message_content = message_config.create_message_content(
         template_references['html'],
         template_references['txt'],
         [],
         receivers,
-        template_data,
-        subject_data
+        data['template'],
+        data['subject']
     )
-    message_service.send_messages(message_content)
+    message_service.send_messages(message_content, connected_user)
 
 
 def _get_continuing_education_managers():
@@ -207,3 +222,9 @@ def _get_faculty_parent(management_entity):
     faculty = EntityVersion.objects.filter(entity=management_entity).first()
     if faculty:
         return faculty.parent
+
+
+def _get_managers_mails(formation):
+    managers_mail = formation.managers.all().order_by('last_name').values_list('email', flat=True) \
+        if formation else []
+    return _(" or ").join(managers_mail)

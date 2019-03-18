@@ -54,6 +54,7 @@ def list_registrations(request):
 
     return render(request, "registrations.html", {
         'admissions': get_object_list(request, admission_list),
+        'admissions_number': len(admission_list),
         'search_form': search_form
     })
 

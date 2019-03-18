@@ -51,8 +51,16 @@
                         <label for="faculty_id">{% trans 'Formation' %}</label>
                         {{ search_form.formation }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
+                        <label for="state_id">{% trans 'State' %}</label>
+                        {{ search_form.state }}
                     </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
                 </div>
                 <div class="row">
                     <div class="col-md-3">
@@ -63,23 +71,22 @@
                         <label for="payment_complete_id">{% trans 'Paid' %}</label>
                         {{ search_form.payment_complete }}
                     </div>
-                    <div class="col-md-3">
-                        <label for="state_id">{% trans 'State' %}</label>
-                        {{ search_form.state }}
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-default" style="margin-top: 26px;">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            {% trans 'Search' %}
-                        </button>
+                    <div class="col-md-6">
                     </div>
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
             </form>
         </div>
         <div class="panel panel-body">
-            {% trans 'Produce xls with list of registrations' as title_xls_trans %}
+            {% trans 'Produce xls' as title_xls_trans %}
             {% include 'blocks/dropdown/list_actions.html' with button_title=title_xls_trans %}
+            {% if admissions %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong style="margin-left:10px;color:grey;"> {{ admissions_number }} {% trans 'Registrations'|lower %} </strong>
+                    </div>
+                </div>
+            {% endif %}
             <form id="admissions_form" method="post" action="{% url 'archives_procedure' %}">
                 {% csrf_token %}
 

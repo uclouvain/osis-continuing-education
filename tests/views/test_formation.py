@@ -95,6 +95,7 @@ class ViewFormationTestCase(TestCase):
 
         self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA.education_group)
         self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
+        self.assertEqual(response.context['formations_number'], 2)
 
 
 class FormationActivateTestCase(TestCase):

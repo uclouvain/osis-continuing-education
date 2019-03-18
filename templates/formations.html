@@ -65,9 +65,8 @@
                         {{ search_form.state }}
                     </div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-default" style="margin-top: 26px;">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            {% trans 'Search' %}
                         </button>
                     </div>
                 </div>
@@ -93,11 +92,18 @@
                 </li>
                 <li role="separator" class="divider"></li>
                 <li>
-                    {% trans 'Produce xls with list of formations' as title_xls_trans %}
+                    {% trans 'Produce xls' as title_xls_trans %}
                     {% include "blocks/button/xls.html" with button_title=title_xls_trans %}
                 </li>
             </ul>
         </div>
+        {% if formations %}
+            <div class="row">
+                <div class="col-md-6">
+                    <strong style="margin-left:10px;color:grey;"> {{ formations_number }} {% trans 'Formations'|lower %} </strong>
+                </div>
+            </div>
+        {% endif %}
         <div class="panel panel-body">
             <form id="formations_form" method="get" action="{% url 'formations_procedure' %}">
                 {% csrf_token %}

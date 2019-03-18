@@ -181,6 +181,7 @@ class RegistrationStateChangedTestCase(TestCase):
         registration = {
             'state': VALIDATED,
             'formation': self.formation.pk,
+            'person_information': self.registration_submitted.person_information.pk
         }
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
@@ -259,4 +260,5 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['admissions'], [self.registration])
+        self.assertEqual(response.context['admissions_number'], 1)
         self.assertTemplateUsed(response, 'registrations.html')

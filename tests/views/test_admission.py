@@ -341,6 +341,7 @@ class AdmissionStateChangedTestCase(TestCase):
         admission = {
             'state': new_state,
             'formation': self.formation.pk,
+            'person_information': self.admission.person_information.pk
         }
         data = admission
         if new_state == REJECTED:
