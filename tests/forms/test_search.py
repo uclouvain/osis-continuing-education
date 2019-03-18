@@ -29,7 +29,7 @@ from operator import itemgetter
 
 from django.test import TestCase
 from django.utils import timezone
-from django.utils.translation import pgettext_lazy, gettext_lazy as _
+from django.utils.translation import pgettext_lazy, gettext as _
 
 from base.models.enums.entity_type import FACULTY, SCHOOL
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
