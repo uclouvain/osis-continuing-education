@@ -52,6 +52,7 @@ def list_archives(request):
 
     return render(request, "archives.html", {
         'archives': get_object_list(request, archive_list),
+        'archives_number': len(archive_list),
         'search_form': search_form
     })
 

@@ -77,6 +77,13 @@
                 &nbsp;{% trans 'Produce xls with list of archives' %}
                 <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
             </button>
+            {% if archives %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong style="margin-left:10px;color:grey;"> {{ archives_number }} {% trans 'Archives'|lower %} </strong>
+                    </div>
+                </div>
+            {% endif %}
              <table class="table table-striped table-hover" id="order_archive">
                 <thead>
                     <tr>

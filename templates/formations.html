@@ -98,6 +98,13 @@
                 </li>
             </ul>
         </div>
+        {% if formations %}
+            <div class="row">
+                <div class="col-md-6">
+                    <strong style="margin-left:10px;color:grey;"> {{ formations_number }} {% trans 'Formations'|lower %} </strong>
+                </div>
+            </div>
+        {% endif %}
         <div class="panel panel-body">
             <form id="formations_form" method="get" action="{% url 'formations_procedure' %}">
                 {% csrf_token %}

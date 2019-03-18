@@ -25,9 +25,8 @@
 ##############################################################################
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
-from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -35,8 +34,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED
-from continuing_education.models.person_training import PersonTraining
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
@@ -92,6 +90,7 @@ class ViewUpdateTasksTestCase(TestCase):
             response.context['registrations_to_validate'],
             self.registrations_to_validate
         )
+        self.assertEqual(response.context['to_validate_count'], len(self.registrations_to_validate))
 
         self.assertNotIn(
             self.registration_not_to_validate,
@@ -102,6 +101,7 @@ class ViewUpdateTasksTestCase(TestCase):
             response.context['admissions_diploma_to_produce'],
             self.diplomas_to_produce
         )
+        self.assertEqual(response.context['diplomas_count'], len(self.diplomas_to_produce))
         self.assertNotIn(
             self.no_diploma_to_produce,
             response.context['admissions_diploma_to_produce']

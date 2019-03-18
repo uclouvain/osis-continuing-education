@@ -27,7 +27,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -66,6 +66,7 @@ class ProspectListTestCase(TestCase):
 
         for index, object in enumerate(response.context['prospects'].object_list):
             self.assertEqual(response.context['prospects'].object_list[index], prospects[index])
+        self.assertEqual(response.context['prospects_count'], len(prospects))
 
     def test_prospect_list_no_result(self):
         response = self.client.post(reverse('prospects'))

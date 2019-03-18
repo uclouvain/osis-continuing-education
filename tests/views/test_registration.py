@@ -32,7 +32,7 @@ from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -259,4 +259,5 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['admissions'], [self.registration])
+        self.assertEqual(response.context['admissions_number'], 1)
         self.assertTemplateUsed(response, 'registrations.html')
