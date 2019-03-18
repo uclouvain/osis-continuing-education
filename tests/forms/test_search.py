@@ -152,19 +152,18 @@ class TestFilterForm(TestCase):
 
     def test_queryset_admission_state_init(self):
         form = AdmissionFilterForm()
-        self.assertListEqual(
+        self.assertCountEqual(
             list(form.fields['state'].choices),
             [
                 ('', pgettext_lazy("plural", "All")),
                 ('Waiting', _('Waiting')),
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
-            ]
-        )
+            ])
 
     def test_queryset_registration_state_init(self):
         form = RegistrationFilterForm()
-        self.assertListEqual(
+        self.assertCountEqual(
             list(form.fields['state'].choices),
             [
                 ('', pgettext_lazy("plural", "All")),
