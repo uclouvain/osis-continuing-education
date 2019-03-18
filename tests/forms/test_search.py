@@ -156,9 +156,9 @@ class TestFilterForm(TestCase):
             list(form.fields['state'].choices),
             [
                 ('', pgettext_lazy("plural", "All")),
-                ('Waiting', _('Waiting')),
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
+                ('Waiting', _('Waiting')),
             ]
         )
 
