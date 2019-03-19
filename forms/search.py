@@ -253,6 +253,10 @@ class FormationFilterForm(AdmissionFilterForm):
 
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
 
+    def __init__(self, *args, **kwargs):
+        super(FormationFilterForm, self).__init__(*args, **kwargs)
+        self.fields['state'].choices = FORMATION_STATE_CHOICES
+
     def get_formations(self):
         faculty = self.cleaned_data.get('faculty', None)
         acronym = self.cleaned_data.get('acronym', None)
