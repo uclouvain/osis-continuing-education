@@ -147,7 +147,13 @@
                             <td>{{ most_recent_education_group|get_faculty  | default_if_none:'' }}</td>
                             <td>{{ most_recent_education_group.title | default_if_none:'' }}</td>
                             <td>{{ formation|get_active_continuing_education_formation }}</td>
-                            <td>{{ formation.continuingeducationtraining.training_aid|yesno|title }}</td>
+                            <td>
+                                {% if formation.continuingeducationtraining %}
+                                    {{ formation.continuingeducationtraining.training_aid|yesno|title }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endwith %}
 
