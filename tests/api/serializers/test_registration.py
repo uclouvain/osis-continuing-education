@@ -14,9 +14,12 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 class RegistrationListSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
         cls.person_information = ContinuingEducationPersonFactory()
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
+            formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
         url = reverse('continuing_education_api_v1:registration-list')
         cls.serializer = RegistrationListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
@@ -36,11 +39,14 @@ class RegistrationListSerializerTestCase(TestCase):
 class RegistrationDetailSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
         cls.person_information = ContinuingEducationPersonFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
         new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
+            formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
         url = reverse(
             'continuing_education_api_v1:registration-detail-update-destroy',
