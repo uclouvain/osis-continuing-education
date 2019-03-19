@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import uuid as uuid
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -61,6 +62,11 @@ class ContinuingEducationTraining(SerializableModel):
     active = models.BooleanField(
         default=False,
         verbose_name=_("Active")
+    )
+
+    training_aid = models.BooleanField(
+        default=False,
+        verbose_name=_("Training aid")
     )
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
