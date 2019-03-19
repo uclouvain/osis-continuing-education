@@ -123,7 +123,7 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
     formation = serializers.SlugRelatedField(
         queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
-        required=True
+        required=False
     )
 
     def update(self, instance, validated_data):
