@@ -52,7 +52,7 @@
                         <label for="acronym_id">{% trans 'Acronym' %}</label>
                         {{ search_form.acronym }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="title_id">{% trans 'Title' %}</label>
                         {{ search_form.title }}
                     </div>
@@ -64,7 +64,11 @@
                         <label for="state_id">{% trans 'State' %}</label>
                         {{ search_form.state }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <label for="training_aid_id">{% trans 'Training aid' %}</label>
+                        {{ search_form.training_aid }}
+                    </div>
+                    <div class="col-md-2">
                         <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         </button>
@@ -143,7 +147,7 @@
                             <td>{{ most_recent_education_group|get_faculty  | default_if_none:'' }}</td>
                             <td>{{ most_recent_education_group.title | default_if_none:'' }}</td>
                             <td>{{ formation|get_active_continuing_education_formation }}</td>
-                            <td>{{ formation.continuingeducationtraining.training_aid|yesno }}</td>
+                            <td>{{ formation.continuingeducationtraining.training_aid|yesno|title }}</td>
                         </tr>
                         {% endwith %}
 
