@@ -25,12 +25,12 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.models.education_group_year import EducationGroupYear
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.models.admission import Admission
-from education_group.api.serializers.training import TrainingListSerializer
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
@@ -43,7 +43,7 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
     # Display human readable value
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
-    formation = TrainingListSerializer()
+    formation = ContinuingEducationTrainingSerializer()
 
     class Meta:
         model = Admission
@@ -121,9 +121,9 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
     residence_address = AddressPostSerializer(required=False)
 
     formation = serializers.SlugRelatedField(
-        queryset=EducationGroupYear.objects.all(),
+        queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
-        required=False
+        required=True
     )
 
     def update(self, instance, validated_data):
