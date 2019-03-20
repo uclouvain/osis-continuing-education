@@ -24,9 +24,11 @@
 #
 ##############################################################################
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Group
 from django.shortcuts import render
 
 from base.models.person import Person
+from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list
@@ -36,9 +38,17 @@ from continuing_education.views.common import get_object_list
 @permission_required('continuing_education.can_validate_admission', raise_exception=True)
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
+    person_training_form = PersonTrainingForm(data=request.POST)
     managers = Person.objects.filter(user__groups__name='continuing_education_training_managers')
+
     if search_form.is_valid():
         managers = search_form.get_managers()
+
+    if person_training_form.is_valid():
+        person = person_training_form.cleaned_data['person']
+        _append_user_to_training_managers(person.user)
+        person_training_form.save()
+
     for manager in managers:
         manager.trainings = []
         person_trainings = PersonTraining.objects.filter(person=manager).select_related(
@@ -49,5 +59,13 @@ def list_managers(request):
 
     return render(request, "managers.html", {
         'managers': get_object_list(request, managers),
-        'search_form': search_form
+        'search_form': search_form,
+        'person_training_form': person_training_form
     })
+
+
+def _append_user_to_training_managers(user):
+    if user:
+        group = Group.objects.get(name='continuing_education_training_managers')
+        if not user.groups.filter(name=group.name).exists():
+            group.user_set.add(user)
