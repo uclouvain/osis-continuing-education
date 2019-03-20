@@ -27,16 +27,26 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
 from base.models.person import Person
+from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.person_training import PersonTraining
 
 
 @login_required
 @permission_required('continuing_education.can_validate_admission', raise_exception=True)
 def list_managers(request):
+    search_form = ManagerFilterForm(data=request.GET)
     managers = Person.objects.filter(user__groups__name='continuing_education_training_managers')
+    if search_form.is_valid():
+        managers = search_form.get_managers()
     for manager in managers:
-        manager.formation = []
-        person_trainings = PersonTraining.objects.filter(person=manager)
+        manager.trainings = []
+        person_trainings = PersonTraining.objects.filter(person=manager).select_related(
+            'training'
+        )
+        for affectation in person_trainings:
+            manager.trainings.append(affectation.training)
+
     return render(request, "managers.html", {
-        'managers': managers
+        'managers': managers,
+        'search_form': search_form
     })

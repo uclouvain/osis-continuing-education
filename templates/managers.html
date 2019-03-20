@@ -45,16 +45,12 @@
 
     <div class="panel panel-default">
         <div class="panel panel-body">
-            <form style="display: inline;" action="{% url 'formation' %}" method="get" class="" id="search_form">
+            <form style="display: inline;" action="{% url 'list_managers' %}" method="get" class="" id="search_form">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-md-2">
                         <label for="acronym_id">{% trans 'Training' %}</label>
-                        {{ search_form.acronym }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="faculty_id">{% trans 'Faculty' %}</label>
-                        {{ search_form.faculty }}
+                        {{ search_form.training }}
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-default" style="margin-top: 26px;">
@@ -80,7 +76,7 @@
                     <tr>
                         <th class="searchable">{% trans 'Name' %}</th>
                         <th class="searchable">{% trans 'First name' %}</th>
-                        <th class="searchable">{% trans 'Formation' %}</th>
+                        <th class="searchable">{% trans 'Trainings' %}</th>
                     </tr>
                     </thead>
 {#                    <tfoot>#}
@@ -95,6 +91,13 @@
                         <tr>
                             <td>{{ manager.last_name }}</td>
                             <td>{{ manager.first_name }}</td>
+                            <td>
+                                <ul style='list-style-type:none; padding-left: 0;'>
+                                {% for training in manager.trainings %}
+                                    <li>{{ training }}</li>
+                                {% endfor %}
+                                </ul>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>

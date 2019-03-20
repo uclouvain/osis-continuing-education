@@ -14,12 +14,14 @@ from base.models.education_group import EducationGroup
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
+from base.models.person import Person
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
+from continuing_education.models.person_training import PersonTraining
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
@@ -280,3 +282,27 @@ def _build_active_parameter(qs, state):
 def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
     entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
     return qs.filter(educationgroupyear__management_entity__in=entity_ids)
+
+
+class ManagerFilterForm(BootstrapForm):
+    training = FormationModelChoiceField(
+        queryset=ContinuingEducationTraining.objects.filter(active=True),
+        widget=forms.Select(),
+        empty_label=pgettext("plural", "All"),
+        required=False,
+        label=_('Formation')
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ManagerFilterForm, self).__init__(*args, **kwargs)
+
+    def get_managers(self):
+        training = self.cleaned_data.get('training', None)
+        qs = Person.objects.filter(user__groups__name='continuing_education_training_managers')
+        if training:
+            qs = qs.filter(
+                id__in=PersonTraining.objects.filter(
+                    training=training
+                ).values_list('person__id')
+            )
+        return qs
