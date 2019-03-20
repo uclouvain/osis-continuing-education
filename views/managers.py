@@ -29,6 +29,7 @@ from django.shortcuts import render
 from base.models.person import Person
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.person_training import PersonTraining
+from continuing_education.views.common import get_object_list
 
 
 @login_required
@@ -47,6 +48,6 @@ def list_managers(request):
             manager.trainings.append(affectation.training)
 
     return render(request, "managers.html", {
-        'managers': managers,
+        'managers': get_object_list(request, managers),
         'search_form': search_form
     })

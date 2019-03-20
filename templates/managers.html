@@ -79,13 +79,13 @@
                         <th class="searchable">{% trans 'Trainings' %}</th>
                     </tr>
                     </thead>
-{#                    <tfoot>#}
-{#                    <tr>#}
-{#                        <td colspan="5">#}
-{#                            {% bootstrap_pagination formations extra=request.GET.urlencode %}#}
-{#                        </td>#}
-{#                    </tr>#}
-{#                    </tfoot>#}
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            {% bootstrap_pagination managers extra=request.GET.urlencode %}
+                        </td>
+                    </tr>
+                    </tfoot>
                     <tbody>
                     {% for manager in managers %}
                         <tr>
