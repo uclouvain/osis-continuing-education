@@ -45,3 +45,6 @@ class PersonTraining(SerializableModel):
         'continuing_education.ContinuingEducationTraining',
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        unique_together = ("person", "training")
