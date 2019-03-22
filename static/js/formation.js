@@ -3,21 +3,21 @@ $("#id_check_all").click(function(){
 });
 
 $("#btn_activate").click(function(e) {
-    $("#new_state").val(true);
+    $("#new_state").val("True");
     $("#formations_form").submit();
 });
 
 $("#btn_disable").click(function(e) {
-    $("#new_state").val(false);
+    $("#new_state").val("False");
     $("#formations_form").submit();
 });
 
 $("#btn_training_aid_yes").click(function(e) {
-    $("#new_training_aid_value").val(true);
+    $("#new_training_aid_value").val("True");
     $("#formations_form").submit();
 });
 
 $("#btn_training_aid_no").click(function(e) {
-    $("#new_training_aid_value").val(false);
+    $("#new_training_aid_value").val("False");
     $("#formations_form").submit();
 });

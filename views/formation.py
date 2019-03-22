@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import ast
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -59,15 +60,14 @@ def list_formations(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def update_formations(request):
-    # Function to activate or deactivate
     selected_formations_ids = request.GET.getlist("selected_action", default=[])
 
     if not selected_formations_ids:
         display_error_messages(request, _('Please select at least one formation'))
         return redirect(reverse('formation'))
 
-    new_state = _get_bool_from_str(request.GET.get("new_state"))
-    new_training_aid_value = _get_bool_from_str(request.GET.get("new_training_aid_value"))
+    new_state = ast.literal_eval(str(request.GET.get("new_state")))
+    new_training_aid_value = ast.literal_eval(str(request.GET.get("new_training_aid_value")))
 
     if new_state is not None:
         _formation_activate(request, selected_formations_ids, new_state)
@@ -75,14 +75,6 @@ def update_formations(request):
         _update_training_aid_value(request, selected_formations_ids, new_training_aid_value)
 
     return redirect(reverse('formation'))
-
-
-def _get_bool_from_str(string):
-    if string == "true":
-        return True
-    elif string == "false":
-        return False
-    return None
 
 
 def _formation_activate(request, selected_formations_ids, new_state):

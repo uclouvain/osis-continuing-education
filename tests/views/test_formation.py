@@ -41,8 +41,8 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
-STR_TRUE = "true"
-STR_FALSE = "false"
+STR_TRUE = "True"
+STR_FALSE = "False"
 
 
 class ViewFormationTestCase(TestCase):
