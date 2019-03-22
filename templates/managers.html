@@ -92,9 +92,13 @@
                             <td>{{ manager.first_name }}</td>
                             <td>
                                 <ul style='list-style-type:none; padding-left: 0;'>
-                                {% for training in manager.trainings %}
-                                    <li>{{ training }}</li>
-                                {% endfor %}
+                                {% if not manager.trainings %}
+                                    <li>{% trans 'No training' %}</li>
+                                {% else %}
+                                    {% for training in manager.trainings %}
+                                        <li>{{ training }}</li>
+                                    {% endfor %}
+                                {% endif %}
                                 </ul>
                             </td>
                         </tr>
