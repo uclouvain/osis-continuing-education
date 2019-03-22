@@ -43,6 +43,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 
 STR_TRUE = "True"
 STR_FALSE = "False"
+STR_NONE = "None"
 
 
 class ViewFormationTestCase(TestCase):
@@ -142,6 +143,7 @@ class FormationActivateTestCase(TestCase):
 
         data = {
             "new_state": STR_TRUE,
+            "new_training_aid_value": STR_NONE,
             "selected_action": [str(self.formation1_to_activate.education_group.id)]
         }
         msg_expected = _('Formation is now active')
@@ -154,6 +156,7 @@ class FormationActivateTestCase(TestCase):
 
         data = {
             "new_state": STR_TRUE,
+            "new_training_aid_value": STR_NONE,
             "selected_action": [
                 str(self.formation1_to_activate.education_group.id),
                 str(self.formation2_to_activate.education_group.id)
@@ -169,6 +172,7 @@ class FormationActivateTestCase(TestCase):
 
         data = {
             "new_state": STR_FALSE,
+            "new_training_aid_value": STR_NONE,
             "selected_action": [str(self.formation1_to_deactivate.education_group.id)]
         }
         msg_expected = _('Formation is now inactive')
@@ -181,6 +185,7 @@ class FormationActivateTestCase(TestCase):
 
         data = {
             "new_state": STR_FALSE,
+            "new_training_aid_value": STR_NONE,
             "selected_action": [
                 str(self.formation1_to_deactivate.education_group.id),
                 str(self.formation2_to_deactivate.education_group.id)
@@ -196,6 +201,7 @@ class FormationActivateTestCase(TestCase):
 
         data = {
             "new_state": STR_TRUE,
+            "new_training_aid_value": STR_NONE,
             "selected_action": [str(self.education_group_yr_not_organized_yet.education_group.id)]
         }
         msg_expected = _('Formation is now active')
@@ -231,6 +237,7 @@ class FormationAidTestCase(TestCase):
     def test_set_training_aid(self):
         data = {
             "new_training_aid_value": STR_TRUE,
+            "new_state": STR_NONE,
             "selected_action": [
                 str(self.education_group_1.id),
                 str(self.education_group_2.id),
