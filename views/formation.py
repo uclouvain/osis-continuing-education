@@ -58,7 +58,7 @@ def list_formations(request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-def formations_activate(request):
+def update_formations(request):
     # Function to activate or deactivate
     selected_formations_ids = request.GET.getlist("selected_action", default=[])
 

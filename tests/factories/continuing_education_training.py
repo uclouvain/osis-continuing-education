@@ -36,4 +36,5 @@ class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
         model = ContinuingEducationTraining
 
     active = random.choice([True, False])
+    training_aid = random.choice([True, False])
     education_group = factory.SubFactory(EducationGroupFactory)

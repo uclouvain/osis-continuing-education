@@ -120,7 +120,7 @@
             </div>
         {% endif %}
         <div class="panel panel-body">
-            <form id="formations_form" method="get" action="{% url 'formations_procedure' %}">
+            <form id="formations_form" method="get" action="{% url 'update_formations' %}">
                 {% csrf_token %}
                 <input name="new_state" id="new_state" value="" type="hidden"/>
                 <input name="new_training_aid_value" id="new_training_aid_value" value="" type="hidden"/>
