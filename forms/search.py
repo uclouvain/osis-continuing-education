@@ -301,6 +301,23 @@ def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with
 
 
 class ManagerFilterForm(BootstrapForm):
+    person = ModelChoiceField(
+        queryset=Person.objects.filter(user__groups__name='continuing_education_training_managers'),
+        widget=forms.Select(),
+        empty_label=pgettext("plural", "All"),
+        required=False,
+        label=_('Manager')
+    )
+
+    faculty = FacultyModelChoiceField(
+        queryset=entity_version.find_latest_version(datetime.now())
+                               .filter(entity_type=entity_type.FACULTY).order_by('acronym'),
+        widget=forms.Select(),
+        empty_label=pgettext("plural", "All"),
+        required=False,
+        label=_('Faculty')
+    )
+
     training = FormationModelChoiceField(
         queryset=ContinuingEducationTraining.objects.filter(active=True),
         widget=forms.Select(),
@@ -314,11 +331,29 @@ class ManagerFilterForm(BootstrapForm):
 
     def get_managers(self):
         training = self.cleaned_data.get('training', None)
+        person = self.cleaned_data.get('person', None)
+        faculty = self.cleaned_data.get('faculty', None)
         qs = Person.objects.filter(user__groups__name='continuing_education_training_managers')
         if training:
             qs = qs.filter(
                 id__in=PersonTraining.objects.filter(
                     training=training
+                ).values_list('person__id')
+            )
+        if person:
+            qs = qs.filter(
+                id__in=PersonTraining.objects.filter(
+                    person=person
+                ).values_list('person__id')
+            )
+        if faculty:
+            entity = EntityVersion.objects.filter(id=faculty.id).first().entity
+            trainings_by_faculty = ContinuingEducationTraining.objects.filter(
+                education_group__educationgroupyear__management_entity=entity
+            )
+            qs = qs.filter(
+                id__in=PersonTraining.objects.filter(
+                    training__in=trainings_by_faculty
                 ).values_list('person__id')
             )
         return qs
