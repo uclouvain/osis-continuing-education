@@ -21,9 +21,9 @@ class AdmissionListSerializerTestCase(TestCase):
 
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
-            formation=ContinuingEducationTrainingFactory(education_group= ed)
+            formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
-        url = reverse('continuing_education_api_v1:admission-list-create')
+        url = reverse('continuing_education_api_v1:admission-list-create', kwargs={'uuid': cls.person_information.uuid})
         cls.serializer = AdmissionListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):

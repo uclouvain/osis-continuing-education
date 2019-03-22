@@ -24,7 +24,6 @@
 #
 ##############################################################################
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
@@ -34,20 +33,11 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
-class RegistrationHyperlinkedIdentityField(serializers.HyperlinkedIdentityField):
-    def __init__(self, **kwargs):
-        super().__init__(view_name='continuing_education_api_v1:registration-detail-update-destroy', **kwargs)
-
-    def get_url(self, obj, view_name, request, format):
-        url_kwargs = {
-            'uuid': obj.person_information.uuid,
-            'registration_uuid': obj.uuid
-        }
-        return reverse(view_name, kwargs=url_kwargs, request=request, format=format)
-
-
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
-    url = RegistrationHyperlinkedIdentityField()
+    url = serializers.HyperlinkedIdentityField(
+        view_name='continuing_education_api_v1:registration-detail-update-destroy',
+        lookup_field='uuid'
+    )
     person_information = ContinuingEducationPersonSerializer()
 
     # Display human readable value

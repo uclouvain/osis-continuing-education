@@ -21,7 +21,7 @@ class RegistrationListSerializerTestCase(TestCase):
             person_information=cls.person_information,
             formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
-        url = reverse('continuing_education_api_v1:registration-list')
+        url = reverse('continuing_education_api_v1:registration-list', kwargs={'uuid': cls.person_information.uuid})
         cls.serializer = RegistrationListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):

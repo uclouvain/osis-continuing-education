@@ -53,7 +53,6 @@ class RegistrationListTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:registration-list')
 
         new_country = CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory()
@@ -75,11 +74,13 @@ class RegistrationListTestCase(APITestCase):
             formation=cls.formation
         )
 
+        cls.url = reverse('continuing_education_api_v1:registration-list', kwargs={'uuid': cls.person.uuid})
+
         for state in [VALIDATED, ACCEPTED, REGISTRATION_SUBMITTED]:
             cls.education_group = EducationGroupFactory()
             education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
             AdmissionFactory(
-                person_information=ContinuingEducationPersonFactory(),
+                person_information=cls.person,
                 state=state,
                 formation=ContinuingEducationTrainingFactory(
                     education_group=cls.education_group
@@ -260,36 +261,3 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
     def test_update_invalid_registration(self):
         response = self.client.put(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-class FilterRegistrationTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:registration-list')
-        ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
-        cls.registration = AdmissionFactory(
-            state=ACCEPTED,
-            formation=ContinuingEducationTrainingFactory(education_group=ed)
-        )
-
-    def setUp(self):
-        self.client.force_authenticate(user=self.user)
-
-    def test_get_registration_case_filter_person_params(self):
-        query_string = {'person': str(self.registration.person_information.person.uuid)}
-
-        response = self.client.get(self.url, data=query_string)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        registrations = Admission.registration_objects.filter(
-            person_information__person__uuid=query_string['person']
-        )
-
-        serializer = RegistrationListSerializer(
-            registrations,
-            many=True,
-            context={'request': RequestFactory().get(self.url, query_string)},
-        )
-        self.assertEqual(response.data['results'], serializer.data)

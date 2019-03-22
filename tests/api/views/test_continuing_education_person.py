@@ -194,13 +194,13 @@ class FilterContinuingEducationPersonTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:registration-list')
+        cls.url = reverse('continuing_education_api_v1:person-list-create')
         cls.person = ContinuingEducationPerson()
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
 
-    def test_get_registration_case_filter_person_params(self):
+    def test_get_continuing_education_perons_case_filter_person_params(self):
         query_string = {'person': str(self.person.uuid)}
 
         response = self.client.get(self.url, data=query_string)

@@ -58,7 +58,6 @@ class AdmissionListCreateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:admission-list-create')
 
         cls.citizenship = CountryFactory(iso_code='FR')
         new_country = CountryFactory(iso_code='NL')
@@ -67,6 +66,8 @@ class AdmissionListCreateTestCase(APITestCase):
         )
         cls.address = AddressFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
+
+        cls.url = reverse('continuing_education_api_v1:admission-list-create', kwargs={'uuid': cls.person.uuid})
 
         for state in [SUBMITTED, ACCEPTED, REJECTED, DRAFT]:
             education_group = EducationGroupFactory()
@@ -77,7 +78,7 @@ class AdmissionListCreateTestCase(APITestCase):
             cls.formation = ContinuingEducationTrainingFactory(education_group=education_group)
             cls.admission = AdmissionFactory(
                 citizenship=cls.citizenship,
-                person_information=ContinuingEducationPersonFactory(),
+                person_information=cls.person,
                 address=cls.address,
                 state=state,
                 formation=cls.formation
@@ -154,8 +155,8 @@ class AdmissionListCreateTestCase(APITestCase):
 
     def test_create_valid_admission_with_existing_person(self):
         self.assertEqual(3, Admission.admission_objects.all().count())
-        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(5, Person.objects.all().count())
+        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(1, Person.objects.all().count())
         data = {
             'person_information': {
                 'uuid': self.admission.person_information.uuid,
@@ -173,13 +174,13 @@ class AdmissionListCreateTestCase(APITestCase):
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(4, Admission.admission_objects.all().count())
-        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(5, Person.objects.all().count())
+        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(1, Person.objects.all().count())
 
     def test_create_valid_admission_with_new_person_and_person_info(self):
         self.assertEqual(3, Admission.admission_objects.all().count())
-        self.assertEqual(5, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(5, Person.objects.all().count())
+        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(1, Person.objects.all().count())
         PersonFactory(email='b@d.be')
         data = {
             'person_information': {
@@ -200,8 +201,8 @@ class AdmissionListCreateTestCase(APITestCase):
         response = self.client.post(self.url, data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(4, Admission.admission_objects.all().count())
-        self.assertEqual(6, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(6, Person.objects.all().count())
+        self.assertEqual(2, ContinuingEducationPerson.objects.all().count())
+        self.assertEqual(2, Person.objects.all().count())
 
     def test_create_admission_missing_formation(self):
         data = {
@@ -346,35 +347,3 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
     def test_update_invalid_admission(self):
         response = self.client.put(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-class FilterAdmissionTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:admission-list-create')
-        ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
-        cls.admission = AdmissionFactory(
-            formation=ContinuingEducationTrainingFactory(education_group=ed)
-        )
-
-    def setUp(self):
-        self.client.force_authenticate(user=self.user)
-
-    def test_get_admission_case_filter_person_params(self):
-        query_string = {'person': str(self.admission.person_information.person.uuid)}
-
-        response = self.client.get(self.url, data=query_string)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        admissions = Admission.admission_objects.filter(
-            person_information__person__uuid=query_string['person']
-        )
-
-        serializer = AdmissionListSerializer(
-            admissions,
-            many=True,
-            context={'request': RequestFactory().get(self.url, query_string)},
-        )
-        self.assertEqual(response.data['results'], serializer.data)

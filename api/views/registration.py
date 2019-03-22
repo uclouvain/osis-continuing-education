@@ -85,7 +85,3 @@ class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PATCH', 'PUT']:
             return RegistrationPostSerializer
         return RegistrationDetailSerializer
-
-    def get_object(self):
-        registration = get_object_or_404(Admission, uuid=self.kwargs['registration_uuid'])
-        return registration

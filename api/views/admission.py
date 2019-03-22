@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django_filters import rest_framework as filters
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
 
@@ -31,14 +30,6 @@ from continuing_education.api.serializers.admission import AdmissionDetailSerial
     AdmissionListSerializer, AdmissionPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-
-
-class AdmissionFilter(filters.FilterSet):
-    person = filters.CharFilter(field_name="person_information__person__uuid")
-
-    class Meta:
-        model = Admission
-        fields = ['person_information', 'formation', 'state']
 
 
 class AdmissionListCreate(generics.ListCreateAPIView):
@@ -69,7 +60,7 @@ class AdmissionListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
-        return Admission.objects.filter(person_information=person).select_related(
+        return Admission.admission_objects.filter(person_information=person).select_related(
             'person_information',
             'citizenship',
             'address',
@@ -93,7 +84,3 @@ class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return AdmissionPostSerializer
         return AdmissionDetailSerializer
-
-    def get_object(self):
-        admission = get_object_or_404(Admission, uuid=self.kwargs['admission_uuid'])
-        return admission

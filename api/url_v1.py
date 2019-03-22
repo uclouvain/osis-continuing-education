@@ -50,7 +50,7 @@ urlpatterns = [
     ),
     url(r'^persons/(?P<uuid>[0-9a-f-]+)/admissions/$', AdmissionListCreate.as_view(), name=AdmissionListCreate.name),
     url(
-        r'^admissions/(?P<admission_uuid>[0-9a-f-]+)$',
+        r'^admissions/(?P<uuid>[0-9a-f-]+)$',
         AdmissionDetailUpdateDestroy.as_view(),
         name=AdmissionDetailUpdateDestroy.name
     ),
@@ -66,7 +66,7 @@ urlpatterns = [
     ),
     url(r'^persons/(?P<uuid>[0-9a-f-]+)/registrations/$', RegistrationList.as_view(), name=RegistrationList.name),
     url(
-        r'^persons/(?P<uuid>[0-9a-f-]+)/registrations/(?P<registration_uuid>[0-9a-f-]+)$',
+        r'^registrations/(?P<uuid>[0-9a-f-]+)$',
         RegistrationDetailUpdateDestroy.as_view(),
         name=RegistrationDetailUpdateDestroy.name
     ),
