@@ -66,8 +66,8 @@ def update_formations(request):
         display_error_messages(request, _('Please select at least one formation'))
         return redirect(reverse('formation'))
 
-    new_state = ast.literal_eval(str(request.GET.get("new_state")))
-    new_training_aid_value = ast.literal_eval(str(request.GET.get("new_training_aid_value")))
+    new_state = ast.literal_eval(request.GET.get("new_state"))
+    new_training_aid_value = ast.literal_eval(request.GET.get("new_training_aid_value"))
 
     if new_state is not None:
         _formation_activate(request, selected_formations_ids, new_state)
