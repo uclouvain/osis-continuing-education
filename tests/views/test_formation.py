@@ -258,5 +258,8 @@ class FormationAidTestCase(TestCase):
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
-        msg_expected = _('Successfully defined training aid to %s for %s trainings.' % (_('Yes'), 2))
+        msg_expected = _('Successfully defined training aid to %(new_value)s for %(quantity_updated)s trainings.') % {
+            "new_value": _('Yes'),
+            "quantity_updated": 2,
+        }
         self.assertEqual(msg[0], msg_expected)

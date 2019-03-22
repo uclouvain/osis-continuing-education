@@ -139,10 +139,8 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
             education_group=education_grp,
             defaults={'training_aid': new_training_aid_value, 'education_group': education_grp},
         )
-    success_msg = _(
-        'Successfully defined training aid to %s for %s trainings.' % (
-            _('Yes') if new_training_aid_value else _('No'),
-            len(selected_formations_ids)
-        )
-    )
+    success_msg = _('Successfully defined training aid to %(new_value)s for %(quantity_updated)s trainings.') % {
+        "new_value": _('Yes') if new_training_aid_value else _('No'),
+        "quantity_updated": len(selected_formations_ids)
+    }
     display_success_messages(request, success_msg)
