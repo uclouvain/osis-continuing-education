@@ -50,7 +50,7 @@ urlpatterns = [
     ),
     url(r'^persons/(?P<uuid>[0-9a-f-]+)/admissions/$', AdmissionListCreate.as_view(), name=AdmissionListCreate.name),
     url(
-        r'^persons/(?P<uuid>[0-9a-f-]+)/admissions/(?P<admission_uuid>[0-9a-f-]+)$',
+        r'^admissions/(?P<admission_uuid>[0-9a-f-]+)$',
         AdmissionDetailUpdateDestroy.as_view(),
         name=AdmissionDetailUpdateDestroy.name
     ),
