@@ -27,6 +27,8 @@ from django.conf.urls import url, include
 
 import continuing_education.views.file
 from continuing_education.views import (home, admission, registration, archive, formation, prospect, tasks, managers)
+from continuing_education.views.autocomplete.continuing_education_training import \
+    ContinuingEducationTrainingAutocomplete
 
 urlpatterns = [
     url(r'^$', home.main_view, name='continuing_education'),
@@ -62,6 +64,7 @@ urlpatterns = [
         url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
     ])),
+    url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
     url(r'^managers/', include([
         url(r'^$', managers.list_managers, name='list_managers')
     ])),

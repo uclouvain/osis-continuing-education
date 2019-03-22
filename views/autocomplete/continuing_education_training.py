@@ -23,46 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
 from dal import autocomplete
-from django import forms
-from django.core.exceptions import ValidationError
-from django.forms import ModelForm
-from django.utils.translation import ugettext_lazy as _
 
-from base.models.person import Person
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.person_training import PersonTraining
 
 
-class PersonTrainingForm(ModelForm):
+class ContinuingEducationTrainingAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return ContinuingEducationTraining.objects.none()
 
-    person = forms.ModelChoiceField(
-        queryset=Person.objects.all(),
-        widget=autocomplete.ModelSelect2(url='employee_autocomplete')
-    )
+        qs = ContinuingEducationTraining.objects.all()
 
-    training = forms.ModelChoiceField(
-        queryset=ContinuingEducationTraining.objects.filter(active=True),
-        widget=autocomplete.ModelSelect2(url='training_autocomplete')
-    )
+        if self.q:
+            qs = qs.filter(education_group__educationgroupyear__acronym__istartswith=self.q).distinct()
 
-    class Meta:
-        model = PersonTraining
-
-        fields = [
-            'person',
-            'training',
-        ]
-
-        # Automatic translation of field names
-        labels = {field: _(field) for field in fields}
-
-    def clean(self):
-        try:
-            PersonTraining.objects.get(person=self.cleaned_data['person'], training=self.cleaned_data['training'])
-        except PersonTraining.DoesNotExist:
-            pass
-        else:
-            raise ValidationError({'person': [_('Manager is already assigned on this training')]})
-        return self.cleaned_data
+        return qs
