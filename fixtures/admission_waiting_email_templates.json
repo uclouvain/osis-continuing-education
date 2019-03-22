@@ -4,7 +4,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_waiting_html",
         "subject": "IUFC - Demande d'admission mise en attente",
-        "template": "<p>En réponse à votre demande d’admission au certificat ({{formation}}), nous vous informons que celle-ci est mise en attente pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>\r\n<p>Veuillez, Madame, Monsieur, agréer l’expression de nos salutations distinguées.</p>",
+        "template": "<p>En réponse à votre demande d’admission au certificat ({{formation}}), nous vous informons que celle-ci est mise en attente pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>\r\n<p>Veuillez, Madame, Monsieur, agréer l’expression de nos salutations distinguées.</p> \n\n <p> Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
         "format": "HTML",
         "language": "fr-be"
     }
@@ -14,7 +14,7 @@
     "fields": {
         "reference": "iufc_participant_state_changed_waiting_txt",
         "subject": "IUFC - Demande d'admission mise en attente",
-        "template": "En réponse à votre demande d’admission au certificat ({{formation}}), nous vous informons que celle-ci est mise en attente pour la (les) raison(s) suivante(s) :\n\n{{reason}}\n\nVeuillez, Madame, Monsieur, agréer l’expression de nos salutations distinguées.",
+        "template": "En réponse à votre demande d’admission au certificat ({{formation}}), nous vous informons que celle-ci est mise en attente pour la (les) raison(s) suivante(s) :\n\n{{reason}}\n\nVeuillez, Madame, Monsieur, agréer l’expression de nos salutations distinguées. \n\n Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
         "format": "PLAIN",
         "language": "fr-be"
     }

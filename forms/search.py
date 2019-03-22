@@ -5,7 +5,6 @@ from django import forms
 from django.db.models import Q
 from django.forms import ModelChoiceField
 from django.utils.translation import pgettext_lazy
-
 from django.utils.translation import ugettext_lazy as _, pgettext
 
 from base.business.entity import get_entities_ids
@@ -18,7 +17,8 @@ from base.models.person import Person
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
+    ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES
 from continuing_education.models.person_training import PersonTraining
@@ -92,16 +92,30 @@ class AdmissionFilterForm(BootstrapForm):
         required=False,
         label=_('Formation')
     )
+    state = forms.ChoiceField(
+        choices=STATE_CHOICES,
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         super(AdmissionFilterForm, self).__init__(*args, **kwargs)
+        self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
         _build_formation_choices(self.fields['formation'], STATE_TO_DISPLAY)
 
     def get_admissions(self):
-        return get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
-                                                 self.cleaned_data.get('formation'),
-                                                 STATE_TO_DISPLAY,
-                                                 False)
+        a_state = self.cleaned_data.get('state')
+
+        qs = get_queryset_by_faculty_formation(
+            self.cleaned_data['faculty'],
+            self.cleaned_data.get('formation'),
+            STATE_TO_DISPLAY,
+            False
+        )
+
+        if a_state:
+            qs = qs.filter(state=a_state)
+
+        return qs
 
 
 class RegistrationFilterForm(AdmissionFilterForm):
@@ -236,10 +250,12 @@ def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_su
 
 class FormationFilterForm(AdmissionFilterForm):
     acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
-
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
-
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
+
+    def __init__(self, *args, **kwargs):
+        super(FormationFilterForm, self).__init__(*args, **kwargs)
+        self.fields['state'].choices = FORMATION_STATE_CHOICES
 
     def get_formations(self):
         faculty = self.cleaned_data.get('faculty', None)
@@ -267,7 +283,7 @@ class FormationFilterForm(AdmissionFilterForm):
         if title:
             qs = qs.filter(educationgroupyear__title__icontains=title)
 
-        return qs.order_by('educationgroupyear__acronym').distinct()
+        return qs.order_by('educationgroupyear__acronym').select_related('continuingeducationtraining').distinct()
 
 
 def _build_active_parameter(qs, state):

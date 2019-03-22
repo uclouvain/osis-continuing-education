@@ -24,11 +24,11 @@
 #
 ##############################################################################
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
 from rest_framework import status
 
 from base.models.enums import education_group_types
@@ -95,6 +95,7 @@ class ViewFormationTestCase(TestCase):
 
         self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA.education_group)
         self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
+        self.assertEqual(response.context['formations_number'], 2)
 
 
 class FormationActivateTestCase(TestCase):

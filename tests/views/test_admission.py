@@ -37,7 +37,7 @@ from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -341,6 +341,7 @@ class AdmissionStateChangedTestCase(TestCase):
         admission = {
             'state': new_state,
             'formation': self.formation.pk,
+            'person_information': self.admission.person_information.pk
         }
         data = admission
         if new_state == REJECTED:

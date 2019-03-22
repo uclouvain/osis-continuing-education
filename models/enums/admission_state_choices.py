@@ -66,6 +66,11 @@ NEW_ADMIN_STATE = {
     REGISTRATION_SUBMITTED: STATES_REGISTRATION_SUBMITTED
 }
 
+ADMISSION_STATE_CHOICES = (
+    (SUBMITTED, _('Submitted')),
+    (REJECTED, _('Rejected')),
+    (WAITING, _('Waiting')),
+)
 REGISTRATION_STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
     (REGISTRATION_SUBMITTED, _('Registration submitted')),

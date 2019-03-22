@@ -31,7 +31,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.admission import send_invoice_uploaded_email
+from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm
@@ -65,6 +65,7 @@ def list_admissions(request):
 
     return render(request, "admissions.html", {
         'admissions': get_object_list(request, admission_list),
+        'admissions_number': len(admission_list),
         'search_form': search_form,
     })
 
@@ -236,6 +237,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
         adm_form.save()
+        send_state_changed_email(adm_form.instance, request.user)
     else:
         display_error_messages(
             request,
