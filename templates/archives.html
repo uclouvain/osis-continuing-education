@@ -81,6 +81,12 @@
                     <li>
                         {% include "blocks/button/xls.html" with button_title=button_title %}
                     </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a id="btn_archive" style="margin-right:10px;" data-toggle="modal" data-target="#unarchive_modal">
+                            &nbsp;{% trans 'Unarchive' %}
+                        </a>
+                    </li>
                 </ul>
             </div>
             {% if archives %}
@@ -90,69 +96,83 @@
                     </div>
                 </div>
             {% endif %}
-             <table class="table table-striped table-hover" id="order_archive">
-                <thead>
-                    <tr>
-                        <th class="searchable">{% trans 'Name' %}</th>
-                        <th class="searchable">{% trans 'First name' %}</th>
-                        <th class="searchable">{% trans 'Email' %}</th>
-                        <th class="searchable">{% trans 'Formation' %}</th>
-                        <th class="searchable">{% trans 'Faculty' %}</th>
-                        <th class="searchable">{% trans 'State' %}</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <td colspan="6">
-                            {% bootstrap_pagination archives extra=request.GET.urlencode %}
-                        </td>
-                    </tr>
-                </tfoot>
-                {% for archive in archives %}
-                    <tr>
-                        <td>
-                            {% if archive.is_admission %}
-                                <a href="{% url 'admission_detail' admission_id=archive.id %}">
-                                    {{ archive.person_information.person.last_name }}
-                                </a>
-                            {% endif %}
-                            {% if archive.is_registration %}
-                                <a href="{% url 'admission_detail' admission_id=archive.id %}#registration">
-                                    {{ archive.person_information.person.last_name }}
-                                </a>
-                            {% endif %}
-                            {% if not archive.is_admission and not archive.is_registration %}
-                                {{ archive.person_information.person.last_name }}
-                            {% endif %}
-                        </td>
-                        <td>{{ archive.person_information.person.first_name }}</td>
-                        <td>{{ archive.email }}</td>
-                        <td title="{{archive.formation.title}}">{{ archive.formation_display }}</td>
-                        <td title="{{archive.faculty.title}}">{{ archive.get_faculty | default_if_none:''}}</td>
-                        <td style="vertical-align: middle;" class="admission-state">
-                            {% if archive.is_waiting %}
-                                <span class="label label-primary show">{% trans archive.state %}</span>
-                            {% elif archive.is_rejected %}
-                                <span class="label label-danger show">{% trans archive.state %}</span>
-                            {% elif archive.is_submitted %}
-                                <span class="label label-info show">{% trans archive.state %}</span>
-                            {% elif admission.is_accepted %}
-                                <span class="label label-default show">{% trans archive.state %}</span>
-                            {% elif archive.is_validated %}
-                                <span class="label label-success show">{% trans archive.state %}</span>
-                            {% elif archive.is_registration_submitted %}
-                                <span class="label label-info show">{% trans archive.state %}</span>
-                            {% else %}
-                                {% if archive.state %}
-                                {%  trans archive.state %}
+            <form id="archives_form" method="post" action="{% url 'unarchives_procedure' %}">
+                {% csrf_token %}
+                 <table class="table table-striped table-hover" id="order_archive">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% if archives %}
+                                    <input id="id_check_all" type="checkbox" name="check_all"
+                                           title="{% trans 'Check All' %}"/>
                                 {% endif %}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
+                            </th>
+                            <th class="searchable">{% trans 'Name' %}</th>
+                            <th class="searchable">{% trans 'First name' %}</th>
+                            <th class="searchable">{% trans 'Email' %}</th>
+                            <th class="searchable">{% trans 'Formation' %}</th>
+                            <th class="searchable">{% trans 'Faculty' %}</th>
+                            <th class="searchable">{% trans 'State' %}</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                {% bootstrap_pagination archives extra=request.GET.urlencode %}
+                            </td>
+                        </tr>
+                    </tfoot>
+                    {% for archive in archives %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selected_action" class="selected_object"
+                                       value="{{ archive.id }}"/>
+                            </td>
+                            <td>
+                                {% if archive.is_admission %}
+                                    <a href="{% url 'admission_detail' admission_id=archive.id %}">
+                                        {{ archive.person_information.person.last_name }}
+                                    </a>
+                                {% endif %}
+                                {% if archive.is_registration %}
+                                    <a href="{% url 'admission_detail' admission_id=archive.id %}#registration">
+                                        {{ archive.person_information.person.last_name }}
+                                    </a>
+                                {% endif %}
+                                {% if not archive.is_admission and not archive.is_registration %}
+                                    {{ archive.person_information.person.last_name }}
+                                {% endif %}
+                            </td>
+                            <td>{{ archive.person_information.person.first_name }}</td>
+                            <td>{{ archive.email }}</td>
+                            <td title="{{archive.formation.title}}">{{ archive.formation_display }}</td>
+                            <td title="{{archive.faculty.title}}">{{ archive.get_faculty | default_if_none:''}}</td>
+                            <td style="vertical-align: middle;" class="admission-state">
+                                {% if archive.is_waiting %}
+                                    <span class="label label-primary show">{% trans archive.state %}</span>
+                                {% elif archive.is_rejected %}
+                                    <span class="label label-danger show">{% trans archive.state %}</span>
+                                {% elif archive.is_submitted %}
+                                    <span class="label label-info show">{% trans archive.state %}</span>
+                                {% elif admission.is_accepted %}
+                                    <span class="label label-default show">{% trans archive.state %}</span>
+                                {% elif archive.is_validated %}
+                                    <span class="label label-success show">{% trans archive.state %}</span>
+                                {% elif archive.is_registration_submitted %}
+                                    <span class="label label-info show">{% trans archive.state %}</span>
+                                {% else %}
+                                    {% if archive.state %}
+                                    {%  trans archive.state %}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </form>
         </div>
     </div>
+    {% include "fragment/archives/unarchive_modal.html" %}
 {% endblock %}
 
 {% block script %}
@@ -177,5 +197,6 @@
     </script>
 
     <script src="{% static 'js/continuing_xls.js' %}"></script>
+    <script src="{% static 'js/archive.js' %}"></script>
 
 {% endblock %}

@@ -70,22 +70,27 @@ def archive_procedure(request, admission_id):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def archives_procedure(request):
+    new_archive_status = True
+    return change_archive_status(new_archive_status, request)
+
+
+def change_archive_status(new_archive_status, request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
     for admission_id in selected_admissions_id:
         can_access_admission(request.user, admission_id)
     redirection = request.META.get('HTTP_REFERER')
     if selected_admissions_id:
-        _mark_folders_as_archived(request, selected_admissions_id)
+        _mark_folders_as_archived(request, selected_admissions_id, new_archive_status)
         return redirect(reverse('archive'))
     else:
         _set_error_message(request)
         return HttpResponseRedirect(redirection)
 
 
-def _mark_folders_as_archived(request, selected_admissions_id):
+def _mark_folders_as_archived(request, selected_admissions_id, new_archive_status):
     for admission_id in selected_admissions_id:
-        _mark_as_archived(admission_id)
-    _set_success_message(request, len(selected_admissions_id) > 1)
+        _mark_as_archived(admission_id, new_archive_status)
+    _set_success_message(request, len(selected_admissions_id) > 1, new_archive_status)
 
 
 def _set_success_message(request, is_plural, admission_archived=True):
@@ -97,9 +102,9 @@ def _set_success_message(request, is_plural, admission_archived=True):
     display_success_messages(request, success_msg)
 
 
-def _mark_as_archived(admission_id):
+def _mark_as_archived(admission_id, archive_state=True):
     admission = get_object_or_404(Admission, pk=admission_id)
-    _set_archived_state(admission, True)
+    _set_archived_state(admission, archive_state)
 
 
 def _set_archived_state(admission, archived_state):
@@ -117,3 +122,9 @@ def _switch_archived_state(admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     _set_archived_state(admission, not admission.archived)
     return admission
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+def unarchives_procedure(request):
+    return change_archive_status(False, request)
