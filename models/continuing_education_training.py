@@ -44,9 +44,9 @@ CONTINUING_EDUCATION_TRAINING_TYPES = [
 
 
 class ContinuingEducationTrainingAdmin(SerializableModelAdmin):
-    list_display = ('acronym', 'active',)
+    list_display = ('acronym', 'active', 'training_aid',)
     search_fields = ['education_group__educationgroupyear__acronym']
-    list_filter = ('active',)
+    list_filter = ('active', 'training_aid',)
     raw_id_fields = ('education_group',)
 
 

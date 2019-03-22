@@ -250,6 +250,7 @@ class FormationFilterForm(AdmissionFilterForm):
     acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
+    training_aid = forms.ChoiceField(choices=BOOLEAN_CHOICES, required=False, label=_('Training aid'))
 
     def __init__(self, *args, **kwargs):
         super(FormationFilterForm, self).__init__(*args, **kwargs)
@@ -259,6 +260,7 @@ class FormationFilterForm(AdmissionFilterForm):
         faculty = self.cleaned_data.get('faculty', None)
         acronym = self.cleaned_data.get('acronym', None)
         title = self.cleaned_data.get('title', None)
+        training_aid = self.cleaned_data.get('training_aid')
 
         qs = EducationGroup.objects.filter(
             educationgroupyear__education_group_type__name__in=CONTINUING_EDUCATION_TRAINING_TYPES,
@@ -280,6 +282,9 @@ class FormationFilterForm(AdmissionFilterForm):
 
         if title:
             qs = qs.filter(educationgroupyear__title__icontains=title)
+
+        if training_aid:
+            qs = qs.filter(continuingeducationtraining__training_aid=training_aid)
 
         return qs.order_by('educationgroupyear__acronym').select_related('continuingeducationtraining').distinct()
 

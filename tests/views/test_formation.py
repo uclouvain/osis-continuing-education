@@ -23,16 +23,17 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django import http
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import status
 
 from base.models.enums import education_group_types
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -40,8 +41,8 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
-TO_ACTIVATE = "true"
-TO_DEACTIVATE = "false"
+STR_TRUE = "True"
+STR_FALSE = "False"
 
 
 class ViewFormationTestCase(TestCase):
@@ -99,7 +100,6 @@ class ViewFormationTestCase(TestCase):
 
 
 class FormationActivateTestCase(TestCase):
-
     def setUp(self):
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
@@ -119,14 +119,14 @@ class FormationActivateTestCase(TestCase):
     def test_formation_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
-        url = reverse('formations_procedure')
+        url = reverse('update_formations')
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, http.HttpResponseForbidden.status_code)
 
     def test_error_message_no_formation_selected(self):
-        response = self.client.get(reverse('formations_procedure'), data={'new_state': 'false'})
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        response = self.client.get(reverse('update_formations'), data={'new_state': 'false'})
+        self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
@@ -135,13 +135,13 @@ class FormationActivateTestCase(TestCase):
         self.assertEqual(msg[0], _('Please select at least one formation'))
 
     def test_no_new_state_selected(self):
-        response = self.client.post(reverse('formations_procedure'))
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        response = self.client.post(reverse('update_formations'))
+        self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
 
     def test_change_existing_one_continuing_formation_to_activate(self):
 
         data = {
-            "new_state": TO_ACTIVATE,
+            "new_state": STR_TRUE,
             "selected_action": [str(self.formation1_to_activate.education_group.id)]
         }
         msg_expected = _('Formation is now active')
@@ -153,7 +153,7 @@ class FormationActivateTestCase(TestCase):
     def test_change_existing_several_continuing_formation_to_activate(self):
 
         data = {
-            "new_state": TO_ACTIVATE,
+            "new_state": STR_TRUE,
             "selected_action": [
                 str(self.formation1_to_activate.education_group.id),
                 str(self.formation2_to_activate.education_group.id)
@@ -168,7 +168,7 @@ class FormationActivateTestCase(TestCase):
     def test_change_existing_one_continuing_formation_to_deactivate(self):
 
         data = {
-            "new_state": TO_DEACTIVATE,
+            "new_state": STR_FALSE,
             "selected_action": [str(self.formation1_to_deactivate.education_group.id)]
         }
         msg_expected = _('Formation is now inactive')
@@ -180,7 +180,7 @@ class FormationActivateTestCase(TestCase):
     def test_change_existing_several_continuing_formation_to_deactivate(self):
 
         data = {
-            "new_state": TO_DEACTIVATE,
+            "new_state": STR_FALSE,
             "selected_action": [
                 str(self.formation1_to_deactivate.education_group.id),
                 str(self.formation2_to_deactivate.education_group.id)
@@ -195,7 +195,7 @@ class FormationActivateTestCase(TestCase):
     def test_activate_education_group_year_not_organized_yet(self):
 
         data = {
-            "new_state": TO_ACTIVATE,
+            "new_state": STR_TRUE,
             "selected_action": [str(self.education_group_yr_not_organized_yet.education_group.id)]
         }
         msg_expected = _('Formation is now active')
@@ -207,10 +207,49 @@ class FormationActivateTestCase(TestCase):
         self.assertTrue(new_continuing_education_training.active)
 
     def _assert_activation_success_msg(self, data_dict, msg_expected):
-        response = self.client.get(reverse('formations_procedure'), data=data_dict)
-        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        response = self.client.get(reverse('update_formations'), data=data_dict)
+        self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
         msg = [m.message for m in get_messages(response.wsgi_request)]
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
+        self.assertEqual(msg[0], msg_expected)
+
+
+class FormationAidTestCase(TestCase):
+    def setUp(self):
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
+
+        self.education_group_1 = EducationGroupFactory()
+        self.continuing_education_training_1 = ContinuingEducationTrainingFactory(
+            education_group=self.education_group_1,
+            training_aid=False
+        )
+        self.education_group_2 = EducationGroupFactory()
+
+    def test_set_training_aid(self):
+        data = {
+            "new_training_aid_value": STR_TRUE,
+            "selected_action": [
+                str(self.education_group_1.id),
+                str(self.education_group_2.id),
+            ]
+        }
+        response = self.client.get(reverse('update_formations'), data=data)
+
+        self.continuing_education_training_1.refresh_from_db()
+        self.assertTrue(self.continuing_education_training_1.training_aid)
+
+        continuing_education_training_2 = ContinuingEducationTraining.objects.get(
+            education_group=self.education_group_2
+        )
+        self.assertTrue(continuing_education_training_2.training_aid)
+
+        self.assertEqual(response.status_code, http.HttpResponseRedirect.status_code)
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        self.assertEqual(len(msg), 1)
+        self.assertIn(messages.SUCCESS, msg_level)
+        msg_expected = _('Successfully defined training aid to %s for %s trainings.' % (_('Yes'), 2))
         self.assertEqual(msg[0], msg_expected)
