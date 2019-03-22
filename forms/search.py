@@ -248,10 +248,12 @@ def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_su
 
 class FormationFilterForm(AdmissionFilterForm):
     acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
-
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
-
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
+
+    def __init__(self, *args, **kwargs):
+        super(FormationFilterForm, self).__init__(*args, **kwargs)
+        self.fields['state'].choices = FORMATION_STATE_CHOICES
 
     def get_formations(self):
         faculty = self.cleaned_data.get('faculty', None)
@@ -279,7 +281,7 @@ class FormationFilterForm(AdmissionFilterForm):
         if title:
             qs = qs.filter(educationgroupyear__title__icontains=title)
 
-        return qs.order_by('educationgroupyear__acronym').distinct()
+        return qs.order_by('educationgroupyear__acronym').select_related('continuingeducationtraining').distinct()
 
 
 def _build_active_parameter(qs, state):

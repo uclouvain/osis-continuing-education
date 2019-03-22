@@ -64,6 +64,11 @@ class ContinuingEducationTraining(SerializableModel):
         verbose_name=_("Active")
     )
 
+    training_aid = models.BooleanField(
+        default=False,
+        verbose_name=_("Training aid")
+    )
+
     managers = models.ManyToManyField(Person, through='PersonTraining')
 
     def clean(self):

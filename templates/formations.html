@@ -121,6 +121,7 @@
                         <th class="searchable">{% trans 'Faculty' %}</th>
                         <th class="searchable">{% trans 'Title' %}</th>
                         <th class="searchable">{% trans 'State' %}</th>
+                        <th class="searchable">{% trans 'Training aid' %}</th>
                     </tr>
                     </thead>
                     <tfoot>
@@ -142,6 +143,7 @@
                             <td>{{ most_recent_education_group|get_faculty  | default_if_none:'' }}</td>
                             <td>{{ most_recent_education_group.title | default_if_none:'' }}</td>
                             <td>{{ formation|get_active_continuing_education_formation }}</td>
+                            <td>{{ formation.continuingeducationtraining.training_aid|yesno }}</td>
                         </tr>
                         {% endwith %}
 
