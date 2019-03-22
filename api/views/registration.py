@@ -23,20 +23,13 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django_filters import rest_framework as filters
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, \
     RegistrationDetailSerializer, RegistrationPostSerializer
 from continuing_education.models.admission import Admission
-
-
-class RegistrationFilter(filters.FilterSet):
-    person = filters.CharFilter(field_name="person_information__person__uuid")
-
-    class Meta:
-        model = Admission
-        fields = ['person_information', 'formation', 'state']
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
 class RegistrationList(generics.ListAPIView):
@@ -45,9 +38,11 @@ class RegistrationList(generics.ListAPIView):
     """
     name = 'registration-list'
 
-    serializer_class = RegistrationListSerializer
-    filter_class = RegistrationFilter
-
+    filter_fields = (
+        'person_information',
+        'formation',
+        'state',
+    )
     search_fields = (
         'person_information',
         'formation',
@@ -64,13 +59,13 @@ class RegistrationList(generics.ListAPIView):
     )  # Default ordering
 
     def get_queryset(self):
-        queryset = Admission.registration_objects.all().select_related(
+        person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
+        return Admission.registration_objects.filter(person_information=person).select_related(
             'person_information',
             'address',
             'billing_address',
             'residence_address'
         )
-        return queryset
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -84,10 +79,13 @@ class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
     name = 'registration-detail-update-destroy'
     queryset = Admission.objects.all()
-    serializer_class = RegistrationDetailSerializer
     lookup_field = 'uuid'
 
     def get_serializer_class(self):
         if self.request.method in ['PATCH', 'PUT']:
             return RegistrationPostSerializer
         return RegistrationDetailSerializer
+
+    def get_object(self):
+        registration = get_object_or_404(Admission, uuid=self.kwargs['registration_uuid'])
+        return registration

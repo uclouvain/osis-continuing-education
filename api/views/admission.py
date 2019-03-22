@@ -25,10 +25,12 @@
 ##############################################################################
 from django_filters import rest_framework as filters
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer, AdmissionPostSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
 class AdmissionFilter(filters.FilterSet):
@@ -44,8 +46,12 @@ class AdmissionListCreate(generics.ListCreateAPIView):
        Return a list of all the admission with optional filtering or create one.
     """
     name = 'admission-list-create'
-    filter_class = AdmissionFilter
 
+    filter_fields = (
+        'person_information',
+        'formation',
+        'state'
+    )
     search_fields = (
         'person_information',
         'formation',
@@ -62,12 +68,12 @@ class AdmissionListCreate(generics.ListCreateAPIView):
     )  # Default ordering
 
     def get_queryset(self):
-        queryset = Admission.admission_objects.all().select_related(
+        person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
+        return Admission.objects.filter(person_information=person).select_related(
             'person_information',
             'citizenship',
             'address',
         )
-        return queryset
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -87,3 +93,7 @@ class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return AdmissionPostSerializer
         return AdmissionDetailSerializer
+
+    def get_object(self):
+        admission = get_object_or_404(Admission, uuid=self.kwargs['admission_uuid'])
+        return admission
