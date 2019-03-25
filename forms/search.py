@@ -338,7 +338,7 @@ class ManagerFilterForm(BootstrapForm):
         training = self.cleaned_data.get('training', None)
         person = self.cleaned_data.get('person', None)
         faculty = self.cleaned_data.get('faculty', None)
-        qs = Person.objects.filter(user__groups__name='continuing_education_training_managers')
+        qs = Person.objects.filter(user__groups__name='continuing_education_training_managers').order_by('last_name')
         if training:
             qs = qs.filter(
                 id__in=PersonTraining.objects.filter(

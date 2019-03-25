@@ -39,7 +39,7 @@ from continuing_education.views.common import get_object_list, display_errors
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
     person_training_form = PersonTrainingForm(request.POST or None)
-    managers = Person.objects.filter(user__groups__name='continuing_education_training_managers')
+    managers = Person.objects.filter(user__groups__name='continuing_education_training_managers').order_by('last_name')
 
     if search_form.is_valid():
         managers = search_form.get_managers()
