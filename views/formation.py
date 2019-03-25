@@ -23,9 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import ast
 
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
@@ -58,32 +59,28 @@ def list_formations(request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-def formations_activate(request):
-    # Function to activate or deactivate
-    selected_formations_id = request.GET.getlist("selected_action", default=[])
-    new_state = _get_new_state(request)
+def update_formations(request):
+    redirect_url = request.META.get('HTTP_REFERER', reverse('formation'))
+
+    selected_formations_ids = request.GET.getlist("selected_action", default=[])
+    if not selected_formations_ids:
+        display_error_messages(request, _('Please select at least one formation'))
+        return redirect(redirect_url)
+
+    new_state = ast.literal_eval(request.GET.get("new_state"))
+    new_training_aid_value = ast.literal_eval(request.GET.get("new_training_aid_value"))
+
     if new_state is not None:
-        if selected_formations_id:
-            _formation_activate(request, selected_formations_id, new_state)
-        else:
-            display_error_messages(request, _('Please select at least one formation'))
+        _formation_activate(request, selected_formations_ids, new_state)
+    elif new_training_aid_value is not None:
+        _update_training_aid_value(request, selected_formations_ids, new_training_aid_value)
 
-    return redirect(reverse('formation'))
-
-
-def _get_new_state(request):
-    new_state = request.GET.get("new_state")
-    if new_state == "true":
-        return True
-    elif new_state == "false":
-        return False
-    return None
+    return redirect(redirect_url)
 
 
-def _formation_activate(request, selected_formations_id, new_state):
+def _formation_activate(request, selected_formations_ids, new_state):
     activated_count = 0
-    for formation_id in selected_formations_id:
-
+    for formation_id in selected_formations_ids:
         continuing_education_training = ContinuingEducationTraining.objects.filter(
             education_group__id=formation_id).first()
         if continuing_education_training:
@@ -109,7 +106,6 @@ def _edit_continuing_education_training(activated_count, continuing_education_tr
 
 
 def _set_information_message(count, request, new_state):
-
     if count > 0:
         _set_success_message(count, new_state, request)
     else:
@@ -135,3 +131,17 @@ def _set_error_message(new_state, request):
     else:
         msg = _('No formation inactivated')
     display_error_messages(request, msg)
+
+
+def _update_training_aid_value(request, selected_formations_ids, new_training_aid_value):
+    for formation_id in selected_formations_ids:
+        education_grp = get_object_or_404(EducationGroup, id=formation_id)
+        ContinuingEducationTraining.objects.update_or_create(
+            education_group=education_grp,
+            defaults={'training_aid': new_training_aid_value, 'education_group': education_grp},
+        )
+    success_msg = _('Successfully defined training aid to %(new_value)s for %(quantity_updated)s trainings.') % {
+        "new_value": _('Yes') if new_training_aid_value else _('No'),
+        "quantity_updated": len(selected_formations_ids)
+    }
+    display_success_messages(request, success_msg)
