@@ -30,6 +30,7 @@ from django.shortcuts import render
 from base.models.person import Person
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list, display_errors
 
@@ -39,10 +40,14 @@ from continuing_education.views.common import get_object_list, display_errors
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
     person_training_form = PersonTrainingForm(request.POST or None)
-    managers = Person.objects.filter(user__groups__name='continuing_education_training_managers').order_by('last_name')
+    trainings = ContinuingEducationTraining.objects.all().select_related('education_group')
 
     if search_form.is_valid():
         managers = search_form.get_managers()
+    else:
+        managers = Person.objects.filter(
+            user__groups__name='continuing_education_training_managers'
+        ).order_by('last_name')
 
     errors = []
     if person_training_form.is_valid():
@@ -54,12 +59,9 @@ def list_managers(request):
         display_errors(request, errors)
 
     for manager in managers:
-        manager.trainings = []
-        person_trainings = PersonTraining.objects.filter(person=manager).select_related(
-            'training'
+        manager.trainings = trainings.filter(
+            managers=manager
         )
-        for affectation in person_trainings:
-            manager.trainings.append(affectation.training)
 
     return render(request, "managers.html", {
         'managers': get_object_list(request, managers),

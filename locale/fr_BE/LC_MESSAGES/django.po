@@ -552,7 +552,7 @@ msgstr "Identification"
 #: templates/archives.html:70 templates/formations.html:79
 #: templates/registrations.html:75
 msgid "In all fields"
-msgstr "Dans tout les champs"
+msgstr "Dans tous les champs"
 
 #: forms/search.py:41 forms/search.py:46 templatetags/formation.py:42
 msgid "Inactive"
