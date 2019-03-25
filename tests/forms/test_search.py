@@ -454,14 +454,12 @@ class TestFormationFilterForm(TestCase):
         iufc_education_group_yr_testtext_in_acronym = EducationGroupYearFactory(
             acronym="TestText",
             education_group_type=self.continuing_education_group_type,
-            title='DATA',
             management_entity=self.entity_version.entity,
             academic_year=self.academic_year
         )
         iufc_education_group_yr_testtext_in_title = EducationGroupYearFactory(
-            acronym="TestText",
             education_group_type=self.continuing_education_group_type,
-            title='DATA',
+            title='TestText',
             management_entity=self.entity_version.entity,
             academic_year=self.academic_year
         )
