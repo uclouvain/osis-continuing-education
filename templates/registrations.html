@@ -71,7 +71,9 @@
                         <label for="payment_complete_id">{% trans 'Paid' %}</label>
                         {{ search_form.payment_complete }}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
+                        <label for="free_text_id">{% trans 'In all fields' %}</label>
+                        {{ search_form.free_text }}
                     </div>
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
