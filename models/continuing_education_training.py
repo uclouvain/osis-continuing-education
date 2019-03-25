@@ -107,4 +107,5 @@ class ContinuingEducationTraining(SerializableModel):
 
     def __str__(self):
         education_group_year = self.get_most_recent_education_group_year()
-        return "{} - {}".format(education_group_year.acronym, education_group_year.title)
+        training_aid_mention = " ({})".format(_('Training aid available')) if self.training_aid else ''
+        return "{} - {}{}".format(education_group_year.acronym, education_group_year.title, training_aid_mention)
