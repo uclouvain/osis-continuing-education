@@ -61,7 +61,7 @@ def list_managers(request):
     for manager in managers:
         manager.trainings = trainings.filter(
             managers=manager
-        )
+        ).order_by('education_group__educationgroupyear__acronym').distinct()
 
     return render(request, "managers.html", {
         'managers': get_object_list(request, managers),
