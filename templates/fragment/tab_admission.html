@@ -54,19 +54,17 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("High school diploma") %} <br/> {{ admission.high_school_diploma | yesno }} </div>
-        <div class="col-md-4">{% bootstrap_label _("High school graduation year") %} <br/> {{ admission.high_school_graduation_year | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("High school diploma") %} <br/> {{ admission.high_school_diploma | yesno }} </div>
+        <div class="col-md-3">{% bootstrap_label _("High school graduation year") %} <br/> {{ admission.high_school_graduation_year | default:"-" }} </div>
     </div>
     <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Last degree level") %} <br/> {{ admission.last_degree_level | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Last degree field") %} <br/> {{ admission.last_degree_field | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Last degree level") %} <br/> {{ admission.last_degree_level | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Last degree field") %} <br/> {{ admission.last_degree_field | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Last degree institution") %} <br/> {{ admission.last_degree_institution | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Last degree graduation year") %} <br/> {{ admission.last_degree_graduation_year | default:"-" }} </div>
     </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Last degree institution") %} <br/> {{ admission.last_degree_institution | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Last degree graduation year") %} <br/> {{ admission.last_degree_graduation_year | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Other educational background") %} <br/> {{ admission.other_educational_background | default:"-" }} </div>
+    <div class="form-group">
+        {% bootstrap_label _("Other educational background") %} <br/> {{ admission.other_educational_background | default:"-" }}
     </div>
 </div>
 
@@ -75,17 +73,13 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Professional status") %} <br/> {{ admission.get_professional_status_display | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Professional status") %} <br/> {{ admission.get_professional_status_display | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Current occupation") %} <br/> {{ admission.current_occupation | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Current employer") %} <br/> {{ admission.current_employer | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.get_activity_sector_display | default:"-" }} </div>
     </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Current occupation") %} <br/> {{ admission.current_occupation | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Current employer") %} <br/> {{ admission.current_employer | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Activity sector") %} <br/> {{ admission.get_activity_sector_display | default:"-" }} </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Past professional activities") %} <br/> {{ admission.past_professional_activities | default:"-" }} </div>
+    <div class="form-group">
+        {% bootstrap_label _("Past professional activities") %} <br/> {{ admission.past_professional_activities | default:"-" }}
     </div>
 </div>
 
@@ -94,8 +88,8 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Motivation") %} <br/> {{ admission.motivation | default:"-" }} </div>
-        <div class="col-md-4">{% bootstrap_label _("Professional impact") %} <br/> {{ admission.professional_impact | default:"-" }} </div>
+        <div class="col-md-6">{% bootstrap_label _("Motivation") %} <br/> {{ admission.motivation | default:"-" }} </div>
+        <div class="col-md-6">{% bootstrap_label _("Professional impact") %} <br/> {{ admission.professional_impact | default:"-" }} </div>
     </div>
 </div>
 
