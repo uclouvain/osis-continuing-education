@@ -127,6 +127,7 @@ def search_admissions_with_free_text(free_text, qs):
         Q(person_information__person__first_name__icontains=free_text) |
         Q(person_information__person__last_name__icontains=free_text) |
         Q(person_information__person__email__icontains=free_text) |
+        Q(email__icontains=free_text) |
         Q(formation__education_group__educationgroupyear__acronym__icontains=free_text) |
         Q(formation__education_group__educationgroupyear__title__icontains=free_text)
     )
