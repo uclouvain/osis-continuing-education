@@ -38,12 +38,15 @@ from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonFactory
+from base.tests.factories.group import GroupFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
-    ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED
+    ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -478,6 +481,65 @@ class TestFormationFilterForm(TestCase):
                                          [])
         self._assert_results_count_equal({'acronym': 'ACRO_10', 'faculty': self.entity_version},
                                          [self.iufc_education_group_yr_ACRO_10.education_group])
+
+
+class TestManagerFilterForm(TestCase):
+
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        self.start_date = date.today().replace(year=2010)
+        self.faculty = EntityVersionFactory(
+            acronym="DRT_NEW",
+            entity_type=FACULTY,
+            start_date=self.start_date,
+            end_date=None,
+        )
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year,
+            management_entity=self.faculty.entity,
+        )
+
+        training_manager_group = GroupFactory(name='continuing_education_training_managers')
+        self.training_managers = []
+        for _ in range(1, 2):
+            training_manager = PersonWithPermissionsFactory(
+                    'can_access_admission',
+                    'change_admission',
+            )
+            training_manager.user.groups.add(training_manager_group)
+            self.training_managers.append(training_manager)
+
+        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group)
+        PersonTraining(person=self.training_managers[0], training=self.formation).save()
+
+        manager_group = GroupFactory(name='continuing_education_managers')
+        self.continuing_education_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+            'can_validate_registration'
+        )
+        self.continuing_education_manager.user.groups.add(manager_group)
+        self.client.force_login(self.continuing_education_manager.user)
+
+    def test_managers_no_filter(self):
+        self._assert_results_count_equal({}, self.training_managers)
+
+    def test_managers_filter_by_training(self):
+        self._assert_results_count_equal({'training': self.formation}, [self.training_managers[0]])
+
+    def test_managers_filter_by_person(self):
+        self._assert_results_count_equal({'manager': self.formation}, [self.training_managers[0]])
+
+    def test_managers_filter_by_faculty(self):
+        self._assert_results_count_equal({'faculty': self.formation}, [self.training_managers[0]])
+
+    def _assert_results_count_equal(self, data, expected_results):
+        form = ManagerFilterForm(data)
+        if form.is_valid():
+            results = form.get_managers()
+            self.assertCountEqual(results, expected_results)
 
 
 def create_entity_version(an_acronym):

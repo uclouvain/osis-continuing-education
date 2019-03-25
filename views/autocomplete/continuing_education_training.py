@@ -23,28 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from dal import autocomplete
 
-from django.db import models
-
-from osis_common.models.serializable_model import SerializableModelAdmin, SerializableModel
-
-
-class PersonTrainingAdmin(SerializableModelAdmin):
-    list_display = ('person', 'training',)
-    search_fields = ['person']
-    raw_id_fields = ('person', 'training',)
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
-class PersonTraining(SerializableModel):
-    person = models.ForeignKey(
-        'base.Person',
-        on_delete=models.CASCADE
-    )
+class ContinuingEducationTrainingAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated():
+            return ContinuingEducationTraining.objects.none()
 
-    training = models.ForeignKey(
-        'continuing_education.ContinuingEducationTraining',
-        on_delete=models.CASCADE
-    )
+        qs = ContinuingEducationTraining.objects.all()
 
-    class Meta:
-        unique_together = ("person", "training")
+        if self.q:
+            qs = qs.filter(education_group__educationgroupyear__acronym__istartswith=self.q).distinct()
+
+        return qs

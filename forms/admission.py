@@ -11,7 +11,6 @@ from continuing_education.models.continuing_education_person import ContinuingEd
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
-from continuing_education.models.person_training import PersonTraining
 from reference.models.country import Country
 
 

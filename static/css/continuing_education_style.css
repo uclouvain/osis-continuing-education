@@ -137,3 +137,11 @@ label.required:after{
 .panel-border-top{
     border-top: 1px solid #DDDDDD;
 }
+
+#person_training_form .select2-container{
+    display: block !important;
+}
+
+.select2-container {
+    width: 100% !important;
+}
