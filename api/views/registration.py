@@ -58,6 +58,8 @@ class RegistrationList(generics.ListAPIView):
         'formation',
     )  # Default ordering
 
+    serializer_class = RegistrationListSerializer
+
     def get_queryset(self):
         person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
         return Admission.registration_objects.filter(person_information=person).select_related(
@@ -66,11 +68,6 @@ class RegistrationList(generics.ListAPIView):
             'billing_address',
             'residence_address'
         )
-
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return RegistrationPostSerializer
-        return RegistrationListSerializer
 
 
 class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
