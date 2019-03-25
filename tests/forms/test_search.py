@@ -37,6 +37,7 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.person import PersonFactory
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
@@ -45,6 +46,7 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
     REGISTRATION_SUBMITTED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
 class TestFilterForm(TestCase):
@@ -97,6 +99,7 @@ class TestFilterForm(TestCase):
                 education_group=education_group)
             for index, education_group in enumerate(self.education_groups)
         ]
+
         self.education_group_on_faculty = EducationGroupFactory()
         self.education_group_yr_on_faculty = EducationGroupYearFactory(
             academic_year=next_academic_yr,
@@ -138,6 +141,34 @@ class TestFilterForm(TestCase):
             state=SUBMITTED,
             archived=True
         )
+
+        ed_free_text_acronym = EducationGroupFactory()
+        EducationGroupYearFactory(
+            acronym="TestText",
+            academic_year=next_academic_yr,
+            education_group=ed_free_text_acronym
+        )
+        ed_free_text_title = EducationGroupFactory()
+        EducationGroupYearFactory(
+            academic_year=next_academic_yr,
+            education_group=ed_free_text_title,
+            title="bla TestText bla"
+        )
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(
+            academic_year=next_academic_yr,
+            education_group=ed
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=ed
+        )
+        self.persons = [
+            PersonFactory(first_name="TestText"),
+            PersonFactory(last_name="TestText"),
+            PersonFactory(email="TestText@outlook.be")
+        ]
+        self.eds = [ed_free_text_title, ed_free_text_acronym]
+        self.admissions_free_text = []
 
     def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
@@ -228,6 +259,13 @@ class TestFilterForm(TestCase):
             results = form.get_admissions()
             self.assertCountEqual(results, [self.admissions[1]])
 
+    def test_get_admissions_by_free_text(self):
+        self._create_admissions_for_free_text_search()
+        form = AdmissionFilterForm({"free_text": "testtext"})
+        if form.is_valid():
+            results = form.get_admissions()
+            self.assertCountEqual(results, self.admissions_free_text)
+
     def test_get_registrations_no_criteria(self):
         form = RegistrationFilterForm({})
         if form.is_valid():
@@ -280,6 +318,26 @@ class TestFilterForm(TestCase):
             results = form.get_registrations()
             self.assertCountEqual(results, [self.registrations[0]])
 
+    def test_get_registrations_by_free_text(self):
+        self._create_admissions_for_free_text_search()
+        for admission in self.admissions_free_text:
+            admission.state = ACCEPTED
+            admission.save()
+        form = RegistrationFilterForm({"free_text": "testtext"})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, self.admissions_free_text)
+
+    def test_get_archives_by_free_text(self):
+        self._create_admissions_for_free_text_search()
+        for admission in self.admissions_free_text:
+            admission.archived = True
+            admission.save()
+        form = ArchiveFilterForm({"free_text": "testtext"})
+        if form.is_valid():
+            results = form.get_archives()
+            self.assertCountEqual(results, self.admissions_free_text)
+
     def test_get_archives_by_state_criteria(self):
         form = ArchiveFilterForm({"state": SUBMITTED})
         if form.is_valid():
@@ -293,6 +351,27 @@ class TestFilterForm(TestCase):
         if form.is_valid():
             self.assertEqual(form.fields['state'].choices,
                              [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
+
+    def _create_admissions_for_free_text_search(self):
+        for person in self.persons:
+            self.admissions_free_text.append(
+                AdmissionFactory(
+                    formation=self.formation,
+                    person_information=ContinuingEducationPersonFactory(
+                        person=person
+                    ),
+                    state=SUBMITTED
+                )
+            )
+        for ed in self.eds:
+            self.admissions_free_text.append(
+                AdmissionFactory(
+                    formation=ContinuingEducationTrainingFactory(
+                        education_group=ed
+                    ),
+                    state=SUBMITTED
+                )
+            )
 
 
 class TestFormationFilterForm(TestCase):
@@ -340,6 +419,20 @@ class TestFormationFilterForm(TestCase):
             education_group=self.iufc_education_group_yr_ACRO_12.education_group,
             active=False,
         )
+        self.iufc_education_group_yr_testtext_in_acronym = EducationGroupYearFactory(
+            acronym="TestText",
+            education_group_type=continuing_education_group_type,
+            title='DATA',
+            management_entity=self.entity_version.entity,
+            academic_year=self.academic_year
+        )
+        self.iufc_education_group_yr_testtext_in_title = EducationGroupYearFactory(
+            acronym="TestText",
+            education_group_type=continuing_education_group_type,
+            title='DATA',
+            management_entity=self.entity_version.entity,
+            academic_year=self.academic_year
+        )
 
     def test_get_state_choices(self):
         form = FormationFilterForm()
@@ -370,6 +463,11 @@ class TestFormationFilterForm(TestCase):
     def test_formation_filter_by_faculty(self):
         self._assert_results_count_equal({'faculty': self.entity_version},
                                          [self.iufc_education_group_yr_ACRO_10.education_group])
+
+    def test_formation_filter_by_free_text(self):
+        self._assert_results_count_equal({'free_text': "testtext"},
+                                         [self.iufc_education_group_yr_testtext_in_acronym.education_group,
+                                          self.iufc_education_group_yr_testtext_in_title.education_group])
 
     def _assert_results_count_equal(self, data, expected_results):
         form = FormationFilterForm(data)
