@@ -379,7 +379,7 @@ class TestFormationFilterForm(TestCase):
     def setUp(self):
 
         self.title_acronym_12 = 'Acronym 12'
-        continuing_education_group_type = EducationGroupTypeFactory(
+        self.continuing_education_group_type = EducationGroupTypeFactory(
             name=random.choice(CONTINUING_EDUCATION_TRAINING_TYPES)
         )
 
@@ -389,14 +389,14 @@ class TestFormationFilterForm(TestCase):
 
         self.iufc_education_group_yr_ACRO_10 = EducationGroupYearFactory(
             acronym="ACRO_10",
-            education_group_type=continuing_education_group_type,
+            education_group_type=self.continuing_education_group_type,
             title='Acronym 10',
             management_entity=self.entity_version.entity,
             academic_year=self.academic_year
         )
         self.iufc_education_group_yr_ACRO_12 = EducationGroupYearFactory(
             acronym="ACRO_12",
-            education_group_type=continuing_education_group_type,
+            education_group_type=self.continuing_education_group_type,
             title=self.title_acronym_12,
             management_entity=entity_version_2.entity,
             academic_year=self.academic_year
@@ -405,7 +405,7 @@ class TestFormationFilterForm(TestCase):
         education_group_not_organized = EducationGroupFactory()
         self.education_group_yr_not_organized = EducationGroupYearFactory(
             acronym="CODE_12",
-            education_group_type=continuing_education_group_type,
+            education_group_type=self.continuing_education_group_type,
             title="Other title",
             management_entity=self.entity_version.entity,
             education_group=education_group_not_organized,
@@ -418,20 +418,6 @@ class TestFormationFilterForm(TestCase):
         self.inactive_continuing_education_training = ContinuingEducationTrainingFactory(
             education_group=self.iufc_education_group_yr_ACRO_12.education_group,
             active=False,
-        )
-        self.iufc_education_group_yr_testtext_in_acronym = EducationGroupYearFactory(
-            acronym="TestText",
-            education_group_type=continuing_education_group_type,
-            title='DATA',
-            management_entity=self.entity_version.entity,
-            academic_year=self.academic_year
-        )
-        self.iufc_education_group_yr_testtext_in_title = EducationGroupYearFactory(
-            acronym="TestText",
-            education_group_type=continuing_education_group_type,
-            title='DATA',
-            management_entity=self.entity_version.entity,
-            academic_year=self.academic_year
         )
 
     def test_get_state_choices(self):
@@ -465,9 +451,23 @@ class TestFormationFilterForm(TestCase):
                                          [self.iufc_education_group_yr_ACRO_10.education_group])
 
     def test_formation_filter_by_free_text(self):
+        iufc_education_group_yr_testtext_in_acronym = EducationGroupYearFactory(
+            acronym="TestText",
+            education_group_type=self.continuing_education_group_type,
+            title='DATA',
+            management_entity=self.entity_version.entity,
+            academic_year=self.academic_year
+        )
+        iufc_education_group_yr_testtext_in_title = EducationGroupYearFactory(
+            acronym="TestText",
+            education_group_type=self.continuing_education_group_type,
+            title='DATA',
+            management_entity=self.entity_version.entity,
+            academic_year=self.academic_year
+        )
         self._assert_results_count_equal({'free_text': "testtext"},
-                                         [self.iufc_education_group_yr_testtext_in_acronym.education_group,
-                                          self.iufc_education_group_yr_testtext_in_title.education_group])
+                                         [iufc_education_group_yr_testtext_in_acronym.education_group,
+                                          iufc_education_group_yr_testtext_in_title.education_group])
 
     def _assert_results_count_equal(self, data, expected_results):
         form = FormationFilterForm(data)
