@@ -33,7 +33,7 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
+from base.tests.factories.person import PersonWithPermissionsFactory, PersonFactory
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
@@ -64,8 +64,8 @@ class ManagerListTestCase(TestCase):
             'change_admission',
             employee=True
         )
-        training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager.user.groups.add(training_manager_group)
+        self.training_manager_group = GroupFactory(name='continuing_education_training_managers')
+        self.training_manager.user.groups.add(self.training_manager_group)
 
     def test_managers_list(self):
         response = self.client.get(reverse('list_managers'))
@@ -81,6 +81,17 @@ class ManagerListTestCase(TestCase):
         }
         response = self.client.post(reverse('list_managers'), data=data)
         self.assertEquals(PersonTraining.objects.count(), 1)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+
+    def test_add_employee_to_training_managers_group(self):
+        employee = PersonFactory(employee=True)
+        self.assertEqual(list(employee.user.groups.all()), [])
+        data = {
+            'training': self.formation.pk,
+            'person': employee.pk
+        }
+        response = self.client.post(reverse('list_managers'), data=data)
+        self.assertEqual(list(self.training_manager.user.groups.all()), [self.training_manager_group])
         self.assertEqual(response.status_code, HttpResponse.status_code)
 
     def test_manager_already_assigned_to_training(self):
