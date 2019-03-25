@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-25 09:59+0100\n"
+"POT-Creation-Date: 2019-03-22 15:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -158,37 +158,37 @@ msgstr ""
 msgid "Associative"
 msgstr ""
 
-#: templates/admission_form.html:168 templates/fragment/tab_admission.html:118
+#: templates/admission_form.html:168 templates/fragment/tab_admission.html:119
 msgid "Awareness"
 msgstr ""
 
 #: models/admission.py:199 templates/admission_form.html:174
-#: templates/fragment/tab_admission.html:133
+#: templates/fragment/tab_admission.html:134
 msgid "Awareness Facebook"
 msgstr ""
 
 #: models/admission.py:203 templates/admission_form.html:175
-#: templates/fragment/tab_admission.html:136
+#: templates/fragment/tab_admission.html:137
 msgid "Awareness LinkedIn"
 msgstr ""
 
 #: models/admission.py:187 templates/admission_form.html:171
-#: templates/fragment/tab_admission.html:124
+#: templates/fragment/tab_admission.html:125
 msgid "Awareness UCL website"
 msgstr ""
 
 #: models/admission.py:207 templates/admission_form.html:176
-#: templates/fragment/tab_admission.html:139
+#: templates/fragment/tab_admission.html:140
 msgid "Awareness customized mail"
 msgstr ""
 
 #: models/admission.py:211 templates/admission_form.html:177
-#: templates/fragment/tab_admission.html:142
+#: templates/fragment/tab_admission.html:143
 msgid "Awareness emailing"
 msgstr ""
 
 #: models/admission.py:191 templates/admission_form.html:172
-#: templates/fragment/tab_admission.html:127
+#: templates/fragment/tab_admission.html:128
 msgid "Awareness formation website"
 msgstr ""
 
@@ -197,7 +197,7 @@ msgid "Awareness other"
 msgstr ""
 
 #: models/admission.py:195 templates/admission_form.html:173
-#: templates/fragment/tab_admission.html:130
+#: templates/fragment/tab_admission.html:131
 msgid "Awareness press"
 msgstr ""
 
@@ -403,10 +403,10 @@ msgstr ""
 #: business/xls/xls_admission.py:37 business/xls/xls_archive.py:37
 #: business/xls/xls_formation.py:36 business/xls/xls_registration.py:38
 #: forms/search.py:83 templates/admissions.html:53
-#: templates/admissions.html:128 templates/archives.html:51
-#: templates/archives.html:120 templates/formations.html:60
-#: templates/formations.html:143 templates/fragment/tab_admission.html:112
-#: templates/registrations.html:47 templates/registrations.html:108
+#: templates/admissions.html:122 templates/archives.html:51
+#: templates/archives.html:114 templates/formations.html:60
+#: templates/formations.html:137 templates/fragment/tab_admission.html:112
+#: templates/registrations.html:47 templates/registrations.html:106
 msgid "Faculty"
 msgstr ""
 
@@ -459,24 +459,24 @@ msgstr ""
 msgid "Formation"
 msgstr ""
 
-#: templates/fragment/tab_admission.html:113
+#: templates/fragment/tab_admission.html:114
 msgid "Formation administrator"
 msgstr ""
 
-#: tests/views/test_formation.py:166 views/formation.py:121
+#: tests/views/test_formation.py:166 views/formation.py:122
 msgid "Formation are now active"
 msgstr ""
 
-#: tests/views/test_formation.py:195 views/formation.py:123
+#: tests/views/test_formation.py:195 views/formation.py:124
 msgid "Formation are now inactive"
 msgstr ""
 
 #: tests/views/test_formation.py:149 tests/views/test_formation.py:207
-#: views/formation.py:116
+#: views/formation.py:117
 msgid "Formation is now active"
 msgstr ""
 
-#: tests/views/test_formation.py:178 views/formation.py:118
+#: tests/views/test_formation.py:178 views/formation.py:119
 msgid "Formation is now inactive"
 msgstr ""
 
@@ -664,7 +664,7 @@ msgstr ""
 #: models/enums/enums.py:4 templates/formations.html:111
 #: templates/registrations.html:140 templates/registrations.html:147
 #: tests/business/test_admission.py:60
-#: tests/business/test_xls_registration.py:91 views/formation.py:143
+#: tests/business/test_xls_registration.py:91 views/formation.py:144
 msgid "No"
 msgstr ""
 
@@ -684,11 +684,11 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-#: views/formation.py:129
+#: views/formation.py:130
 msgid "No formation activated"
 msgstr ""
 
-#: views/formation.py:131
+#: views/formation.py:132
 msgid "No formation inactivated"
 msgstr ""
 
@@ -702,7 +702,7 @@ msgstr ""
 
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
 #: models/enums/enums.py:32 models/enums/enums.py:40
-#: templates/admission_form.html:186 templates/fragment/tab_admission.html:145
+#: templates/admission_form.html:186 templates/fragment/tab_admission.html:146
 msgid "Other"
 msgstr ""
 
@@ -766,7 +766,7 @@ msgstr ""
 msgid "Please select at least one file to archive"
 msgstr ""
 
-#: tests/views/test_formation.py:136 views/formation.py:66
+#: tests/views/test_formation.py:136 views/formation.py:67
 msgid "Please select at least one formation"
 msgstr ""
 
@@ -1039,7 +1039,7 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: tests/views/test_formation.py:261 views/formation.py:142
+#: tests/views/test_formation.py:261 views/formation.py:143
 #, python-format
 msgid ""
 "Successfully defined training aid to %(new_value)s for %(quantity_updated)s "
@@ -1136,6 +1136,11 @@ msgstr ""
 msgid "Training aid"
 msgstr ""
 
+#: models/continuing_education_training.py:110
+#: templates/fragment/tab_admission.html:112
+msgid "Training aid available"
+msgstr ""
+
 #: models/admission.py:332
 msgid "UCL registration complete"
 msgstr ""
@@ -1223,7 +1228,7 @@ msgstr ""
 #: templates/registrations.html:138 templates/registrations.html:145
 #: tests/business/test_admission.py:60
 #: tests/business/test_xls_registration.py:90 tests/views/test_formation.py:262
-#: views/formation.py:143
+#: views/formation.py:144
 msgid "Yes"
 msgstr ""
 

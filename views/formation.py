@@ -60,11 +60,12 @@ def list_formations(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def update_formations(request):
-    selected_formations_ids = request.GET.getlist("selected_action", default=[])
+    redirect_url = request.META.get('HTTP_REFERER', reverse('formation'))
 
+    selected_formations_ids = request.GET.getlist("selected_action", default=[])
     if not selected_formations_ids:
         display_error_messages(request, _('Please select at least one formation'))
-        return redirect(reverse('formation'))
+        return redirect(redirect_url)
 
     new_state = ast.literal_eval(request.GET.get("new_state"))
     new_training_aid_value = ast.literal_eval(request.GET.get("new_training_aid_value"))
@@ -74,7 +75,7 @@ def update_formations(request):
     elif new_training_aid_value is not None:
         _update_training_aid_value(request, selected_formations_ids, new_training_aid_value)
 
-    return redirect(reverse('formation'))
+    return redirect(redirect_url)
 
 
 def _formation_activate(request, selected_formations_ids, new_state):
