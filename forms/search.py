@@ -307,7 +307,9 @@ def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with
 
 class ManagerFilterForm(BootstrapForm):
     person = ModelChoiceField(
-        queryset=Person.objects.filter(user__groups__name='continuing_education_training_managers'),
+        queryset=Person.objects.filter(
+            user__groups__name='continuing_education_training_managers'
+        ).order_by('last_name'),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,
@@ -324,7 +326,9 @@ class ManagerFilterForm(BootstrapForm):
     )
 
     training = FormationModelChoiceField(
-        queryset=ContinuingEducationTraining.objects.filter(active=True),
+        queryset=ContinuingEducationTraining.objects.filter(
+            active=True
+        ).order_by('education_group__educationgroupyear__acronym').distinct(),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,
