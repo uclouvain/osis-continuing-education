@@ -95,6 +95,8 @@ class AdmissionFilterForm(BootstrapForm):
         required=False,
     )
 
+    free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
+
     def __init__(self, *args, **kwargs):
         super(AdmissionFilterForm, self).__init__(*args, **kwargs)
         self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
@@ -102,6 +104,7 @@ class AdmissionFilterForm(BootstrapForm):
 
     def get_admissions(self):
         a_state = self.cleaned_data.get('state')
+        free_text = self.cleaned_data.get('free_text')
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],
@@ -113,7 +116,21 @@ class AdmissionFilterForm(BootstrapForm):
         if a_state:
             qs = qs.filter(state=a_state)
 
-        return qs
+        if free_text:
+            qs = search_admissions_with_free_text(free_text, qs)
+
+        return qs.distinct()
+
+
+def search_admissions_with_free_text(free_text, qs):
+    qs = qs.filter(
+        Q(person_information__person__first_name__icontains=free_text) |
+        Q(person_information__person__last_name__icontains=free_text) |
+        Q(person_information__person__email__icontains=free_text) |
+        Q(formation__education_group__educationgroupyear__acronym__icontains=free_text) |
+        Q(formation__education_group__educationgroupyear__title__icontains=free_text)
+    )
+    return qs
 
 
 class RegistrationFilterForm(AdmissionFilterForm):
@@ -142,6 +159,7 @@ class RegistrationFilterForm(AdmissionFilterForm):
         registered = self.cleaned_data.get('ucl_registration_complete')
         paid = self.cleaned_data.get('payment_complete')
         a_state = self.cleaned_data.get('state')
+        free_text = self.cleaned_data.get('free_text')
 
         qs = get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
                                                self.cleaned_data.get('formation'),
@@ -157,7 +175,10 @@ class RegistrationFilterForm(AdmissionFilterForm):
         if a_state:
             qs = qs.filter(state=a_state)
 
-        return qs
+        if free_text:
+            qs = search_admissions_with_free_text(free_text, qs)
+
+        return qs.distinct()
 
 
 class ArchiveFilterForm(AdmissionFilterForm):
@@ -177,14 +198,21 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
     def get_archives(self):
         a_state = self.cleaned_data.get('state')
+        free_text = self.cleaned_data.get('free_text')
 
         if a_state is None or a_state == '':
             a_state = STATES_FOR_ARCHIVE
 
-        return get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
-                                                 self.cleaned_data.get('formation'),
-                                                 a_state,
-                                                 True)
+        qs = get_queryset_by_faculty_formation(
+            self.cleaned_data['faculty'],
+            self.cleaned_data.get('formation'),
+            a_state,
+            True
+        )
+        if free_text:
+            qs = search_admissions_with_free_text(free_text, qs)
+
+        return qs.distinct()
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status):
@@ -251,6 +279,7 @@ class FormationFilterForm(AdmissionFilterForm):
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
     training_aid = forms.ChoiceField(choices=BOOLEAN_CHOICES, required=False, label=_('Training aid'))
+    free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
 
     def __init__(self, *args, **kwargs):
         super(FormationFilterForm, self).__init__(*args, **kwargs)
@@ -261,6 +290,7 @@ class FormationFilterForm(AdmissionFilterForm):
         acronym = self.cleaned_data.get('acronym', None)
         title = self.cleaned_data.get('title', None)
         training_aid = self.cleaned_data.get('training_aid')
+        free_text = self.cleaned_data.get('free_text')
 
         qs = EducationGroup.objects.filter(
             educationgroupyear__education_group_type__name__in=CONTINUING_EDUCATION_TRAINING_TYPES,
@@ -285,6 +315,12 @@ class FormationFilterForm(AdmissionFilterForm):
 
         if training_aid:
             qs = qs.filter(continuingeducationtraining__training_aid=training_aid)
+
+        if free_text:
+            qs = qs.filter(
+                Q(educationgroupyear__acronym__icontains=free_text) |
+                Q(educationgroupyear__title__icontains=free_text)
+            )
 
         return qs.order_by('educationgroupyear__acronym').select_related('continuingeducationtraining').distinct()
 
