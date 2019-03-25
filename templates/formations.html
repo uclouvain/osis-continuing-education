@@ -48,30 +48,36 @@
             <form style="display: inline;" action="{% url 'formation' %}" method="get" class="" id="search_form">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="acronym_id">{% trans 'Acronym' %}</label>
                         {{ search_form.acronym }}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="title_id">{% trans 'Title' %}</label>
                         {{ search_form.title }}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label for="faculty_id">{% trans 'Faculty' %}</label>
                         {{ search_form.faculty }}
                     </div>
-                    <div class="col-md-2">
-                        <label for="state_id">{% trans 'State' %}</label>
-                        {{ search_form.state }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="training_aid_id">{% trans 'Training aid' %}</label>
-                        {{ search_form.training_aid }}
-                    </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="state_id">{% trans 'State' %}</label>
+                        {{ search_form.state }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="training_aid_id">{% trans 'Training aid' %}</label>
+                        {{ search_form.training_aid }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="free_text_id">{% trans 'In all fields' %}</label>
+                        {{ search_form.free_text }}
                     </div>
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
