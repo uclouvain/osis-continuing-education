@@ -104,11 +104,12 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation.acronym }} - {{ admission.formation.academic_year }} </div>
+        <div class="col-md-4">{% bootstrap_label _("Formation") %} <br/> {{ admission.formation.acronym }}</div>
         <div class="col-md-4">{% bootstrap_label _("Courses formula") %} <br/> {{ admission.courses_formula | default:"-" }} </div>
         <div class="col-md-4">{% bootstrap_label _("Program code") %} <br/> {{ admission.program_code | default:"-" }} </div>
     </div>
     <div class="row form-group">
+        <div class="col-md-4">{% bootstrap_label _("Training aid") %} <br/> {{ admission.formation.training_aid | yesno | title }} </div>
         <div class="col-md-4">{% bootstrap_label _("Faculty") %} <br/> {{ admission.get_faculty | default:"-" }} </div>
         <div class="col-md-4">{% bootstrap_label _("Formation administrator") %} <br/> {{ admission.formation_administrator | default:"-" }} </div>
     </div>
