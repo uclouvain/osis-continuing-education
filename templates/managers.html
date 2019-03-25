@@ -2,7 +2,6 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% load formation %}
 
 {% comment "License" %}
     * OSIS stands for Open Student Information System. It's an application
@@ -75,10 +74,9 @@
             </div>
         </div>
         <div class="panel panel-body">
-            <form id="formations_form" method="get" action="{% url 'formations_procedure' %}">
+            <form id="managers_form">
                 {% csrf_token %}
-                <input name="new_state" id="new_state" value="" type="hidden"/>
-                <table class="table table-striped table-hover" id="formations_table">
+                <table class="table table-striped table-hover" id="managers_table">
                     <thead>
                     <tr>
                         <th class="searchable">{% trans 'Name' %}</th>
