@@ -54,7 +54,7 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 from reference.tests.factories.country import CountryFactory
 
 
-class AdmissionListCreateTestCase(APITestCase):
+class AdmissionListTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
@@ -67,7 +67,7 @@ class AdmissionListCreateTestCase(APITestCase):
         cls.address = AddressFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
 
-        cls.url = reverse('continuing_education_api_v1:admission-list-create', kwargs={'uuid': cls.person.uuid})
+        cls.url = reverse('continuing_education_api_v1:admission-list', kwargs={'uuid': cls.person.uuid})
 
         for state in [SUBMITTED, ACCEPTED, REJECTED, DRAFT]:
             education_group = EducationGroupFactory()
@@ -93,14 +93,8 @@ class AdmissionListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_create_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put']
+        methods_not_allowed = ['delete', 'put', 'post']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -152,6 +146,53 @@ class AdmissionListCreateTestCase(APITestCase):
                 context={'request': RequestFactory().get(self.url, query_string)},
             )
             self.assertEqual(response.data['results'], serializer.data)
+
+
+class AdmissionCreateTestCase(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = UserFactory()
+
+        cls.citizenship = CountryFactory(iso_code='FR')
+        new_country = CountryFactory(iso_code='NL')
+        cls.person = ContinuingEducationPersonFactory(
+            birth_country=cls.citizenship
+        )
+        cls.address = AddressFactory()
+        cls.academic_year = AcademicYearFactory(year=2018)
+
+        cls.url = reverse('continuing_education_api_v1:admission-create')
+
+        for state in [SUBMITTED, ACCEPTED, REJECTED, DRAFT]:
+            education_group = EducationGroupFactory()
+            EducationGroupYearFactory(
+                education_group=education_group,
+                academic_year=cls.academic_year
+            )
+            cls.formation = ContinuingEducationTrainingFactory(education_group=education_group)
+            cls.admission = AdmissionFactory(
+                citizenship=cls.citizenship,
+                person_information=cls.person,
+                address=cls.address,
+                state=state,
+                formation=cls.formation
+            )
+
+    def setUp(self):
+        self.client.force_authenticate(user=self.user)
+
+    def test_create_not_authorized(self):
+        self.client.force_authenticate(user=None)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_get_method_not_allowed(self):
+        methods_not_allowed = ['delete', 'put', 'get']
+
+        for method in methods_not_allowed:
+            response = getattr(self.client, method)(self.url)
+            self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_create_valid_admission_with_existing_person(self):
         self.assertEqual(3, Admission.admission_objects.all().count())
