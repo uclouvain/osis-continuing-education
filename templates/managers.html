@@ -74,6 +74,9 @@
             </div>
         </div>
         <div class="panel panel-body">
+            {% if managers %}
+                <p style="font-weight: bold; margin-left:10px;color:grey; margin-bottom: 20px;"> {{ managers.paginator.count }} {% trans 'managers'|lower %} </p>
+            {% endif %}
             <form id="managers_form">
                 {% csrf_token %}
                 <table class="table table-striped table-hover" id="managers_table">
