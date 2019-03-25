@@ -68,11 +68,7 @@ class FacultyModelChoiceField(ModelChoiceField):
 
 class FormationModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return "{}{} - {}".format(
-            "{} - ".format(obj.partial_acronym) if obj.partial_acronym else "",
-            obj.acronym,
-            obj.academic_year,
-        )
+        return obj.acronym
 
 
 class AdmissionFilterForm(BootstrapForm):
@@ -373,6 +369,7 @@ class ManagerFilterForm(BootstrapForm):
 
     def __init__(self, *args, **kwargs):
         super(ManagerFilterForm, self).__init__(*args, **kwargs)
+        _build_training_choices(self.fields['training'])
 
     def get_managers(self):
         training = self.cleaned_data.get('training', None)
@@ -402,3 +399,9 @@ class ManagerFilterForm(BootstrapForm):
                 ).values_list('person__id')
             )
         return qs
+
+
+def _build_training_choices(field):
+    field.queryset = ContinuingEducationTraining.objects.filter(
+        id__in=PersonTraining.objects.values_list('training', flat=True)
+    ).order_by('education_group__educationgroupyear__acronym').distinct()
