@@ -43,7 +43,7 @@ class PersonTrainingForm(ModelForm):
     )
 
     training = forms.ModelChoiceField(
-        queryset=ContinuingEducationTraining.objects.filter(active=True),
+        queryset=ContinuingEducationTraining.objects.all(),
         widget=autocomplete.ModelSelect2(url='training_autocomplete')
     )
 
