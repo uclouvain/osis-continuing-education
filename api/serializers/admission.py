@@ -149,10 +149,8 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
 
             Person.objects.filter(email=person_data['email']).update(**person_data)
             person = Person.objects.get(email=person_data['email'])
-            iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
-                person=person,
-                **iufc_person_data
-            )
+            ContinuingEducationPerson.objects.filter(person=person).update(**iufc_person_data)
+            iufc_person = ContinuingEducationPerson.objects.get(person=person)
             validated_data['person_information'] = iufc_person
 
         formation_data = validated_data.pop('formation', None)

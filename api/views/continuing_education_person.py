@@ -23,20 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django_filters import rest_framework as filters
 from rest_framework import generics
 
+from base.models.person import Person
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-
-
-class ContinuingEducationPersonFilter(filters.FilterSet):
-    person = filters.CharFilter(field_name="person__uuid")
-
-    class Meta:
-        model = ContinuingEducationPerson
-        fields = ['person', 'birth_country']
 
 
 class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
@@ -44,10 +36,11 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
        Return a list of continuing education persons with optional filtering or create one.
     """
     name = 'person-list-create'
-    filter_class = ContinuingEducationPersonFilter
-
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
+    )
+    filter_fields = (
+        'person',
     )
     search_fields = (
         'person',
@@ -65,11 +58,19 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
         return ContinuingEducationPersonSerializer
 
 
-class ContinuingEducationPersonDetailDestroy(generics.RetrieveDestroyAPIView):
+class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
     """
-        Return the detail of the continuing education person or destroy it
+        Return the detail of the continuing education person.
     """
-    name = 'person-detail-delete'
+    name = 'person-detail'
     queryset = ContinuingEducationPerson.objects.all()
     serializer_class = ContinuingEducationPersonSerializer
-    lookup_field = 'uuid'
+
+    def get_object(self):
+        try:
+            return ContinuingEducationPerson.objects.get(person__user=self.request.user)
+        except ContinuingEducationPerson.DoesNotExist:
+            person, _ = Person.objects.get_or_create(email=self.request.user.username)
+            person.user = self.request.user
+            person.save()
+            return ContinuingEducationPerson.objects.create(person=person)
