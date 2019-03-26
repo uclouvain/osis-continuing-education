@@ -155,9 +155,7 @@ class AdmissionCreateTestCase(APITestCase):
 
         cls.citizenship = CountryFactory(iso_code='FR')
         new_country = CountryFactory(iso_code='NL')
-        cls.person = ContinuingEducationPersonFactory(
-            birth_country=cls.citizenship
-        )
+        cls.person = ContinuingEducationPersonFactory(birth_country=cls.citizenship)
         cls.address = AddressFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
 
@@ -222,7 +220,9 @@ class AdmissionCreateTestCase(APITestCase):
         self.assertEqual(3, Admission.admission_objects.all().count())
         self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(1, Person.objects.all().count())
-        PersonFactory(email='b@d.be')
+
+        p = PersonFactory(email='b@d.be')
+        ContinuingEducationPersonFactory(person=p)
         data = {
             'person_information': {
                 'birth_date': datetime.date.today(),

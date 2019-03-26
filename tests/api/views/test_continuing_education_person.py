@@ -24,7 +24,7 @@
 #
 ##############################################################################
 import datetime
-import uuid
+from unittest import skip
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -128,28 +128,22 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
+class ContinuingEducationPersonDetailTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.birth_country = CountryFactory()
         fr = CountryFactory(iso_code='FR')
 
-        cls.person = ContinuingEducationPersonFactory(birth_country=cls.birth_country)
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:person-detail-delete', kwargs={'uuid': cls.person.uuid})
-        cls.invalid_url = reverse(
-            'continuing_education_api_v1:person-detail-delete',
-            kwargs={'uuid': uuid.uuid4()}
+        p = PersonFactory(user=cls.user)
+        cls.person = ContinuingEducationPersonFactory(
+            person=p,
+            birth_country=cls.birth_country
         )
+        cls.url = reverse('continuing_education_api_v1:person-detail')
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
-
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_not_authorized(self):
         self.client.force_authenticate(user=None)
@@ -158,21 +152,11 @@ class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'put']
+        methods_not_allowed = ['post', 'put', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_delete_valid_person(self):
-        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, ContinuingEducationPerson.objects.all().count())
-
-    def test_delete_invalid_person_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_valid_person(self):
         response = self.client.get(self.url)
@@ -184,35 +168,8 @@ class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
         )
         self.assertEqual(response.data, serializer.data)
 
+    @skip('Useless now ?')
     def test_get_invalid_person_case_not_found(self):
-        invalid_url = reverse('continuing_education_api_v1:person-detail-delete', kwargs={'uuid':  uuid.uuid4()})
+        invalid_url = reverse('continuing_education_api_v1:person-detail')
         response = self.client.get(invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-
-class FilterContinuingEducationPersonTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:person-list-create')
-        cls.person = ContinuingEducationPerson()
-
-    def setUp(self):
-        self.client.force_authenticate(user=self.user)
-
-    def test_get_continuing_education_perons_case_filter_person_params(self):
-        query_string = {'person': str(self.person.uuid)}
-
-        response = self.client.get(self.url, data=query_string)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        persons = ContinuingEducationPerson.objects.filter(
-            person__uuid=query_string['person']
-        )
-
-        serializer = ContinuingEducationPersonSerializer(
-            persons,
-            many=True,
-            context={'request': RequestFactory().get(self.url, query_string)},
-        )
-        self.assertEqual(response.data['results'], serializer.data)
