@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import datetime
-from unittest import skip
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -167,9 +166,3 @@ class ContinuingEducationPersonDetailTestCase(APITestCase):
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
-
-    @skip('Useless now ?')
-    def test_get_invalid_person_case_not_found(self):
-        invalid_url = reverse('continuing_education_api_v1:person-detail')
-        response = self.client.get(invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
