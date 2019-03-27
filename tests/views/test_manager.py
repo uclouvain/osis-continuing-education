@@ -83,6 +83,13 @@ class ManagerListTestCase(TestCase):
         self.assertEquals(PersonTraining.objects.count(), 1)
         self.assertEqual(response.status_code, HttpResponse.status_code)
 
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        success_msg = gettext('Successfully assigned %(manager)s to the training %(training)s') % {
+            "manager": self.training_manager,
+            "training": self.formation.acronym
+        }
+        self.assertIn(success_msg, str(messages_list[0]))
+
     def test_add_employee_to_training_managers_group(self):
         employee = PersonFactory(employee=True)
         self.assertEqual(list(employee.user.groups.all()), [])
@@ -109,3 +116,19 @@ class ManagerListTestCase(TestCase):
             gettext("Manager is already assigned on this training"),
             str(messages_list[0])
         )
+
+    def test_desassign_manager_from_training(self):
+        PersonTraining(person=self.training_manager, training=self.formation).save()
+        self.assertEquals(PersonTraining.objects.count(), 1)
+        args = [
+            self.formation.pk,
+            self.training_manager.pk
+        ]
+        response = self.client.get(reverse('delete_person_training', args=args))
+        self.assertEquals(PersonTraining.objects.count(), 0)
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        success_msg = gettext('Successfully desassigned %(manager)s from the training %(training)s') % {
+            "manager": self.training_manager,
+            "training": self.formation.acronym
+        }
+        self.assertIn(success_msg, str(messages_list[0]))
