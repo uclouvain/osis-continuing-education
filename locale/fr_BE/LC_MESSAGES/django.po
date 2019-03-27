@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-27 08:34+0100\n"
+"POT-Creation-Date: 2019-03-27 08:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1069,6 +1069,10 @@ msgstr "Etudes"
 msgid "Submitted"
 msgstr "Soumis"
 
+#: views/managers.py:60
+msgid "Successfully assigned %(manager)s to the training %(training)s"
+msgstr "%(manager)s a été assigné avec succès à la formation %(training)s"
+
 #: tests/views/test_formation.py:261 views/formation.py:143
 #, python-format
 msgid ""
@@ -1078,7 +1082,7 @@ msgstr ""
 "\"Aide à la formation\" définie à %(new_value)s pour %(quantity_updated)s "
 "formations."
 
-#: views/managers.py:82
+#: views/managers.py:87
 #, python-format
 msgid "Successfully desassigned %(manager)s from the training %(training)s"
 msgstr "%(manager)s a été désassigné avec succès de la formation %(training)s"
