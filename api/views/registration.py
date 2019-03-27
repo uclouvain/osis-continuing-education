@@ -24,9 +24,12 @@
 #
 ##############################################################################
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
+from continuing_education.api.serializers.registration import RegistrationListSerializer, \
+    RegistrationDetailSerializer, RegistrationPostSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
 class RegistrationList(generics.ListAPIView):
@@ -35,7 +38,6 @@ class RegistrationList(generics.ListAPIView):
     """
     name = 'registration-list'
 
-    serializer_class = RegistrationListSerializer
     filter_fields = (
         'person_information',
         'formation',
@@ -56,14 +58,16 @@ class RegistrationList(generics.ListAPIView):
         'formation',
     )  # Default ordering
 
+    serializer_class = RegistrationListSerializer
+
     def get_queryset(self):
-        queryset = Admission.registration_objects.all().select_related(
+        person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
+        return Admission.registration_objects.filter(person_information=person).select_related(
             'person_information',
             'address',
             'billing_address',
             'residence_address'
         )
-        return queryset
 
 
 class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -72,5 +76,9 @@ class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     """
     name = 'registration-detail-update-destroy'
     queryset = Admission.objects.all()
-    serializer_class = RegistrationDetailSerializer
     lookup_field = 'uuid'
+
+    def get_serializer_class(self):
+        if self.request.method in ['PATCH', 'PUT']:
+            return RegistrationPostSerializer
+        return RegistrationDetailSerializer

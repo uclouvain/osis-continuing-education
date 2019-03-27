@@ -24,21 +24,24 @@
 #
 ##############################################################################
 from rest_framework import generics
+from rest_framework.generics import get_object_or_404
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer, AdmissionPostSerializer
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
-class AdmissionListCreate(generics.ListCreateAPIView):
+class AdmissionList(generics.ListAPIView):
     """
-       Return a list of all the admission with optional filtering or create one.
+       Return a list of all the admission with optional filtering.
     """
-    name = 'admission-list-create'
+    name = 'admission-list'
+
     filter_fields = (
         'person_information',
         'formation',
-        'state',
+        'state'
     )
     search_fields = (
         'person_information',
@@ -55,18 +58,24 @@ class AdmissionListCreate(generics.ListCreateAPIView):
         'formation',
     )  # Default ordering
 
+    serializer_class = AdmissionListSerializer
+
     def get_queryset(self):
-        queryset = Admission.admission_objects.all().select_related(
+        person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
+        return Admission.admission_objects.filter(person_information=person).select_related(
             'person_information',
             'citizenship',
             'address',
         )
-        return queryset
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return AdmissionPostSerializer
-        return AdmissionListSerializer
+
+class AdmissionCreate(generics.CreateAPIView):
+    """
+       Create an admission
+    """
+    name = 'admission-create'
+
+    serializer_class = AdmissionPostSerializer
 
 
 class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):

@@ -28,7 +28,7 @@ from django.urls import reverse
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
-from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory

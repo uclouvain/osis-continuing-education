@@ -43,6 +43,7 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
         view_name='continuing_education_api_v1:admission-detail-update-destroy',
         lookup_field='uuid'
     )
+
     person_information = ContinuingEducationPersonSerializer()
 
     # Display human readable value
@@ -118,9 +119,10 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
     citizenship = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
-        required=False
+        required=False,
+        allow_null=True
     )
-    address = AddressPostSerializer(required=False)
+    address = AddressPostSerializer(required=False, allow_null=True)
     person_information = ContinuingEducationPersonPostSerializer(required=True)
     formation = serializers.SlugRelatedField(
         queryset=ContinuingEducationTraining.objects.all(),
@@ -130,9 +132,8 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
 
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)
-        self.update_field('person_information', validated_data, instance.person_information)
-        self.update_field('formation', validated_data, instance.formation)
-
+        if 'person_information' in validated_data:
+            validated_data.pop('person_information')
         return super(AdmissionDetailSerializer, self).update(instance, validated_data)
 
     def update_field(self, field, validated_data, instance):
@@ -145,22 +146,21 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         if 'person_information' in validated_data:
             iufc_person_data = validated_data.pop('person_information')
             person_data = iufc_person_data.pop('person')
-            person, created = Person.objects.get_or_create(**person_data)
 
-            iufc_person, created = ContinuingEducationPerson.objects.get_or_create(
-                person=person,
-                **iufc_person_data
-            )
+            Person.objects.filter(email=person_data['email']).update(**person_data)
+            person = Person.objects.get(email=person_data['email'])
+            ContinuingEducationPerson.objects.filter(person=person).update(**iufc_person_data)
+            iufc_person = ContinuingEducationPerson.objects.get(person=person)
             validated_data['person_information'] = iufc_person
 
         formation_data = validated_data.pop('formation', None)
         validated_data['formation'] = formation_data
-
         if 'address' in validated_data:
             address_data = validated_data.pop('address')
-            address, created = Address.objects.get_or_create(**address_data)
+            address = Address.objects.create(**address_data)
             validated_data['address'] = address
-
         admission = Admission(**validated_data)
+        admission.residence_address = admission.address
+        admission.billing_address = admission.address
         admission.save()
         return admission

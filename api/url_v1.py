@@ -26,9 +26,9 @@
 from django.conf.urls import url
 
 from continuing_education.api.views.address import AddressDetailUpdateDestroy, AddressListCreate
-from continuing_education.api.views.admission import AdmissionListCreate, AdmissionDetailUpdateDestroy
+from continuing_education.api.views.admission import AdmissionList, AdmissionDetailUpdateDestroy, AdmissionCreate
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonListCreate, \
-    ContinuingEducationPersonDetailDestroy
+    ContinuingEducationPersonDetail
 from continuing_education.api.views.continuing_education_training import ContinuingEducationTrainingListCreate, \
     ContinuingEducationTrainingDetailUpdateDestroy
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
@@ -44,15 +44,20 @@ urlpatterns = [
     ),
     url(r'^persons/$', ContinuingEducationPersonListCreate.as_view(), name=ContinuingEducationPersonListCreate.name),
     url(
-        r'^persons/(?P<uuid>[0-9a-f-]+)$',
-        ContinuingEducationPersonDetailDestroy.as_view(),
-        name=ContinuingEducationPersonDetailDestroy.name
+        r'^persons/details$',
+        ContinuingEducationPersonDetail.as_view(),
+        name=ContinuingEducationPersonDetail.name
     ),
-    url(r'^admissions/$', AdmissionListCreate.as_view(), name=AdmissionListCreate.name),
+    url(r'^persons/(?P<uuid>[0-9a-f-]+)/admissions/$', AdmissionList.as_view(), name=AdmissionList.name),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)$',
         AdmissionDetailUpdateDestroy.as_view(),
         name=AdmissionDetailUpdateDestroy.name
+    ),
+    url(
+        r'^admissions/$',
+        AdmissionCreate.as_view(),
+        name=AdmissionCreate.name
     ),
     url(
         r'^admissions/(?P<uuid>[0-9a-f-]+)/files/$',
@@ -64,7 +69,7 @@ urlpatterns = [
         AdmissionFileRetrieveDestroy.as_view(),
         name=AdmissionFileRetrieveDestroy.name
     ),
-    url(r'^registrations/$', RegistrationList.as_view(), name=RegistrationList.name),
+    url(r'^persons/(?P<uuid>[0-9a-f-]+)/registrations/$', RegistrationList.as_view(), name=RegistrationList.name),
     url(
         r'^registrations/(?P<uuid>[0-9a-f-]+)$',
         RegistrationDetailUpdateDestroy.as_view(),

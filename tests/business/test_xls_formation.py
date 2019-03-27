@@ -27,16 +27,16 @@
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
 
+from base.models.enums import entity_type
 from base.tests.factories.academic_year import AcademicYearFactory
-from continuing_education.forms.search import FormationFilterForm
-from continuing_education.business.xls.xls_formation import TITLES, XLS_DESCRIPTION, XLS_FILENAME,  WORKSHEET_TITLE, \
-    create_xls, prepare_xls_content
-from osis_common.document import xls_build
-from base.tests.factories.user import UserFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.models.enums import entity_type
+from base.tests.factories.user import UserFactory
+from continuing_education.business.xls.xls_formation import TITLES, XLS_DESCRIPTION, XLS_FILENAME, WORKSHEET_TITLE, \
+    create_xls, prepare_xls_content
+from continuing_education.forms.search import FormationFilterForm
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from osis_common.document import xls_build
 
 ACRONYM = "ACRO"
 

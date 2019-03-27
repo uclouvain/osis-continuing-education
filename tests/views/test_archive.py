@@ -34,7 +34,6 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
-from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory

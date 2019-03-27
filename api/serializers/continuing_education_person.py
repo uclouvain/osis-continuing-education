@@ -59,7 +59,8 @@ class ContinuingEducationPersonPostSerializer(ContinuingEducationPersonSerialize
 
     def create(self, validated_data):
         person_data = validated_data.pop('person')
-        person, created = Person.objects.get_or_create(**person_data)
+        Person.objects.filter(email=person_data['email']).update(**person_data)
+        person = Person.objects.get(email=person_data['email'])
         validated_data['person'] = person
 
         iufc_person = ContinuingEducationPerson.objects.create(**validated_data)

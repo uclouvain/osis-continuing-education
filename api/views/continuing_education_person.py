@@ -25,6 +25,7 @@
 ##############################################################################
 from rest_framework import generics
 
+from base.models.person import Person
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -38,9 +39,8 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
-
     filter_fields = (
-        'birth_country',
+        'person',
     )
     search_fields = (
         'person',
@@ -58,11 +58,19 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
         return ContinuingEducationPersonSerializer
 
 
-class ContinuingEducationPersonDetailDestroy(generics.RetrieveDestroyAPIView):
+class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
     """
-        Return the detail of the continuing education person or destroy it
+        Return the detail of the continuing education person.
     """
-    name = 'person-detail-delete'
+    name = 'person-detail'
     queryset = ContinuingEducationPerson.objects.all()
     serializer_class = ContinuingEducationPersonSerializer
-    lookup_field = 'uuid'
+
+    def get_object(self):
+        try:
+            return ContinuingEducationPerson.objects.get(person__user=self.request.user)
+        except ContinuingEducationPerson.DoesNotExist:
+            person, _ = Person.objects.get_or_create(email=self.request.user.username)
+            person.user = self.request.user
+            person.save()
+            return ContinuingEducationPerson.objects.create(person=person)

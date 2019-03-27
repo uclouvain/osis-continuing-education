@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import datetime
-import uuid
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -91,7 +90,8 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         self.assertEqual(4, Person.objects.all().count())
         data = {
             "person": {
-                'uuid': self.person.uuid
+                'uuid': self.person.uuid,
+                'email': self.person.email,
             },
             'birth_date': datetime.date.today(),
             'birth_location': 'Hilo',
@@ -105,7 +105,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
     def test_create_valid_person_with_new_user(self):
         self.assertEqual(3, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(4, Person.objects.all().count())
-
+        PersonFactory(email="a@b.be")
         data = {
             "person": {
                 'first_name': "Ben",
@@ -127,28 +127,22 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
+class ContinuingEducationPersonDetailTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.birth_country = CountryFactory()
         fr = CountryFactory(iso_code='FR')
 
-        cls.person = ContinuingEducationPersonFactory(birth_country=cls.birth_country)
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:person-detail-delete', kwargs={'uuid': cls.person.uuid})
-        cls.invalid_url = reverse(
-            'continuing_education_api_v1:person-detail-delete',
-            kwargs={'uuid': uuid.uuid4()}
+        p = PersonFactory(user=cls.user)
+        cls.person = ContinuingEducationPersonFactory(
+            person=p,
+            birth_country=cls.birth_country
         )
+        cls.url = reverse('continuing_education_api_v1:person-detail')
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
-
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_not_authorized(self):
         self.client.force_authenticate(user=None)
@@ -157,21 +151,11 @@ class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'put']
+        methods_not_allowed = ['post', 'put', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_delete_valid_person(self):
-        self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, ContinuingEducationPerson.objects.all().count())
-
-    def test_delete_invalid_person_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_valid_person(self):
         response = self.client.get(self.url)
@@ -182,8 +166,3 @@ class ContinuingEducationPersonDetailDestroyTestCase(APITestCase):
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
-
-    def test_get_invalid_person_case_not_found(self):
-        invalid_url = reverse('continuing_education_api_v1:person-detail-delete', kwargs={'uuid':  uuid.uuid4()})
-        response = self.client.get(invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

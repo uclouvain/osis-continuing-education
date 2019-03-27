@@ -35,9 +35,10 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
-from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer
+from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
+    RegistrationPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, DRAFT, \
     REGISTRATION_SUBMITTED, VALIDATED
@@ -52,7 +53,6 @@ class RegistrationListTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:registration-list')
 
         new_country = CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory()
@@ -74,11 +74,13 @@ class RegistrationListTestCase(APITestCase):
             formation=cls.formation
         )
 
+        cls.url = reverse('continuing_education_api_v1:registration-list', kwargs={'uuid': cls.person.uuid})
+
         for state in [VALIDATED, ACCEPTED, REGISTRATION_SUBMITTED]:
             cls.education_group = EducationGroupFactory()
             education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
             AdmissionFactory(
-                person_information=ContinuingEducationPersonFactory(),
+                person_information=cls.person,
                 state=state,
                 formation=ContinuingEducationTrainingFactory(
                     education_group=cls.education_group
@@ -222,13 +224,15 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         data = {
             'vat_number': '123456',
             'id_card_number': '0000000',
+            'use_address_for_billing': True,
+            'use_address_for_post': True
         }
 
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = RegistrationDetailSerializer(
-            Admission.objects.all().first(),
+        serializer = RegistrationPostSerializer(
+            Admission.registration_objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )
         self.assertEqual(response.data, serializer.data)
@@ -237,15 +241,17 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
     def test_update_valid_registration_billing_address(self):
         self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
+            'use_address_for_billing': False,
             'billing_address': {
                 'location': 'PERDU'
-            }
+            },
+            'use_address_for_post': True
         }
 
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        serializer = RegistrationDetailSerializer(
+        serializer = RegistrationPostSerializer(
             Admission.registration_objects.all().first(),
             context={'request': RequestFactory().get(self.url)},
         )

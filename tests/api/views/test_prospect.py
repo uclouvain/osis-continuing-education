@@ -32,7 +32,7 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
-from base.tests.factories.education_group_year import TrainingFactory, EducationGroupYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.prospect import ProspectSerializer
 from continuing_education.models.prospect import Prospect

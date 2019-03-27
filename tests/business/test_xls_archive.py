@@ -27,19 +27,19 @@
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
 
-from base.tests.factories.education_group import EducationGroupFactory
-from continuing_education.forms.search import ArchiveFilterForm
-from continuing_education.business.xls.xls_archive import ARCHIVE_TITLES, XLS_DESCRIPTION, XLS_FILENAME,  \
-    WORKSHEET_TITLE, create_xls, prepare_xls_content
-from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from osis_common.document import xls_build
-from base.tests.factories.user import UserFactory
-from continuing_education.tests.factories.admission import AdmissionFactory
+from base.models.enums import entity_type
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.user import UserFactory
+from continuing_education.business.xls.xls_archive import ARCHIVE_TITLES, XLS_DESCRIPTION, XLS_FILENAME, \
+    WORKSHEET_TITLE, create_xls, prepare_xls_content
+from continuing_education.forms.search import ArchiveFilterForm
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
-from base.models.enums import entity_type
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from osis_common.document import xls_build
 
 FACULTY_ACRONYM = "AGRO"
 

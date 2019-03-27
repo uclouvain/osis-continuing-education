@@ -21,9 +21,9 @@ class AdmissionListSerializerTestCase(TestCase):
 
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
-            formation=ContinuingEducationTrainingFactory(education_group= ed)
+            formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
-        url = reverse('continuing_education_api_v1:admission-list-create')
+        url = reverse('continuing_education_api_v1:admission-list', kwargs={'uuid': cls.person_information.uuid})
         cls.serializer = AdmissionListSerializer(cls.admission, context={'request': RequestFactory().get(url)})
 
     def test_contains_expected_fields(self):
@@ -48,10 +48,11 @@ class AdmissionDetailSerializerTestCase(TestCase):
         new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person_information,
-            formation=ContinuingEducationTrainingFactory(education_group=ed)
+            formation=cls.formation
         )
         url = reverse(
             'continuing_education_api_v1:admission-detail-update-destroy',
@@ -104,11 +105,13 @@ class AdmissionPostSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         cls.citizenship = CountryFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
-        new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
             person_information=cls.person_information,
+            formation=cls.formation
         )
         url = reverse(
             'continuing_education_api_v1:admission-detail-update-destroy',
@@ -154,3 +157,9 @@ class AdmissionPostSerializerTestCase(TestCase):
             'awareness_other',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+    def test_ensure_formation_field_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['formation'],
+            self.formation.uuid
+        )

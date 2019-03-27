@@ -25,14 +25,15 @@
 ##############################################################################
 from rest_framework import serializers
 
-from continuing_education.api.serializers.address import AddressSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.models.admission import Admission
-from education_group.api.serializers.training import TrainingListSerializer
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
-
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:registration-detail-update-destroy',
         lookup_field='uuid'
@@ -42,7 +43,7 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
     # Display human readable value
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
-    formation = TrainingListSerializer()
+    formation = ContinuingEducationTrainingSerializer()
 
     class Meta:
         model = Admission
@@ -56,32 +57,22 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
-    person_information = ContinuingEducationPersonSerializer(required=False)
+class RegistrationDetailSerializer(RegistrationListSerializer):
 
-    main_address = AddressSerializer(source='address', required=False)
-    billing_address = AddressSerializer(required=False)
-    residence_address = AddressSerializer(required=False)
+    address = AddressSerializer()
+    billing_address = AddressSerializer()
+    residence_address = AddressSerializer()
 
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
-    state_text = serializers.CharField(source='get_state_display', read_only=True)
-
-    formation = TrainingListSerializer(required=False)
 
     class Meta:
         model = Admission
-        fields = (
-            'uuid',
-            'person_information',
-            'formation',
+        fields = RegistrationListSerializer.Meta.fields + (
 
             # CONTACTS
-            'main_address',
-
-            'state',
-            'state_text',
+            'address',
 
             # REGISTRATION
             # BILLING
@@ -121,13 +112,39 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
 
         )
 
+
+class RegistrationPostSerializer(RegistrationDetailSerializer):
+    person_information = ContinuingEducationPersonPostSerializer(required=False)
+
+    address = AddressPostSerializer(required=False)
+    billing_address = AddressPostSerializer(required=False)
+    residence_address = AddressPostSerializer(required=False)
+
+    formation = serializers.SlugRelatedField(
+        queryset=ContinuingEducationTraining.objects.all(),
+        slug_field='uuid',
+        required=False
+    )
+
     def update(self, instance, validated_data):
-        self.update_field('billing_address', validated_data, instance.billing_address)
-        self.update_field('residence_address', validated_data, instance.residence_address)
+        instance.billing_address = self.update_addresses(
+            'billing_address',
+            validated_data,
+            instance,
+            not validated_data['use_address_for_billing']
+        )
+        instance.residence_address = self.update_addresses(
+            'residence_address',
+            validated_data,
+            instance,
+            not validated_data['use_address_for_post']
+        )
         return super().update(instance, validated_data)
 
-    def update_field(self, field, validated_data, instance):
+    def update_addresses(self, field, validated_data, instance, to_update):
         if field in validated_data:
             field_serializer = self.fields[field]
             field_data = validated_data.pop(field)
-            field_serializer.update(instance, field_data)
+            if to_update:
+                return field_serializer.update(getattr(instance, field), field_data, instance.address)
+        return getattr(instance, field)

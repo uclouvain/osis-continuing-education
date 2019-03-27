@@ -48,5 +48,14 @@ class AddressPostSerializer(AddressSerializer):
     country = serializers.SlugRelatedField(
         slug_field='iso_code',
         queryset=Country.objects.all(),
-        required=False
+        required=False,
+        allow_null=True
     )
+
+    def update(self, instance, validated_data, main_address=None):
+        if instance == main_address:
+            address = Address.objects.create(**validated_data)
+        else:
+            Address.objects.filter(uuid=instance.uuid).update(**validated_data)
+            address = Address.objects.get(uuid=instance.uuid)
+        return address
