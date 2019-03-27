@@ -63,6 +63,8 @@ class PersonTrainingForm(ModelForm):
             PersonTraining.objects.get(person=self.cleaned_data['person'], training=self.cleaned_data['training'])
         except PersonTraining.DoesNotExist:
             pass
+        except KeyError:
+            pass
         else:
             raise ValidationError({'person': [_('Manager is already assigned on this training')]})
         return self.cleaned_data
