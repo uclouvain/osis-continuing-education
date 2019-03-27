@@ -66,6 +66,8 @@ urlpatterns = [
     ])),
     url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
     url(r'^managers/', include([
-        url(r'^$', managers.list_managers, name='list_managers')
+        url(r'^$', managers.list_managers, name='list_managers'),
+        url(r'^delete/(?P<training>[0-9]+)/(?P<manager>[0-9]+)',
+            managers.delete_person_training, name='delete_person_training')
     ])),
 ]

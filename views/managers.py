@@ -25,9 +25,12 @@
 ##############################################################################
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 from base.models.person import Person
+from base.views.common import display_success_messages
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
@@ -54,6 +57,11 @@ def list_managers(request):
         person = person_training_form.cleaned_data['person']
         _append_user_to_training_managers(person.user)
         person_training_form.save()
+        success_msg = _('Successfully assigned %(manager)s to the training %(training)s') % {
+            "manager": person,
+            "training": person_training_form.cleaned_data['training'].acronym
+        }
+        display_success_messages(request, success_msg)
     else:
         errors.append(person_training_form.errors)
         display_errors(request, errors)
@@ -68,6 +76,22 @@ def list_managers(request):
         'search_form': search_form,
         'person_training_form': person_training_form
     })
+
+
+@login_required
+@permission_required('continuing_education.can_validate_registration', raise_exception=True)
+def delete_person_training(request, training, manager):
+    redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
+
+    person_training = get_object_or_404(PersonTraining, training=training, person=manager)
+    success_msg = _('Successfully desassigned %(manager)s from the training %(training)s') % {
+        "manager": person_training.person,
+        "training": person_training.training.acronym
+    }
+    display_success_messages(request, success_msg)
+    person_training.delete()
+
+    return redirect(redirect_url)
 
 
 def _append_user_to_training_managers(user):

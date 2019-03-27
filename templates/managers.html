@@ -102,10 +102,13 @@
                             <td>
                                 <ul style='list-style-type:none; padding-left: 0;'>
                                 {% if not manager.trainings %}
-                                    <li>{% trans 'No training' %}</li>
+                                    <li>{% trans 'No assigned training' %}</li>
                                 {% else %}
                                     {% for training in manager.trainings %}
-                                        <li>{{ training }} - {{ training.management_entity }}</li>
+                                        <li>
+                                            <a href="{% url 'delete_person_training' training=training.pk manager=manager.pk %}">
+                                                <i class="fa fa-times"></i></a>
+                                            {{ training }} - {{ training.management_entity }}</li>
                                     {% endfor %}
                                 {% endif %}
                                 </ul>
