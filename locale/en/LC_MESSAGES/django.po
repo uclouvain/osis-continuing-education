@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-27 08:39+0100\n"
+"POT-Creation-Date: 2019-03-27 08:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -620,7 +620,7 @@ msgstr ""
 msgid "Manager"
 msgstr ""
 
-#: forms/person_training.py:67 tests/views/test_manager.py:109
+#: forms/person_training.py:67 tests/views/test_manager.py:116
 msgid "Manager is already assigned on this training"
 msgstr ""
 
@@ -687,6 +687,10 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+#: templates/managers.html:105
+msgid "No assigned training"
+msgstr ""
+
 #: templates/admissions.html:180 templates/archives.html:194
 #: templates/formations.html:195
 #: templates/fragment/tasks/diplomas_to_produce.html:73
@@ -709,10 +713,6 @@ msgstr ""
 
 #: views/formation.py:132
 msgid "No formation inactivated"
-msgstr ""
-
-#: templates/managers.html:105
-msgid "No training"
 msgstr ""
 
 #: forms/search.py:42 forms/search.py:47 templatetags/formation.py:43
@@ -1068,7 +1068,7 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: views/managers.py:60
+#: tests/views/test_manager.py:87 views/managers.py:60
 #, python-format
 msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr ""
@@ -1080,7 +1080,7 @@ msgid ""
 "trainings."
 msgstr ""
 
-#: views/managers.py:87
+#: tests/views/test_manager.py:130 views/managers.py:87
 #, python-format
 msgid "Successfully desassigned %(manager)s from the training %(training)s"
 msgstr ""
