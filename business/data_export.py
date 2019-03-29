@@ -27,6 +27,7 @@ import json
 
 from django.http import HttpResponse
 from rest_framework import serializers
+from django.utils.translation import ugettext_lazy as _
 
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -34,6 +35,18 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.address import Address
 from continuing_education.api.serializers.address import AddressSerializer
 from reference.models.country import Country
+from base.models.person import Person
+from base.models.education_group import EducationGroup
+
+
+APPLICATION_JSON_CONTENT_TYPE = 'application/json'
+
+
+class PersonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Person
+        fields = '__all__'
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -52,13 +65,22 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class ContinuingEducationPersonSerializer(serializers.ModelSerializer):
+    person = PersonSerializer(read_only=True)
 
     class Meta:
         model = ContinuingEducationPerson
         fields = '__all__'
 
 
+class EducationGroupSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EducationGroup
+        fields = '__all__'
+
+
 class ContinuingEducationTrainingSerializer(serializers.ModelSerializer):
+    education_group = EducationGroupSerializer(read_only=True)
 
     class Meta:
         model = ContinuingEducationTraining
@@ -83,7 +105,7 @@ def create_json(registrations):
     filename = "%s_export.json" % (_('Registrations'))
     response = HttpResponse(
         json.dumps(serializer.data),
-        content_type='application/json')
+        content_type=APPLICATION_JSON_CONTENT_TYPE)
     response['Content-Disposition'] = "%s%s" % ("attachment; filename=", filename)
 
     return response

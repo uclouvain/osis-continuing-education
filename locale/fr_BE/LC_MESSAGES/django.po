@@ -721,7 +721,7 @@ msgstr "Aucune formation inactivée"
 
 #: views/registration.py:149
 msgid "No registration validated, so no data available to export!"
-msgstr ""
+msgstr "Aucune inscription validée à exporter"
 
 #: forms/search.py:42 forms/search.py:47 templatetags/formation.py:43
 msgid "Not organized"
