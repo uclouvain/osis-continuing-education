@@ -25,15 +25,20 @@
 ##############################################################################
 import json
 
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
+from django.shortcuts import reverse
 
 from base.tests.factories.person import PersonFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.business.data_export import create_json, APPLICATION_JSON_CONTENT_TYPE
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 
 
 class DataExportTestCase(TestCase):
@@ -41,12 +46,23 @@ class DataExportTestCase(TestCase):
     def setUp(self):
         a_person = PersonFactory(last_name="Martin")
         a_continuing_education_person = ContinuingEducationPersonFactory(person=a_person)
+        academic_year = AcademicYearFactory(year=2018)
+        education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=education_group,
+            academic_year=academic_year,
+            acronym='LBIR111ba'
+        )
+        training = ContinuingEducationTrainingFactory(education_group=education_group)
         self.registration = AdmissionFactory(state=admission_state_choices.VALIDATED,
+                                             formation=training,
                                              person_information=a_continuing_education_person)
         self.registrations = [self.registration]
+        self.url = reverse('registration')
 
     def test_data_export_response(self):
-        response = create_json(self.registrations)
+        request = RequestFactory().get(self.url)
+        response = create_json(request, self.registrations)
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response['Content-Type'], APPLICATION_JSON_CONTENT_TYPE)
@@ -54,23 +70,19 @@ class DataExportTestCase(TestCase):
                                                                     "%s_export.json" % (_('Registrations'))))
 
     def test_data_export_content(self):
-        response = create_json(self.registrations)
+        request = RequestFactory().get(self.url)
+        response = create_json(request, self.registrations)
         json_response = str(response.content, encoding='utf8')
         data = json.loads(json_response)
 
         registration_data = data[0]
-        self.assertEqual(registration_data['id'], self.registration.id)
-
         person_information_data = registration_data['person_information']
+        
         self.assertEqual(person_information_data['id'], self.registration.person_information.id)
         self.assertEqual(person_information_data['person']['last_name'],
                          self.registration.person_information.person.last_name)
 
-        self.assertEqual(registration_data['formation']['id'], self.registration.formation.id)
+        self.assertEqual(registration_data['formation']['education_group']['acronym'], "LBIR111ba")
 
         address_data = registration_data['address']
-        self.assertEqual(address_data['id'], self.registration.address.id)
-        self.assertEqual(address_data['country']['id'], self.registration.address.country.id)
-
-
-
+        self.assertEqual(address_data['city'], self.registration.address.city)

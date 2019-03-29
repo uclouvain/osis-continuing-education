@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2018 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,36 +23,14 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import json
-from uuid import UUID
 
-from django.http import HttpResponse
-from django.utils.translation import ugettext_lazy as _
-
-from continuing_education.business.serializers.export_json import ExportJsonSerializer
-
-APPLICATION_JSON_CONTENT_TYPE = 'application/json'
+from continuing_education.models.admission import Admission
+from continuing_education.api.serializers.registration import RegistrationDetailSerializer
+from continuing_education.api.serializers.admission import AdmissionDetailSerializer
 
 
-class UUIDEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, UUID):
-            # if the obj is uuid, we simply return the value of uuid
-            return obj.hex
-        return json.JSONEncoder.default(self, obj)
+class ExportJsonSerializer(AdmissionDetailSerializer, RegistrationDetailSerializer):
 
-
-def create_json(request, registrations):
-    serializer = ExportJsonSerializer(
-        registrations,
-        many=True,
-        context={'request': request})
-
-    filename = "%s_export.json" % (_('Registrations'))
-
-    response = HttpResponse(
-        json.dumps(serializer.data, cls=UUIDEncoder),
-        content_type=APPLICATION_JSON_CONTENT_TYPE)
-    response['Content-Disposition'] = "%s%s" % ("attachment; filename=", filename)
-
-    return response
+    class Meta:
+        model = Admission
+        fields = AdmissionDetailSerializer.Meta.fields + RegistrationDetailSerializer.Meta.fields

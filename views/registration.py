@@ -145,7 +145,7 @@ def create_json(request):
     registrations = Admission.objects.filter(state=admission_state_choices.VALIDATED)
 
     if registrations:
-        return data_export.create_json(registrations)
+        return data_export.create_json(request, registrations)
     else:
         display_error_messages(request, _("No registration validated, so no data available to export!"))
         return redirect('registration')
