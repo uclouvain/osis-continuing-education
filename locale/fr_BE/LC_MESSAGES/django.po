@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-27 08:53+0100\n"
+"POT-Creation-Date: 2019-03-29 10:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,10 @@ msgstr ""
 #: business/admission.py:230 tests/business/test_admission.py:90
 msgid " or "
 msgstr ""
+
+#: templates/fragment/upload_file_modal.html:63
+msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
+msgstr "La catégorie de fichier 'Facture' n'est disponible que pour un dossier 'Accepté'"
 
 #: tests/views/test_admission.py:275 tests/views/test_admission.py:295
 #: tests/views/test_file.py:92 views/admission.py:136 views/file.py:71
@@ -243,7 +247,7 @@ msgstr "Parcourir"
 #: templates/fragment/send_notification_mail_modal.html:44
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:42
 #: templates/fragment/tasks/registrations_to_validate_modal.html:42
-#: templates/fragment/upload_file_modal.html:77
+#: templates/fragment/upload_file_modal.html:88
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:41
 #: templates/registration_form.html:136
@@ -431,12 +435,12 @@ msgstr "Catégorie de fichier"
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
-#: tests/views/test_archive.py:171 tests/views/test_archive.py:186
+#: tests/views/test_archive.py:170 tests/views/test_archive.py:185
 #: views/archive.py:98
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: tests/views/test_archive.py:154 views/archive.py:98
+#: tests/views/test_archive.py:153 views/archive.py:98
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
@@ -619,7 +623,7 @@ msgstr "Homme"
 msgid "Manager"
 msgstr "Gestionnaire"
 
-#: forms/person_training.py:67 tests/views/test_manager.py:116
+#: forms/person_training.py:69 tests/views/test_manager.py:116
 msgid "Manager is already assigned on this training"
 msgstr "Le gestionnaire est déjà assigné à cette formation"
 
@@ -718,7 +722,7 @@ msgstr "Aucune formation inactivée"
 msgid "Not organized"
 msgstr "Non organisé"
 
-#: templates/fragment/upload_file_modal.html:71
+#: templates/fragment/upload_file_modal.html:76
 msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
 
@@ -783,7 +787,7 @@ msgstr "Informations personnelles"
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: tests/views/test_archive.py:112 tests/views/test_archive.py:126
+#: tests/views/test_archive.py:111 tests/views/test_archive.py:125
 #: views/archive.py:117
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
@@ -1226,7 +1230,7 @@ msgstr "Désarchiver"
 msgid "Unknown birth place"
 msgstr "Lieu de naissance inconnu"
 
-#: templates/fragment/upload_file_modal.html:80
+#: templates/fragment/upload_file_modal.html:91
 msgid "Upload"
 msgstr "Envoyer"
 
@@ -1331,6 +1335,10 @@ msgid "You can enter a reason to reject this admission"
 msgstr ""
 "Vous pouvez indiquer la raison pour laquelle cette admission est refusée "
 
+#: templates/fragment/upload_file_modal.html:80
+msgid "You can only notify participant by email when it's an invoice"
+msgstr "Vous pouvez seulement notifier le participant par email pour un document de type 'facture'"
+
 #: business/enums/rejected_reason.py:31
 msgid "You do not have the experience and/or motivation to follow this program"
 msgstr ""
@@ -1357,8 +1365,8 @@ msgstr "Votre dossier est en cours de vérification par le jury de la formation"
 msgid "Your course is not adapted to the program of this training"
 msgstr "Votre parcours n’est pas adapté au programme de cette formation"
 
-#: tests/views/test_archive.py:155 tests/views/test_archive.py:172
-#: tests/views/test_archive.py:187 views/archive.py:99
+#: tests/views/test_archive.py:154 tests/views/test_archive.py:171
+#: tests/views/test_archive.py:186 views/archive.py:99
 msgid "archived"
 msgstr "archivé"
 
