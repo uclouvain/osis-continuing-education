@@ -37,6 +37,9 @@ from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.views.common import display_errors, get_object_list
+from base.views.common import display_error_messages
+from continuing_education.business import data_export
+from continuing_education.models.enums import admission_state_choices
 
 
 @login_required
@@ -132,3 +135,16 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
     else:
         specific_address = specific_address_form.save()
         return specific_address
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.can_create_json', raise_exception=True)
+def create_json(request):
+    registrations = Admission.objects.filter(state=admission_state_choices.VALIDATED)
+
+    if registrations:
+        return data_export.create_json(registrations)
+    else:
+        display_error_messages(request, _("No registration validated, so no data available to export!"))
+        return redirect('registration')

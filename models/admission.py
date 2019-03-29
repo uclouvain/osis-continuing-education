@@ -420,6 +420,7 @@ class Admission(SerializableModel):
         permissions = (
             ("can_access_admission", "Can consult IUFC admission information"),
             ("can_validate_registration", "Can validate IUFC registration file"),
+            ("can_create_json", "Can create JSON file")
         )
 
 
