@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-27 08:53+0100\n"
+"POT-Creation-Date: 2019-03-29 08:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -326,6 +326,11 @@ msgstr "Pays"
 msgid "Courses formula"
 msgstr "Formule de cours"
 
+#: templates/blocks/dropdown/list_actions.html:22
+#: templates/blocks/dropdown/list_actions.html:23
+msgid "Create Json file to export data to EPC"
+msgstr "Créer un fichier Json pour exporter des données vers EPC"
+
 #: business/admission.py:186 models/admission.py:161
 #: templates/admission_form.html:137 templates/fragment/tab_admission.html:78
 #: tests/business/test_admission.py:69
@@ -431,12 +436,12 @@ msgstr "Catégorie de fichier"
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
-#: tests/views/test_archive.py:171 tests/views/test_archive.py:186
+#: tests/views/test_archive.py:170 tests/views/test_archive.py:185
 #: views/archive.py:98
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: tests/views/test_archive.py:154 views/archive.py:98
+#: tests/views/test_archive.py:153 views/archive.py:98
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
@@ -619,7 +624,7 @@ msgstr "Homme"
 msgid "Manager"
 msgstr "Gestionnaire"
 
-#: forms/person_training.py:67 tests/views/test_manager.py:116
+#: forms/person_training.py:69 tests/views/test_manager.py:116
 msgid "Manager is already assigned on this training"
 msgstr "Le gestionnaire est déjà assigné à cette formation"
 
@@ -714,6 +719,10 @@ msgstr "Aucune formation activée"
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
+#: views/registration.py:149
+msgid "No registration validated, so no data available to export!"
+msgstr ""
+
 #: forms/search.py:42 forms/search.py:47 templatetags/formation.py:43
 msgid "Not organized"
 msgstr "Non organisé"
@@ -783,7 +792,7 @@ msgstr "Informations personnelles"
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
-#: tests/views/test_archive.py:112 tests/views/test_archive.py:126
+#: tests/views/test_archive.py:111 tests/views/test_archive.py:125
 #: views/archive.py:117
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
@@ -929,9 +938,9 @@ msgstr "Inscription soumise"
 msgid "Registration type"
 msgstr "Inscription à titre"
 
-#: templates/admin_home.html:48 templates/admission_detail.html:39
-#: templates/registrations.html:33 templates/registrations.html:38
-#: templates/registrations.html:88
+#: business/data_export.py:83 templates/admin_home.html:48
+#: templates/admission_detail.html:39 templates/registrations.html:33
+#: templates/registrations.html:38 templates/registrations.html:88
 msgid "Registrations"
 msgstr "Inscriptions"
 
@@ -1357,8 +1366,8 @@ msgstr "Votre dossier est en cours de vérification par le jury de la formation"
 msgid "Your course is not adapted to the program of this training"
 msgstr "Votre parcours n’est pas adapté au programme de cette formation"
 
-#: tests/views/test_archive.py:155 tests/views/test_archive.py:172
-#: tests/views/test_archive.py:187 views/archive.py:99
+#: tests/views/test_archive.py:154 tests/views/test_archive.py:171
+#: tests/views/test_archive.py:186 views/archive.py:99
 msgid "archived"
 msgstr "archivé"
 
