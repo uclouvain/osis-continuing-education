@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-29 10:38+0100\n"
+"POT-Creation-Date: 2019-03-29 13:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -314,7 +314,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
 
-#: tests/views/test_registration.py:209 views/admission.py:244
+#: tests/views/test_registration.py:210 views/admission.py:244
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
@@ -329,6 +329,11 @@ msgstr ""
 
 #: templates/fragment/tab_admission.html:102
 msgid "Courses formula"
+msgstr ""
+
+#: templates/blocks/dropdown/list_actions.html:22
+#: templates/blocks/dropdown/list_actions.html:23
+msgid "Create Json file to export data to EPC"
 msgstr ""
 
 #: business/admission.py:186 models/admission.py:161
@@ -719,6 +724,10 @@ msgstr ""
 msgid "No formation inactivated"
 msgstr ""
 
+#: tests/views/test_registration.py:302 views/registration.py:150
+msgid "No registration validated, so no data available to export!"
+msgstr ""
+
 #: forms/search.py:42 forms/search.py:47 templatetags/formation.py:43
 msgid "Not organized"
 msgstr ""
@@ -932,9 +941,10 @@ msgstr ""
 msgid "Registration type"
 msgstr ""
 
-#: templates/admin_home.html:48 templates/admission_detail.html:39
-#: templates/registrations.html:33 templates/registrations.html:38
-#: templates/registrations.html:88
+#: business/data_export.py:51 templates/admin_home.html:48
+#: templates/admission_detail.html:39 templates/registrations.html:33
+#: templates/registrations.html:38 templates/registrations.html:88
+#: tests/business/test_data_export.py:70
 msgid "Registrations"
 msgstr ""
 

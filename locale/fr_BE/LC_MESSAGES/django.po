@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-29 10:38+0100\n"
+"POT-Creation-Date: 2019-03-29 13:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,9 @@ msgstr ""
 
 #: templates/fragment/upload_file_modal.html:63
 msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
-msgstr "La catégorie de fichier 'Facture' n'est disponible que pour un dossier 'Accepté'"
+msgstr ""
+"La catégorie de fichier 'Facture' n'est disponible que pour un dossier "
+"'Accepté'"
 
 #: tests/views/test_admission.py:275 tests/views/test_admission.py:295
 #: tests/views/test_file.py:92 views/admission.py:136 views/file.py:71
@@ -313,7 +315,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
-#: tests/views/test_registration.py:209 views/admission.py:244
+#: tests/views/test_registration.py:210 views/admission.py:244
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
@@ -329,6 +331,11 @@ msgstr "Pays"
 #: templates/fragment/tab_admission.html:102
 msgid "Courses formula"
 msgstr "Formule de cours"
+
+#: templates/blocks/dropdown/list_actions.html:22
+#: templates/blocks/dropdown/list_actions.html:23
+msgid "Create Json file to export data to EPC"
+msgstr "Créer un fichier Json pour exporter des données vers EPC"
 
 #: business/admission.py:186 models/admission.py:161
 #: templates/admission_form.html:137 templates/fragment/tab_admission.html:78
@@ -718,6 +725,10 @@ msgstr "Aucune formation activée"
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
+#: tests/views/test_registration.py:302 views/registration.py:150
+msgid "No registration validated, so no data available to export!"
+msgstr "Aucune inscription validée à exporter"
+
 #: forms/search.py:42 forms/search.py:47 templatetags/formation.py:43
 msgid "Not organized"
 msgstr "Non organisé"
@@ -933,9 +944,10 @@ msgstr "Inscription soumise"
 msgid "Registration type"
 msgstr "Inscription à titre"
 
-#: templates/admin_home.html:48 templates/admission_detail.html:39
-#: templates/registrations.html:33 templates/registrations.html:38
-#: templates/registrations.html:88
+#: business/data_export.py:51 templates/admin_home.html:48
+#: templates/admission_detail.html:39 templates/registrations.html:33
+#: templates/registrations.html:38 templates/registrations.html:88
+#: tests/business/test_data_export.py:70
 msgid "Registrations"
 msgstr "Inscriptions"
 
@@ -1337,7 +1349,9 @@ msgstr ""
 
 #: templates/fragment/upload_file_modal.html:80
 msgid "You can only notify participant by email when it's an invoice"
-msgstr "Vous pouvez seulement notifier le participant par email pour un document de type 'facture'"
+msgstr ""
+"Vous pouvez seulement notifier le participant par email pour un document de "
+"type 'facture'"
 
 #: business/enums/rejected_reason.py:31
 msgid "You do not have the experience and/or motivation to follow this program"

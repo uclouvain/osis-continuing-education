@@ -14,5 +14,16 @@
         <li>
             {% include "blocks/button/xls.html" with button_title=button_title %}
         </li>
+        {% if perms.admission.can_create_json %}
+            <li role="separator" class="divider"></li>
+            <li>
+                <a id="btn_create_json"
+                   href="{% url 'json_file' %}"
+                   title="{%  trans 'Create Json file to export data to EPC' %}">
+                    &nbsp;{%  trans 'Create Json file to export data to EPC' %}
+                </a>
+            </li>
+        {% endif %}
+
     </ul>
 </div>
