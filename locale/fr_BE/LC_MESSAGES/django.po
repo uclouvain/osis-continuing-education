@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-29 08:24+0100\n"
+"POT-Creation-Date: 2019-03-29 13:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,12 @@ msgstr ""
 #: business/admission.py:230 tests/business/test_admission.py:90
 msgid " or "
 msgstr ""
+
+#: templates/fragment/upload_file_modal.html:63
+msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
+msgstr ""
+"La catégorie de fichier 'Facture' n'est disponible que pour un dossier "
+"'Accepté'"
 
 #: tests/views/test_admission.py:275 tests/views/test_admission.py:295
 #: tests/views/test_file.py:92 views/admission.py:136 views/file.py:71
@@ -243,7 +249,7 @@ msgstr "Parcourir"
 #: templates/fragment/send_notification_mail_modal.html:44
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:42
 #: templates/fragment/tasks/registrations_to_validate_modal.html:42
-#: templates/fragment/upload_file_modal.html:77
+#: templates/fragment/upload_file_modal.html:88
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:41
 #: templates/registration_form.html:136
@@ -309,7 +315,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
-#: tests/views/test_registration.py:209 views/admission.py:244
+#: tests/views/test_registration.py:210 views/admission.py:244
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
@@ -719,7 +725,7 @@ msgstr "Aucune formation activée"
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
-#: views/registration.py:149
+#: tests/views/test_registration.py:302 views/registration.py:150
 msgid "No registration validated, so no data available to export!"
 msgstr "Aucune inscription validée à exporter"
 
@@ -727,7 +733,7 @@ msgstr "Aucune inscription validée à exporter"
 msgid "Not organized"
 msgstr "Non organisé"
 
-#: templates/fragment/upload_file_modal.html:71
+#: templates/fragment/upload_file_modal.html:76
 msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
 
@@ -938,9 +944,10 @@ msgstr "Inscription soumise"
 msgid "Registration type"
 msgstr "Inscription à titre"
 
-#: business/data_export.py:83 templates/admin_home.html:48
+#: business/data_export.py:51 templates/admin_home.html:48
 #: templates/admission_detail.html:39 templates/registrations.html:33
 #: templates/registrations.html:38 templates/registrations.html:88
+#: tests/business/test_data_export.py:70
 msgid "Registrations"
 msgstr "Inscriptions"
 
@@ -1235,7 +1242,7 @@ msgstr "Désarchiver"
 msgid "Unknown birth place"
 msgstr "Lieu de naissance inconnu"
 
-#: templates/fragment/upload_file_modal.html:80
+#: templates/fragment/upload_file_modal.html:91
 msgid "Upload"
 msgstr "Envoyer"
 
@@ -1339,6 +1346,12 @@ msgstr ""
 msgid "You can enter a reason to reject this admission"
 msgstr ""
 "Vous pouvez indiquer la raison pour laquelle cette admission est refusée "
+
+#: templates/fragment/upload_file_modal.html:80
+msgid "You can only notify participant by email when it's an invoice"
+msgstr ""
+"Vous pouvez seulement notifier le participant par email pour un document de "
+"type 'facture'"
 
 #: business/enums/rejected_reason.py:31
 msgid "You do not have the experience and/or motivation to follow this program"

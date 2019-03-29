@@ -77,7 +77,7 @@ class DataExportTestCase(TestCase):
 
         registration_data = data[0]
         person_information_data = registration_data['person_information']
-        
+
         self.assertEqual(person_information_data['id'], self.registration.person_information.id)
         self.assertEqual(person_information_data['person']['last_name'],
                          self.registration.person_information.person.last_name)

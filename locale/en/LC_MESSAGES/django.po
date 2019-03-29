@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-29 08:24+0100\n"
+"POT-Creation-Date: 2019-03-29 13:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,10 @@ msgstr ""
 
 #: business/admission.py:230 tests/business/test_admission.py:90
 msgid " or "
+msgstr ""
+
+#: templates/fragment/upload_file_modal.html:63
+msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
 msgstr ""
 
 #: tests/views/test_admission.py:275 tests/views/test_admission.py:295
@@ -244,7 +248,7 @@ msgstr ""
 #: templates/fragment/send_notification_mail_modal.html:44
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:42
 #: templates/fragment/tasks/registrations_to_validate_modal.html:42
-#: templates/fragment/upload_file_modal.html:77
+#: templates/fragment/upload_file_modal.html:88
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:41
 #: templates/registration_form.html:136
@@ -310,7 +314,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
 
-#: tests/views/test_registration.py:209 views/admission.py:244
+#: tests/views/test_registration.py:210 views/admission.py:244
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
@@ -720,7 +724,7 @@ msgstr ""
 msgid "No formation inactivated"
 msgstr ""
 
-#: views/registration.py:149
+#: tests/views/test_registration.py:302 views/registration.py:150
 msgid "No registration validated, so no data available to export!"
 msgstr ""
 
@@ -728,7 +732,7 @@ msgstr ""
 msgid "Not organized"
 msgstr ""
 
-#: templates/fragment/upload_file_modal.html:71
+#: templates/fragment/upload_file_modal.html:76
 msgid "Notify participant by email"
 msgstr ""
 
@@ -937,9 +941,10 @@ msgstr ""
 msgid "Registration type"
 msgstr ""
 
-#: business/data_export.py:83 templates/admin_home.html:48
+#: business/data_export.py:51 templates/admin_home.html:48
 #: templates/admission_detail.html:39 templates/registrations.html:33
 #: templates/registrations.html:38 templates/registrations.html:88
+#: tests/business/test_data_export.py:70
 msgid "Registrations"
 msgstr ""
 
@@ -1215,7 +1220,7 @@ msgstr ""
 msgid "Unknown birth place"
 msgstr ""
 
-#: templates/fragment/upload_file_modal.html:80
+#: templates/fragment/upload_file_modal.html:91
 msgid "Upload"
 msgstr ""
 
@@ -1312,6 +1317,10 @@ msgstr ""
 
 #: templates/fragment/rejected_reason_modal.html:38
 msgid "You can enter a reason to reject this admission"
+msgstr ""
+
+#: templates/fragment/upload_file_modal.html:80
+msgid "You can only notify participant by email when it's an invoice"
 msgstr ""
 
 #: business/enums/rejected_reason.py:31
