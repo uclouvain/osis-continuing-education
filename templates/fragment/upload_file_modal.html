@@ -58,6 +58,11 @@
                     <br>
                     <div>
                         <label for="file_category">{% trans 'File category' %}</label>
+                        <abbr>
+                            <span class="glyphicon glyphicon-question-sign "
+                                  title="{% trans "'Invoice' file category unavailable when file isn't 'Accepted'" %}"
+                                  style="font-size: 14pt;"></span>
+                        </abbr>
                         <select class="form-control" name="file_category" id="file_category">
                             {% for choice in file_categories_choices %}
                                 <option value="{{ choice.0 }}" {{ choice.2 }}>{% trans choice.0 %}</option>
@@ -70,6 +75,12 @@
                             <input type="checkbox" id="notify_participant" name="notify_participant" disabled>
                             {% trans 'Notify participant by email' %}
                         </label>
+                        <abbr>
+                            <span class="glyphicon glyphicon-question-sign "
+                                  title="{% trans "You can only notify participant by email when it's an invoice" %}"
+                                  style="font-size: 14pt;"></span>
+                        </abbr>
+
                     </div>
                 </div>
             </div>
