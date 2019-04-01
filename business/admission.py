@@ -234,7 +234,7 @@ def check_required_field_for_participant(obj, meta, fields_required):
     if obj:
         return _check_fields(fields_required, meta, obj)
     else:
-        return {response[key]:{'verbose_name': meta.get_field(key).verbose_name}}
+        return {response[key]: {'verbose_name': meta.get_field(key).verbose_name}}
 
 
 def _check_fields(fields_required, meta, obj):
