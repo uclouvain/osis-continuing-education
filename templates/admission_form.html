@@ -27,6 +27,10 @@
 * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/participant_style.css' %}">
+{% endblock %}
+
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
@@ -35,6 +39,7 @@
 
 {% block content %}
     <div class="page-header">
+
         {% if admission %}
             <a class="btn btn-default pull-right" id="cancel" href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}

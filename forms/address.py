@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext_lazy as _
 
+from continuing_education.forms.common import set_participant_required_fields
 from continuing_education.models.address import Address
 from reference.models.country import Country
 
@@ -24,3 +25,14 @@ class AddressForm(ModelForm):
 
         # Automatic translation of field names
         labels = {field: _(field) for field in fields}
+
+    def __init__(self, data, user=None, **kwargs):
+        super().__init__(data, **kwargs)
+        set_participant_required_fields(self.fields,
+                                        [
+                                            'location',
+                                            'postal_code',
+                                            'city',
+                                            'country',
+                                        ]
+                                        )
