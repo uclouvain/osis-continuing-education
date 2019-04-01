@@ -55,7 +55,14 @@
                 <ul class="dropdown-menu">
                   {% for state in states %}
                       {% with state.0 as state_value and state.1 as state_trans %}
-                         <li><a value="{{state_value}}" href="#" class="state-admission">{{state_trans}}</a></li>
+                         <li>{% if state_value == 'Registration submitted' %}
+                                 <a value="{{state_value}}" href="#" class="state-admission"
+                                    data-modal_class="modal-lg"
+                                    data-url="{% url 'validate_field' admission.id %}">{{state_trans}}</a>
+                             {% else %}
+                                 <a value="{{state_value}}" href="#" class="state-admission">{{state_trans}}</a>
+                             {% endif %}
+                         </li>
                       {% endwith %}
                   {% endfor %}
                 <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
@@ -72,6 +79,7 @@
             {% include "fragment/waiting_reason_modal.html" %}
             {% include "fragment/warning_modal.html" %}
             {% include "fragment/rejected_reason_modal.html" %}
+            {% include "fragment/submit_confirm_modal.html" %}
         </form>
         <h3>
             {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
@@ -135,12 +143,11 @@
         let state_initial = "{{ admission.state }}";
         setStateActive(state_initial);
         $(".dropdown-menu li a").click(function(){
-          let newState = $(this).attr("value");
-          let oldClass = states[$('#button-state').attr("value")];
-          $('#button-state').removeClass(oldClass);
-          $('#button-state-caret').removeClass(oldClass);
-          setStateActive(newState);
-          $('#id_state').val(newState);
+          let newState= $(this).attr("value");
+          if(newState === "Registration submitted") {
+          }else{
+              change_button_state(newState);
+          }
           if(newState === "Waiting"){
               let waiting_reason = {New: 'id_waiting_reason', Old: 'old_predefined_waiting_reason'};
               let other_reason = {New: 'id_other_reason', Old: 'old_other_reason'};
@@ -161,6 +168,28 @@
                   refused_reason,
                   other_reason
             );
+          }
+          else if(newState === "Registration submitted"){
+
+              $.ajax({
+                  url: $(this).attr('data-url'),
+                  data: $(this).serialize(),
+                  context: this,
+                  success: function (responseData) {
+                      if (responseData) {
+                          $('ul#list_fields_missing').empty();
+                          for (var key in responseData) {
+                              $('ul#list_fields_missing').prepend($("<li></li>").text(responseData[key]['verbose_name']));
+                          }
+                          $('#modal_confirm').modal('show');
+                      }else{
+                          setStateActive(newState);
+                          $('#id_state').val(newState);
+                          $('#form').submit();
+                      }
+
+                  },
+              });
           }
           else{
               $('#form').submit();
@@ -200,6 +229,20 @@
                 window.scrollTo(0, 0);
               }, 1);
         }
+
+        function change_button_state(newState){
+            let oldClass = states[$('#button-state').attr("value")];
+            $('#button-state').removeClass(oldClass);
+            $('#button-state-caret').removeClass(oldClass);
+            setStateActive(newState);
+            $('#id_state').val(newState);
+
+        }
+
+        $("#btn_confirm_fields").click(function(){
+            change_button_state("Registration submitted");
+            $('#form').submit();
+        });
 
     </script>
     <script src="{% static 'js/rejected_waiting_admission.js' %}"></script>

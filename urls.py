@@ -42,7 +42,8 @@ urlpatterns = [
                 name='send_invoice_notification_mail'),
             url(r'^file/(?P<file_id>[0-9]+)$', continuing_education.views.file.download_file, name='download_file'),
             url(r'file/(?P<file_id>[0-9]+)/delete$', continuing_education.views.file.delete_file, name='delete_file'),
-        ]))
+        ])),
+        url(r'^validate_field/(?P<admission_id>[0-9]+)/$', admission.validate_field, name='validate_field'),
     ])),
     url(r'^registration/', include([
         url(r'^$', registration.list_registrations, name='registration'),

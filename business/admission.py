@@ -228,3 +228,15 @@ def _get_managers_mails(formation):
     managers_mail = formation.managers.all().order_by('last_name').values_list('email', flat=True) \
         if formation else []
     return _(" or ").join(managers_mail)
+
+
+def check_required_field_for_participant(obj, meta, fields_required):
+    response = {}
+    if obj:
+        for key in fields_required:
+            value = getattr(obj, key, None)
+            if value is None or (isinstance(value, str) and len(value) == 0):
+                response[key] = {'verbose_name': meta.get_field(key).verbose_name}
+    else:
+        response[key] = {'verbose_name': meta.get_field(key).verbose_name}
+    return response
