@@ -37,10 +37,16 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
-    CONTINUING_EDUCATION_MANAGERS_GROUP
+    CONTINUING_EDUCATION_MANAGERS_GROUP, check_required_field_for_participant
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.models.address import Address
+from continuing_education.models.admission import Admission
+from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
+from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
+from reference.tests.factories.country import CountryFactory
 
 
 class TestAdmission(TestCase):
@@ -90,6 +96,40 @@ class TestAdmission(TestCase):
         expected_mails = "{}{}{}".format(manager.email, _(" or "), manager_2.email)
 
         self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
+
+    def test_check_address_required_field_for_participant(self):
+        an_incomplete_address = AddressFactory(
+            city="",
+            location="",
+            postal_code=5501,
+            country=None
+        )
+
+        response = check_required_field_for_participant(an_incomplete_address,
+                                                        Address._meta,
+                                                        ADDRESS_PARTICIPANT_REQUIRED_FIELDS)
+        expected = {'city': {'verbose_name': _(Address._meta.get_field('city').verbose_name)},
+                    'location': {'verbose_name': _(Address._meta.get_field('location').verbose_name)},
+                    'country': {'verbose_name': _(Address._meta.get_field('country').verbose_name)}}
+        self.assertDictEqual(response, expected)
+
+        a_complete_address = AddressFactory(city="Malonne",
+                                            location="Rue du Clinchamps",
+                                            postal_code=5501,
+                                            country=CountryFactory())
+        response = check_required_field_for_participant(a_complete_address,
+                                                        Address._meta,
+                                                        ADDRESS_PARTICIPANT_REQUIRED_FIELDS)
+        self.assertDictEqual(response, {})
+
+    def test_check_admission_required_field_for_participant(self):
+        admission = AdmissionFactory(address=AddressFactory(),
+                                     current_employer="")
+        response = check_required_field_for_participant(admission,
+                                                        Admission._meta,
+                                                        ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
+        expected = {'current_employer': {'verbose_name': _(Admission._meta.get_field('current_employer').verbose_name)}}
+        self.assertDictEqual(response, expected)
 
 
 class SendEmailTest(TestCase):

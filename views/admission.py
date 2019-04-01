@@ -23,19 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import itertools
-
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.http import JsonResponse
 
+import itertools
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email
+from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
+    check_required_field_for_participant
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
-from continuing_education.forms.address import AddressForm
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm
+from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
+    ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models import continuing_education_person
@@ -48,6 +50,7 @@ from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
+from osis_common.decorators.ajax import ajax_required
 
 
 @login_required
@@ -243,3 +246,18 @@ def _validate_admission(request, adm_form):
             request,
             _("Continuing education managers only are allowed to validate a registration")
         )
+
+
+@ajax_required
+@login_required
+@permission_required("continuing_education.change_admission", raise_exception=True)
+def validate_field(request, admission_id):
+    admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
+    response = {}
+    response.update(check_required_field_for_participant(admission.address,
+                                                         Address._meta,
+                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS))
+    response.update(check_required_field_for_participant(admission,
+                                                         Admission._meta,
+                                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
+    return JsonResponse(response, safe=False)

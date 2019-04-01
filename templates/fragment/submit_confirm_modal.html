@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+    * OSIS stands for Open Student Information System. It's an application
+    * designed to manage the core business of higher education institutions,
+    * such as universities, faculties, institutes and professional schools.
+    * The core business involves the administration of students, teachers,
+    * courses, programs and so on.
+    *
+    * Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+    *
+    * This program is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * This program is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    * GNU General Public License for more details.
+    *
+    * A copy of this license - GNU General Public License - is available
+    * at the root of the source code of this program.  If not,
+    * see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+<div class="modal fade" id="modal_confirm" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    {% trans 'Confirm' %}
+                </h4>
+            </div>
+            <div class="panel-default">
+                <div class="panel-heading">
+                    {% trans "While participant fills out the form some fields are required.  Some of those fields aren't filled-in yet. Do you confirm you want to submit?"  %}
+                </div>
+                <div class="panel-body">
+                    <label>{% trans 'Fields missing' %} :</label>
+                    <ul class="alert alert-warning" id="list_fields_missing">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" id="btn_confirm_fields" class="btn btn-primary">{% trans 'Confirm' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
