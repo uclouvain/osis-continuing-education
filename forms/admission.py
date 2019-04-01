@@ -14,10 +14,12 @@ from continuing_education.models.enums import enums
 from reference.models.country import Country
 from continuing_education.forms.common import set_participant_required_fields
 
-ADMISSION_PARTICIPANT_REQUIRED_FIELDS = ['citizenship', 'phone_mobile', 'email', 'high_school_diploma', 'last_degree_level',
-                     'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
-                     'professional_status', 'current_occupation', 'current_employer', 'activity_sector', 'motivation',
-                     'professional_impact', 'formation', ]
+ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
+    'citizenship', 'phone_mobile', 'email', 'high_school_diploma', 'last_degree_level',
+    'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
+    'professional_status', 'current_occupation', 'current_employer', 'activity_sector', 'motivation',
+    'professional_impact', 'formation',
+]
 
 
 class AdmissionForm(ModelForm):

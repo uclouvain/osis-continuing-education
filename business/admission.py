@@ -231,12 +231,16 @@ def _get_managers_mails(formation):
 
 
 def check_required_field_for_participant(obj, meta, fields_required):
-    response = {}
     if obj:
-        for key in fields_required:
-            value = getattr(obj, key, None)
-            if value is None or (isinstance(value, str) and len(value) == 0):
-                response[key] = {'verbose_name': meta.get_field(key).verbose_name}
+        return _check_fields(fields_required, meta, obj)
     else:
-        response[key] = {'verbose_name': meta.get_field(key).verbose_name}
+        return {response[key]:{'verbose_name': meta.get_field(key).verbose_name}}
+
+
+def _check_fields(fields_required, meta, obj):
+    response = {}
+    for key in fields_required:
+        value = getattr(obj, key, None)
+        if value is None or (isinstance(value, str) and len(value) == 0):
+            response[key] = {'verbose_name': meta.get_field(key).verbose_name}
     return response
