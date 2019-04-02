@@ -1,0 +1,562 @@
+openapi: 3.0.0
+servers:
+ - url: https://{environment}.osis.uclouvain.be/api/v1/continuing_education/
+   variables:
+     environment:
+       default: dev
+       enum:
+         - dev # Development server
+         - qa # Staging server
+         - test # Test server
+ - url: https://osis.uclouvain.be/api/v1/continuing_education/
+   description: Production server
+info:
+  version: '1'
+  title: Continuing Education Service
+  description: |-
+    A set of API endpoints that allow you to get, update, delete an admission, a registration, a continuing education person, an address, a file, a prospect or a continuing education training.
+paths:
+  /addresses/:
+    get:
+      description: Return a list of all the addresses with optional filtering.
+      operationId: continuing_education_addresses_list
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          description: Number of results to return per page.
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          description: The initial index from which to return the results.
+          type: integer
+      - name: country
+        in: query
+        schema:
+          description: ''
+          type: string
+      - name: city
+        in: query
+        schema:
+          description: ''
+          type: string
+      - name: ordering
+        in: query
+        schema:
+          description: Which field to use when ordering the results.
+          type: string
+      - name: search
+        in: query
+        schema:
+          description: A search term.
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfAddresses'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+        - addresses
+    post:
+      description: Create an address.
+      operationId: continuing_education_addresses_create
+      parameters:
+      - name: data
+        in: body
+        schema:
+          type: object
+          properties:
+            location:
+              description: ''
+              type: string
+            postal_code:
+              description: ''
+              type: string
+            city:
+              description: ''
+              type: string
+            country:
+              description: ''
+              type: string
+      consumes:
+      - application/json
+      responses:
+        '201':
+          description: The address is created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressPost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+      - addresses
+  /addresses/{uuid}:
+    get:
+      description: Return the detail of the address
+      operationId: continuing_education_addresses_read
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        schema:
+          description: ''
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+      - addresses
+    put:
+      description: Update an address
+      operationId: continuing_education_addresses_update
+      parameters:
+      - name: uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: data
+        in: body
+        schema:
+          type: object
+          properties:
+            location:
+              description: ''
+              type: string
+            postal_code:
+              description: ''
+              type: string
+            city:
+              description: ''
+              type: string
+            country:
+              description: ''
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressPost'
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      consumes:
+      - application/json
+      tags:
+      - addresses
+    patch:
+      description: Update an address
+      operationId: continuing_education_addresses_update
+      parameters:
+        - name: uuid
+          required: true
+          in: path
+          schema:
+            description: ''
+            type: string
+        - name: data
+          in: body
+          schema:
+            type: object
+            properties:
+              location:
+                description: ''
+                type: string
+              postal_code:
+                description: ''
+                type: string
+              city:
+                description: ''
+                type: string
+              country:
+                description: ''
+                type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressPost'
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      consumes:
+        - application/json
+      tags:
+        - addresses
+    delete:
+      description: Delete an address
+      operationId: continuing_education_addresses_delete
+      parameters:
+      - name: uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+      - addresses
+  /admissions/{uuid}/files/:
+    get:
+      description: Return a list of files for a specific admission.
+      operationId: continuing_education_admissions_files_list
+      parameters:
+      - name: uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: limit
+        in: query
+        schema:
+          description: Number of results to return per page.
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          description: The initial index from which to return the results.
+          type: integer
+      - name: ordering
+        in: query
+        schema:
+          description: Which field to use when ordering the results.
+          type: string
+      - name: search
+        in: query
+        schema:
+          description: A search term.
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfFiles'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+      - files
+    post:
+      description: Create a file for a specific admission
+      operationId: continuing_education_admissions_files_create
+      parameters:
+      - name: uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: data
+        in: body
+        schema:
+          type: object
+          properties:
+            uuid:
+              description: ''
+              type: string
+            name:
+              description: ''
+              type: string
+            path:
+              description: ''
+              type: string
+            size:
+              description: ''
+              type: integer
+            uploaded_by:
+              description: ''
+              type: string
+            file_category:
+              description: ''
+              type: string
+          required:
+          - path
+          - uploaded_by
+      consumes:
+      - application/json
+      responses:
+        '201':
+          description: The file is created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilePost'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      tags:
+      - files
+  /admissions/{uuid}/files/{file_uuid}:
+    get:
+      description: Return the detail of a file.
+      operationId: continuing_education_admissions_files_read
+      parameters:
+      - name: file_uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: ordering
+        in: query
+        schema:
+          description: Which field to use when ordering the results.
+          type: string
+      - name: search
+        in: query
+        schema:
+          description: A search term.
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+      - files
+    delete:
+      description: Delete a file.
+      operationId: continuing_education_admissions_files_delete
+      parameters:
+      - name: file_uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: uuid
+        required: true
+        in: path
+        schema:
+          description: ''
+          type: string
+      - name: ordering
+        in: query
+        schema:
+          description: Which field to use when ordering the results.
+          type: string
+      - name: search
+        in: query
+        schema:
+          description: A search term.
+          type: string
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      tags:
+      - files
+components:
+  securitySchemes:
+    Token:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Enter your token in the format **Token &lt;token>**
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NoContent:
+      description: The specified resource is deleted or updated
+  schemas:
+    ArrayOfAddresses:
+      type: array
+      items:
+        $ref: '#/components/schemas/Address'
+    Address:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        location:
+          type: string
+        postal_code:
+          type: string
+        city:
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+          readOnly: true
+    AddressPost:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        location:
+          type: string
+        postal_code:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+    Country:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        iso_code:
+          type: string
+        name:
+          type: string
+        nationality:
+          type: string
+    File:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        path:
+          type: string
+          format: uri
+        size:
+          type: integer
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        uploaded_by:
+          $ref: '#/definitions/PersonDetail'
+          readOnly: true
+        content:
+          type: string
+        file_category:
+          $ref: '#/components/schemas/FileCategoryEnum'
+        file_category_text:
+          type: string
+          readOnly: true
+    FilePost:
+      required:
+        - uploaded_by
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+        path:
+          type: string
+          format: uri
+        size:
+          type: integer
+        created_date:
+          type: string
+          format: date-time
+          readOnly: true
+        uploaded_by:
+          type: string
+          format: uuid
+        content:
+          type: string
+        file_category:
+          $ref: '#/components/schemas/FileCategoryEnum'
+        file_category_text:
+          type: string
+
+    FileCategoryEnum:
+      type: string
+      enum:
+        - DOCUMENT
+        - INVOICE
+        - PARTICIPANT
+security:
+  - Token: []
