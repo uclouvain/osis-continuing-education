@@ -385,6 +385,10 @@ class Admission(SerializableModel):
             education_group_year.academic_year
         )
 
+    @property
+    def file_reference(self):
+        return "IUFC-%06d" % self.id
+
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
 
