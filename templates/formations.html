@@ -64,6 +64,7 @@
                         <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
                     </div>
                 </div>
                 <div class="row">
@@ -82,6 +83,7 @@
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
             </form>
+            {% include 'blocks/form/search_form_reset.html' %}
         </div>
         <div class="dropdown  text-right" style="margin-right: 10px;">
             <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"

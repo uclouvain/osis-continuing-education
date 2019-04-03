@@ -59,12 +59,13 @@
                             {{ search_form.faculty }}
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-default" style="margin-top: 26px;">
+                            <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                                {% trans 'Search' %}
                             </button>
+                            {% include 'blocks/button/button_filter_refresh.html' %}
                         </div>
                 </form>
+                {% include 'blocks/form/search_form_reset.html' %}
                 <div class="pull-right">
                     <button data-toggle="modal" data-target="#person_training_modal"
                             style="margin-top: 26px; margin-right:10px;" type="button" class="btn btn-default">
