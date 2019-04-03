@@ -99,6 +99,13 @@ class ViewFormationTestCase(TestCase):
         self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
         self.assertEqual(response.context['formations_number'], 2)
 
+    def test_cached_filters(self):
+        response = self.client.get(reverse('formation'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('formation'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
+
 
 class FormationActivateTestCase(TestCase):
     def setUp(self):

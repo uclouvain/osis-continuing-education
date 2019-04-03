@@ -132,3 +132,10 @@ class ManagerListTestCase(TestCase):
             "training": self.formation.acronym
         }
         self.assertIn(success_msg, str(messages_list[0]))
+
+    def test_cached_filters(self):
+        response = self.client.get(reverse('list_managers'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('list_managers'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])

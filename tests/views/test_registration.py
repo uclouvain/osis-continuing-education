@@ -141,6 +141,13 @@ class ViewRegistrationTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_cached_filters(self):
+        response = self.client.get(reverse('registration'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('registration'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
+
 
 class RegistrationStateChangedTestCase(TestCase):
     def setUp(self):
