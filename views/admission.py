@@ -30,6 +30,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.http import JsonResponse
 
 import itertools
+
+from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
     check_required_field_for_participant
@@ -55,6 +57,7 @@ from osis_common.decorators.ajax import ajax_required
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@cache_filter()
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
     admission_list = []

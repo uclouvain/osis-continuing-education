@@ -30,6 +30,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from base.models.person import Person
+from base.utils.cache import cache_filter
 from base.views.common import display_success_messages
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
@@ -40,6 +41,7 @@ from continuing_education.views.common import get_object_list, display_errors
 
 @login_required
 @permission_required('continuing_education.can_validate_registration', raise_exception=True)
+@cache_filter()
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
     person_training_form = PersonTrainingForm(request.POST or None)

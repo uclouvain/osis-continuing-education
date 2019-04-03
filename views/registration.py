@@ -31,6 +31,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
+from base.utils.cache import cache_filter
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
@@ -45,6 +46,7 @@ from continuing_education.models.enums import admission_state_choices
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@cache_filter()
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
 
