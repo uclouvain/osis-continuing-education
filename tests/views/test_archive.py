@@ -193,6 +193,12 @@ class ViewArchiveTestCase(TestCase):
                                self.registration_2_archived]
                               )
 
+    def test_cached_filters(self):
+        response = self.client.get(reverse('archive'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('archive'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
 
 class ViewArchiveTrainingManagerTestCase(TestCase):
     def setUp(self):

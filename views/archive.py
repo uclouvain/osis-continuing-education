@@ -29,6 +29,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
+from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
@@ -38,6 +39,7 @@ from continuing_education.views.common import get_object_list
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@cache_filter()
 def list_archives(request):
     search_form = ArchiveFilterForm(data=request.GET, user=request.user)
     archive_list = []

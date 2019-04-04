@@ -145,3 +145,12 @@ label.required:after{
 .select2-container {
     width: 100% !important;
 }
+
+#btn_clear_filter{
+    margin-left: 10px;
+    margin-top: 26px;
+}
+
+form .row{
+    margin-bottom: 10px;
+}

@@ -234,6 +234,13 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['admissions'].object_list[0], self.admission)
 
+    def test_cached_filters(self):
+        response = self.client.get(reverse('admission'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('admission'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
+
 
 class InvoiceNotificationEmailTestCase(TestCase):
     def setUp(self):
