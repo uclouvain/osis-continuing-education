@@ -92,7 +92,7 @@ class RegistrationListForEpc(RegistrationList):
     name = 'registration-list-for-epc'
 
     def get_queryset(self):
-        return Admission.registration_objects.filter(state=REGISTRATION_SUBMITTED).select_related(
+        return Admission.objects.filter(state=REGISTRATION_SUBMITTED).select_related(
             'person_information',
             'address',
             'billing_address',
