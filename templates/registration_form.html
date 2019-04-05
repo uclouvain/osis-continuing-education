@@ -64,7 +64,7 @@
                 <div class="row">
                     {% bootstrap_field form.use_address_for_billing form_group_class="form-group col-md-12"%}
                 </div>
-                 <div id="billing_address" class="row">
+                 <div id="billing_address" class="row" name="{% trans 'Billing' %}">
                     {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-3" label=_("Street Address") %}
                     {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-3" label=_("Postal code") %}
                     {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" label=_("City") %}
@@ -97,7 +97,7 @@
                 <div class="row">
                     {% bootstrap_field form.use_address_for_post form_group_class="form-group col-md-12" %}
                 </div>
-                 <div id="residence_address"  class="row">
+                 <div id="residence_address"  class="row" name="{% trans 'Post' %}">
                     {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-3" label=_("Street Address") %}
                     {% bootstrap_field residence_address_form.postal_code form_group_class="form-group col-md-3" label=_("Postal code") %}
                     {% bootstrap_field residence_address_form.city form_group_class="form-group col-md-3" label=_("City") %}
@@ -189,7 +189,7 @@
         });
         //check when page is loaded
         $("#id_use_address_for_post:checkbox").prop('checked')?copy_address("residence"):empty_address(("residence"), residence_address);
-
+        let fields_to_enable = ["birth_country", "gender"];
         //re-enable disabled field on form submit
         $( "#form" ).submit(function( event ) {
             enableFields(fields_to_enable);
@@ -217,5 +217,14 @@
             $('#form').submit();
         });
 
+        function enableFields(fields) {
+            for (var field of fields) {
+                $("#id_" + field).prop( "disabled", false );
+            }
+        }
+
     </script>
+
+    <script src="{% static 'js/participant_required_fields.js' %}"></script>
+
 {% endblock %}

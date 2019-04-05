@@ -7,18 +7,13 @@ function check_mandatory_fields(newState) {
         context: this,
         success: function (responseData) {
 
-            if (responseData) {
-                if (Object.keys(responseData).length > 0) {
+            if (responseData && Object.keys(responseData).length > 0) {
 
-                    $('ul#list_fields_missing').empty();
-                    for (var key in responseData) {
-                        $('ul#list_fields_missing').prepend($("<li></li>").text(responseData[key]['verbose_name']));
-                    }
-                    $('#modal_confirm').modal('show');
-                }else{
-                    registration_submitted_confirmed(newState);
-
+                $('ul#list_fields_missing').empty();
+                for (var key in responseData) {
+                    $('ul#list_fields_missing').append($("<li></li>").text(responseData[key]));
                 }
+                $('#modal_confirm').modal('show');
 
             } else {
                 registration_submitted_confirmed(newState);
@@ -49,7 +44,15 @@ function check_mandatory_fields_in_screen() {
 
     $('.participant_required').each(function () {
         if (!$(this).val()) {
-            $('ul#list_fields_missing').prepend($("<li></li>").text($('label[for="' + $(this).attr('id') + '"]').text()));
+            var extra='';
+            var div =$(this).closest('div[id]');
+
+            if ($(this).attr("id").includes("_residence-") || $(this).attr("id").includes("_billing-")){
+                extra =div.attr('name');
+                extra = extra + " : " ;
+            }
+
+            $('ul#list_fields_missing').append($("<li></li>").text(extra + $('label[for="' + $(this).attr('id') + '"]').text()));
         }
     });
 
