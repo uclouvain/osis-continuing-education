@@ -27,6 +27,7 @@ from django import http
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
+from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -37,6 +38,7 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -98,13 +100,6 @@ class ViewFormationTestCase(TestCase):
         self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA.education_group)
         self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
         self.assertEqual(response.context['formations_number'], 2)
-
-    def test_cached_filters(self):
-        response = self.client.get(reverse('formation'), data={
-            'free_text': 'test'
-        })
-        cached_response = self.client.get(reverse('formation'))
-        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
 
 
 class FormationActivateTestCase(TestCase):
@@ -270,3 +265,19 @@ class FormationAidTestCase(TestCase):
             "quantity_updated": 2,
         }
         self.assertEqual(msg[0], msg_expected)
+
+
+class ViewFormationCacheTestCase(TestCase):
+    def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
+        self.addCleanup(cache.clear)
+
+    def test_cached_filters(self):
+        response = self.client.get(reverse('formation'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('formation'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])

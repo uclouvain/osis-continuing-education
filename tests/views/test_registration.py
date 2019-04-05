@@ -25,6 +25,7 @@
 ##############################################################################
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import reverse
@@ -140,13 +141,6 @@ class ViewRegistrationTestCase(TestCase):
         url = reverse('registration_edit', kwargs={'admission_id': self.admission_accepted.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_cached_filters(self):
-        response = self.client.get(reverse('registration'), data={
-            'free_text': 'test'
-        })
-        cached_response = self.client.get(reverse('registration'))
-        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
 
 
 class RegistrationStateChangedTestCase(TestCase):
@@ -307,3 +301,19 @@ class ViewRegistrationsCreateJsonTestCase(TestCase):
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.ERROR, msg_level)
         self.assertIn(msg[0], _('No registration validated, so no data available to export!'))
+
+
+class ViewRegistrationCacheTestCase(TestCase):
+    def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
+        self.addCleanup(cache.clear)
+
+    def test_cached_filters(self):
+        response = self.client.get(reverse('registration'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('registration'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
