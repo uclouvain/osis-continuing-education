@@ -24,6 +24,7 @@
 #
 ##############################################################################
 from django.contrib import messages
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.test import TestCase
 from django.urls import reverse
@@ -133,9 +134,20 @@ class ManagerListTestCase(TestCase):
         }
         self.assertIn(success_msg, str(messages_list[0]))
 
+
+class ViewManagerCacheTestCase(TestCase):
+    def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory(
+            'can_access_admission', 'change_admission','can_validate_registration'
+        )
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
+        self.addCleanup(cache.clear)
+
     def test_cached_filters(self):
         response = self.client.get(reverse('list_managers'), data={
-            'free_text': 'test'
+            'training': 1,
         })
         cached_response = self.client.get(reverse('list_managers'))
-        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
+        self.assertEqual(response.wsgi_request.GET['training'], cached_response.wsgi_request.GET['training'])

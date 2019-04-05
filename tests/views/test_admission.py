@@ -29,6 +29,7 @@ from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -234,13 +235,6 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['admissions'].object_list[0], self.admission)
 
-    def test_cached_filters(self):
-        response = self.client.get(reverse('admission'), data={
-            'free_text': 'test'
-        })
-        cached_response = self.client.get(reverse('admission'))
-        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
-
 
 class InvoiceNotificationEmailTestCase(TestCase):
     def setUp(self):
@@ -369,3 +363,19 @@ class AdmissionStateChangedTestCase(TestCase):
         self.assertRedirects(response, reverse('admission'))
         self.admission_submitted.refresh_from_db()
         self.assertEqual(self.admission_submitted.state, admission_draft['state'], 'state')
+
+
+class ViewAdmissionCacheTestCase(TestCase):
+    def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
+        self.addCleanup(cache.clear)
+
+    def test_cached_filters(self):
+        response = self.client.get(reverse('admission'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('admission'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])

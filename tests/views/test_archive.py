@@ -26,12 +26,11 @@
 
 from django.contrib import messages
 from django.contrib.messages import get_messages
-from django.core.exceptions import PermissionDenied
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -193,12 +192,6 @@ class ViewArchiveTestCase(TestCase):
                                self.registration_2_archived]
                               )
 
-    def test_cached_filters(self):
-        response = self.client.get(reverse('archive'), data={
-            'free_text': 'test'
-        })
-        cached_response = self.client.get(reverse('archive'))
-        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
 
 class ViewArchiveTrainingManagerTestCase(TestCase):
     def setUp(self):
@@ -247,3 +240,19 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
             reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
         )
         self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
+
+
+class ViewArchiveCacheTestCase(TestCase):
+    def setUp(self):
+        group = GroupFactory(name='continuing_education_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        self.client.force_login(self.manager.user)
+        self.addCleanup(cache.clear)
+
+    def test_cached_filters(self):
+        response = self.client.get(reverse('archive'), data={
+            'free_text': 'test'
+        })
+        cached_response = self.client.get(reverse('archive'))
+        self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
