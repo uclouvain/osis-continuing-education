@@ -266,4 +266,3 @@ def validate_field(request, admission_id):
                                                          ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
 
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
-
