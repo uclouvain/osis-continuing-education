@@ -303,7 +303,7 @@ class ViewRegistrationsCreateJsonTestCase(TestCase):
         self.assertIn(msg[0], _('No registration validated, so no data available to export!'))
 
 
-class ViewManagerCacheTestCase(TestCase):
+class ViewRegistrationCacheTestCase(TestCase):
     def setUp(self):
         group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
