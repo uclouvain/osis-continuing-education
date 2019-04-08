@@ -24,9 +24,6 @@
 #
 ##############################################################################
 from django.conf.urls import url
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions
 
 from continuing_education.api.views.address import AddressDetailUpdate, AddressListCreate
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetailUpdate, AdmissionCreate
@@ -39,25 +36,7 @@ from continuing_education.api.views.prospect import ProspectListCreate, Prospect
 from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate, \
     RegistrationDetailForEpc, RegistrationListForEpc
 
-# schema_view = get_swagger_view(title='IUFC API')
-schema_view = get_schema_view(
-   openapi.Info(
-      title="Snippets API",
-      default_version='v1',
-      description="Test description",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@snippets.local"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
-)
-
 urlpatterns = [
-    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    # url(r'^$', schema_view),
     url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),
     url(
         r'^addresses/(?P<uuid>[0-9a-f-]+)$',
