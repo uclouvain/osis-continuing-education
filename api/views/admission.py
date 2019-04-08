@@ -78,11 +78,11 @@ class AdmissionCreate(generics.CreateAPIView):
     serializer_class = AdmissionPostSerializer
 
 
-class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class AdmissionDetailUpdate(generics.RetrieveUpdateAPIView):
     """
-        Return the detail of the admission, update or destroy it
+        Return the detail of the admission or update it.
     """
-    name = 'admission-detail-update-destroy'
+    name = 'admission-detail-update'
     queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
 

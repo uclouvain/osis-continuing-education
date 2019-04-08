@@ -35,7 +35,7 @@ from continuing_education.models.continuing_education_training import Continuing
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:registration-detail-update-destroy',
+        view_name='continuing_education_api_v1:registration-detail-update',
         lookup_field='uuid'
     )
     person_information = ContinuingEducationPersonSerializer()

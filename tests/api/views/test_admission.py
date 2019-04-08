@@ -94,7 +94,7 @@ class AdmissionListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put', 'post']
+        methods_not_allowed = ['delete', 'put', 'post', 'patch']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -186,7 +186,7 @@ class AdmissionCreateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put', 'get']
+        methods_not_allowed = ['delete', 'put', 'get', 'patch']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -271,7 +271,7 @@ class AdmissionCreateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class AdmissionDetailUpdateDestroyTestCase(APITestCase):
+class AdmissionDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.citizenship = CountryFactory()
@@ -292,9 +292,9 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
         )
 
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:admission-detail-update-destroy', kwargs={'uuid': cls.admission.uuid})
+        cls.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': cls.admission.uuid})
         cls.invalid_url = reverse(
-            'continuing_education_api_v1:admission-detail-update-destroy',
+            'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid':  uuid.uuid4()}
         )
 
@@ -307,12 +307,6 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_update_not_authorized(self):
         self.client.force_authenticate(user=None)
 
@@ -320,7 +314,7 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post']
+        methods_not_allowed = ['post', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -338,16 +332,6 @@ class AdmissionDetailUpdateDestroyTestCase(APITestCase):
 
     def test_get_invalid_admission_case_not_found(self):
         response = self.client.get(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_delete_valid_admission(self):
-        self.assertEqual(1, Admission.objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, Admission.objects.all().count())
-
-    def test_delete_invalid_admission_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_valid_admission(self):

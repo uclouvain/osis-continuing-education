@@ -97,7 +97,7 @@ class RegistrationListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put', 'post']
+        methods_not_allowed = ['delete', 'put', 'post', 'patch']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -143,7 +143,7 @@ class RegistrationListTestCase(APITestCase):
             self.assertEqual(response.data['results'], serializer.data)
 
 
-class RegistrationDetailUpdateDestroyTestCase(APITestCase):
+class RegistrationDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -161,9 +161,9 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         )
 
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:registration-detail-update-destroy', kwargs={'uuid': cls.admission.uuid})
+        cls.url = reverse('continuing_education_api_v1:registration-detail-update', kwargs={'uuid': cls.admission.uuid})
         cls.invalid_url = reverse(
-            'continuing_education_api_v1:registration-detail-update-destroy',
+            'continuing_education_api_v1:registration-detail-update',
             kwargs={'uuid':  uuid.uuid4()}
         )
 
@@ -176,12 +176,6 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_update_not_authorized(self):
         self.client.force_authenticate(user=None)
 
@@ -189,7 +183,7 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post']
+        methods_not_allowed = ['post', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -207,16 +201,6 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
 
     def test_get_invalid_registration_case_not_found(self):
         response = self.client.get(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_delete_valid_registration(self):
-        self.assertEqual(1, Admission.registration_objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, Admission.registration_objects.all().count())
-
-    def test_delete_invalid_registration_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_valid_registration(self):

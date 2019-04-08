@@ -52,11 +52,11 @@ class ProspectListCreate(generics.ListCreateAPIView):
     serializer_class = ProspectSerializer
 
 
-class ProspectDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class ProspectDetailUpdate(generics.RetrieveUpdateAPIView):
     """
-        Return the detail of the prospect, destroy one or update one.
+        Return the detail of the prospect or update one.
     """
-    name = 'prospect-detail-update-delete'
+    name = 'prospect-detail-update'
     queryset = Prospect.objects.all()
     lookup_field = 'uuid'
     serializer_class = ProspectSerializer

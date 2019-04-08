@@ -71,11 +71,11 @@ class RegistrationList(generics.ListAPIView):
         )
 
 
-class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
     """
-        Return the detail of the registration, update or destroy it
+        Return the detail of the registration or update it.
     """
-    name = 'registration-detail-update-destroy'
+    name = 'registration-detail-update'
     queryset = Admission.objects.all()
     lookup_field = 'uuid'
 

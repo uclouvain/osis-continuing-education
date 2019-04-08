@@ -72,7 +72,7 @@ class ProspectListCreateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put']
+        methods_not_allowed = ['delete', 'put', 'patch']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -118,7 +118,7 @@ class ProspectListCreateTestCase(APITestCase):
         self.assertEqual(2, Prospect.objects.all().count())
 
 
-class ProspectDetailUpdateDestroyTestCase(APITestCase):
+class ProspectDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -133,22 +133,16 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
         cls.prospect = ProspectFactory(formation=formation)
         cls.user = UserFactory()
         cls.url = reverse(
-            'continuing_education_api_v1:prospect-detail-update-delete',
+            'continuing_education_api_v1:prospect-detail-update',
             kwargs={'uuid': cls.prospect.uuid}
         )
         cls.invalid_url = reverse(
-            'continuing_education_api_v1:prospect-detail-update-delete',
+            'continuing_education_api_v1:prospect-detail-update',
             kwargs={'uuid': uuid.uuid4()}
         )
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)
-
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_not_authorized(self):
         self.client.force_authenticate(user=None)
@@ -163,21 +157,11 @@ class ProspectDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post']
+        methods_not_allowed = ['post', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_delete_valid_prospect(self):
-        self.assertEqual(1, Prospect.objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, Prospect.objects.all().count())
-
-    def test_delete_invalid_prospect_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_valid_prospect(self):
         self.assertEqual(1, Prospect.objects.all().count())
