@@ -149,7 +149,7 @@
                             </a>
                             </td>
                             <td>{{ admission.person_information.person.first_name }}</td>
-                            <td>{{ admission.email }}</td>
+                            <td>{{ admission.email | default_if_none:'' }}</td>
                             <td title="{{admission.formation.title}}">{{ admission.formation_display }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
                             <td style="vertical-align: middle;" class="admission-state">
