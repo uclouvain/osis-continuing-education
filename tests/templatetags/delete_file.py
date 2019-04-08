@@ -37,21 +37,21 @@ class TestDeleteFile(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.participant = PersonFactory()
-        person_information = ContinuingEducationPersonFactory(person=cls.participant)
+        participant = PersonFactory()
+        person_information = ContinuingEducationPersonFactory(person=participant)
         cls.admission = AdmissionFactory(
             person_information=person_information
         )
         cls.participant_file = AdmissionFileFactory(
-            uploaded_by=cls.participant
+            uploaded_by=participant
         )
         cls.manager = PersonFactory()
         cls.manager_file = AdmissionFileFactory(
             uploaded_by=cls.manager
         )
-        cls.other_manager = PersonFactory()
+        other_manager = PersonFactory()
         cls.other_manager_file = AdmissionFileFactory(
-            uploaded_by=cls.other_manager
+            uploaded_by=other_manager
         )
         cls.context = {'user': cls.manager.user,
                        'admission': cls.admission}
