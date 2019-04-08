@@ -870,7 +870,7 @@ msgstr "Avez-vous déjà été inscrit(e) à l'UCL ?"
 #: models/admission.py:349 templates/fragment/tab_registration.html:104
 #: templates/registration_form.html:124
 msgid "Prior experience validation"
-msgstr "Valorisation des Acquis d'Experience"
+msgstr "Valorisation des Acquis d'Expérience"
 
 #: models/enums/enums.py:9 models/enums/enums.py:36
 msgid "Private"

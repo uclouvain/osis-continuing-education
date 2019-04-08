@@ -46,7 +46,7 @@
             </a>
             <button type="button" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;" name="btn_save"
                     data-modal_class="modal-lg"
-                    data-url="{% url 'validate_field' admission.id %}">
+                    {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
             <h3>
@@ -60,7 +60,7 @@
             <button type="button" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;"
                     name="btn_save"
                     data-modal_class="modal-lg"
-                    data-url="{% url 'validate_field' admission.id %}"
+                    {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}
                     >
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
@@ -215,7 +215,7 @@
             <a class="btn btn-default pull-right" id="cancel_bottom" href="{% url 'admission_detail' admission_id=admission.id %}"
                name="btn_save"
                data-modal_class="modal-lg"
-               data-url="{% url 'validate_field' admission.id %}"
+               {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}
                     >
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
@@ -226,7 +226,7 @@
         {% endif %}
         <button type="button" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;" name="btn_save"
                 data-modal_class="modal-lg"
-                data-url="{% url 'validate_field' admission.id %}">
+                {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
         </button>
         {%  trans 'Do you confirm you want to save?' as confirm_msg_extra %}
@@ -272,6 +272,7 @@
     $(".other_required").after(" *").css('display', 'inline-block');
 
     $("#btn_confirm_fields").click(function(){
+        alert('lll');
         $('#form').submit();
     });
 
