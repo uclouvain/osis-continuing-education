@@ -55,7 +55,7 @@ class AdmissionDetailSerializerTestCase(TestCase):
             formation=cls.formation
         )
         url = reverse(
-            'continuing_education_api_v1:admission-detail-update-destroy',
+            'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid': cls.admission.uuid}
         )
         cls.serializer = AdmissionDetailSerializer(cls.admission, context={'request': RequestFactory().get(url)})
@@ -114,7 +114,7 @@ class AdmissionPostSerializerTestCase(TestCase):
             formation=cls.formation
         )
         url = reverse(
-            'continuing_education_api_v1:admission-detail-update-destroy',
+            'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid': cls.admission.uuid}
         )
         cls.serializer = AdmissionPostSerializer(cls.admission, context={'request': RequestFactory().get(url)})
