@@ -47,6 +47,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from reference.tests.factories.country import CountryFactory
+from django.test.utils import override_settings
 
 
 class TestAdmission(TestCase):
@@ -97,6 +98,7 @@ class TestAdmission(TestCase):
 
         self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
 
+    @override_settings(LANGUAGES=[('fr-be', 'French'), ('en', 'English'), ], LANGUAGE_CODE='fr-be')
     def test_check_address_required_field_for_participant(self):
         an_incomplete_address = AddressFactory(
             city="",
@@ -108,9 +110,9 @@ class TestAdmission(TestCase):
         response = check_required_field_for_participant(an_incomplete_address,
                                                         Address._meta,
                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS)
-        expected = {'city': {'verbose_name': _(Address._meta.get_field('city').verbose_name)},
-                    'location': {'verbose_name': _(Address._meta.get_field('location').verbose_name)},
-                    'country': {'verbose_name': _(Address._meta.get_field('country').verbose_name)}}
+        expected = {'country': _(Address._meta.get_field('country').verbose_name),
+                    'location': _(Address._meta.get_field('location').verbose_name),
+                    'city': _(Address._meta.get_field('city').verbose_name),}
         self.assertDictEqual(response, expected)
 
         a_complete_address = AddressFactory(city="Malonne",
@@ -128,7 +130,7 @@ class TestAdmission(TestCase):
         response = check_required_field_for_participant(admission,
                                                         Admission._meta,
                                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
-        expected = {'current_employer': {'verbose_name': _(Admission._meta.get_field('current_employer').verbose_name)}}
+        expected = {'current_employer': _(Admission._meta.get_field('current_employer').verbose_name)}
         self.assertDictEqual(response, expected)
 
 

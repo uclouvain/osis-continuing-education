@@ -230,17 +230,26 @@ def _get_managers_mails(formation):
     return _(" or ").join(managers_mail)
 
 
-def check_required_field_for_participant(obj, meta, fields_required):
+def check_required_field_for_participant(obj, meta, fields_required, extra=None):
     if obj:
-        return _check_fields(fields_required, meta, obj)
+        return _check_fields(fields_required, meta, obj, extra)
     else:
-        return {response[key]: {'verbose_name': meta.get_field(key).verbose_name}}
+
+        return {response[key]: meta.get_field(key).verbose_name}
 
 
-def _check_fields(fields_required, meta, obj):
+def _check_fields(fields_required, meta, obj, extra):
     response = {}
     for key in fields_required:
         value = getattr(obj, key, None)
         if value is None or (isinstance(value, str) and len(value) == 0):
-            response[key] = {'verbose_name': meta.get_field(key).verbose_name}
+            _build_validation_msg(extra, key, meta, response)
     return response
+
+
+def _build_validation_msg(extra, key, meta, response):
+    if extra:
+        extra_key = '{}_{}'.format(key, extra.strip())
+        response[extra_key] = '{} : {}'.format(extra, meta.get_field(key).verbose_name)
+    else:
+        response[key] = meta.get_field(key).verbose_name

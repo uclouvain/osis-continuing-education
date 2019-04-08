@@ -36,7 +36,8 @@
             </div>
             <div class="panel-default">
                 <div class="panel-heading">
-                    {% trans "While participant fills out the form some fields are required.  Some of those fields aren't filled-in yet. Do you confirm you want to submit?"  %}
+                    {% trans "While participant fills out the form some fields are required.  Some of those fields aren't filled-in yet."  %}<br>
+                    {{ confirm_msg }}
                 </div>
                 <div class="panel-body">
                     <label>{% trans 'Fields missing' %} :</label>

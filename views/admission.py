@@ -53,6 +53,7 @@ from continuing_education.views.common import display_errors
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from osis_common.decorators.ajax import ajax_required
+from collections import OrderedDict
 
 
 @login_required
@@ -259,8 +260,19 @@ def validate_field(request, admission_id):
     response = {}
     response.update(check_required_field_for_participant(admission.address,
                                                          Address._meta,
-                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS))
+                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS,
+                                                         _('Contact address')))
+    response.update(check_required_field_for_participant(admission.billing_address,
+                                                         Address._meta,
+                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS,
+                                                         _('Billing address')))
+    response.update(check_required_field_for_participant(admission.residence_address,
+                                                         Address._meta,
+                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS,
+                                                         _('Residence address')))
+
     response.update(check_required_field_for_participant(admission,
                                                          Admission._meta,
                                                          ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
-    return JsonResponse(response, safe=False)
+
+    return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
