@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-09 13:51+0200\n"
+"POT-Creation-Date: 2019-04-09 15:09+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,65 +172,6 @@ msgstr ""
 msgid "Awareness"
 msgstr ""
 
-#: models/admission.py:200 templates/admission_form.html:185
-#: templates/fragment/tab_admission.html:128
-msgid "Awareness Facebook"
-msgstr ""
-
-#: models/admission.py:204 templates/admission_form.html:186
-#: templates/fragment/tab_admission.html:131
-msgid "Awareness LinkedIn"
-msgstr ""
-
-#: models/admission.py:233 templates/admission_form.html:192
-#: templates/fragment/tab_admission.html:149
-msgid "Awareness Moocs"
-msgstr ""
-
-#: models/admission.py:188 templates/admission_form.html:182
-#: templates/fragment/tab_admission.html:119
-msgid "Awareness UCL website"
-msgstr ""
-
-#: models/admission.py:208 templates/admission_form.html:187
-#: templates/fragment/tab_admission.html:134
-msgid "Awareness customized mail"
-msgstr ""
-
-#: models/admission.py:212 templates/admission_form.html:188
-#: templates/fragment/tab_admission.html:137
-msgid "Awareness emailing"
-msgstr ""
-
-#: models/admission.py:192 templates/admission_form.html:183
-#: templates/fragment/tab_admission.html:122
-msgid "Awareness formation website"
-msgstr ""
-
-#: models/admission.py:229 templates/admission_form.html:191
-#: templates/fragment/tab_admission.html:146
-msgid "Awareness former students"
-msgstr ""
-
-#: models/admission.py:225 templates/admission_form.html:190
-#: templates/fragment/tab_admission.html:143
-msgid "Awareness friends"
-msgstr ""
-
-#: models/admission.py:217
-msgid "Awareness other"
-msgstr ""
-
-#: models/admission.py:196 templates/admission_form.html:184
-#: templates/fragment/tab_admission.html:125
-msgid "Awareness press"
-msgstr ""
-
-#: models/admission.py:221 templates/admission_form.html:189
-#: templates/fragment/tab_admission.html:140
-msgid "Awareness word of mouth"
-msgstr ""
-
 #: templates/fragment/tab_registration.html:39
 #: templates/registration_form.html:59 templates/registration_form.html:71
 msgid "Billing"
@@ -258,6 +199,61 @@ msgstr ""
 
 #: templates/fragment/upload_file_modal.html:53
 msgid "Browse"
+msgstr ""
+
+#: models/admission.py:200 templates/admission_form.html:185
+#: templates/fragment/tab_admission.html:128
+msgid "By Facebook"
+msgstr ""
+
+#: models/admission.py:204 templates/admission_form.html:186
+#: templates/fragment/tab_admission.html:131
+msgid "By LinkedIn"
+msgstr ""
+
+#: models/admission.py:233 templates/admission_form.html:192
+#: templates/fragment/tab_admission.html:149
+msgid "By Moocs"
+msgstr ""
+
+#: models/admission.py:188 templates/admission_form.html:182
+#: templates/fragment/tab_admission.html:119
+msgid "By UCL website"
+msgstr ""
+
+#: models/admission.py:208 templates/admission_form.html:187
+#: templates/fragment/tab_admission.html:134
+msgid "By customized mail"
+msgstr ""
+
+#: models/admission.py:212 templates/admission_form.html:188
+#: templates/fragment/tab_admission.html:137
+msgid "By emailing"
+msgstr ""
+
+#: models/admission.py:192 templates/admission_form.html:183
+#: templates/fragment/tab_admission.html:122
+msgid "By formation website"
+msgstr ""
+
+#: models/admission.py:229 templates/admission_form.html:191
+#: templates/fragment/tab_admission.html:146
+msgid "By former students"
+msgstr ""
+
+#: models/admission.py:225 templates/admission_form.html:190
+#: templates/fragment/tab_admission.html:143
+msgid "By friends"
+msgstr ""
+
+#: models/admission.py:196 templates/admission_form.html:184
+#: templates/fragment/tab_admission.html:125
+msgid "By press"
+msgstr ""
+
+#: models/admission.py:221 templates/admission_form.html:189
+#: templates/fragment/tab_admission.html:140
+msgid "By word of mouth"
 msgstr ""
 
 #: templates/admission_form.html:45 templates/admission_form.html:58
@@ -778,7 +774,7 @@ msgid "Notify participant by email"
 msgstr ""
 
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
-#: models/enums/enums.py:32 models/enums/enums.py:40
+#: models/admission.py:217 models/enums/enums.py:32 models/enums/enums.py:40
 #: templates/admission_form.html:201 templates/fragment/tab_admission.html:152
 msgid "Other"
 msgstr ""

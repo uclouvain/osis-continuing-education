@@ -185,52 +185,52 @@ class Admission(SerializableModel):
     # Awareness
     awareness_ucl_website = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness UCL website")
+        verbose_name=_("By UCL website")
     )
     awareness_formation_website = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness formation website")
+        verbose_name=_("By formation website")
     )
     awareness_press = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness press")
+        verbose_name=_("By press")
     )
     awareness_facebook = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness Facebook")
+        verbose_name=_("By Facebook")
     )
     awareness_linkedin = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness LinkedIn")
+        verbose_name=_("By LinkedIn")
     )
     awareness_customized_mail = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness customized mail")
+        verbose_name=_("By customized mail")
     )
     awareness_emailing = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness emailing")
+        verbose_name=_("By emailing")
     )
     awareness_other = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name=_("Awareness other")
+        verbose_name=_("Other")
     )
     awareness_word_of_mouth = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness word of mouth")
+        verbose_name=_("By word of mouth")
     )
     awareness_friends = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness friends")
+        verbose_name=_("By friends")
     )
     awareness_former_students = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness former students")
+        verbose_name=_("By former students")
     )
     awareness_moocs = models.BooleanField(
         default=False,
-        verbose_name=_("Awareness Moocs")
+        verbose_name=_("By Moocs")
     )
     # State
     state = models.CharField(
