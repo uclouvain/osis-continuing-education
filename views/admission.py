@@ -84,11 +84,7 @@ def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
-    if not request.user.has_perm('continuing_education.can_validate_registration') and \
-            admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
-        states = []
-    else:
-        states = [] if admission and admission.is_draft() else accepted_states.get('choices', ())
+    states = _get_states_choices(accepted_states, admission, request)
 
     adm_form = AdmissionForm(
         request.POST or None,
@@ -277,3 +273,11 @@ def validate_field(request, admission_id):
                                                          ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
 
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
+
+
+def _get_states_choices(accepted_states, admission, request):
+    if not request.user.has_perm('continuing_education.can_validate_registration') and \
+                    admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+        return []
+    else:
+        return [] if admission and admission.is_draft() else accepted_states.get('choices', ())
