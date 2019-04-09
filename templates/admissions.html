@@ -106,7 +106,7 @@
         {% if admissions %}
             <div class="row">
                 <div class="col-md-6">
-                    <strong style="margin-left:10px;color:grey;"> {{ admissions_number }} {% trans 'Admissions'|lower %} </strong>
+                    <strong style="margin-left:10px;color:grey;">{{ admissions_number }} {% if admissions_number > 1 %}{% trans 'Admissions'|lower %}{% else %}{% trans 'Admission'|lower %}{% endif %}</strong>
                 </div>
             </div>
         {% endif %}
@@ -141,8 +141,10 @@
                     {% for admission in admissions %}
                         <tr>
                             <td>
-                                <input type="checkbox" name="selected_action" class="selected_object"
-                                       value="{{ admission.id }}"/>
+                                {% if not admission.is_draft %}
+                                    <input type="checkbox" name="selected_action" class="selected_object"
+                                           value="{{ admission.id }}"/>
+                                {% endif %}
                             </td>
                             <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
                                 {{ admission.person_information.person.last_name }}
@@ -159,6 +161,8 @@
                                     <span class="label label-danger show">{% trans admission.state %}</span>
                                 {% elif admission.is_submitted %}
                                     <span class="label label-info show">{% trans admission.state %}</span>
+                                {% elif admission.is_draft %}
+                                    <span class="label label-default show">{% trans admission.state %}</span>
                                 {% endif %}
                             </td>
                         </tr>

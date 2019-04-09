@@ -88,7 +88,8 @@ def admission_detail(request, admission_id):
             admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
         states = []
     else:
-        states = accepted_states.get('choices', ())
+        states = [] if admission and admission.is_draft() else accepted_states.get('choices', ())
+
     adm_form = AdmissionForm(
         request.POST or None,
         instance=admission,
