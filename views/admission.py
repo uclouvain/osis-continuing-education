@@ -58,7 +58,7 @@ from collections import OrderedDict
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-@cache_filter()
+@cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
     admission_list = []
