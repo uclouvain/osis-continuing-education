@@ -181,7 +181,7 @@ class TestFilterForm(TestCase):
     def test_queryset_formation_init(self):
         form = AdmissionFilterForm()
         self.assertListEqual(list(form.fields['formation'].queryset), [
-            a.formation for a in self.admissions if a.state != DRAFT
+            a.formation for a in self.admissions
         ])
 
     def test_queryset_admission_state_init(self):
@@ -193,6 +193,7 @@ class TestFilterForm(TestCase):
                 ('Waiting', _('Waiting')),
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
+                ('Draft', _('Draft')),
             ])
 
     def test_queryset_registration_state_init(self):
@@ -211,9 +212,7 @@ class TestFilterForm(TestCase):
         form = AdmissionFilterForm({})
         if form.is_valid():
             results = form.get_admissions()
-            self.assertCountEqual(results, [
-                a for a in self.admissions if a.state != DRAFT
-            ])
+            self.assertCountEqual(results, self.admissions)
 
     def test_get_admissions_by_formation_criteria(self):
         form = AdmissionFilterForm({"formation": self.education_group_yrs[3]})
