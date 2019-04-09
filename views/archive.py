@@ -39,7 +39,7 @@ from continuing_education.views.common import get_object_list
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-@cache_filter()
+@cache_filter(exclude_params=['xls_status'])
 def list_archives(request):
     search_form = ArchiveFilterForm(data=request.GET, user=request.user)
     archive_list = []

@@ -46,7 +46,7 @@ from continuing_education.models.enums import admission_state_choices
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-@cache_filter()
+@cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
 
