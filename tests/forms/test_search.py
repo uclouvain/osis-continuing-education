@@ -212,9 +212,7 @@ class TestFilterForm(TestCase):
         form = AdmissionFilterForm({})
         if form.is_valid():
             results = form.get_admissions()
-            self.assertCountEqual(results, [
-                a for a in self.admissions
-            ])
+            self.assertCountEqual(results, self.admissions)
 
     def test_get_admissions_by_formation_criteria(self):
         form = AdmissionFilterForm({"formation": self.education_group_yrs[3]})
