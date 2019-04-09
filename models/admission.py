@@ -216,7 +216,22 @@ class Admission(SerializableModel):
         blank=True,
         verbose_name=_("Awareness other")
     )
-
+    awareness_word_of_mouth = models.BooleanField(
+        default=False,
+        verbose_name=_("Awareness word of mouth")
+    )
+    awareness_friends = models.BooleanField(
+        default=False,
+        verbose_name=_("Awareness friends")
+    )
+    awareness_former_students = models.BooleanField(
+        default=False,
+        verbose_name=_("Awareness former students")
+    )
+    awareness_moocs = models.BooleanField(
+        default=False,
+        verbose_name=_("Awareness Moocs")
+    )
     # State
     state = models.CharField(
         max_length=50,
