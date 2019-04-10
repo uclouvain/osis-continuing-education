@@ -36,6 +36,7 @@ from rest_framework.test import APITestCase
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
     RegistrationPostSerializer
@@ -148,19 +149,19 @@ class RegistrationDetailUpdateTestCase(APITestCase):
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
+        cls.user = UserFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
         cls.admission = AdmissionFactory(
-            person_information=ContinuingEducationPersonFactory(),
+            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=cls.user)),
             formation=ContinuingEducationTrainingFactory(
                 education_group=cls.education_group
             ),
             state=random.choice([ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED])
         )
 
-        cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:registration-detail-update', kwargs={'uuid': cls.admission.uuid})
         cls.invalid_url = reverse(
             'continuing_education_api_v1:registration-detail-update',
@@ -179,7 +180,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
     def test_update_not_authorized(self):
         self.client.force_authenticate(user=None)
 
-        response = self.client.delete(self.url)
+        response = self.client.patch(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):

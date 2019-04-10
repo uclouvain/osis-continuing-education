@@ -28,6 +28,7 @@ from rest_framework.generics import get_object_or_404
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, \
     RegistrationDetailSerializer, RegistrationPostSerializer
+from continuing_education.api.views.perms.perms import HasAdmissionAccess
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED
@@ -76,6 +77,7 @@ class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
         Return the detail of the registration or update it.
     """
     name = 'registration-detail-update'
+    permission_classes = (HasAdmissionAccess,)
     queryset = Admission.objects.all()
     lookup_field = 'uuid'
 

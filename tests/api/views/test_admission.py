@@ -275,7 +275,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.citizenship = CountryFactory()
-
+        cls.user = UserFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
@@ -285,13 +285,12 @@ class AdmissionDetailUpdateTestCase(APITestCase):
 
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
-            person_information=ContinuingEducationPersonFactory(),
+            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=cls.user)),
             formation=ContinuingEducationTrainingFactory(education_group=education_group),
             state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
 
         )
 
-        cls.user = UserFactory()
         cls.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': cls.admission.uuid})
         cls.invalid_url = reverse(
             'continuing_education_api_v1:admission-detail-update',
@@ -310,7 +309,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
     def test_update_not_authorized(self):
         self.client.force_authenticate(user=None)
 
-        response = self.client.delete(self.url)
+        response = self.client.patch(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
