@@ -205,6 +205,8 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_valid_registration(self):
+        self.admission.state = ACCEPTED
+        self.admission.save()
         self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
             'vat_number': '123456',
@@ -212,7 +214,6 @@ class RegistrationDetailUpdateTestCase(APITestCase):
             'use_address_for_billing': True,
             'use_address_for_post': True
         }
-
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -224,6 +225,8 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         self.assertEqual(1, Admission.registration_objects.all().count())
 
     def test_update_valid_registration_billing_address(self):
+        self.admission.state = ACCEPTED
+        self.admission.save()
         self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
             'use_address_for_billing': False,
