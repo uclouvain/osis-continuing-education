@@ -1,6 +1,6 @@
 {% load staticfiles %}
 {% load i18n %}
-{% load bootstrap3 %}
+{% load bootstrap3 delete_file %}
 
 {% comment "License" %}
 * OSIS stands for Open Student Information System. It's an application
@@ -28,11 +28,14 @@
 
 <div class="panel-body">
     <div>
-        <a class="btn btn-primary" id="upload_file_button">
+        <a class="btn btn-primary"
+           {% if admission.is_draft %}disabled title="{% trans 'Impossible to upload document while in draft state' %}"{% endif %}
+           id="upload_file_button">
             <span class="glyphicon glyphicon-add" aria-hidden="true"></span> {% trans 'Upload file' %}
         </a>
     </div>
     <br><br>
+
     {% if not files %}
         <div class="jumbotron">
             <p>{% trans 'No document available' %}</p>
@@ -57,11 +60,20 @@
                     <td> {{file.size|filesizeformat}} </td>
                     <td> {{file.created_date}} </td>
                     <td>
+                        {% check_permission_to_delete file as has_permission_to_delete %}
                         <a class="button" role="button" title="{% trans 'Download document' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                         &nbsp;
-                        <a class="button" role="button" title="{% trans 'Delete document' %}" href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
-                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span></a>
+                        <a class="button"
+                           {% if not has_permission_to_delete or admission.is_draft %}disabled{% endif %}
+                           {% if admission.is_draft %}
+                                title="{% trans "You can't delete a file while in draft state" %}"
+                           {% elif not has_permission_to_delete %}
+                                title="{% trans "You don't have the permission to delete this file" %}"
+                           {% endif %}
+                           role="button" title="{% trans 'Delete document' %}"
+                           href="{% url 'delete_file' admission_id=admission.id file_id=file.id %}">
+                            <span class="glyphicon glyphicon-remove-circle {% if not has_permission_to_delete or admission.is_draft %}text-muted{% endif %}" aria-hidden="true" ></span></a>
 
                         {% if file.file_category == invoice %}
                             &nbsp;

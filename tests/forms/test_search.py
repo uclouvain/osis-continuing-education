@@ -37,8 +37,8 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.person import PersonFactory
 from base.tests.factories.group import GroupFactory
+from base.tests.factories.person import PersonFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm
@@ -181,7 +181,7 @@ class TestFilterForm(TestCase):
     def test_queryset_formation_init(self):
         form = AdmissionFilterForm()
         self.assertListEqual(list(form.fields['formation'].queryset), [
-            a.formation for a in self.admissions if a.state != DRAFT
+            a.formation for a in self.admissions
         ])
 
     def test_queryset_admission_state_init(self):
@@ -193,6 +193,7 @@ class TestFilterForm(TestCase):
                 ('Waiting', _('Waiting')),
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
+                ('Draft', _('Draft')),
             ])
 
     def test_queryset_registration_state_init(self):
@@ -211,9 +212,7 @@ class TestFilterForm(TestCase):
         form = AdmissionFilterForm({})
         if form.is_valid():
             results = form.get_admissions()
-            self.assertCountEqual(results, [
-                a for a in self.admissions if a.state != DRAFT
-            ])
+            self.assertCountEqual(results, self.admissions)
 
     def test_get_admissions_by_formation_criteria(self):
         form = AdmissionFilterForm({"formation": self.education_group_yrs[3]})

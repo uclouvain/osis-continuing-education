@@ -106,7 +106,7 @@
         {% if admissions %}
             <div class="row">
                 <div class="col-md-6">
-                    <strong style="margin-left:10px;color:grey;"> {{ admissions_number }} {% trans 'Admissions'|lower %} </strong>
+                    <strong style="margin-left:10px;color:grey;">{{ admissions_number }} {% if admissions_number > 1 %}{% trans 'Admissions'|lower %}{% else %}{% trans 'admission' %}{% endif %}</strong>
                 </div>
             </div>
         {% endif %}
@@ -141,15 +141,17 @@
                     {% for admission in admissions %}
                         <tr>
                             <td>
-                                <input type="checkbox" name="selected_action" class="selected_object"
-                                       value="{{ admission.id }}"/>
+                                {% if not admission.is_draft %}
+                                    <input type="checkbox" name="selected_action" class="selected_object"
+                                           value="{{ admission.id }}"/>
+                                {% endif %}
                             </td>
                             <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
                                 {{ admission.person_information.person.last_name }}
                             </a>
                             </td>
                             <td>{{ admission.person_information.person.first_name }}</td>
-                            <td>{{ admission.email }}</td>
+                            <td>{{ admission.email | default_if_none:'' }}</td>
                             <td title="{{admission.formation.title}}">{{ admission.formation_display }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
                             <td style="vertical-align: middle;" class="admission-state">
@@ -159,6 +161,8 @@
                                     <span class="label label-danger show">{% trans admission.state %}</span>
                                 {% elif admission.is_submitted %}
                                     <span class="label label-info show">{% trans admission.state %}</span>
+                                {% elif admission.is_draft %}
+                                    <span class="label label-default show">{% trans admission.state %}</span>
                                 {% endif %}
                             </td>
                         </tr>
