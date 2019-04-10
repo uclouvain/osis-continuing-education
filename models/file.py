@@ -50,7 +50,7 @@ class AdmissionFileAdmin(ModelAdmin):
 
 
 class AdmissionFile(Model):
-    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     admission = models.ForeignKey(
         'continuing_education.Admission',
         blank=True,
