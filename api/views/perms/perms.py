@@ -24,11 +24,23 @@
 #
 ##############################################################################
 
+from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
+
+from continuing_education.models.enums.admission_state_choices import ACCEPTED
 
 
 class HasAdmissionAccess(permissions.BasePermission):
-    message = 'Getting this admission not allowed.'
+    message = _('Getting this admission not allowed.')
 
     def has_object_permission(self, request, view, obj):
         return obj.person_information.person.user == request.user
+
+
+class CanSubmitRegistration(permissions.BasePermission):
+    message = _('To submit a registration, its state must be ACCEPTED.')
+
+    def has_object_permission(self, request, view, obj):
+        if request.method not in permissions.SAFE_METHODS:
+            return obj.state == ACCEPTED
+        return True
