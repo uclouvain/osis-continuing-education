@@ -25,6 +25,7 @@
 ##############################################################################
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, \
     RegistrationDetailSerializer, RegistrationPostSerializer
@@ -77,7 +78,7 @@ class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
         Return the detail of the registration or update it.
     """
     name = 'registration-detail-update'
-    permission_classes = (HasAdmissionAccess, CanSubmitRegistration)
+    permission_classes = (HasAdmissionAccess, CanSubmitRegistration, IsAuthenticated)
     queryset = Admission.objects.all()
     lookup_field = 'uuid'
 

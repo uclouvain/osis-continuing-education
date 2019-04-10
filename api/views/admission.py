@@ -25,6 +25,7 @@
 ##############################################################################
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer, AdmissionPostSerializer
@@ -84,7 +85,7 @@ class AdmissionDetailUpdate(generics.RetrieveUpdateAPIView):
         Return the detail of the admission or update it.
     """
     name = 'admission-detail-update'
-    permission_classes = (HasAdmissionAccess,)
+    permission_classes = (HasAdmissionAccess, IsAuthenticated, )
     queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
 

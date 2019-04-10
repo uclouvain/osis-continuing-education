@@ -66,11 +66,11 @@ class AdmissionFileListCreateTestCase(APITestCase):
     def test_create_not_authorized(self):
         self.client.force_authenticate(user=None)
 
-        response = self.client.delete(self.url)
+        response = self.client.post(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put']
+        methods_not_allowed = ['delete', 'put', 'patch']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
