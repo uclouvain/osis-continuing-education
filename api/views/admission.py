@@ -23,8 +23,11 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.http import HttpResponseForbidden
 from rest_framework import generics
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer, AdmissionPostSerializer
@@ -90,3 +93,11 @@ class AdmissionDetailUpdate(generics.RetrieveUpdateAPIView):
         if self.request.method in ['PUT', 'PATCH']:
             return AdmissionPostSerializer
         return AdmissionDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        user = Token.objects.get(key=request.auth).user
+        if instance.person_information.person.user == user:
+            return Response(serializer.data)
+        return HttpResponseForbidden()
