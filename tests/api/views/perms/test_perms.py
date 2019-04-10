@@ -27,9 +27,11 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration
-from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration, CanSendFiles
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED, DRAFT, REJECTED, \
+    WAITING, SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
@@ -69,13 +71,7 @@ class TestCanSubmitRegistration(APITestCase):
         cls.user = UserFactory()
         cls.request = APIRequestFactory(user=cls.user)
         cls.request.method = 'POST'
-        person_information = ContinuingEducationPersonFactory(
-            person=PersonFactory(user=cls.user)
-        )
-        cls.admission = AdmissionFactory(
-            person_information=person_information
-        )
-        print(cls.admission.state)
+        cls.admission = AdmissionFactory()
 
     def setUp(self):
         self.client.login(user=self.user)
@@ -101,3 +97,61 @@ class TestCanSubmitRegistration(APITestCase):
         self.assertTrue(
             self.permission.has_object_permission(self.request, None, self.admission)
         )
+
+
+class TestCanSendFiles(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.permission = CanSendFiles()
+        cls.user = UserFactory()
+        cls.request = APIRequestFactory(user=cls.user)
+        cls.admission = AdmissionFactory()
+
+    def setUp(self):
+        self.client.login(user=self.user)
+
+    def test_cansendfiles_return_true_if_admission_state_is_accepted(self):
+        self.admission.state = ACCEPTED
+        self.admission.save()
+        file = AdmissionFileFactory(admission=self.admission)
+        methods = ['POST', 'DELETE']
+        for method in methods:
+            self.request.method = method
+            self.assertTrue(
+                self.permission.has_object_permission(self.request, None, file)
+            )
+
+    def test_cansendfiles_return_true_if_admission_state_is_draft(self):
+        self.admission.state = DRAFT
+        self.admission.save()
+        file = AdmissionFileFactory(admission=self.admission)
+        methods = ['POST', 'DELETE']
+        for method in methods:
+            self.request.method = method
+            self.assertTrue(
+                self.permission.has_object_permission(self.request, None, file)
+            )
+
+    def test_cansendfiles_return_true_if_safe_methods(self):
+        file = AdmissionFileFactory(admission=self.admission)
+        self.request.method = 'GET'
+        self.assertTrue(
+            self.permission.has_object_permission(self.request, None, file)
+        )
+
+    def test_cansendfiles_return_false_with_wrong_state(self):
+        states = [REJECTED, WAITING, SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED]
+        self.request.method = 'DELETE'
+        for state in states:
+            admission = AdmissionFactory(state=state)
+            file = AdmissionFileFactory(admission=admission)
+            self.assertFalse(
+                self.permission.has_object_permission(self.request, None, file)
+            )
+        self.request.method = 'POST'
+        for state in states:
+            admission = AdmissionFactory(state=state)
+            file = AdmissionFileFactory(admission=admission)
+            self.assertFalse(
+                self.permission.has_object_permission(self.request, None, file)
+            )

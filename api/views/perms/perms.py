@@ -27,7 +27,7 @@
 from django.utils.translation import gettext_lazy as _
 from rest_framework import permissions
 
-from continuing_education.models.enums.admission_state_choices import ACCEPTED
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, DRAFT
 
 
 class HasAdmissionAccess(permissions.BasePermission):
@@ -43,4 +43,13 @@ class CanSubmitRegistration(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method not in permissions.SAFE_METHODS:
             return obj.state == ACCEPTED
+        return True
+
+
+class CanSendFiles(permissions.BasePermission):
+    message = _('Uploading files is not allowed if admission is not editable.')
+
+    def has_object_permission(self, request, view, obj):
+        if request.method not in permissions.SAFE_METHODS:
+            return obj.admission.state == ACCEPTED or obj.admission.state == DRAFT
         return True
