@@ -437,7 +437,7 @@ class Admission(SerializableModel):
 
     @property
     def formation_administrators(self):
-        return " - ".join([str(manager) for manager in self.formation.managers.all()])
+        return " - ".join([str(mgr) for mgr in self.formation.managers.all().order_by('last_name', 'first_name')])
 
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
