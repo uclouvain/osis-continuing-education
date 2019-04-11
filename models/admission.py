@@ -419,12 +419,17 @@ class Admission(SerializableModel):
         fields = Admission._meta.get_fields()
         for field in fields:
             if 'awareness_' in field.name:
-                if isinstance(getattr(self, field.name), bool):
-                    if getattr(self, field.name):
-                        list_awareness.append(str(_(field.verbose_name)))
-                elif self._has_awareness_other(field):
-                    list_awareness.append(str("{} : {}".format(_('Other'), getattr(self, field.name))))
+                list_awareness = self._get_awareness_values(field, list_awareness)
         return ", ".join(list_awareness)
+
+    def _get_awareness_values(self, field, list_awareness_param):
+        list_awareness = list_awareness_param
+        if isinstance(getattr(self, field.name), bool):
+            if getattr(self, field.name):
+                list_awareness.append(str(_(field.verbose_name)))
+        elif self._has_awareness_other(field):
+            list_awareness.append(str("{} : {}".format(_('Other'), getattr(self, field.name))))
+        return list_awareness
 
     def _has_awareness_other(self, field):
         return isinstance(getattr(self, field.name), str) and field.name == "awareness_other" and len(
