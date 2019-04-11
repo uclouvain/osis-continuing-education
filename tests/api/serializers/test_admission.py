@@ -95,6 +95,10 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'awareness_linkedin',
             'awareness_customized_mail',
             'awareness_emailing',
+            'awareness_word_of_mouth',
+            'awareness_friends',
+            'awareness_former_students',
+            'awareness_moocs',
             'awareness_other',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
@@ -154,6 +158,10 @@ class AdmissionPostSerializerTestCase(TestCase):
             'awareness_linkedin',
             'awareness_customized_mail',
             'awareness_emailing',
+            'awareness_word_of_mouth',
+            'awareness_friends',
+            'awareness_former_students',
+            'awareness_moocs',
             'awareness_other',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)

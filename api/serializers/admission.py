@@ -111,6 +111,10 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
             'awareness_linkedin',
             'awareness_customized_mail',
             'awareness_emailing',
+            'awareness_word_of_mouth',
+            'awareness_friends',
+            'awareness_former_students',
+            'awareness_moocs',
             'awareness_other',
         )
 
