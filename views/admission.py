@@ -24,6 +24,7 @@
 #
 ##############################################################################
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -84,11 +85,8 @@ def admission_detail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
-    if not request.user.has_perm('continuing_education.can_validate_registration') and \
-            admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
-        states = []
-    else:
-        states = accepted_states.get('choices', ())
+    states = _get_states_choices(accepted_states, admission, request)
+
     adm_form = AdmissionForm(
         request.POST or None,
         instance=admission,
@@ -157,6 +155,8 @@ def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     if admission:
         can_access_admission(request.user, admission_id)
+        if admission.is_draft():
+            raise PermissionDenied
     states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(request.POST or None, instance=base_person)
@@ -276,3 +276,11 @@ def validate_field(request, admission_id):
                                                          ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
 
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
+
+
+def _get_states_choices(accepted_states, admission, request):
+    if not request.user.has_perm('continuing_education.can_validate_registration') and \
+                    admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+        return []
+    else:
+        return [] if admission and admission.is_draft() else accepted_states.get('choices', ())

@@ -52,26 +52,37 @@
                 <span class="caret"></span>
                 <span class="sr-only">{% trans 'State' %}</span>
                 </button>
-                <ul class="dropdown-menu">
-                  {% for state in states %}
-                      {% with state.0 as state_value and state.1 as state_trans %}
-                         <li>{% if state_value == 'Registration submitted' %}
-                                 <a value="{{state_value}}" href="#" class="state-admission"
-                                    data-modal_class="modal-lg"
-                                    data-url="{% url 'validate_field' admission.id %}">{{state_trans}}</a>
-                             {% else %}
-                                 <a value="{{state_value}}" href="#" class="state-admission">{{state_trans}}</a>
-                             {% endif %}
-                         </li>
-                      {% endwith %}
-                  {% endfor %}
-                <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
-                </ul>
+                {% if not admission.is_draft %}
+                    <ul class="dropdown-menu">
+                      {% for state in states %}
+                          {% with state.0 as state_value and state.1 as state_trans %}
+                             <li>{% if state_value == 'Registration submitted' %}
+                                     <a value="{{state_value}}" href="#" class="state-admission"
+                                        data-modal_class="modal-lg"
+                                        data-url="{% url 'validate_field' admission.id %}">{{state_trans}}</a>
+                                 {% else %}
+                                     <a value="{{state_value}}" href="#" class="state-admission">{{state_trans}}</a>
+                                 {% endif %}
+                             </li>
+                          {% endwith %}
+                      {% endfor %}
+                    <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
+                    </ul>
+                {% endif %}
+
                 <div class="pull-right">
                     {% if admission.archived %}
-                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission archived' %}" class="btn btn-default"><i class="fa fa-folder"></i>&nbsp;{% trans 'Unarchive' %}</a>
+                        <a href="{% url 'archive_procedure' admission.id %}"
+                           title="{% trans 'Admission archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state"%}{% endif %}"
+                           class="btn btn-default" {% if admission.is_draft %}disabled{% endif %}>
+                            <i class="fa fa-folder"></i>&nbsp;{% trans 'Unarchive' %}
+                        </a>
                     {% else %}
-                        <a href="{% url 'archive_procedure' admission.id %}" title="{% trans 'Admission is not archived' %}" class="btn btn-default"><i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}</a>
+                        <a href="{% url 'archive_procedure' admission.id %}"
+                           title="{% trans 'Admission is not archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state"%}{% endif %}"
+                           class="btn btn-default" {% if admission.is_draft %}disabled{% endif %}>
+                            <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
+                        </a>
                     {% endif %}
                 </div>
             </div>
