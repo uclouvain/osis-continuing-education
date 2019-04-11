@@ -42,7 +42,7 @@
         <div class="col-md-3">{% bootstrap_label _("Email") %} <br/> {{ admission.email | default:"-" }} </div>
     </div>
     <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Location") %} <br/> {{ admission.address.location | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Street Address") %} <br/> {{ admission.address.location | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Postal code") %} <br/> {{ admission.address.postal_code | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.address.city | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.address.country | default:"-" }} </div>
@@ -116,25 +116,37 @@
     <div class="row form-group">
         <ul>
             {% if admission.awareness_ucl_website %}
-            <li>{% trans 'Awareness UCL website' %}</li>
+            <li>{% trans 'By UCL website' %}</li>
             {% endif %}
             {% if admission.awareness_formation_website %}
-            <li>{% trans 'Awareness formation website' %}</li>
+            <li>{% trans 'By formation website' %}</li>
             {% endif %}
             {% if admission.awareness_press %}
-            <li>{% trans 'Awareness press' %}</li>
+            <li>{% trans 'By press' %}</li>
             {% endif %}
             {% if admission.awareness_facebook %}
-            <li>{% trans 'Awareness Facebook' %}</li>
+            <li>{% trans 'By Facebook' %}</li>
             {% endif %}
             {% if admission.awareness_linkedin %}
-            <li>{% trans 'Awareness LinkedIn' %}</li>
+            <li>{% trans 'By LinkedIn' %}</li>
             {% endif %}
             {% if admission.awareness_customized_mail %}
-            <li>{% trans 'Awareness customized mail' %}</li>
+            <li>{% trans 'By customized mail' %}</li>
             {% endif %}
             {% if admission.awareness_emailing %}
-            <li>{% trans 'Awareness emailing' %}</li>
+            <li>{% trans 'By emailing' %}</li>
+            {% endif %}
+            {% if admission.awareness_word_of_mouth %}
+                <li>{% trans 'By word of mouth' %}</li>
+            {% endif %}
+            {% if admission.awareness_friends %}
+                <li>{% trans 'By friends' %}</li>
+            {% endif %}
+            {% if admission.awareness_former_students %}
+                <li>{% trans 'By former students' %}</li>
+            {% endif %}
+            {% if admission.awareness_moocs %}
+                <li>{% trans 'By Moocs' %}</li>
             {% endif %}
             {% if admission.awareness_other %}
             <li>{% trans 'Other' %}: {{ admission.awareness_other }}</li>
