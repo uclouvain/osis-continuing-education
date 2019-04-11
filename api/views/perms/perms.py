@@ -46,10 +46,19 @@ class CanSubmitRegistration(permissions.BasePermission):
         return True
 
 
-class CanSendFiles(permissions.BasePermission):
-    message = _('Uploading files is not allowed if admission is not editable.')
+class CanSubmitAdmission(permissions.BasePermission):
+    message = _('To submit an admission, its state must be DRAFT.')
 
     def has_object_permission(self, request, view, obj):
         if request.method not in permissions.SAFE_METHODS:
-            return obj.admission.state == ACCEPTED or obj.admission.state == DRAFT
+            return obj.state == DRAFT
+        return True
+
+
+class CanSendFiles(permissions.BasePermission):
+    message = _('Uploading and deleting files is not allowed if admission is not editable.')
+
+    def has_object_permission(self, request, view, obj):
+        if request.method not in permissions.SAFE_METHODS:
+            return obj.admission.state in [ACCEPTED, DRAFT]
         return True

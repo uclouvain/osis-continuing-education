@@ -27,7 +27,8 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration, CanSendFiles
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration, CanSendFiles, \
+    CanSubmitAdmission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED, DRAFT, REJECTED, \
     WAITING, SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -155,3 +156,38 @@ class TestCanSendFiles(APITestCase):
             self.assertFalse(
                 self.permission.has_object_permission(self.request, None, file)
             )
+
+
+class TestCanSubmitAdmission(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.permission = CanSubmitAdmission()
+        cls.user = UserFactory()
+        cls.request = APIRequestFactory(user=cls.user)
+        cls.request.method = 'POST'
+        cls.admission = AdmissionFactory()
+
+    def setUp(self):
+        self.client.login(user=self.user)
+
+    def test_cansubmitadmission_return_false_if_admission_state_not_draft(self):
+        self.admission.state = REJECTED
+        self.admission.save()
+        self.assertFalse(
+            self.permission.has_object_permission(self.request, None, self.admission)
+        )
+
+    def test_cansubmitadmission_return_true_if_admission_state_draft(self):
+        self.admission.state = DRAFT
+        self.admission.save()
+        self.assertTrue(
+            self.permission.has_object_permission(self.request, None, self.admission)
+        )
+
+    def test_cansubmitregistration_return_true_if_not_safe_methods(self):
+        self.admission.state = SUBMITTED
+        self.admission.save()
+        self.request.method = 'GET'
+        self.assertTrue(
+            self.permission.has_object_permission(self.request, None, self.admission)
+        )
