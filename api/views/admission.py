@@ -85,7 +85,7 @@ class AdmissionDetailUpdate(generics.RetrieveUpdateAPIView):
         Return the detail of the admission or update it.
     """
     name = 'admission-detail-update'
-    permission_classes = (HasAdmissionAccess, IsAuthenticated, CanSubmitAdmission )
+    permission_classes = (HasAdmissionAccess, IsAuthenticated, CanSubmitAdmission, )
     queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
 
