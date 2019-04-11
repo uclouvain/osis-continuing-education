@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+
 from rest_framework.test import APIRequestFactory, APITestCase
 
 from base.tests.factories.person import PersonFactory
@@ -78,25 +79,22 @@ class TestCanSubmitRegistration(APITestCase):
         self.client.login(user=self.user)
 
     def test_cansubmitregistration_return_false_if_admission_state_not_accepted(self):
-        self.admission.state = REGISTRATION_SUBMITTED
-        self.admission.save()
+        admission = AdmissionFactory(state=REGISTRATION_SUBMITTED)
         self.assertFalse(
-            self.permission.has_object_permission(self.request, None, self.admission)
+            self.permission.has_object_permission(self.request, None, admission)
         )
 
     def test_cansubmitregistration_return_true_if_admission_state_accepted(self):
-        self.admission.state = ACCEPTED
-        self.admission.save()
+        admission = AdmissionFactory(state=ACCEPTED)
         self.assertTrue(
-            self.permission.has_object_permission(self.request, None, self.admission)
+            self.permission.has_object_permission(self.request, None, admission)
         )
 
     def test_cansubmitregistration_return_true_if_not_safe_methods(self):
-        self.admission.state = REGISTRATION_SUBMITTED
-        self.admission.save()
+        admission = AdmissionFactory(state=REGISTRATION_SUBMITTED)
         self.request.method = 'GET'
         self.assertTrue(
-            self.permission.has_object_permission(self.request, None, self.admission)
+            self.permission.has_object_permission(self.request, None, admission)
         )
 
 
@@ -106,15 +104,13 @@ class TestCanSendFiles(APITestCase):
         cls.permission = CanSendFiles()
         cls.user = UserFactory()
         cls.request = APIRequestFactory(user=cls.user)
-        cls.admission = AdmissionFactory()
 
     def setUp(self):
         self.client.login(user=self.user)
 
     def test_cansendfiles_return_true_if_admission_state_is_accepted(self):
-        self.admission.state = ACCEPTED
-        self.admission.save()
-        file = AdmissionFileFactory(admission=self.admission)
+        admission = AdmissionFactory(state=ACCEPTED)
+        file = AdmissionFileFactory(admission=admission)
         methods = ['POST', 'DELETE']
         for method in methods:
             self.request.method = method
@@ -123,9 +119,8 @@ class TestCanSendFiles(APITestCase):
             )
 
     def test_cansendfiles_return_true_if_admission_state_is_draft(self):
-        self.admission.state = DRAFT
-        self.admission.save()
-        file = AdmissionFileFactory(admission=self.admission)
+        admission = AdmissionFactory(state=DRAFT)
+        file = AdmissionFileFactory(admission=admission)
         methods = ['POST', 'DELETE']
         for method in methods:
             self.request.method = method
@@ -134,7 +129,8 @@ class TestCanSendFiles(APITestCase):
             )
 
     def test_cansendfiles_return_true_if_safe_methods(self):
-        file = AdmissionFileFactory(admission=self.admission)
+        admission = AdmissionFactory()
+        file = AdmissionFileFactory(admission=admission)
         self.request.method = 'GET'
         self.assertTrue(
             self.permission.has_object_permission(self.request, None, file)
@@ -165,29 +161,25 @@ class TestCanSubmitAdmission(APITestCase):
         cls.user = UserFactory()
         cls.request = APIRequestFactory(user=cls.user)
         cls.request.method = 'POST'
-        cls.admission = AdmissionFactory()
 
     def setUp(self):
         self.client.login(user=self.user)
 
     def test_cansubmitadmission_return_false_if_admission_state_not_draft(self):
-        self.admission.state = REJECTED
-        self.admission.save()
+        admission = AdmissionFactory(state=REJECTED)
         self.assertFalse(
-            self.permission.has_object_permission(self.request, None, self.admission)
+            self.permission.has_object_permission(self.request, None, admission)
         )
 
     def test_cansubmitadmission_return_true_if_admission_state_draft(self):
-        self.admission.state = DRAFT
-        self.admission.save()
+        admission = AdmissionFactory(state=DRAFT)
         self.assertTrue(
-            self.permission.has_object_permission(self.request, None, self.admission)
+            self.permission.has_object_permission(self.request, None, admission)
         )
 
     def test_cansubmitregistration_return_true_if_not_safe_methods(self):
-        self.admission.state = SUBMITTED
-        self.admission.save()
+        admission = AdmissionFactory(state=DRAFT)
         self.request.method = 'GET'
         self.assertTrue(
-            self.permission.has_object_permission(self.request, None, self.admission)
+            self.permission.has_object_permission(self.request, None, admission)
         )

@@ -26,6 +26,7 @@
 import random
 import unittest
 import uuid
+from unittest import mock
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -204,7 +205,8 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         response = self.client.get(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_update_valid_registration(self):
+    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    def test_update_valid_registration(self, mock_mail):
         self.admission.state = ACCEPTED
         self.admission.save()
         self.assertEqual(1, Admission.registration_objects.all().count())
@@ -224,7 +226,8 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.registration_objects.all().count())
 
-    def test_update_valid_registration_billing_address(self):
+    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    def test_update_valid_registration_billing_address(self, mock_mail):
         self.admission.state = ACCEPTED
         self.admission.save()
         self.assertEqual(1, Admission.registration_objects.all().count())
