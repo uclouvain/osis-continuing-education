@@ -28,7 +28,7 @@
 
 <div class="panel-body">
     <div>
-        <a class="btn btn-primary"
+        <a class="btn btn-primary {% if admission.is_draft %}disabled{% endif %}"
            {% if admission.is_draft %}disabled title="{% trans 'Impossible to upload document while in draft state' %}"{% endif %}
            id="upload_file_button">
             <span class="glyphicon glyphicon-add" aria-hidden="true"></span> {% trans 'Upload file' %}
@@ -61,10 +61,11 @@
                     <td> {{file.created_date}} </td>
                     <td>
                         {% check_permission_to_delete file as has_permission_to_delete %}
-                        <a class="button" role="button" title="{% trans 'Download document' %}" href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
+                        <a class="button " role="button" title="{% trans 'Download document' %}"
+                           href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                         &nbsp;
-                        <a class="button"
+                        <a class="button  {% if not has_permission_to_delete or admission.is_draft %}disabled{% endif %}"
                            {% if not has_permission_to_delete or admission.is_draft %}disabled{% endif %}
                            {% if admission.is_draft %}
                                 title="{% trans "You can't delete a file while in draft state" %}"
@@ -77,8 +78,8 @@
 
                         {% if file.file_category == invoice %}
                             &nbsp;
-                            <a class="button send_notification_mail_button" role="button"  title="{% trans 'Send notification email' %}">
-                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+                            <a class="button send_notification_mail_button {% if not has_permission_to_delete or admission.is_draft %}disabled{% endif %}" role="button"  title="{% trans 'Send notification email' %}">
+                                <span class="glyphicon glyphicon-envelope {% if not has_permission_to_delete or admission.is_draft %}text-muted{% endif %}" aria-hidden="true"></span></a>
                         {% endif %}
                     </td>
                 </tr>
