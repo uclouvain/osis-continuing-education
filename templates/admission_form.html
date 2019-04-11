@@ -179,13 +179,17 @@
             <div class="panel-heading"><h4>{% trans 'Awareness' %}</h4></div>
                 <div class="panel panel-body">
                     <div class="row">
-                        {% bootstrap_field admission_form.awareness_ucl_website form_group_class="col-md-12" label=_("Awareness UCL website") %}
-                        {% bootstrap_field admission_form.awareness_formation_website form_group_class="col-md-12" label=_("Awareness formation website") %}
-                        {% bootstrap_field admission_form.awareness_press form_group_class="col-md-12" label=_("Awareness press") %}
-                        {% bootstrap_field admission_form.awareness_facebook form_group_class="col-md-12" label=_("Awareness Facebook") %}
-                        {% bootstrap_field admission_form.awareness_linkedin form_group_class="col-md-12" label=_("Awareness LinkedIn") %}
-                        {% bootstrap_field admission_form.awareness_customized_mail form_group_class="col-md-12" label=_("Awareness customized mail") %}
-                        {% bootstrap_field admission_form.awareness_emailing form_group_class="col-md-12" label=_("Awareness emailing") %}
+                        {% bootstrap_field admission_form.awareness_ucl_website form_group_class="col-md-12" label=_("By UCL website") %}
+                        {% bootstrap_field admission_form.awareness_formation_website form_group_class="col-md-12" label=_("By formation website") %}
+                        {% bootstrap_field admission_form.awareness_press form_group_class="col-md-12" label=_("By press") %}
+                        {% bootstrap_field admission_form.awareness_facebook form_group_class="col-md-12" label=_("By Facebook") %}
+                        {% bootstrap_field admission_form.awareness_linkedin form_group_class="col-md-12" label=_("By LinkedIn") %}
+                        {% bootstrap_field admission_form.awareness_customized_mail form_group_class="col-md-12" label=_("By customized mail") %}
+                        {% bootstrap_field admission_form.awareness_emailing form_group_class="col-md-12" label=_("By emailing") %}
+                        {% bootstrap_field admission_form.awareness_word_of_mouth form_group_class="col-md-12" label=_("By word of mouth") %}
+                        {% bootstrap_field admission_form.awareness_friends form_group_class="col-md-12" label=_("By friends") %}
+                        {% bootstrap_field admission_form.awareness_former_students form_group_class="col-md-12" label=_("By former students") %}
+                        {% bootstrap_field admission_form.awareness_moocs form_group_class="col-md-12" label=_("By Moocs") %}
                         {% with admission_form.awareness_other.value as other_value %}
                             <div class="col-md-12">
                                 <div class="checkbox">
