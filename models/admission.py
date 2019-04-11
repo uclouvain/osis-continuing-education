@@ -405,6 +405,35 @@ class Admission(SerializableModel):
     def file_reference(self):
         return "IUFC-%06d" % self.id
 
+    @property
+    def complete_contact_address(self):
+        return _build_address(self.address)
+
+    @property
+    def complete_residence_address(self):
+        return _build_address(self.residence_address)
+
+    @property
+    def awareness_list(self):
+        list_awareness = []
+        fields = Admission._meta.get_fields()
+        for field in fields:
+            if 'awareness_' in field.name:
+                if isinstance(getattr(self, field.name), bool):
+                    if getattr(self, field.name):
+                        list_awareness.append(str(_(field.verbose_name)))
+                elif self._has_awareness_other(field):
+                    list_awareness.append(str("{} : {}".format(_('Other'), getattr(self, field.name))))
+        return ", ".join(list_awareness)
+
+    def _has_awareness_other(self, field):
+        return isinstance(getattr(self, field.name), str) and field.name == "awareness_other" and len(
+            getattr(self, field.name)) > 0
+
+    @property
+    def formation_administrators(self):
+        return " - ".join([str(manager) for manager in self.formation.managers.all()])
+
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
 
@@ -503,3 +532,10 @@ def can_access_admission(user, admission_id):
 
 def is_continuing_education_manager(user):
     return user.groups.filter(name='continuing_education_managers').exists()
+
+
+def _build_address(address):
+    return "{} - {} {} {}".format(address.location if address.location else '',
+                                  address.postal_code if address.postal_code else '',
+                                  address.city if address.city else '',
+                                  "- {}".format(address.country.name) if address.country else '')
