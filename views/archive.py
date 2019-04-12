@@ -25,6 +25,7 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -63,6 +64,9 @@ def list_archives(request):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def archive_procedure(request, admission_id):
     can_access_admission(request.user, admission_id)
+    admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
+    if admission.is_draft():
+        raise PermissionDenied
     redirection = request.META.get('HTTP_REFERER')
     admission = _switch_archived_state(admission_id)
     _set_success_message(request, False, admission.archived)

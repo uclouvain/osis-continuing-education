@@ -86,6 +86,11 @@ class AdmissionFactory(factory.DjangoModelFactory):
     awareness_linkedin = factory.fuzzy.FuzzyChoice([True, False])
     awareness_customized_mail = factory.fuzzy.FuzzyChoice([True, False])
     awareness_emailing = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_other = factory.Sequence(lambda n: 'Other %d' % n)
+    awareness_word_of_mouth = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_friends = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_former_students = factory.fuzzy.FuzzyChoice([True, False])
+    awareness_moocs = factory.fuzzy.FuzzyChoice([True, False])
 
     # State
     state = factory.fuzzy.FuzzyChoice(get_enum_keys(admission_state_choices.STATE_CHOICES))
