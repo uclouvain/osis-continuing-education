@@ -41,6 +41,8 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from base.tests.factories.person import PersonFactory
 
 
 class TestAdmission(TestCase):
@@ -98,7 +100,7 @@ class TestAdmission(TestCase):
         self.assertIn(self.admission.person_information.person.user.email, str(receivers))
 
 
-class TestAdmissionGetFaculty(TestCase):
+class TestAdmissionGetProperties(TestCase):
 
     def setUp(self):
         entities = create_entities_hierarchy()
@@ -120,9 +122,42 @@ class TestAdmissionGetFaculty(TestCase):
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group,
         )
+        self.admission = AdmissionFactory(formation=self.formation,
+                                          awareness_ucl_website=False,
+                                          awareness_formation_website=False,
+                                          awareness_press=False,
+                                          awareness_facebook=True,
+                                          awareness_linkedin=False,
+                                          awareness_customized_mail=False,
+                                          awareness_emailing=False,
+                                          awareness_other='Other awareness',
+                                          awareness_word_of_mouth=False,
+                                          awareness_friends=False,
+                                          awareness_former_students=False,
+                                          awareness_moocs=False)
 
     def test_get_faculty(self):
         an_admission = AdmissionFactory(
             formation=self.formation
         )
         self.assertEqual(an_admission.get_faculty(), self.child_entity)
+
+    def test_formation_administrators(self):
+        person_1 = PersonFactory(first_name="Louis", last_name="Lesquoy")
+        person_2 = PersonFactory(first_name="Arnaud", last_name="Jadoulle")
+
+        PersonTrainingFactory(person=person_1, training=self.formation)
+        PersonTrainingFactory(person=person_2, training=self.formation)
+
+        self.assertEqual(self.admission.formation_administrators, "{}, {} - {}, {}".format(person_2.last_name.upper(),
+                                                                                           person_2.first_name,
+                                                                                           person_1.last_name.upper(),
+                                                                                           person_1.first_name))
+
+    def test_awareness_list(self):
+        self.assertEqual(self.admission.awareness_list, "{}, {} : {}".format(_("By Facebook"),
+                                                                             _('Other'),
+                                                                             'Other awareness'))
+        self.admission.awareness_other = ''
+        self.admission.save()
+        self.assertEqual(self.admission.awareness_list, "{}".format(_("By Facebook")))
