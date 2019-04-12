@@ -27,19 +27,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from base.business.xls import get_name_or_username
 from osis_common.document import xls_build
-from continuing_education.business.xls.xls_common import form_filters
+from continuing_education.business.xls.xls_common import form_filters, get_titles_admission, \
+    get_titles_registration, extract_xls_data_from_registration
 
-
-TITLES = [
-    str(_('Name')),
-    str(_('First name')),
-    str(_('Email')),
-    str(_('Formation')),
-    str(_('Faculty')),
-    str(_('Registered')),
-    str(_('Paid')),
-    str(_('Status')),
-]
 XLS_DESCRIPTION = _('Registrations list')
 XLS_FILENAME = _('Registrations_list')
 WORKSHEET_TITLE = _('Registrations list')
@@ -50,7 +40,7 @@ def create_xls_registration(user, registrations_list, form):
     parameters = {xls_build.DESCRIPTION: XLS_DESCRIPTION,
                   xls_build.USER: get_name_or_username(user),
                   xls_build.FILENAME: XLS_FILENAME,
-                  xls_build.HEADER_TITLES: TITLES,
+                  xls_build.HEADER_TITLES: _get_titles(),
                   xls_build.WS_TITLE: WORKSHEET_TITLE}
 
     return xls_build.generate_xls(xls_build.prepare_xls_parameters_list(working_sheets_data, parameters),
@@ -61,14 +51,5 @@ def prepare_xls_content(registrations_list):
     return [extract_xls_data_from_registration(registration) for registration in registrations_list]
 
 
-def extract_xls_data_from_registration(registration):
-    return [
-        registration.person_information.person.last_name,
-        registration.person_information.person.first_name,
-        registration.email,
-        registration.formation_display,
-        registration.get_faculty() if registration.get_faculty() else '',
-        _('Yes') if registration.ucl_registration_complete else _('No'),
-        _('Yes') if registration.payment_complete else _('No'),
-        _(registration.state) if registration.state else ''
-    ]
+def _get_titles():
+    return get_titles_admission() + get_titles_registration()

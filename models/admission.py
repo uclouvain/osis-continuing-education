@@ -414,6 +414,10 @@ class Admission(SerializableModel):
         return _build_address(self.residence_address)
 
     @property
+    def complete_billing_address(self):
+        return _build_address(self.billing_address)
+
+    @property
     def awareness_list(self):
         list_awareness = [
             self._get_awareness_values(field)
