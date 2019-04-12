@@ -176,7 +176,7 @@ class ViewAdmissionTestCase(TestCase):
         admission = {
             'person_information': person_information.pk,
             'motivation': 'abcd',
-            'professional_impact': 'abcd',
+            'professional_personal_interests': 'abcd',
             'formation': self.formation.pk,
             'awareness_ucl_website': True,
         }

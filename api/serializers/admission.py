@@ -101,7 +101,7 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
 
             # MOTIVATION
             'motivation',
-            'professional_impact',
+            'professional_personal_interests',
 
             # AWARENESS
             'awareness_ucl_website',

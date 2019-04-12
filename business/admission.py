@@ -187,7 +187,8 @@ def _get_formatted_admission_data(admission):
         "{} : {}".format(_('Activity sector'), _value_or_empty(admission.activity_sector)),
         "{} : {}".format(_('Past professional activities'), _value_or_empty(admission.past_professional_activities)),
         "{} : {}".format(_('Motivation'), _value_or_empty(admission.motivation)),
-        "{} : {}".format(_('Professional impact'), _value_or_empty(admission.professional_impact)),
+        "{} : {}".format(_('Professional and personal interests'),
+                         _value_or_empty(admission.professional_personal_interests)),
         "{} : {}".format(_('State'), _value_or_empty(_(admission.state))),
     ]
 
