@@ -77,7 +77,7 @@ class TestAdmission(TestCase):
             "{} : {}".format(_('Activity sector'), admission.activity_sector),
             "{} : {}".format(_('Past professional activities'), admission.past_professional_activities),
             "{} : {}".format(_('Motivation'), admission.motivation),
-            "{} : {}".format(_('Professional impact'), admission.professional_impact),
+            "{} : {}".format(_('Professional and personal interests'), admission.professional_personal_interests),
             "{} : {}".format(_('State'), _(admission.state)),
         ]
         self.assertListEqual(
