@@ -154,6 +154,7 @@ class TestAdmissionGetProperties(TestCase):
                                                                                            person_1.last_name.upper(),
                                                                                            person_1.first_name))
 
+
     def test_awareness_list(self):
         self.assertEqual(self.admission.awareness_list, "{}, {} : {}".format(_("By Facebook"),
                                                                              _('Other'),

@@ -26,17 +26,10 @@
 from django.utils.translation import ugettext_lazy as _
 
 from base.business.xls import get_name_or_username
-from osis_common.document import xls_build
 from continuing_education.business.xls.xls_common import form_filters
 from continuing_education.templatetags.formation import get_faculty, get_most_recent_education_group, \
     get_active_continuing_education_formation
-
-TITLES = [
-    str(_('Acronym')),
-    str(_('Faculty')),
-    str(_('Title')),
-    str(_('State')),
-    ]
+from osis_common.document import xls_build
 
 XLS_DESCRIPTION = _('Formations list')
 XLS_FILENAME = _('Formations_list')
@@ -50,7 +43,7 @@ def create_xls(user, formation_list, form):
     parameters = {xls_build.DESCRIPTION: XLS_DESCRIPTION,
                   xls_build.USER: get_name_or_username(user),
                   xls_build.FILENAME: XLS_FILENAME,
-                  xls_build.HEADER_TITLES: TITLES,
+                  xls_build.HEADER_TITLES: _get_titles(),
                   xls_build.WS_TITLE: WORKSHEET_TITLE}
 
     return xls_build.generate_xls(xls_build.prepare_xls_parameters_list(working_sheets_data, parameters), filters)
@@ -67,4 +60,17 @@ def extract_xls_data_from_formation(formation):
         get_faculty(most_recent_education_grp),
         most_recent_education_grp.title,
         get_active_continuing_education_formation(formation),
+        _('Yes') if formation.continuingeducationtraining.training_aid else _('No'),
+        formation.continuingeducationtraining.formation_administrators,
+    ]
+
+
+def _get_titles():
+    return [
+        str(_('Acronym')),
+        str(_('Faculty')),
+        str(_('Title')),
+        str(_('State')),
+        str(_('Training aid')),
+        str(_('Formation administrator(s)')),
     ]

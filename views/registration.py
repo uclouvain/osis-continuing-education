@@ -25,6 +25,7 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -84,6 +85,10 @@ def _get_formations_by_faculty(faculty):
 def registration_edit(request, admission_id):
     can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
+
+    if admission.is_draft():
+        raise PermissionDenied
+
     address = admission.address
     billing_address = admission.billing_address
     residence_address = admission.residence_address

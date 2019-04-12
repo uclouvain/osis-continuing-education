@@ -27,6 +27,7 @@ from unittest.mock import patch
 
 from django.contrib.sites.models import Site
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
@@ -38,16 +39,15 @@ from base.tests.factories.person import PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
     CONTINUING_EDUCATION_MANAGERS_GROUP, check_required_field_for_participant
-from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.address import AddressFactory
-from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
+from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
-from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
+from continuing_education.tests.factories.address import AddressFactory
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from reference.tests.factories.country import CountryFactory
-from django.test.utils import override_settings
 
 
 class TestAdmission(TestCase):
@@ -77,7 +77,7 @@ class TestAdmission(TestCase):
             "{} : {}".format(_('Activity sector'), admission.activity_sector),
             "{} : {}".format(_('Past professional activities'), admission.past_professional_activities),
             "{} : {}".format(_('Motivation'), admission.motivation),
-            "{} : {}".format(_('Professional impact'), admission.professional_impact),
+            "{} : {}".format(_('Professional and personal interests'), admission.professional_personal_interests),
             "{} : {}".format(_('State'), _(admission.state)),
         ]
         self.assertListEqual(

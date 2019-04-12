@@ -180,9 +180,9 @@ class Admission(Model):
         blank=True,
         verbose_name=_("Motivation")
     )
-    professional_impact = models.TextField(
+    professional_personal_interests = models.TextField(
         blank=True,
-        verbose_name=_("Professional impact")
+        verbose_name=_("Professional and personal interests")
     )
 
     # Awareness
@@ -434,10 +434,6 @@ class Admission(Model):
     def _has_awareness_other(self, field):
         return isinstance(getattr(self, field.name), str) and field.name == "awareness_other" and len(
             getattr(self, field.name)) > 0
-
-    @property
-    def formation_administrators(self):
-        return " - ".join([str(mgr) for mgr in self.formation.managers.all().order_by('last_name', 'first_name')])
 
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-11 09:26+0200\n"
+"POT-Creation-Date: 2019-04-11 14:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: business/admission.py:230 tests/business/test_admission.py:97
+#: business/admission.py:231 tests/business/test_admission.py:97
 msgid " or "
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr "Adresse"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#: models/file.py:58 templates/admission_detail.html:118
+#: models/file.py:58 templates/admission_detail.html:119
 #: templates/admission_form.html:37
 msgctxt "continuing_education"
 msgid "Admission"
@@ -92,7 +92,7 @@ msgstr "Admission"
 msgid "Admission archived"
 msgstr "Dossier archivé"
 
-#: templates/admission_detail.html:82
+#: templates/admission_detail.html:83
 msgid "Admission is not archived"
 msgstr "Dossier non-archivé"
 
@@ -123,7 +123,7 @@ msgctxt "plural"
 msgid "All"
 msgstr "Toutes"
 
-#: templates/admission_detail.html:84 templates/blocks/button/archive.html:5
+#: templates/admission_detail.html:85 templates/blocks/button/archive.html:5
 msgid "Archive"
 msgstr "Archiver"
 
@@ -204,7 +204,7 @@ msgid "Browse"
 msgstr "Parcourir"
 
 #: models/admission.py:200 templates/admission_form.html:185
-#: templates/fragment/tab_admission.html:128
+#: templates/fragment/tab_admission.html:126
 msgid "By Facebook"
 msgstr "Sur Facebook"
 
@@ -369,7 +369,7 @@ msgstr "Employeur actuel"
 msgid "Current occupation"
 msgstr "Fonction actuelle"
 
-#: templates/fragment/tab_documents.html:74
+#: templates/fragment/tab_documents.html:75
 msgid "Delete document"
 msgstr "Supprimer le document"
 
@@ -394,7 +394,7 @@ msgstr "Divorcé"
 msgid "Do you confirm you want to save?"
 msgstr "Vous confirmez que vous voulez enregistrer?"
 
-#: templates/admission_detail.html:93
+#: templates/admission_detail.html:94
 msgid "Do you confirm you want to submit?"
 msgstr "Vous confirmez que vous voulez soumettre l'inscription?"
 
@@ -402,7 +402,7 @@ msgstr "Vous confirmez que vous voulez soumettre l'inscription?"
 msgid "Document"
 msgstr "Document"
 
-#: templates/admission_detail.html:120
+#: templates/admission_detail.html:121
 msgid "Documents"
 msgstr "Documents"
 
@@ -480,11 +480,11 @@ msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
 #: tests/views/test_archive.py:169 tests/views/test_archive.py:184
-#: views/archive.py:100
+#: views/archive.py:104
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: tests/views/test_archive.py:152 views/archive.py:100
+#: tests/views/test_archive.py:152 views/archive.py:104
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
@@ -600,7 +600,7 @@ msgstr "Numéro de carte d'identité"
 msgid "Identification"
 msgstr "Identification"
 
-#: templates/admission_detail.html:76 templates/admission_detail.html:82
+#: templates/admission_detail.html:76 templates/admission_detail.html:83
 msgid "Impossible to archive/unarchive while in draft state"
 msgstr ""
 "Impossible d'archiver/désarchiver quand une admission est à l'état "
@@ -794,8 +794,9 @@ msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
 
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
-#: models/admission.py:217 models/enums/enums.py:32 models/enums/enums.py:40
-#: templates/admission_form.html:201 templates/fragment/tab_admission.html:152
+#: models/admission.py:217 models/admission.py:426 models/enums/enums.py:32
+#: models/enums/enums.py:40 templates/admission_form.html:201
+#: templates/fragment/tab_admission.html:150
 msgid "Other"
 msgstr "Autre"
 
@@ -855,7 +856,7 @@ msgid "Phone number"
 msgstr "Numéro de téléphone"
 
 #: tests/views/test_archive.py:110 tests/views/test_archive.py:124
-#: views/archive.py:119
+#: views/archive.py:123
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
 
@@ -926,15 +927,15 @@ msgstr "Produire un fichier xls avec la liste des admissions"
 msgid "Professional"
 msgstr "Professionel"
 
+#: business/admission.py:190 business/xls/xls_admission.py:114
+#: models/admission.py:182 templates/admission_form.html:164
+#: templates/fragment/tab_admission.html:92 tests/business/test_admission.py:80
+msgid "Professional and personal interests"
+msgstr "Intérêts professionnels et personnels"
+
 #: templates/admission_form.html:139 templates/fragment/tab_admission.html:72
 msgid "Professional background"
 msgstr "Parcours professionnel"
-
-#: business/admission.py:190 models/admission.py:182
-#: templates/admission_form.html:164 templates/fragment/tab_admission.html:92
-#: tests/business/test_admission.py:80
-msgid "Professional impact"
-msgstr "Impact professionnel de la formation"
 
 #: business/admission.py:184 models/admission.py:152
 #: templates/admission_form.html:142 templates/fragment/tab_admission.html:76
@@ -959,7 +960,7 @@ msgstr "Fonctionnaire"
 msgid "Reason for waiting"
 msgstr "Raison de mise en attente"
 
-#: templates/admission_detail.html:113
+#: templates/admission_detail.html:114
 msgid "Refusal state reason"
 msgstr "Motif d'état de refus"
 
@@ -968,7 +969,7 @@ msgstr "Motif d'état de refus"
 msgid "Registered"
 msgstr "Inscrit"
 
-#: templates/admission_detail.html:119
+#: templates/admission_detail.html:120
 #: templates/fragment/tab_registration.html:58
 #: templates/registration_form.html:37 templates/registration_form.html:80
 msgid "Registration"
@@ -1057,7 +1058,7 @@ msgid "Send email"
 msgstr "Envoyer email"
 
 #: templates/fragment/send_notification_mail_modal.html:35
-#: templates/fragment/tab_documents.html:80
+#: templates/fragment/tab_documents.html:81
 msgid "Send notification email"
 msgstr "Envoyer un email de notification"
 
@@ -1086,7 +1087,7 @@ msgstr "Taille"
 msgid "Spouse name"
 msgstr "Nom du conjoint"
 
-#: business/admission.py:191 business/xls/xls_admission.py:94
+#: business/admission.py:192 business/xls/xls_admission.py:94
 #: business/xls/xls_archive.py:38 business/xls/xls_formation.py:38
 #: forms/search.py:279 models/admission.py:244
 #: templates/admission_detail.html:50 templates/admission_detail.html:53
@@ -1294,7 +1295,7 @@ msgstr "Formations"
 msgid "UCL registration complete"
 msgstr "En ordre d'inscription UCL"
 
-#: templates/admission_detail.html:78 templates/archives.html:94
+#: templates/admission_detail.html:79 templates/archives.html:94
 msgid "Unarchive"
 msgstr "Désarchiver"
 
@@ -1356,7 +1357,7 @@ msgstr "Validé"
 msgid "Waiting"
 msgstr "En attente"
 
-#: templates/admission_detail.html:107
+#: templates/admission_detail.html:108
 msgid "Waiting state reason"
 msgstr "Raison de la mise en attente"
 
@@ -1427,7 +1428,7 @@ msgstr ""
 "Vous pouvez seulement notifier le participant par email pour un document de "
 "type 'facture'"
 
-#: templates/fragment/tab_documents.html:70
+#: templates/fragment/tab_documents.html:71
 msgid "You can't delete a file while in draft state"
 msgstr ""
 "Vous ne pouvez pas supprimer de fichier quand l'admission est en état "
@@ -1443,7 +1444,7 @@ msgstr ""
 msgid "You do not meet the admission requirements"
 msgstr "Vous ne remplissez pas les conditions d’admission"
 
-#: templates/fragment/tab_documents.html:72
+#: templates/fragment/tab_documents.html:73
 msgid "You don't have the permission to delete this file"
 msgstr "Vous n'avez pas la permission de supprimer ce fichier"
 
@@ -1468,7 +1469,7 @@ msgid "admission"
 msgstr "admission"
 
 #: tests/views/test_archive.py:153 tests/views/test_archive.py:170
-#: tests/views/test_archive.py:185 views/archive.py:101
+#: tests/views/test_archive.py:185 views/archive.py:105
 msgid "archived"
 msgstr "archivé"
 
@@ -1476,6 +1477,6 @@ msgstr "archivé"
 msgid "managers"
 msgstr "gestionnaires"
 
-#: views/archive.py:101
+#: views/archive.py:105
 msgid "unarchived"
 msgstr "non-archivé"
