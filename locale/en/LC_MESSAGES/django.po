@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-12 09:47+0200\n"
+"POT-Creation-Date: 2019-04-12 12:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
-#: business/xls/xls_formation.py:35 forms/search.py:277
+#: business/xls/xls_formation.py:77 forms/search.py:277
 #: templates/formations.html:52 templates/formations.html:144
 msgid "Acronym"
 msgstr ""
@@ -205,8 +205,8 @@ msgid "Browse"
 msgstr ""
 
 #: models/admission.py:200 templates/admission_form.html:185
-#: templates/fragment/tab_admission.html:126 tests/models/test_admission.py:158
-#: tests/models/test_admission.py:163
+#: templates/fragment/tab_admission.html:126 tests/models/test_admission.py:145
+#: tests/models/test_admission.py:150
 msgid "By Facebook"
 msgstr ""
 
@@ -450,7 +450,7 @@ msgid "Employee"
 msgstr ""
 
 #: business/xls/xls_admission.py:117 business/xls/xls_archive.py:37
-#: business/xls/xls_formation.py:36 business/xls/xls_registration.py:38
+#: business/xls/xls_formation.py:78 business/xls/xls_registration.py:38
 #: forms/search.py:81 forms/search.py:358 templates/admissions.html:53
 #: templates/admissions.html:130 templates/archives.html:51
 #: templates/archives.html:121 templates/formations.html:60
@@ -517,7 +517,8 @@ msgstr ""
 msgid "Formation"
 msgstr ""
 
-#: business/xls/xls_admission.py:118 templates/fragment/tab_admission.html:102
+#: business/xls/xls_admission.py:118 business/xls/xls_formation.py:82
+#: templates/fragment/tab_admission.html:102
 msgid "Formation administrator(s)"
 msgstr ""
 
@@ -552,13 +553,13 @@ msgctxt "continuing_education"
 msgid "Formations"
 msgstr ""
 
-#: business/xls/xls_formation.py:41 business/xls/xls_formation.py:43
+#: business/xls/xls_formation.py:35 business/xls/xls_formation.py:37
 #: tests/business/test_xls_formation.py:81
 #: tests/business/test_xls_formation.py:86
 msgid "Formations list"
 msgstr ""
 
-#: business/xls/xls_formation.py:42 tests/business/test_xls_formation.py:82
+#: business/xls/xls_formation.py:36 tests/business/test_xls_formation.py:82
 msgid "Formations_list"
 msgstr ""
 
@@ -735,9 +736,9 @@ msgid "New person"
 msgstr ""
 
 #: business/admission.py:177 business/xls/xls_admission.py:68
-#: business/xls/xls_admission.py:82 business/xls/xls_registration.py:71
-#: business/xls/xls_registration.py:72 forms/search.py:37
-#: models/enums/enums.py:4 templates/formations.html:113
+#: business/xls/xls_admission.py:82 business/xls/xls_formation.py:70
+#: business/xls/xls_registration.py:71 business/xls/xls_registration.py:72
+#: forms/search.py:37 models/enums/enums.py:4 templates/formations.html:113
 #: templates/registrations.html:146 templates/registrations.html:153
 #: tests/business/test_admission.py:67
 #: tests/business/test_xls_registration.py:91 views/formation.py:146
@@ -791,7 +792,7 @@ msgstr ""
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
 #: models/admission.py:217 models/admission.py:429 models/enums/enums.py:32
 #: models/enums/enums.py:40 templates/admission_form.html:201
-#: templates/fragment/tab_admission.html:150 tests/models/test_admission.py:159
+#: templates/fragment/tab_admission.html:150 tests/models/test_admission.py:146
 msgid "Other"
 msgstr ""
 
@@ -1081,7 +1082,7 @@ msgid "Spouse name"
 msgstr ""
 
 #: business/admission.py:192 business/xls/xls_admission.py:94
-#: business/xls/xls_archive.py:38 business/xls/xls_formation.py:38
+#: business/xls/xls_archive.py:38 business/xls/xls_formation.py:80
 #: forms/search.py:279 models/admission.py:241
 #: templates/admission_detail.html:50 templates/admission_detail.html:53
 #: templates/admission_form.html:216 templates/admissions.html:61
@@ -1225,7 +1226,7 @@ msgstr ""
 msgid "This will validate all selected registrations. Are you sure ?"
 msgstr ""
 
-#: business/xls/xls_formation.py:37 forms/search.py:278
+#: business/xls/xls_formation.py:79 forms/search.py:278
 #: templates/formations.html:56 templates/formations.html:146
 msgid "Title"
 msgstr ""
@@ -1240,14 +1241,15 @@ msgstr ""
 msgid "Training Managers"
 msgstr ""
 
-#: business/xls/xls_admission.py:116 forms/search.py:280
-#: models/continuing_education_training.py:68 templates/formations.html:76
-#: templates/formations.html:108 templates/formations.html:113
-#: templates/formations.html:148 templates/fragment/tab_admission.html:105
+#: business/xls/xls_admission.py:116 business/xls/xls_formation.py:81
+#: forms/search.py:280 models/continuing_education_training.py:68
+#: templates/formations.html:76 templates/formations.html:108
+#: templates/formations.html:113 templates/formations.html:148
+#: templates/fragment/tab_admission.html:105
 msgid "Training aid"
 msgstr ""
 
-#: models/continuing_education_training.py:109
+#: models/continuing_education_training.py:113
 msgid "Training aid available"
 msgstr ""
 
@@ -1343,9 +1345,9 @@ msgid "Widowed"
 msgstr ""
 
 #: business/admission.py:177 business/xls/xls_admission.py:68
-#: business/xls/xls_admission.py:82 business/xls/xls_registration.py:71
-#: business/xls/xls_registration.py:72 forms/search.py:36
-#: models/enums/enums.py:5 templates/formations.html:108
+#: business/xls/xls_admission.py:82 business/xls/xls_formation.py:70
+#: business/xls/xls_registration.py:71 business/xls/xls_registration.py:72
+#: forms/search.py:36 models/enums/enums.py:5 templates/formations.html:108
 #: templates/registrations.html:144 templates/registrations.html:151
 #: tests/business/test_admission.py:67
 #: tests/business/test_xls_registration.py:90 tests/views/test_formation.py:264
@@ -1396,7 +1398,7 @@ msgstr ""
 #: templates/fragment/warning_modal.html:36
 msgid ""
 "You will set the state Draft to the admission. It will be visible and "
-"editable for the participant as well as invisible for you."
+"editable for the participant as well as not editable for you."
 msgstr ""
 
 #: business/enums/waiting_reason.py:31
