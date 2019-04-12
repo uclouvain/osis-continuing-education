@@ -24,13 +24,13 @@
 #
 ##############################################################################
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ObjectDoesNotExist
 
 from base.business.xls import get_name_or_username
 from osis_common.document import xls_build
 from continuing_education.business.xls.xls_common import form_filters
 from continuing_education.templatetags.formation import get_faculty, get_most_recent_education_group, \
     get_active_continuing_education_formation
-
 
 XLS_DESCRIPTION = _('Formations list')
 XLS_FILENAME = _('Formations_list')
@@ -56,13 +56,19 @@ def prepare_xls_content(formation_list):
 
 def extract_xls_data_from_formation(formation):
     most_recent_education_grp = get_most_recent_education_group(formation)
+
+    try:
+        continuing_education_training = formation.continuingeducationtraining
+    except ObjectDoesNotExist:
+        continuing_education_training = None
+
     return [
         formation.most_recent_acronym,
         get_faculty(most_recent_education_grp),
         most_recent_education_grp.title,
         get_active_continuing_education_formation(formation),
-        _('Yes') if formation.continuingeducationtraining.training_aid else _('No'),
-        formation.continuingeducationtraining.formation_administrators,
+        _('Yes') if continuing_education_training and continuing_education_training.training_aid else _('No'),
+        continuing_education_training.formation_administrators if continuing_education_training else '',
     ]
 
 
