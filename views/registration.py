@@ -85,8 +85,10 @@ def _get_formations_by_faculty(faculty):
 def registration_edit(request, admission_id):
     can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
+
     if admission.is_draft():
         raise PermissionDenied
+
     address = admission.address
     billing_address = admission.billing_address
     residence_address = admission.residence_address
