@@ -68,4 +68,3 @@ def extract_xls_data_from_archive(archive):
 
 def _get_titles():
     return get_titles_admission() + get_titles_registration()
-

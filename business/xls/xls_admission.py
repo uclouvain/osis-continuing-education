@@ -50,5 +50,3 @@ def create_xls(user, admission_list, form):
 
 def prepare_xls_content(admission_list):
     return [extract_xls_data_from_admission(admission) for admission in admission_list]
-
-
