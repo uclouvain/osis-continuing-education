@@ -81,7 +81,7 @@ def extract_xls_data_from_admission(admission):
         admission.formation.acronym,
         _('Yes') if admission.formation.training_aid else _('No'),
         admission.get_faculty() if admission.get_faculty() else '',
-        admission.formation_administrators,
+        admission.formation.formation_administrators,
         admission.awareness_list
     ]
 

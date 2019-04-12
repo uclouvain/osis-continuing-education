@@ -432,10 +432,6 @@ class Admission(SerializableModel):
         return isinstance(getattr(self, field.name), str) and field.name == "awareness_other" and len(
             getattr(self, field.name)) > 0
 
-    @property
-    def formation_administrators(self):
-        return " - ".join([str(mgr) for mgr in self.formation.managers.all().order_by('last_name', 'first_name')])
-
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
 
