@@ -77,7 +77,7 @@ def extract_xls_data_from_admission(admission):
         admission.get_activity_sector_display() if admission.activity_sector else '',
         admission.past_professional_activities if admission.past_professional_activities else '',
         admission.motivation if admission.motivation else '',
-        admission.professional_impact if admission.professional_impact else '',
+        admission.professional_personal_interests if admission.professional_personal_interests else '',
         admission.formation.acronym,
         _('Yes') if admission.formation.training_aid else _('No'),
         admission.get_faculty() if admission.get_faculty() else '',
