@@ -27,6 +27,7 @@ import random
 from unittest.mock import patch
 
 from django.test import TestCase
+
 from django.utils.translation import gettext as _
 
 from base.models.enums.entity_type import SCHOOL
@@ -41,8 +42,6 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
-from base.tests.factories.person import PersonFactory
 
 
 class TestAdmission(TestCase):
@@ -141,18 +140,6 @@ class TestAdmissionGetProperties(TestCase):
             formation=self.formation
         )
         self.assertEqual(an_admission.get_faculty(), self.child_entity)
-
-    def test_formation_administrators(self):
-        person_1 = PersonFactory(first_name="Louis", last_name="Lesquoy")
-        person_2 = PersonFactory(first_name="Arnaud", last_name="Jadoulle")
-
-        PersonTrainingFactory(person=person_1, training=self.formation)
-        PersonTrainingFactory(person=person_2, training=self.formation)
-
-        self.assertEqual(self.admission.formation_administrators, "{}, {} - {}, {}".format(person_2.last_name.upper(),
-                                                                                           person_2.first_name,
-                                                                                           person_1.last_name.upper(),
-                                                                                           person_1.first_name))
 
     def test_awareness_list(self):
         self.assertEqual(self.admission.awareness_list, "{}, {} : {}".format(_("By Facebook"),

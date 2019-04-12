@@ -29,6 +29,10 @@ from django.test import TestCase
 
 from base.tests.factories.education_group import EducationGroupFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from base.tests.factories.person import PersonFactory
+from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
 
 
 class TestContinuingEducationTraining(TestCase):
@@ -39,3 +43,22 @@ class TestContinuingEducationTraining(TestCase):
         training = ContinuingEducationTraining(education_group=self.education_group)
         with self.assertRaises(ValidationError):
             training.clean()
+
+    def test_formation_administrators(self):
+        academic_year = AcademicYearFactory(year=2018)
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=academic_year,
+        )
+        a_training = ContinuingEducationTraining(education_group=self.education_group)
+        a_training.save()
+        person_1 = PersonFactory(first_name="Louis", last_name="Lesquoy")
+        person_2 = PersonFactory(first_name="Arnaud", last_name="Jadoulle")
+
+        PersonTrainingFactory(person=person_1, training=a_training)
+        PersonTrainingFactory(person=person_2, training=a_training)
+
+        self.assertEqual(a_training.formation_administrators, "{}, {} - {}, {}".format(person_2.last_name.upper(),
+                                                                                       person_2.first_name,
+                                                                                       person_1.last_name.upper(),
+                                                                                       person_1.first_name))
