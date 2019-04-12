@@ -32,7 +32,7 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.business.xls.xls_registration import TITLES, XLS_DESCRIPTION, XLS_FILENAME, \
+from continuing_education.business.xls.xls_registration import _get_titles, XLS_DESCRIPTION, XLS_FILENAME, \
     WORKSHEET_TITLE, create_xls_registration, prepare_xls_content
 from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.enums.admission_state_choices import ACCEPTED
@@ -98,7 +98,7 @@ class TestRegistrationXls(TestCase):
         self.assertEqual(expected_argument['filename'], _('Registrations_list'))
         self.assertEqual(expected_argument['username'], self.user.username)
         self.assertEqual(expected_argument['data'][0]['content'], xls_data)
-        self.assertEqual(expected_argument['data'][0]['header_titles'], TITLES)
+        self.assertEqual(expected_argument['data'][0]['header_titles'], _get_titles())
         self.assertEqual(expected_argument['data'][0]['worksheet_title'], _('Registrations list'))
 
 
@@ -109,7 +109,7 @@ def _generate_xls_build_parameter(xls_data, user):
         xls_build.USER_KEY: user.username,
         xls_build.WORKSHEETS_DATA: [{
             xls_build.CONTENT_KEY: xls_data,
-            xls_build.HEADER_TITLES_KEY: TITLES,
+            xls_build.HEADER_TITLES_KEY: _get_titles(),
             xls_build.WORKSHEET_TITLE_KEY: WORKSHEET_TITLE,
             xls_build.STYLED_CELLS: None,
             xls_build.COLORED_ROWS: None,
