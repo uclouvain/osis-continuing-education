@@ -392,6 +392,16 @@ class Admission(SerializableModel):
         verbose_name=_("Sessions")
     )
 
+    reduced_rates = models.BooleanField(
+        default=False,
+        verbose_name=_("Reduced rates")
+    )
+
+    spreading_payments = models.BooleanField(
+        default=False,
+        verbose_name=_("Spreading payments")
+    )
+
     @property
     def formation_display(self):
         education_group_year = self.formation.get_most_recent_education_group_year()
