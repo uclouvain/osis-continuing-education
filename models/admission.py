@@ -515,7 +515,7 @@ def admission_post_save_callback(sender, instance, created, **kwargs):
             if instance.state == admission_state_choices.SUBMITTED:
                 send_admission_submitted_email_to_admin(instance)
                 send_admission_submitted_email_to_participant(instance)
-            elif instance.state != admission_state_choices.DRAFT:
+            else:
                 send_state_changed_email(instance)
     except AttributeError:
         pass
