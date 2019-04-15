@@ -89,7 +89,9 @@ class RegistrationDetailSerializerTestCase(TestCase):
             'prior_experience_validation',
             'assessment_presented',
             'assessment_succeeded',
-            'sessions'
+            'sessions',
+            'reduced_rates',
+            'spreading_payments'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -146,7 +148,9 @@ class RegistrationPostSerializerTestCase(TestCase):
             'prior_experience_validation',
             'assessment_presented',
             'assessment_succeeded',
-            'sessions'
+            'sessions',
+            'reduced_rates',
+            'spreading_payments',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

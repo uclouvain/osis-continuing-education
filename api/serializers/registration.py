@@ -108,7 +108,9 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'prior_experience_validation',
             'assessment_presented',
             'assessment_succeeded',
-            'sessions'
+            'sessions',
+            'reduced_rates',
+            'spreading_payments'
 
         )
 
