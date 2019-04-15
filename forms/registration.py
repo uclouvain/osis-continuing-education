@@ -40,5 +40,7 @@ class RegistrationForm(ModelForm):
             'assessment_succeeded',
             'registration_file_received',
             'diploma_produced',
-            'sessions'
+            'sessions',
+            'reduced_rates',
+            'spreading_payments',
         ]

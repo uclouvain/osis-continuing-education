@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-15 10:07+0200\n"
+"POT-Creation-Date: 2019-04-15 11:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -276,7 +276,7 @@ msgstr ""
 #: templates/fragment/upload_file_modal.html:88
 #: templates/fragment/waiting_reason_modal.html:48
 #: templates/fragment/warning_modal.html:40 templates/registration_form.html:45
-#: templates/registration_form.html:142
+#: templates/registration_form.html:149
 msgid "Cancel"
 msgstr ""
 
@@ -399,7 +399,7 @@ msgstr ""
 msgid "Divorced"
 msgstr ""
 
-#: templates/admission_form.html:236 templates/registration_form.html:149
+#: templates/admission_form.html:236 templates/registration_form.html:156
 msgid "Do you confirm you want to save?"
 msgstr ""
 
@@ -971,7 +971,8 @@ msgstr ""
 msgid "Reason for waiting"
 msgstr ""
 
-#: models/admission.py:397
+#: models/admission.py:397 templates/fragment/tab_registration.html:117
+#: templates/registration_form.html:138
 msgid "Reduced rates"
 msgstr ""
 
@@ -1064,7 +1065,7 @@ msgstr ""
 #: templates/admission_form.html:234
 #: templates/fragment/managers/person_training_modal.html:49
 #: templates/registration_form.html:47 templates/registration_form.html:50
-#: templates/registration_form.html:144 templates/registration_form.html:147
+#: templates/registration_form.html:151 templates/registration_form.html:154
 msgid "Save"
 msgstr ""
 
@@ -1107,7 +1108,8 @@ msgstr ""
 msgid "Spouse name"
 msgstr ""
 
-#: models/admission.py:402
+#: models/admission.py:402 templates/fragment/tab_registration.html:120
+#: templates/registration_form.html:141
 msgid "Spreading payments"
 msgstr ""
 
