@@ -101,6 +101,8 @@
             <br/> {% bootstrap_label _("Payment complete") %} : {{ admission.payment_complete | yesno }}
             <br/> {% bootstrap_label _("Registration file received") %} : {{ admission.registration_file_received | yesno }}
             <br/> {% bootstrap_label _("NOMA") %} : {{ admission.noma | default:"-"}}
+            <br/>{% bootstrap_label _("Reduced rates") %} : {{ admission.reduced_rates | yesno }}
+            <br/>{% bootstrap_label _("Spreading payments") %} : {{ admission.spreading_payments | yesno }}
         </div>
         <div class="col-md-4">
             {% bootstrap_label _("Formation spreading") %} : {{ admission.formation_spreading | yesno }}
