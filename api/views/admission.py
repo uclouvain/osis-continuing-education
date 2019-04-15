@@ -25,9 +25,11 @@
 ##############################################################################
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from continuing_education.api.serializers.admission import AdmissionDetailSerializer, \
     AdmissionListSerializer, AdmissionPostSerializer
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitAdmission
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
@@ -78,11 +80,12 @@ class AdmissionCreate(generics.CreateAPIView):
     serializer_class = AdmissionPostSerializer
 
 
-class AdmissionDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class AdmissionDetailUpdate(generics.RetrieveUpdateAPIView):
     """
-        Return the detail of the admission, update or destroy it
+        Return the detail of the admission or update it.
     """
-    name = 'admission-detail-update-destroy'
+    name = 'admission-detail-update'
+    permission_classes = (HasAdmissionAccess, IsAuthenticated, CanSubmitAdmission, )
     queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
 

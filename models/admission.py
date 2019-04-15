@@ -23,9 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import uuid as uuid
+
+from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.db import models
-from django.db.models import Manager
+from django.db.models import Manager, Model
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
@@ -35,7 +38,6 @@ from continuing_education.business.admission import send_state_changed_email, se
     send_admission_submitted_email_to_participant
 from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.person_training import PersonTraining
-from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin, SerializableModelManager
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
 
@@ -49,7 +51,7 @@ class RegistrationManager(models.Manager):
         ])
 
 
-class AdmissionManager(SerializableModelManager):
+class AdmissionManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(state__in=[
             admission_state_choices.ACCEPTED,
@@ -58,11 +60,11 @@ class AdmissionManager(SerializableModelManager):
         ])
 
 
-class AdmissionAdmin(SerializableModelAdmin):
+class AdmissionAdmin(ModelAdmin):
     list_display = ('person_information', 'formation', 'state')
 
 
-class Admission(SerializableModel):
+class Admission(Model):
 
     CONTINUING_EDUCATION_TYPE = 8
 
@@ -70,6 +72,7 @@ class Admission(SerializableModel):
     admission_objects = AdmissionManager()
     registration_objects = RegistrationManager()
 
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     person_information = models.ForeignKey(
         'continuing_education.ContinuingEducationPerson',
         blank=True,

@@ -31,7 +31,7 @@ from continuing_education.models.prospect import Prospect
 
 class ProspectSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:prospect-detail-update-delete',
+        view_name='continuing_education_api_v1:prospect-detail-update',
         lookup_field='uuid'
     )
     formation = serializers.SlugRelatedField(

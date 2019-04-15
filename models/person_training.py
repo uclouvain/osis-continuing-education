@@ -23,19 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import uuid as uuid
 
+from django.contrib.admin import ModelAdmin
 from django.db import models
+from django.db.models import Model
 
-from osis_common.models.serializable_model import SerializableModelAdmin, SerializableModel
 
-
-class PersonTrainingAdmin(SerializableModelAdmin):
+class PersonTrainingAdmin(ModelAdmin):
     list_display = ('person', 'training',)
     search_fields = ['person']
     raw_id_fields = ('person', 'training',)
 
 
-class PersonTraining(SerializableModel):
+class PersonTraining(Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     person = models.ForeignKey(
         'base.Person',
         on_delete=models.CASCADE

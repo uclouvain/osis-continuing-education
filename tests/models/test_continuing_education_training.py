@@ -27,12 +27,12 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
+from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
-from base.tests.factories.person import PersonFactory
-from base.tests.factories.academic_year import AcademicYearFactory
-from base.tests.factories.education_group_year import EducationGroupYearFactory
 
 
 class TestContinuingEducationTraining(TestCase):

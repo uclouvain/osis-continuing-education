@@ -24,11 +24,6 @@
 #
 ##############################################################################
 from django import template
-from django.utils.translation import gettext_lazy as _
-
-from continuing_education.business.admission import get_management_faculty
-from continuing_education.models.admission import get_formation_display
-from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 register = template.Library()
 

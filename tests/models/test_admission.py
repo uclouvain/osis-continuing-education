@@ -27,7 +27,6 @@ import random
 from unittest.mock import patch
 
 from django.test import TestCase
-
 from django.utils.translation import gettext as _
 
 from base.models.enums.entity_type import SCHOOL

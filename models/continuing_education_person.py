@@ -1,18 +1,20 @@
 import datetime
+import uuid as uuid
 
+from django.contrib.admin import ModelAdmin
 from django.db import models
+from django.db.models import Model
 from django.utils.translation import ugettext_lazy as _
 
-from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
 
-
-class ContinuingEducationPersonAdmin(SerializableModelAdmin):
+class ContinuingEducationPersonAdmin(ModelAdmin):
     list_display = ('person', 'birth_date',)
     search_fields = ['first_name', 'last_name']
     list_filter = ('birth_country',)
 
 
-class ContinuingEducationPerson(SerializableModel):
+class ContinuingEducationPerson(Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     person = models.OneToOneField(
         'base.Person',
         on_delete=models.CASCADE

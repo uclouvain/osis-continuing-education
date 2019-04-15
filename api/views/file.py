@@ -27,9 +27,11 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import status, generics
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
+from continuing_education.api.views.perms.perms import CanSendFiles
 from continuing_education.models.admission import Admission
 from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
 
@@ -52,6 +54,7 @@ class AdmissionFileListCreate(generics.ListCreateAPIView):
         'created_date',
         'uploaded_by'
     )
+    permission_classes = (CanSendFiles, IsAuthenticated)
 
     def create(self, request, *args, **kwargs):
         try:
@@ -93,6 +96,7 @@ class AdmissionFileRetrieveDestroy(generics.RetrieveDestroyAPIView):
     queryset = AdmissionFile.objects.all()
     serializer_class = AdmissionFileSerializer
     lookup_field = 'uuid'
+    permission_classes = (CanSendFiles, IsAuthenticated)
 
     def get_object(self):
         admission_file = get_object_or_404(AdmissionFile, uuid=self.kwargs['file_uuid'])

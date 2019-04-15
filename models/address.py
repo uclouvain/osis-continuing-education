@@ -1,14 +1,18 @@
+import uuid as uuid
+
+from django.contrib.admin import ModelAdmin
 from django.db import models
+from django.db.models import Model
 from django.utils.translation import ugettext_lazy as _
 
-from osis_common.models.serializable_model import SerializableModel, SerializableModelAdmin
 
-
-class AddressAdmin(SerializableModelAdmin):
+class AddressAdmin(ModelAdmin):
     list_display = ('location', 'postal_code', 'city', 'country')
 
 
-class Address(SerializableModel):
+class Address(Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
     location = models.CharField(
         max_length=255,
         blank=True,

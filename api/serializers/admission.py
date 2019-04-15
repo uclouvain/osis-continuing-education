@@ -40,7 +40,7 @@ from reference.models.country import Country
 
 class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:admission-detail-update-destroy',
+        view_name='continuing_education_api_v1:admission-detail-update',
         lookup_field='uuid'
     )
 
@@ -111,7 +111,13 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
             'awareness_linkedin',
             'awareness_customized_mail',
             'awareness_emailing',
+            'awareness_word_of_mouth',
+            'awareness_friends',
+            'awareness_former_students',
+            'awareness_moocs',
             'awareness_other',
+
+            'state_reason'
         )
 
 

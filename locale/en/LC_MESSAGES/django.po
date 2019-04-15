@@ -30,7 +30,7 @@ msgstr ""
 msgid "A notification email has been sent to the participant"
 msgstr ""
 
-#: api/views/file.py:69 tests/views/test_file.py:113 views/file.py:76
+#: api/views/file.py:72 tests/views/test_file.py:113 views/file.py:76
 msgid "A problem occured : the document is not uploaded"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgstr ""
 msgid "Activity sector"
 msgstr ""
 
-#: models/admission.py:98
+#: models/admission.py:101
 msgid "Address"
 msgstr ""
 
@@ -126,7 +126,7 @@ msgstr ""
 msgid "Archive"
 msgstr ""
 
-#: models/admission.py:381
+#: models/admission.py:384
 msgid "Archived"
 msgstr ""
 
@@ -215,12 +215,12 @@ msgid "By Facebook"
 msgstr ""
 
 #: models/admission.py:204 templates/admission_form.html:186
-#: templates/fragment/tab_admission.html:129
+#: templates/fragment/tab_admission.html:131
 msgid "By LinkedIn"
 msgstr ""
 
 #: models/admission.py:233 templates/admission_form.html:192
-#: templates/fragment/tab_admission.html:147
+#: templates/fragment/tab_admission.html:149
 msgid "By Moocs"
 msgstr ""
 
@@ -230,37 +230,37 @@ msgid "By UCLouvain website"
 msgstr ""
 
 #: models/admission.py:208 templates/admission_form.html:187
-#: templates/fragment/tab_admission.html:132
+#: templates/fragment/tab_admission.html:134
 msgid "By customized mail"
 msgstr ""
 
 #: models/admission.py:212 templates/admission_form.html:188
-#: templates/fragment/tab_admission.html:135
+#: templates/fragment/tab_admission.html:137
 msgid "By emailing"
 msgstr ""
 
 #: models/admission.py:192 templates/admission_form.html:183
-#: templates/fragment/tab_admission.html:120
+#: templates/fragment/tab_admission.html:122
 msgid "By formation website"
 msgstr ""
 
 #: models/admission.py:229 templates/admission_form.html:191
-#: templates/fragment/tab_admission.html:144
+#: templates/fragment/tab_admission.html:146
 msgid "By former students"
 msgstr ""
 
 #: models/admission.py:225 templates/admission_form.html:190
-#: templates/fragment/tab_admission.html:141
+#: templates/fragment/tab_admission.html:143
 msgid "By friends"
 msgstr ""
 
 #: models/admission.py:196 templates/admission_form.html:184
-#: templates/fragment/tab_admission.html:123
+#: templates/fragment/tab_admission.html:125
 msgid "By press"
 msgstr ""
 
 #: models/admission.py:221 templates/admission_form.html:189
-#: templates/fragment/tab_admission.html:138
+#: templates/fragment/tab_admission.html:140
 msgid "By word of mouth"
 msgstr ""
 
@@ -300,7 +300,7 @@ msgstr ""
 msgid "Citizenship"
 msgstr ""
 
-#: models/address.py:25 models/prospect.py:60 templates/admission_form.html:108
+#: models/address.py:29 models/prospect.py:60 templates/admission_form.html:108
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:54
 #: templates/fragment/tab_registration.html:86
@@ -352,7 +352,7 @@ msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
 
-#: forms/address.py:15 models/address.py:32 templates/admission_form.html:109
+#: forms/address.py:15 models/address.py:36 templates/admission_form.html:109
 #: templates/fragment/tab_admission.html:48
 #: templates/fragment/tab_registration.html:55
 #: templates/fragment/tab_registration.html:87
@@ -437,7 +437,7 @@ msgstr ""
 msgid "Education"
 msgstr ""
 
-#: models/continuing_education_training.py:75
+#: models/continuing_education_training.py:77
 msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr ""
 
@@ -576,6 +576,11 @@ msgstr ""
 
 #: business/xls/xls_common.py:109 models/admission.py:271
 #: templates/fragment/tab_registration.html:47
+#: api/views/perms/perms.py:34
+msgid "Getting this admission not allowed."
+msgstr ""
+
+#: models/admission.py:274 templates/fragment/tab_registration.html:45
 #: templates/registration_form.html:64
 msgid "Head office name"
 msgstr ""
@@ -634,7 +639,7 @@ msgstr ""
 msgid "Job seeker"
 msgstr ""
 
-#: business/admission.py:180 models/admission.py:130
+#: business/admission.py:180 models/admission.py:133
 #: templates/admission_form.html:125 templates/fragment/tab_admission.html:62
 #: tests/business/test_admission.py:70
 msgid "Last degree field"
@@ -672,7 +677,7 @@ msgstr ""
 msgid "Legal cohabitant"
 msgstr ""
 
-#: models/address.py:15
+#: models/address.py:19
 msgid "Location"
 msgstr ""
 
@@ -804,7 +809,7 @@ msgstr ""
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
 #: models/admission.py:217 models/admission.py:443 models/enums/enums.py:32
 #: models/enums/enums.py:40 templates/admission_form.html:201
-#: templates/fragment/tab_admission.html:150 tests/models/test_admission.py:146
+#: templates/fragment/tab_admission.html:150 tests/models/test_admission.py:159
 msgid "Other"
 msgstr ""
 
@@ -857,7 +862,7 @@ msgstr ""
 msgid "Person"
 msgstr ""
 
-#: models/admission.py:77
+#: models/admission.py:80
 msgid "Person information"
 msgstr ""
 
@@ -891,7 +896,7 @@ msgstr ""
 msgid "Post"
 msgstr ""
 
-#: models/address.py:20 models/prospect.py:55 templates/admission_form.html:107
+#: models/address.py:24 models/prospect.py:55 templates/admission_form.html:107
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:53
 #: templates/fragment/tab_registration.html:85 templates/prospects.html:61
@@ -1085,7 +1090,7 @@ msgstr ""
 msgid "Separated"
 msgstr ""
 
-#: models/admission.py:392
+#: models/admission.py:395
 msgid "Sessions"
 msgstr ""
 
@@ -1123,7 +1128,7 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: models/admission.py:246
+#: models/admission.py:249
 msgid "State reason"
 msgstr ""
 
@@ -1195,7 +1200,7 @@ msgstr ""
 msgid "The document is uploaded correctly"
 msgstr ""
 
-#: api/views/file.py:62 models/file.py:97 tests/views/test_file.py:138
+#: api/views/file.py:65 models/file.py:97 tests/views/test_file.py:138
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr ""
@@ -1257,6 +1262,14 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
+#: api/views/perms/perms.py:41
+msgid "To submit a registration, its state must be ACCEPTED."
+msgstr ""
+
+#: api/views/perms/perms.py:50
+msgid "To submit an admission, its state must be DRAFT."
+msgstr ""
+
 #: templates/fragment/managers/person_training_modal.html:42
 #: templates/managers.html:50
 msgid "Training"
@@ -1308,11 +1321,16 @@ msgstr ""
 msgid "Uploaded by"
 msgstr ""
 
-#: models/admission.py:258
+#: api/views/perms/perms.py:59
+msgid ""
+"Uploading and deleting files is not allowed if admission is not editable."
+msgstr ""
+
+#: models/admission.py:261
 msgid "Use address for billing"
 msgstr ""
 
-#: models/admission.py:329
+#: models/admission.py:332
 msgid "Use address for post"
 msgstr ""
 

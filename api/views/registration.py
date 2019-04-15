@@ -25,9 +25,11 @@
 ##############################################################################
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, \
     RegistrationDetailSerializer, RegistrationPostSerializer
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED
@@ -71,11 +73,12 @@ class RegistrationList(generics.ListAPIView):
         )
 
 
-class RegistrationDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
     """
-        Return the detail of the registration, update or destroy it
+        Return the detail of the registration or update it.
     """
-    name = 'registration-detail-update-destroy'
+    name = 'registration-detail-update'
+    permission_classes = (HasAdmissionAccess, CanSubmitRegistration, IsAuthenticated)
     queryset = Admission.objects.all()
     lookup_field = 'uuid'
 

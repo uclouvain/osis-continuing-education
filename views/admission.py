@@ -23,14 +23,15 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import itertools
+from collections import OrderedDict
+
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
-from django.http import JsonResponse
-
-import itertools
+from django.utils.translation import gettext_lazy as _
 
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
@@ -54,7 +55,6 @@ from continuing_education.views.common import display_errors
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from osis_common.decorators.ajax import ajax_required
-from collections import OrderedDict
 
 
 @login_required

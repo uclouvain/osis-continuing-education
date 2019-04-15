@@ -55,7 +55,7 @@ class AdmissionDetailSerializerTestCase(TestCase):
             formation=cls.formation
         )
         url = reverse(
-            'continuing_education_api_v1:admission-detail-update-destroy',
+            'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid': cls.admission.uuid}
         )
         cls.serializer = AdmissionDetailSerializer(cls.admission, context={'request': RequestFactory().get(url)})
@@ -95,7 +95,12 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'awareness_linkedin',
             'awareness_customized_mail',
             'awareness_emailing',
+            'awareness_word_of_mouth',
+            'awareness_friends',
+            'awareness_former_students',
+            'awareness_moocs',
             'awareness_other',
+            'state_reason'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -114,7 +119,7 @@ class AdmissionPostSerializerTestCase(TestCase):
             formation=cls.formation
         )
         url = reverse(
-            'continuing_education_api_v1:admission-detail-update-destroy',
+            'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid': cls.admission.uuid}
         )
         cls.serializer = AdmissionPostSerializer(cls.admission, context={'request': RequestFactory().get(url)})
@@ -154,7 +159,12 @@ class AdmissionPostSerializerTestCase(TestCase):
             'awareness_linkedin',
             'awareness_customized_mail',
             'awareness_emailing',
+            'awareness_word_of_mouth',
+            'awareness_friends',
+            'awareness_former_students',
+            'awareness_moocs',
             'awareness_other',
+            'state_reason'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

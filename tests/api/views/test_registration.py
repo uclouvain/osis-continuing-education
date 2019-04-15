@@ -26,6 +26,7 @@
 import random
 import unittest
 import uuid
+from unittest import mock
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -36,6 +37,7 @@ from rest_framework.test import APITestCase
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
     RegistrationPostSerializer
@@ -97,7 +99,7 @@ class RegistrationListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put', 'post']
+        methods_not_allowed = ['delete', 'put', 'post', 'patch']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -143,27 +145,27 @@ class RegistrationListTestCase(APITestCase):
             self.assertEqual(response.data['results'], serializer.data)
 
 
-class RegistrationDetailUpdateDestroyTestCase(APITestCase):
+class RegistrationDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
+        cls.user = UserFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
         cls.admission = AdmissionFactory(
-            person_information=ContinuingEducationPersonFactory(),
+            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=cls.user)),
             formation=ContinuingEducationTrainingFactory(
                 education_group=cls.education_group
             ),
             state=random.choice([ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED])
         )
 
-        cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:registration-detail-update-destroy', kwargs={'uuid': cls.admission.uuid})
+        cls.url = reverse('continuing_education_api_v1:registration-detail-update', kwargs={'uuid': cls.admission.uuid})
         cls.invalid_url = reverse(
-            'continuing_education_api_v1:registration-detail-update-destroy',
+            'continuing_education_api_v1:registration-detail-update',
             kwargs={'uuid':  uuid.uuid4()}
         )
 
@@ -176,20 +178,14 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_update_not_authorized(self):
         self.client.force_authenticate(user=None)
 
-        response = self.client.delete(self.url)
+        response = self.client.patch(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post']
+        methods_not_allowed = ['post', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -209,17 +205,10 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         response = self.client.get(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_valid_registration(self):
-        self.assertEqual(1, Admission.registration_objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, Admission.registration_objects.all().count())
-
-    def test_delete_invalid_registration_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_update_valid_registration(self):
+    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    def test_update_valid_registration(self, mock_mail):
+        self.admission.state = ACCEPTED
+        self.admission.save()
         self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
             'vat_number': '123456',
@@ -227,7 +216,6 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
             'use_address_for_billing': True,
             'use_address_for_post': True
         }
-
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -238,7 +226,10 @@ class RegistrationDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.registration_objects.all().count())
 
-    def test_update_valid_registration_billing_address(self):
+    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    def test_update_valid_registration_billing_address(self, mock_mail):
+        self.admission.state = ACCEPTED
+        self.admission.save()
         self.assertEqual(1, Admission.registration_objects.all().count())
         data = {
             'use_address_for_billing': False,

@@ -49,7 +49,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
             formation=ContinuingEducationTrainingFactory(education_group=ed)
         )
         url = reverse(
-            'continuing_education_api_v1:registration-detail-update-destroy',
+            'continuing_education_api_v1:registration-detail-update',
             kwargs={'uuid': cls.admission.uuid}
         )
         cls.serializer = RegistrationDetailSerializer(cls.admission, context={'request': RequestFactory().get(url)})
@@ -108,7 +108,7 @@ class RegistrationPostSerializerTestCase(TestCase):
             formation=cls.formation
         )
         url = reverse(
-            'continuing_education_api_v1:registration-detail-update-destroy',
+            'continuing_education_api_v1:registration-detail-update',
             kwargs={'uuid': cls.registration.uuid}
         )
         cls.serializer = RegistrationPostSerializer(cls.registration, context={'request': RequestFactory().get(url)})
