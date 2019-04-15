@@ -219,8 +219,8 @@ msgid "By Moocs"
 msgstr ""
 
 #: models/admission.py:188 templates/admission_form.html:182
-#: templates/fragment/tab_admission.html:119
-msgid "By UCL website"
+#: templates/fragment/tab_admission.html:117
+msgid "By UCLouvain website"
 msgstr ""
 
 #: models/admission.py:208 templates/admission_form.html:187
@@ -897,7 +897,7 @@ msgstr ""
 
 #: models/admission.py:321 templates/fragment/tab_registration.html:72
 #: templates/registration_form.html:93
-msgid "Previous ucl registration"
+msgid "Previous uclouvain registration"
 msgstr ""
 
 #: models/admission.py:368 templates/fragment/tab_registration.html:105
@@ -1266,8 +1266,8 @@ msgstr ""
 msgid "Trainings"
 msgstr ""
 
-#: models/admission.py:351
-msgid "UCL registration complete"
+#: models/admission.py:348
+msgid "UCLouvain registration complete"
 msgstr ""
 
 #: templates/admission_detail.html:79 templates/archives.html:94

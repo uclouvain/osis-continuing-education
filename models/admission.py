@@ -188,7 +188,7 @@ class Admission(Model):
     # Awareness
     awareness_ucl_website = models.BooleanField(
         default=False,
-        verbose_name=_("By UCL website")
+        verbose_name=_("By UCLouvain website")
     )
     awareness_formation_website = models.BooleanField(
         default=False,
@@ -318,7 +318,7 @@ class Admission(Model):
     )
     previous_ucl_registration = models.BooleanField(
         default=False,
-        verbose_name=_("Previous ucl registration")
+        verbose_name=_("Previous uclouvain registration")
     )
     previous_noma = models.CharField(
         max_length=255,
@@ -348,7 +348,7 @@ class Admission(Model):
     # Student Sheet
     ucl_registration_complete = models.BooleanField(
         default=False,
-        verbose_name=_("UCL registration complete")
+        verbose_name=_("UCLouvain registration complete")
     )
     noma = models.CharField(
         max_length=255,

@@ -121,6 +121,7 @@ class RejectedAdmissionForm(ModelForm):
         label=_('Predefined reason'),
     )
     other_reason = forms.CharField(
+        widget=forms.Textarea,
         required=False,
         label=_('Other rejection reason'),
     )
@@ -174,6 +175,7 @@ class WaitingAdmissionForm(ModelForm):
         label=_('Predefined reason'),
     )
     other_reason = forms.CharField(
+        widget=forms.Textarea,
         required=False,
         label=_('Other waiting reason'),
     )
