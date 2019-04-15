@@ -223,8 +223,8 @@ msgstr "Par les Moocs"
 
 #: models/admission.py:188 templates/admission_form.html:182
 #: templates/fragment/tab_admission.html:117
-msgid "By UCL website"
-msgstr "Par le site web de l'UCL"
+msgid "By UCLouvain website"
+msgstr "Par le site web de l'UCLouvain"
 
 #: models/admission.py:208 templates/admission_form.html:187
 #: templates/fragment/tab_admission.html:132
@@ -905,8 +905,8 @@ msgstr "Précédent NOMA"
 
 #: models/admission.py:318 templates/fragment/tab_registration.html:72
 #: templates/registration_form.html:93
-msgid "Previous ucl registration"
-msgstr "Avez-vous déjà été inscrit(e) à l'UCL ?"
+msgid "Previous uclouvain registration"
+msgstr "Avez-vous déjà été inscrit(e) à l'UCLouvain ?"
 
 #: models/admission.py:365 templates/fragment/tab_registration.html:105
 #: templates/registration_form.html:128
@@ -1286,8 +1286,8 @@ msgid "Trainings"
 msgstr "Formations"
 
 #: models/admission.py:348
-msgid "UCL registration complete"
-msgstr "En ordre d'inscription UCL"
+msgid "UCLouvain registration complete"
+msgstr "En ordre d'inscription UCLouvain"
 
 #: templates/admission_detail.html:79 templates/archives.html:94
 msgid "Unarchive"
