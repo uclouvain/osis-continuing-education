@@ -1,0 +1,720 @@
+openapi: 3.0.0
+info:
+  version: "1"
+  title: Continuing Education API
+  description: 'This API delivers data for the Continuing Education project.'
+  contact:
+    name: 'UCLouvain - OSIS'
+    url: https://github.com/uclouvain/osis
+
+servers:
+  - url: https://{environment}.osis.uclouvain.be/api/v1/continuing_education/
+    variables:
+      environment:
+        default: dev
+        enum:
+          - dev # Development server
+          - qa # Staging server
+          - test # Test server
+  - url: https://osis.uclouvain.be/api/v1/continuing_education/
+    description: Production server
+
+paths:
+  /admissions:
+    post:
+      description: Create a new admission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdmissionPostPutPatch'
+      responses:
+        201:
+          description: Successful creation of a new admission
+
+  /admissions/{uuid}:
+    get:
+      description: Obtain information about a specific admission
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description: Successful get of an admission's data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdmissionGet'
+    put:
+      description: Edit an existing admission
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdmissionPostPutPatch'
+      responses:
+        200:
+          description: Successful edit of an admission's data.
+
+    patch:
+      description: Edit a part of an existing admission
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdmissionPostPutPatch'
+      responses:
+        200:
+          description: Successful edit of an admission's data.
+
+  /admissions/{uuid}/files:
+    get:
+      description: Obtain the list of the files linked to an admission
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description: Successful get of the list of files linked to an admission
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileListItem'
+
+    post:
+      description: Upload a new file linked to an admission
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FilePost'
+      responses:
+        201:
+          description: Successful post of a new file linked to an admission
+
+  /admissions/{uuid}/files/{file_uuid}:
+    get:
+      description: Obtain information about a specific file
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+        - in: path
+          name: file_uuid
+          required: true
+          description: The UUID of the file
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description: Successful get of the information about a specific file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileDetails'
+    delete:
+      description: Delete a specific file
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the admission
+          schema:
+            $ref: '#/components/schemas/Uuid'
+        - in: path
+          name: file_uuid
+          required: true
+          description: The UUID of the file
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        204:
+          description: Successful delete of the file
+
+  /registrations:
+    get:
+      description: Obtain the list of registrations
+      parameters:
+        - in: query
+          name: state
+          required: false
+          description: The state of the registrations to get
+          schema:
+            $ref: '#/components/schemas/StateEnum'
+      responses:
+        200:
+          description: Successful get of the list of registrations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RegistrationGet'
+
+  /registrations/{uuid}:
+    get:
+      description: Obtain information about a specific registration
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the registration
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description: Successful get of a registration's data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationGet'
+    put:
+      description: Edit an existing registration
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the registration
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationPutPatch'
+      responses:
+        200:
+          description: Successful edit of a registration's data
+
+    patch:
+      description: Edit a part of an existing registration
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the registration
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationPutPatch'
+      responses:
+        200:
+          description: Successful edit of a registration's data
+
+  /persons/details:
+    get:
+      description: Obtain uuid of the ContinuingEducationPerson of the logged user
+      responses:
+        200:
+          description: Successful get of the uuid of the ContinuingEducationPerson of the logged user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    $ref: '#/components/schemas/Uuid'
+
+  /persons/{uuid}/admissions:
+    get:
+      description: Obtain the list of admissions of a participant
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the participant
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description : Successful get of the list of a participant's admissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdmissionBasicGet'
+
+  /persons/{uuid}/registrations:
+    get:
+      description: Obtain the list of registrations of a participant
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the participant
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description : Successful get of the list of a participant's registrations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AdmissionBasicGet'
+
+  /prospects:
+    post:
+      description: Create a new prospect
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prospect'
+      responses:
+        201:
+          description: Successful creation of a new prospect
+
+  /trainings:
+    get:
+      description: Obtain the list of trainings
+      parameters:
+        - in: query
+          name: active
+          required: false
+          description: The active field of the trainings to get
+          schema:
+            type: boolean
+      responses:
+        200:
+          description : Successful get of the list of trainings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FormationDetails'
+
+  /trainings/{uuid}:
+    get:
+      description: Obtain information about a specific training
+      parameters:
+        - in: path
+          name: uuid
+          required: true
+          description: The UUID of the training
+          schema:
+            $ref: '#/components/schemas/Uuid'
+      responses:
+        200:
+          description: Successful get of an training's data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormationDetails'
+
+
+components:
+  securitySchemes:
+    Token:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Enter your token in the format **Token &lt;token>**
+
+  schemas:
+    AdmissionGet:
+      allOf:
+        - $ref: '#/components/schemas/PersonGet'
+        - type: object
+          properties:
+              address:
+                $ref: '#/components/schemas/AddressGet'
+              birth_date:
+                type: string
+                example: "2000-01-01"
+              birth_location:
+                type: string
+                example: Brussels
+              birth_country:
+                $ref: '#/components/schemas/CountryName'
+              citizenship:
+                $ref: '#/components/schemas/CountryName'
+              formation:
+                $ref: '#/components/schemas/FormationBasicGet'
+              admission_email:
+                type: string
+                example: "jane_doe@personnalprovider.com"
+              state:
+                $ref: '#/components/schemas/StateEnum'
+              phone_mobile:
+                type: string
+                example: "0000/00.00.00."
+              high_school_diploma:
+                type: boolean
+              high_school_graduation_year:
+                type: integer
+                example: 2009
+              last_degree_level:
+                type: string
+              last_degree_field:
+                type: string
+              last_degree_institution:
+                type: string
+              last_degree_graduation_year:
+                type: integer
+                example: 2019
+              other_educational_background:
+                type: string
+              professional_status:
+                type: string
+              current_occupation:
+                type: string
+              current_employer:
+                type: string
+              activity_sector:
+                type: string
+              past_professional_activities:
+                type: string
+              motivation:
+                type: string
+              professional_impact:
+                type: string
+              awareness_ucl_website:
+                type: boolean
+              awareness_formation_website:
+                type: boolean
+              awareness_press:
+                type: boolean
+              awareness_facebook:
+                type: boolean
+              awareness_linkedin:
+                type: boolean
+              awareness_customized_mail:
+                type: boolean
+              awareness_emailing:
+                type: boolean
+              awareness_other:
+                type: string
+
+    AdmissionBasicGet:
+      allOf:
+        - type: object
+          properties:
+            uuid:
+              $ref: '#/components/schemas/Uuid'
+            state:
+              $ref: '#/components/schemas/StateEnum'
+        - $ref: '#/components/schemas/FormationBasicGet'
+
+    AdmissionPostPutPatch:
+      allOf:
+        - $ref: '#/components/schemas/AdmissionGet'
+        - type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/AdressPostPutPatch'
+            birth_country:
+              $ref: '#/components/schemas/CountryIsoCode'
+            citizenship:
+              $ref: '#/components/schemas/CountryIsoCode'
+            formation:
+              $ref: '#/components/schemas/Uuid'
+
+    RegistrationGet:
+      allOf:
+        - $ref: '#/components/schemas/PersonGet'
+        - type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/AddressGet'
+            registration_type:
+              $ref: '#/components/schemas/RegistrationTypeEnum'
+            use_address_for_billing:
+              type: boolean
+            billing_address:
+              $ref: '#/components/schemas/AddressGet'
+            head_office_name:
+              type: string
+            company_number:
+              type: string
+            vat_number:
+              type: string
+
+            national_registry_number:
+              type: string
+            id_card_number:
+              type: string
+            passport_number:
+              type: string
+            marital_status:
+              $ref: '#/components/schemas/MaritalStatusEnum'
+            marital_status_text:
+              type: string
+            spouse_name:
+              type: string
+            children_number:
+              type: integer
+            previous_ucl_registration:
+              type: boolean
+            previous_noma:
+              type: string
+            use_address_for_post:
+              type: boolean
+            residence_address:
+               $ref: '#/components/schemas/AddressGet'
+            residence_phone:
+              type: string
+
+            ucl_registration_complete:
+              type: boolean
+            noma:
+              type: string
+            payment_complete:
+              type: boolean
+            formation_spreading:
+              type: boolean
+            prior_experience_validation:
+              type: boolean
+            assessment_presented:
+              type: boolean
+            assessment_succeeded:
+              type: boolean
+            registration_file_received:
+              type: boolean
+            archived:
+              type: boolean
+            diploma_produced:
+              type: boolean
+            sessions:
+              type: boolean
+            reduced_rates:
+              type: boolean
+            spreading_payments:
+              type: boolean
+
+    RegistrationPutPatch:
+      allOf:
+        - $ref: '#/components/schemas/RegistrationGet'
+        - type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/AdressPostPutPatch'
+            billing_address:
+              $ref: '#/components/schemas/AdressPostPutPatch'
+            residence_address:
+              $ref: '#/components/schemas/AdressPostPutPatch'
+
+    CityAndZip:
+      type: object
+      properties:
+        zip_code:
+          type: string
+          example: "1348"
+        city:
+          type: string
+          example: Louvain-la-Neuve
+
+    AddressGet:
+      allOf:
+        - $ref: '#/components/schemas/CityAndZip'
+        - type: object
+          properties:
+            location:
+              type: string
+              example: "Rue du Compas, 1"
+            country:
+              $ref: '#/components/schemas/CountryName'
+
+    AdressPostPutPatch:
+      allOf:
+        - $ref: '#/components/schemas/AddressGet'
+        - type: object
+          properties:
+              country:
+                $ref: '#/components/schemas/CountryIsoCode'
+
+    PersonGet:
+      allOf:
+        - $ref: '#/components/schemas/PersonBasic'
+        - type: object
+          properties:
+            gender:
+              type: string
+              enum: [F, M, U]
+
+    PersonBasic:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: Jane
+        last_name:
+          type: string
+          example: Doe
+        email:
+          type: string
+          format: email
+          example: jane.doe@provider.com
+
+    FormationBasicGet:
+      type: object
+      properties:
+        uuid:
+          $ref: '#/components/schemas/Uuid'
+        acronym:
+          type: string
+          example: DROI2M
+        title_fr:
+          type: string
+          example : "Master en Droit"
+        faculty:
+          type: string
+          example : "DRT"
+
+    FormationDetails:
+      allOf:
+        - $ref: '#/components/schemas/FormationBasicGet'
+        - type: object
+          properties:
+            active:
+              type: boolean
+            training_aid:
+              type: boolean
+            managers:
+              type: array
+              items:
+                $ref: '#/components/schemas/PersonBasic'
+
+
+    File:
+      type: object
+      properties:
+        name:
+          type: string
+
+    FilePost:
+      allOf:
+        - $ref: '#/components/schemas/File'
+        - $ref: '#/components/schemas/FileContent'
+
+    FileListItem:
+      allOf:
+        - $ref: '#/components/schemas/File'
+        - type: object
+          properties:
+            uuid:
+              $ref: '#/components/schemas/Uuid'
+            size:
+              description: The size of the file in octets
+              type: integer
+              example: 1024
+            created_date:
+              type: string
+              example: "2020-01-01"
+            uploaded_by:
+              type: string
+
+    FileDetails:
+      allOf:
+        - $ref: '#/components/schemas/FileListItem'
+        - $ref: '#/components/schemas/FileContent'
+
+    FileContent:
+      type: object
+      properties:
+        content:
+          type: string
+          format: base64
+          example: "Vml2ZSBsJ8OpcXVpZSBPU0lTICE="
+
+    Prospect:
+      allOf:
+        - $ref: '#/components/schemas/PersonBasic'
+        - $ref: '#/components/schemas/CityAndZip'
+        - type: object
+          properties:
+            phone_number:
+              type: string
+              example: "0000/00.00.00."
+            formation:
+              $ref: '#/components/schemas/Uuid'
+
+    CountryName:
+      type: string
+      example: Belgium
+
+    CountryIsoCode:
+      type: string
+      example: BE
+
+    Uuid:
+      type: string
+      format: uuid
+      example: "abcd-efgh-ijkl-mnop-1234-5678"
+
+    StateEnum:
+      type: string
+      enum:
+        - Accepted
+        - Rejected
+        - Waiting
+        - Draft
+        - Submitted
+        - Registration submitted
+        - Validated
+
+    RegistrationTypeEnum:
+      type: string
+      enum:
+        - Private
+        - Professional
+
+    MaritalStatusEnum:
+      type: string
+      enum:
+        - Single
+        - Married
+        - Widowed
+        - Divorced
+        - Separated
+        - Legal cohabitant
+
+security:
+  - Token: []
