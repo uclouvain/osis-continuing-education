@@ -30,6 +30,7 @@ from django.utils.translation import ugettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from continuing_education.models.enums import admission_state_choices
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -39,10 +40,17 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    if admission.state in (admission_state_choices.ACCEPTED,
+                           admission_state_choices.REJECTED,
+                           admission_state_choices.WAITING,
+                           admission_state_choices.VALIDATED):
+        lower_state = admission.state.lower()
+    else:
+        lower_state = 'other'
     send_email(
         template_references={
-            'html': 'iufc_participant_state_changed_{}_html'.format(admission.state.lower()),
-            'txt': 'iufc_participant_state_changed_{}_txt'.format(admission.state.lower()),
+            'html': 'iufc_participant_state_changed_{}_html'.format(lower_state),
+            'txt': 'iufc_participant_state_changed_{}_txt'.format(lower_state),
         },
         data={
             'template': {
@@ -51,7 +59,8 @@ def send_state_changed_email(admission, connected_user=None):
                 'formation': admission.formation,
                 'state': _(admission.state),
                 'reason': admission.state_reason if admission.state_reason else '-',
-                'mails': mails
+                'mails': mails,
+                'original_state': _(admission._original_state),
             },
             'subject': {
                 'state': _(admission.state)
