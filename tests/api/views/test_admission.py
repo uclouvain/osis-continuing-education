@@ -40,6 +40,7 @@ from base.models.person import Person
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
@@ -334,8 +335,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         response = self.client.get(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
-    def test_update_valid_admission(self, mock_mail):
+    def test_update_valid_admission(self):
         self.admission.state = DRAFT
         self.admission.save()
         self.assertEqual(1, Admission.objects.all().count())
@@ -353,6 +353,19 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         )
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.objects.all().count())
+
+    @mock.patch('continuing_education.business.admission.send_email')
+    def test_update_admission_mail_notification(self, mock_send_email):
+        GroupFactory(name='continuing_education_managers')
+        self.admission.state = DRAFT
+        self.admission.save()
+
+        data = {
+            'state': SUBMITTED,
+        }
+        self.client.patch(self.url, data=data)
+
+        self.assertTrue(mock_send_email.called)
 
     @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
     def test_update_valid_admission_address(self, mock_mail):
