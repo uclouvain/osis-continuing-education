@@ -225,8 +225,6 @@ def _new_state_management(request, forms, admission, new_state):
     _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state)
     if new_state != VALIDATED:
         adm_form.save()
-        if new_state == DRAFT:
-            return redirect(reverse('admission'))
     else:
         _validate_admission(request, adm_form)
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))

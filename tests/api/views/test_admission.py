@@ -48,7 +48,8 @@ from continuing_education.api.serializers.admission import AdmissionListSerializ
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING
+from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING, \
+    VALIDATED
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -276,6 +277,7 @@ class AdmissionCreateTestCase(APITestCase):
 class AdmissionDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        GroupFactory(name='continuing_education_managers')
         cls.citizenship = CountryFactory()
         cls.user = UserFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -355,8 +357,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         self.assertEqual(1, Admission.objects.all().count())
 
     @mock.patch('continuing_education.business.admission.send_email')
-    def test_update_admission_mail_notification(self, mock_send_email):
-        GroupFactory(name='continuing_education_managers')
+    def test_submit_admission_mail_notification(self, mock_send_email):
         self.admission.state = DRAFT
         self.admission.save()
 
@@ -366,6 +367,40 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         self.client.patch(self.url, data=data)
 
         self.assertTrue(mock_send_email.called)
+        mock_call_args = mock_send_email.call_args[1]
+        self.assertEqual(
+            mock_call_args.get('template_references').get('html'),
+            'iufc_participant_admission_submitted_html'
+        )
+        self.assertEqual(
+            mock_call_args.get('receivers')[0].get('receiver_email'),
+            self.admission.person_information.person.email
+        )
+
+    @mock.patch('continuing_education.business.admission.send_email')
+    def test_to_draft_admission_mail_notification(self, mock_send_email):
+        self.admission.state = DRAFT
+        self.admission.save()
+
+        new_statuses = [ACCEPTED, REJECTED, WAITING, VALIDATED]
+
+        for new_status in new_statuses:
+            with self.subTest(new_status=new_status):
+                data = {
+                    'state': new_status,
+                }
+                self.client.patch(self.url, data=data)
+
+                self.assertTrue(mock_send_email.called)
+                mock_call_args = mock_send_email.call_args[1]
+                self.assertEqual(
+                    mock_call_args.get('template_references').get('html'),
+                    'iufc_participant_state_changed_accepted_html'
+                )
+                self.assertEqual(
+                    mock_call_args.get('receivers')[0].get('receiver_email'),
+                    self.admission.person_information.person.email
+                )
 
     @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
     def test_update_valid_admission_address(self, mock_mail):
