@@ -275,33 +275,31 @@ class AdmissionCreateTestCase(APITestCase):
 
 
 class AdmissionDetailUpdateTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         GroupFactory(name='continuing_education_managers')
-        cls.citizenship = CountryFactory()
-        cls.user = UserFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        self.citizenship = CountryFactory()
+        self.user = UserFactory()
+        self.academic_year = AcademicYearFactory(year=2018)
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,
-            academic_year=cls.academic_year
+            academic_year=self.academic_year
         )
 
-        cls.admission = AdmissionFactory(
-            citizenship=cls.citizenship,
-            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=cls.user)),
+        self.admission = AdmissionFactory(
+            citizenship=self.citizenship,
+            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=self.user)),
             formation=ContinuingEducationTrainingFactory(education_group=education_group),
             state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
 
         )
 
-        cls.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': cls.admission.uuid})
-        cls.invalid_url = reverse(
+        self.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': self.admission.uuid})
+        self.invalid_url = reverse(
             'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid':  uuid.uuid4()}
         )
 
-    def setUp(self):
         self.client.force_authenticate(user=self.user)
 
     def test_get_not_authorized(self):
@@ -376,9 +374,13 @@ class AdmissionDetailUpdateTestCase(APITestCase):
             mock_call_args.get('receivers')[0].get('receiver_email'),
             self.admission.person_information.person.email
         )
+        self.assertEqual(
+            mock_call_args.get('connected_user'),
+            self.user
+        )
 
     @mock.patch('continuing_education.business.admission.send_email')
-    def test_to_draft_admission_mail_notification(self, mock_send_email):
+    def test_edit_admission_state_mail_notification(self, mock_send_email):
         self.admission.state = DRAFT
         self.admission.save()
 
@@ -400,6 +402,10 @@ class AdmissionDetailUpdateTestCase(APITestCase):
                 self.assertEqual(
                     mock_call_args.get('receivers')[0].get('receiver_email'),
                     self.admission.person_information.person.email
+                )
+                self.assertEqual(
+                    mock_call_args.get('connected_user'),
+                    self.user
                 )
 
     @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')

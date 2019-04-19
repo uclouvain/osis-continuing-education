@@ -41,8 +41,8 @@ def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     if admission.state == admission_state_choices.SUBMITTED:
-        send_admission_submitted_email_to_admin(admission)
-        send_admission_submitted_email_to_participant(admission)
+        send_admission_submitted_email_to_admin(admission, connected_user)
+        send_admission_submitted_email_to_participant(admission, connected_user)
         return
     elif admission.state in (admission_state_choices.ACCEPTED,
                              admission_state_choices.REJECTED,
@@ -81,7 +81,7 @@ def send_state_changed_email(admission, connected_user=None):
     )
 
 
-def send_admission_submitted_email_to_admin(admission):
+def send_admission_submitted_email_to_admin(admission, connected_user):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
@@ -112,10 +112,11 @@ def send_admission_submitted_email_to_admin(admission):
             )
             for manager in managers
         ],
+        connected_user=connected_user
     )
 
 
-def send_admission_submitted_email_to_participant(admission):
+def send_admission_submitted_email_to_participant(admission, connected_user):
     participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     send_email(
@@ -138,6 +139,7 @@ def send_admission_submitted_email_to_participant(admission):
                 None
             )
         ],
+        connected_user=connected_user
     )
 
 

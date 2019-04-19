@@ -146,6 +146,7 @@ class SendEmailTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_state_changed_email(self, mock_send):
+        self.admission._original_state = self.admission.state
         admission.send_state_changed_email(self.admission)
         args = mock_send.call_args[1]
 
@@ -181,7 +182,7 @@ class SendEmailTest(TestCase):
     def test_send_admission_submitted_email_to_admin(self, mock_send):
         group = GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP)
         self.manager.user.groups.add(group)
-        admission.send_admission_submitted_email_to_admin(self.admission)
+        admission.send_admission_submitted_email_to_admin(self.admission, connected_user=None)
         args = mock_send.call_args[1]
         self.assertEqual(_(self.admission.formation.acronym), args.get('data').get('subject').get('formation'))
         self.assertEqual(
@@ -211,7 +212,7 @@ class SendEmailTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_admission_submitted_email_to_participant(self, mock_send):
-        admission.send_admission_submitted_email_to_participant(self.admission)
+        admission.send_admission_submitted_email_to_participant(self.admission, connected_user=None)
         args = mock_send.call_args[1]
 
         self.assertEqual({}, args.get('data').get('subject'))
