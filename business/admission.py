@@ -40,10 +40,14 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
-    if admission.state in (admission_state_choices.ACCEPTED,
-                           admission_state_choices.REJECTED,
-                           admission_state_choices.WAITING,
-                           admission_state_choices.VALIDATED):
+    if admission.state == admission_state_choices.SUBMITTED:
+        send_admission_submitted_email_to_admin(admission)
+        send_admission_submitted_email_to_participant(admission)
+        return
+    elif admission.state in (admission_state_choices.ACCEPTED,
+                             admission_state_choices.REJECTED,
+                             admission_state_choices.WAITING,
+                             admission_state_choices.VALIDATED):
         lower_state = admission.state.lower()
     else:
         lower_state = 'other'

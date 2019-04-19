@@ -34,8 +34,7 @@ from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
-from continuing_education.business.admission import send_state_changed_email, send_admission_submitted_email_to_admin, \
-    send_admission_submitted_email_to_participant
+from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.person_training import PersonTraining
 
@@ -515,11 +514,7 @@ def admission_pre_save_callback(sender, instance, **kwargs):
 def admission_post_save_callback(sender, instance, created, **kwargs):
     try:
         if instance.state != instance._original_state and instance._original_state != NEWLY_CREATED_STATE:
-            if instance.state == admission_state_choices.SUBMITTED:
-                send_admission_submitted_email_to_admin(instance)
-                send_admission_submitted_email_to_participant(instance)
-            else:
-                send_state_changed_email(instance)
+            send_state_changed_email(instance)
     except AttributeError:
         pass
 
