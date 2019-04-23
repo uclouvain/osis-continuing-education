@@ -60,10 +60,3 @@ class RegistrationForm(ModelForm):
             'reduced_rates',
             'spreading_payments',
         ]
-
-    def clean(self):
-        cleaned_data = super().clean()
-        print(cleaned_data.get('use_address_for_billing'))
-
-
-        return cleaned_data
