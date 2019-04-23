@@ -357,17 +357,28 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         self.client.patch(self.url, data=data)
 
         self.assertTrue(mock_send_email.called)
-        mock_call_args = mock_send_email.call_args[1]
+
+        mock_call_args_admin_notification = mock_send_email.call_args_list[0][1]
         self.assertEqual(
-            mock_call_args.get('template_references').get('html'),
+            mock_call_args_admin_notification.get('template_references').get('html'),
+            'iufc_admin_admission_submitted_html'
+        )
+        self.assertEqual(
+            mock_call_args_admin_notification.get('connected_user'),
+            self.user
+        )
+
+        mock_call_args_participant_notification = mock_send_email.call_args_list[1][1]
+        self.assertEqual(
+            mock_call_args_participant_notification.get('template_references').get('html'),
             'iufc_participant_admission_submitted_html'
         )
         self.assertEqual(
-            mock_call_args.get('receivers')[0].get('receiver_email'),
+            mock_call_args_participant_notification.get('receivers')[0].get('receiver_email'),
             self.admission.person_information.person.email
         )
         self.assertEqual(
-            mock_call_args.get('connected_user'),
+            mock_call_args_participant_notification.get('connected_user'),
             self.user
         )
 
