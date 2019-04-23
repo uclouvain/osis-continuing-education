@@ -80,6 +80,7 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
             'address',
             'citizenship',
             'phone_mobile',
+            'residence_phone',
 
             # EDUCATION
             'high_school_diploma',
