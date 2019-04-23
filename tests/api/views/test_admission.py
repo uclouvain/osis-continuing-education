@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import datetime
-import random
 import unittest
 import uuid
 from unittest import mock
@@ -290,8 +289,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
             citizenship=self.citizenship,
             person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=self.user)),
             formation=ContinuingEducationTrainingFactory(education_group=education_group),
-            state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
-
+            state=DRAFT
         )
 
         self.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': self.admission.uuid})
@@ -336,9 +334,6 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_valid_admission(self):
-        self.admission.state = DRAFT
-        self.admission.save()
-        self.assertEqual(1, Admission.objects.all().count())
         data = {
             'email': 'aaa@ddd.cd',
             'phone_mobile': '0000',
@@ -356,9 +351,6 @@ class AdmissionDetailUpdateTestCase(APITestCase):
 
     @mock.patch('continuing_education.business.admission.send_email')
     def test_submit_admission_mail_notification(self, mock_send_email):
-        self.admission.state = DRAFT
-        self.admission.save()
-
         data = {
             'state': SUBMITTED,
         }
@@ -381,9 +373,6 @@ class AdmissionDetailUpdateTestCase(APITestCase):
 
     @mock.patch('continuing_education.business.admission.send_email')
     def test_edit_admission_state_mail_notification(self, mock_send_email):
-        self.admission.state = DRAFT
-        self.admission.save()
-
         new_statuses = [ACCEPTED, REJECTED, WAITING, VALIDATED]
 
         for new_status in new_statuses:
@@ -410,9 +399,6 @@ class AdmissionDetailUpdateTestCase(APITestCase):
 
     @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
     def test_update_valid_admission_address(self, mock_mail):
-        self.admission.state = DRAFT
-        self.admission.save()
-        self.assertEqual(1, Admission.objects.all().count())
         data = {
             'main_address': {
                 'location': 'PERDU'
