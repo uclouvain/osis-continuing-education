@@ -102,13 +102,13 @@ def registration_edit(request, admission_id):
             admission.address,
             billing_address,
             billing_address_form,
-            form.cleaned_data['use_address_for_billing']
+            not form.cleaned_data['use_address_for_billing']
         )
         residence_address = _update_or_create_specific_address(
             admission.address,
             residence_address,
             residence_address_form,
-            form.cleaned_data['use_address_for_post']
+            not form.cleaned_data['use_address_for_post']
         )
         admission = form.save(commit=False)
         admission.address = address

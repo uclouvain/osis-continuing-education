@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm
+from django.utils.translation import ugettext_lazy as _
 
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.enums import YES_NO_CHOICES
@@ -10,6 +11,21 @@ class RegistrationForm(ModelForm):
         coerce=lambda x: x == 'True',
         choices=YES_NO_CHOICES
     )
+    use_address_for_billing = forms.ChoiceField(widget=forms.RadioSelect,
+                                                choices=[
+                                                    (True, _("residence address mentioned earlier")),
+                                                    (False, _("an other address"))
+                                                ],
+                                                label=_('I would like the billing address to be :'),
+                                                required=False)
+
+    use_address_for_post = forms.ChoiceField(widget=forms.RadioSelect,
+                                             choices=[
+                                                 (True, _("residence address mentioned earlier")),
+                                                 (False, _("an other address"))
+                                             ],
+                                             label=_('I would like the post address to be :'),
+                                             required=False)
 
     class Meta:
         model = Admission
