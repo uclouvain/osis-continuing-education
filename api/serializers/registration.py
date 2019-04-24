@@ -141,6 +141,10 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             instance,
             not validated_data['use_address_for_post']
         )
+        if validated_data['use_address_for_billing']:
+            validated_data['billing_address_id'] = instance.address.pk
+        if validated_data['use_address_for_post']:
+            validated_data['residence_address_id'] = instance.address.pk
         return super().update(instance, validated_data)
 
     def update_addresses(self, field, validated_data, instance, to_update):
