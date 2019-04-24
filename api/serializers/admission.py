@@ -30,6 +30,7 @@ from continuing_education.api.serializers.address import AddressSerializer, Addr
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
+from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -141,7 +142,11 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         self.update_field('address', validated_data, instance.address)
         if 'person_information' in validated_data:
             validated_data.pop('person_information')
-        return super(AdmissionDetailSerializer, self).update(instance, validated_data)
+        instance._original_state = instance.state
+        update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
+        if instance.state != instance._original_state:
+            send_state_changed_email(instance, connected_user=self.context.get('request').user)
+        return update_result
 
     def update_field(self, field, validated_data, instance):
         if field in validated_data:

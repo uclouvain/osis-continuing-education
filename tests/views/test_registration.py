@@ -25,6 +25,7 @@
 ##############################################################################
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.http import HttpResponse
@@ -32,7 +33,6 @@ from django.shortcuts import reverse
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _, ugettext
 from rest_framework import status
-from django.contrib.messages import get_messages
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -197,6 +197,7 @@ class RegistrationStateChangedTestCase(TestCase):
         registration = {
             'state': VALIDATED,
             'formation': self.formation.pk,
+            'person_information': self.registration_submitted.person_information.pk
         }
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])

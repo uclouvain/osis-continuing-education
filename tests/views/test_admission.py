@@ -25,6 +25,7 @@
 ##############################################################################
 import datetime
 import random
+from unittest import mock
 from unittest.mock import patch
 
 from django.contrib import messages
@@ -353,16 +354,29 @@ class AdmissionStateChangedTestCase(TestCase):
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.state, admission['state'], 'state')
 
-    def test_admission_detail_edit_state_to_draft(self):
+    @mock.patch('continuing_education.business.admission.send_email')
+    def test_admission_detail_edit_state_to_draft(self, mock_send_email):
         admission_draft = {
             'formation': self.formation.pk,
-            'state': DRAFT
+            'state': DRAFT,
+            'person_information': self.admission.person_information.pk
         }
         url = reverse('admission_detail', args=[self.admission_submitted.pk])
         response = self.client.post(url, data=admission_draft)
-        self.assertRedirects(response, reverse('admission'))
+        self.assertRedirects(response, url)
         self.admission_submitted.refresh_from_db()
-        self.assertEqual(self.admission_submitted.state, admission_draft['state'], 'state')
+        self.assertEqual(self.admission_submitted.state, DRAFT, 'state')
+
+        self.assertTrue(mock_send_email.called)
+        mock_call_args = mock_send_email.call_args[1]
+        self.assertEqual(
+            mock_call_args.get('template_references').get('html'),
+            'iufc_participant_state_changed_other_html'
+        )
+        self.assertEqual(
+            mock_call_args.get('receivers')[0].get('receiver_email'),
+            self.admission_submitted.person_information.person.email
+        )
 
 
 class ViewAdmissionCacheTestCase(TestCase):

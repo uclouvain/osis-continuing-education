@@ -37,6 +37,7 @@ from rest_framework.test import APITestCase
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
@@ -148,6 +149,7 @@ class RegistrationListTestCase(APITestCase):
 class RegistrationDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        GroupFactory(name='continuing_education_managers')
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         cls.user = UserFactory()
@@ -205,7 +207,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         response = self.client.get(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    @mock.patch('continuing_education.business.admission.send_submission_email_to_admin')
     def test_update_valid_registration(self, mock_mail):
         self.admission.state = ACCEPTED
         self.admission.save()
@@ -226,7 +228,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.registration_objects.all().count())
 
-    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    @mock.patch('continuing_education.business.admission.send_submission_email_to_admin')
     def test_update_valid_registration_billing_address(self, mock_mail):
         self.admission.state = ACCEPTED
         self.admission.save()
@@ -248,6 +250,44 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         )
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.registration_objects.all().count())
+
+    @mock.patch('continuing_education.business.admission.send_email')
+    def test_registration_submit_email_notification(self, mock_send_email):
+        self.admission.state = ACCEPTED
+        self.admission.save()
+
+        data = {
+            'use_address_for_billing': False,
+            'use_address_for_post': False,
+            'state': REGISTRATION_SUBMITTED,
+        }
+        self.client.put(self.url, data=data)
+
+        self.assertTrue(mock_send_email.called)
+
+        mock_call_args_admin_notification = mock_send_email.call_args_list[0][1]
+        self.assertEqual(
+            mock_call_args_admin_notification.get('template_references').get('html'),
+            'iufc_admin_admission_registr_submitted_html'
+        )
+        self.assertEqual(
+            mock_call_args_admin_notification.get('connected_user'),
+            self.user
+        )
+
+        mock_call_args_participant_notification = mock_send_email.call_args_list[1][1]
+        self.assertEqual(
+            mock_call_args_participant_notification.get('template_references').get('html'),
+            'iufc_participant_admission_registr_submitted_html'
+        )
+        self.assertEqual(
+            mock_call_args_participant_notification.get('receivers')[0].get('receiver_email'),
+            self.admission.person_information.person.email
+        )
+        self.assertEqual(
+            mock_call_args_participant_notification.get('connected_user'),
+            self.user
+        )
 
     def test_update_invalid_registration(self):
         response = self.client.put(self.invalid_url)

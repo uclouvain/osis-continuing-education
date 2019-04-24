@@ -221,14 +221,14 @@ def admission_form(request, admission_id=None):
 
 
 def _new_state_management(request, forms, admission, new_state):
+    admission._original_state = admission.state
     adm_form, waiting_adm_form, rejected_adm_form = forms
     _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state)
     if new_state != VALIDATED:
         adm_form.save()
-        if new_state == DRAFT:
-            return redirect(reverse('admission'))
     else:
         _validate_admission(request, adm_form)
+    send_state_changed_email(adm_form.instance, request.user)
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
@@ -244,7 +244,6 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
         adm_form.save()
-        send_state_changed_email(adm_form.instance, request.user)
     else:
         display_error_messages(
             request,
