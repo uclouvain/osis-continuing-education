@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import random
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -67,35 +66,9 @@ class TestAdmission(TestCase):
         self.assertFalse(nonexistent_admission.exists())
 
     @patch('osis_common.messaging.send_message.send_messages')
-    def test_mail_sent_on_admission_state_changed(self, mock):
-        state_values = [x[0] for x in admission_state_choices.STATES_REJECTED_WAITING['choices']]
-        # When state is draft, no mail are sent : mock not called
-        state = random.choice(state_values)
-        self.submitted_admission.state = state
-        self.submitted_admission.save()
-        self.assertTrue(mock.called)
-        message_content = mock.call_args[0][0]
-        self.assertIn(_(self.submitted_admission.state), str(message_content['template_base_data']))
-        self.assertIn(self.submitted_admission.person_information.person.user.email, str(message_content['receivers']))
-
-    @patch('osis_common.messaging.send_message.send_messages')
     def test_mail_not_sent_on_same_admission_state(self, mock):
         self.submitted_admission.save()
         self.assertFalse(mock.called)
-
-    @patch('continuing_education.business.admission._get_continuing_education_managers')
-    @patch('osis_common.messaging.send_message.send_messages')
-    def test_mails_sent_to_admin_and_participant_on_admission_submitted(self, mock_send, mock_managers):
-        self.admission.state = admission_state_choices.DRAFT
-        self.admission.save()
-        self.admission.state = admission_state_choices.SUBMITTED
-        self.admission.save()
-        self.assertTrue(mock_send.called)
-        self.assertTrue(mock_managers.called)
-        message_content = mock_send.call_args[0][0]
-        self.assertIn(_(self.admission.state), str(message_content['template_base_data']))
-        receivers = mock_send.call_args[0][0]['receivers']
-        self.assertIn(self.admission.person_information.person.user.email, str(receivers))
 
 
 class TestAdmissionGetProperties(TestCase):

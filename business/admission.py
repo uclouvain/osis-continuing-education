@@ -40,10 +40,14 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
-    if admission.state in (admission_state_choices.ACCEPTED,
-                           admission_state_choices.REJECTED,
-                           admission_state_choices.WAITING,
-                           admission_state_choices.VALIDATED):
+    if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
+        send_submission_email_to_admin(admission, connected_user)
+        send_submission_email_to_participant(admission, connected_user)
+        return
+    elif admission.state in (admission_state_choices.ACCEPTED,
+                             admission_state_choices.REJECTED,
+                             admission_state_choices.WAITING,
+                             admission_state_choices.VALIDATED):
         lower_state = admission.state.lower()
     else:
         lower_state = 'other'
@@ -77,7 +81,7 @@ def send_state_changed_email(admission, connected_user=None):
     )
 
 
-def send_admission_submitted_email_to_admin(admission):
+def send_submission_email_to_admin(admission, connected_user):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
@@ -85,8 +89,8 @@ def send_admission_submitted_email_to_admin(admission):
     managers = _get_continuing_education_managers()
     send_email(
         template_references={
-            'html': 'iufc_admin_admission_submitted_html',
-            'txt': 'iufc_admin_admission_submitted_txt',
+            'html': _get_template_reference(admission, receiver='admin', suffix='html'),
+            'txt': _get_template_reference(admission, receiver='admin', suffix='txt')
         },
         data={
             'template': {
@@ -108,16 +112,17 @@ def send_admission_submitted_email_to_admin(admission):
             )
             for manager in managers
         ],
+        connected_user=connected_user
     )
 
 
-def send_admission_submitted_email_to_participant(admission):
+def send_submission_email_to_participant(admission, connected_user):
     participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
-            'html': 'iufc_participant_admission_submitted_html',
-            'txt': 'iufc_participant_admission_submitted_txt',
+            'html': _get_template_reference(admission, receiver='participant', suffix='html'),
+            'txt': _get_template_reference(admission, receiver='participant', suffix='txt')
         },
         data={
             'template': {
@@ -134,7 +139,15 @@ def send_admission_submitted_email_to_participant(admission):
                 None
             )
         ],
+        connected_user=connected_user
     )
+
+
+def _get_template_reference(admission, receiver, suffix):
+    state = admission.state.lower().replace(" ", "_")
+    if state == 'registration_submitted':
+        state = 'registr_submitted'  # keep template reference short enough
+    return 'iufc_{}_admission_{}_{}'.format(receiver, state, suffix)
 
 
 def send_invoice_uploaded_email(admission):

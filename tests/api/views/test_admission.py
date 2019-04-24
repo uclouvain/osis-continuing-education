@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import datetime
-import random
 import unittest
 import uuid
 from unittest import mock
@@ -40,6 +39,7 @@ from base.models.person import Person
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
@@ -47,7 +47,8 @@ from continuing_education.api.serializers.admission import AdmissionListSerializ
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING
+from continuing_education.models.enums.admission_state_choices import SUBMITTED, ACCEPTED, REJECTED, DRAFT, WAITING, \
+    VALIDATED
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -273,32 +274,30 @@ class AdmissionCreateTestCase(APITestCase):
 
 
 class AdmissionDetailUpdateTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.citizenship = CountryFactory()
-        cls.user = UserFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+    def setUp(self):
+        GroupFactory(name='continuing_education_managers')
+        self.citizenship = CountryFactory()
+        self.user = UserFactory()
+        self.academic_year = AcademicYearFactory(year=2018)
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,
-            academic_year=cls.academic_year
+            academic_year=self.academic_year
         )
 
-        cls.admission = AdmissionFactory(
-            citizenship=cls.citizenship,
-            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=cls.user)),
+        self.admission = AdmissionFactory(
+            citizenship=self.citizenship,
+            person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=self.user)),
             formation=ContinuingEducationTrainingFactory(education_group=education_group),
-            state=random.choice([REJECTED, WAITING, SUBMITTED, DRAFT])
-
+            state=DRAFT
         )
 
-        cls.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': cls.admission.uuid})
-        cls.invalid_url = reverse(
+        self.url = reverse('continuing_education_api_v1:admission-detail-update', kwargs={'uuid': self.admission.uuid})
+        self.invalid_url = reverse(
             'continuing_education_api_v1:admission-detail-update',
             kwargs={'uuid':  uuid.uuid4()}
         )
 
-    def setUp(self):
         self.client.force_authenticate(user=self.user)
 
     def test_get_not_authorized(self):
@@ -334,11 +333,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         response = self.client.get(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
-    def test_update_valid_admission(self, mock_mail):
-        self.admission.state = DRAFT
-        self.admission.save()
-        self.assertEqual(1, Admission.objects.all().count())
+    def test_update_valid_admission(self):
         data = {
             'email': 'aaa@ddd.cd',
             'phone_mobile': '0000',
@@ -354,11 +349,67 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.objects.all().count())
 
-    @mock.patch('continuing_education.business.admission.send_admission_submitted_email_to_admin')
+    @mock.patch('continuing_education.business.admission.send_email')
+    def test_submit_admission_mail_notification(self, mock_send_email):
+        data = {
+            'state': SUBMITTED,
+        }
+        self.client.patch(self.url, data=data)
+
+        self.assertTrue(mock_send_email.called)
+
+        mock_call_args_admin_notification = mock_send_email.call_args_list[0][1]
+        self.assertEqual(
+            mock_call_args_admin_notification.get('template_references').get('html'),
+            'iufc_admin_admission_submitted_html'
+        )
+        self.assertEqual(
+            mock_call_args_admin_notification.get('connected_user'),
+            self.user
+        )
+
+        mock_call_args_participant_notification = mock_send_email.call_args_list[1][1]
+        self.assertEqual(
+            mock_call_args_participant_notification.get('template_references').get('html'),
+            'iufc_participant_admission_submitted_html'
+        )
+        self.assertEqual(
+            mock_call_args_participant_notification.get('receivers')[0].get('receiver_email'),
+            self.admission.person_information.person.email
+        )
+        self.assertEqual(
+            mock_call_args_participant_notification.get('connected_user'),
+            self.user
+        )
+
+    @mock.patch('continuing_education.business.admission.send_email')
+    def test_edit_admission_state_mail_notification(self, mock_send_email):
+        new_statuses = [ACCEPTED, REJECTED, WAITING, VALIDATED]
+
+        for new_status in new_statuses:
+            with self.subTest(new_status=new_status):
+                data = {
+                    'state': new_status,
+                }
+                self.client.patch(self.url, data=data)
+
+                self.assertTrue(mock_send_email.called)
+                mock_call_args = mock_send_email.call_args[1]
+                self.assertEqual(
+                    mock_call_args.get('template_references').get('html'),
+                    'iufc_participant_state_changed_accepted_html'
+                )
+                self.assertEqual(
+                    mock_call_args.get('receivers')[0].get('receiver_email'),
+                    self.admission.person_information.person.email
+                )
+                self.assertEqual(
+                    mock_call_args.get('connected_user'),
+                    self.user
+                )
+
+    @mock.patch('continuing_education.business.admission.send_submission_email_to_admin')
     def test_update_valid_admission_address(self, mock_mail):
-        self.admission.state = DRAFT
-        self.admission.save()
-        self.assertEqual(1, Admission.objects.all().count())
         data = {
             'main_address': {
                 'location': 'PERDU'
