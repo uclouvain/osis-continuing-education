@@ -216,7 +216,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
             'vat_number': '123456',
             'id_card_number': '0000000',
             'use_address_for_billing': True,
-            'use_address_for_post': True
+            'use_address_for_post': True,
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

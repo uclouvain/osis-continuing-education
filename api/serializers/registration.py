@@ -142,11 +142,6 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             instance,
             not validated_data['use_address_for_post']
         )
-        if validated_data['use_address_for_billing']:
-            validated_data['billing_address_id'] = instance.address.pk
-        if validated_data['use_address_for_post']:
-            validated_data['residence_address_id'] = instance.address.pk
-
         instance._original_state = instance.state
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
@@ -159,4 +154,6 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             field_data = validated_data.pop(field)
             if to_update:
                 return field_serializer.update(getattr(instance, field), field_data, instance.address)
+            else:
+                return instance.address
         return getattr(instance, field)
