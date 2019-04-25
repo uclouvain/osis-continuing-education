@@ -43,7 +43,7 @@ function check_mandatory_fields_in_screen() {
     $('ul#list_fields_missing').empty();
 
     $('.participant_required').each(function () {
-        if (!$(this).val()) {
+        if ($(this).attr("id") && !$(this).val()) {
             var extra='';
             var div =$(this).closest('div[id]');
 
@@ -55,6 +55,11 @@ function check_mandatory_fields_in_screen() {
             $('ul#list_fields_missing').append($("<li></li>").text(extra + $('label[for="' + $(this).attr('id') + '"]').text()));
         }
     });
+
+    if($('#id_national_registry_number').val().trim()=='' &&  $('#id_id_card_number').val().trim()=='' && $('#id_passport_number').val().trim()==''){
+        var msg = $('#msg_required').html();
+        $('ul#list_fields_missing').append($("<li></li>").text(msg + $('label[for="required_identification"]').text()));
+    }
 
     if ($("ul#list_fields_missing").children('li').length > 0) {
         sortUL("ul#list_fields_missing");
