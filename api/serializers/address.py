@@ -49,7 +49,7 @@ class AddressPostSerializer(AddressSerializer):
         slug_field='iso_code',
         queryset=Country.objects.all(),
         required=False,
-        allow_null=True
+        allow_null=True,
     )
 
     def update(self, instance, validated_data, main_address=None):
