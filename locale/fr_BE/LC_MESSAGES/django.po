@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-26 12:07+0200\n"
+"POT-Creation-Date: 2019-04-26 12:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,7 +82,7 @@ msgstr "Adresse"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#: models/file.py:58 templates/admission_detail.html:119
+#: models/file.py:58 templates/admission_detail.html:126
 #: templates/admission_form.html:37
 msgctxt "continuing_education"
 msgid "Admission"
@@ -327,6 +327,10 @@ msgstr "Ville"
 msgid "Company number"
 msgstr "Numéro unique d'entreprise"
 
+#: models/admission.py:406 templates/admission_detail.html:121
+msgid "Condition of acceptance"
+msgstr "Condition d'acceptation"
+
 #: templates/fragment/submit_confirm_modal.html:34
 #: templates/fragment/submit_confirm_modal.html:50
 #: templates/fragment/waiting_reason_modal.html:49
@@ -418,7 +422,7 @@ msgstr "Divorcé"
 msgid "Do you confirm you want to save?"
 msgstr "Vous confirmez que vous voulez enregistrer?"
 
-#: templates/admission_detail.html:94
+#: templates/admission_detail.html:95
 msgid "Do you confirm you want to submit?"
 msgstr "Vous confirmez que vous voulez soumettre l'inscription?"
 
@@ -426,7 +430,7 @@ msgstr "Vous confirmez que vous voulez soumettre l'inscription?"
 msgid "Document"
 msgstr "Document"
 
-#: templates/admission_detail.html:121
+#: templates/admission_detail.html:128
 msgid "Documents"
 msgstr "Documents"
 
@@ -833,7 +837,7 @@ msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
 
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
-#: models/admission.py:216 models/admission.py:442 models/enums/enums.py:32
+#: models/admission.py:216 models/admission.py:447 models/enums/enums.py:32
 #: models/enums/enums.py:40 templates/admission_form.html:201
 #: templates/fragment/tab_admission.html:150 tests/models/test_admission.py:118
 msgid "Other"
@@ -1009,7 +1013,7 @@ msgstr "Raison de mise en attente"
 msgid "Reduced rates"
 msgstr "Droits réduits"
 
-#: templates/admission_detail.html:114
+#: templates/admission_detail.html:115
 msgid "Refusal state reason"
 msgstr "Motif d'état de refus"
 
@@ -1018,7 +1022,7 @@ msgstr "Motif d'état de refus"
 msgid "Registered"
 msgstr "Inscrit"
 
-#: templates/admission_detail.html:120
+#: templates/admission_detail.html:127
 #: templates/fragment/tab_registration.html:60
 #: templates/registration_form.html:37 templates/registration_form.html:80
 msgid "Registration"
@@ -1418,7 +1422,7 @@ msgstr "Validé"
 msgid "Waiting"
 msgstr "En attente"
 
-#: templates/admission_detail.html:108
+#: templates/admission_detail.html:109
 msgid "Waiting state reason"
 msgstr "Raison de la mise en attente"
 
