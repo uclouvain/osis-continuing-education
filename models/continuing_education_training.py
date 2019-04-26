@@ -45,9 +45,9 @@ CONTINUING_EDUCATION_TRAINING_TYPES = [
 
 
 class ContinuingEducationTrainingAdmin(ModelAdmin):
-    list_display = ('acronym', 'active', 'training_aid',)
+    list_display = ('acronym', 'active', 'training_aid', 'send_notification_emails')
     search_fields = ['education_group__educationgroupyear__acronym']
-    list_filter = ('active', 'training_aid',)
+    list_filter = ('active', 'training_aid', 'send_notification_emails',)
     raw_id_fields = ('education_group',)
 
 
@@ -68,6 +68,16 @@ class ContinuingEducationTraining(Model):
     training_aid = models.BooleanField(
         default=False,
         verbose_name=_("Training aid")
+    )
+
+    send_notification_emails = models.BooleanField(
+        default=True,
+        verbose_name=_("Send notification emails")
+    )
+
+    alternate_notification_email_addresses = models.TextField(
+        default='',
+        verbose_name=_("Alternate notification email addresses")
     )
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
