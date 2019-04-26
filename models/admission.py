@@ -401,6 +401,11 @@ class Admission(Model):
         verbose_name=_("Spreading payments")
     )
 
+    condition_of_acceptance = models.TextField(
+        blank=True,
+        verbose_name=_("Condition of acceptance")
+    )
+
     @property
     def formation_display(self):
         education_group_year = self.formation.get_most_recent_education_group_year()

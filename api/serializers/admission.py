@@ -119,7 +119,8 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
             'awareness_moocs',
             'awareness_other',
 
-            'state_reason'
+            'state_reason',
+            'condition_of_acceptance'
         )
 
 
