@@ -38,3 +38,5 @@ class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
     active = random.choice([True, False])
     training_aid = random.choice([True, False])
     education_group = factory.SubFactory(EducationGroupFactory)
+    send_notification_emails = True
+    alternate_notification_email_addresses = ''
