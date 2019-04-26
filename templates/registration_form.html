@@ -79,10 +79,17 @@
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Registration' %}</h4></div>
             <div class="panel panel-body">
-                <div class="row">
-                    {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4" label=_("National registry number") %}
+                <div class="row participant_required" style="margin-top:-15px" >
+                        <label id="msg_required" style="margin-left:15px; color: #8a6d3b;">
+                            {% trans 'At least one of the 3 following fields(national registry, id card number or passport number) must be filled-in be the participant'%}
+                        </label>
+                </div>
+                <div class="row participant_required">
+                    {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4"  label=_("National registry number") %}
                     {% bootstrap_field form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
                     {% bootstrap_field form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
+                </div>
+                <div class="row participant_required" style="margin-top: -15px;" >&nbsp;
                 </div>
                 <div class="row">
                     {% bootstrap_field form.marital_status form_group_class="form-group col-md-4" label=_("Marital status") %}
