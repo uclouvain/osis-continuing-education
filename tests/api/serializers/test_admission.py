@@ -101,7 +101,8 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'awareness_former_students',
             'awareness_moocs',
             'awareness_other',
-            'state_reason'
+            'state_reason',
+            'condition_of_acceptance',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -166,7 +167,8 @@ class AdmissionPostSerializerTestCase(TestCase):
             'awareness_former_students',
             'awareness_moocs',
             'awareness_other',
-            'state_reason'
+            'state_reason',
+            'condition_of_acceptance'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

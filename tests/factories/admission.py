@@ -138,3 +138,4 @@ class AdmissionFactory(factory.DjangoModelFactory):
     sessions = "sessions"
     reduced_rates = False
     spreading_payments = False
+    condition_of_acceptance = ''

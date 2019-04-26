@@ -432,6 +432,8 @@ components:
                 type: boolean
               awareness_other:
                 type: string
+              condition_of_acceptance:
+                type: string
 
     AdmissionBasicGet:
       allOf:
