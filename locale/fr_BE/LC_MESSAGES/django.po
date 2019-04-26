@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-26 11:55+0200\n"
+"POT-Creation-Date: 2019-04-26 12:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -178,11 +178,11 @@ msgstr "Associatif"
 
 #: templates/registration_form.html:84
 msgid ""
-"At least one of the 3 following fields(national registry, id card number or "
+"At least one of the 3 following fields (national registry, id card number or "
 "passport number) must be filled-in be the participant"
 msgstr ""
-"Le participant doit remplir au minimum un des 3 champs suivants : numéro de registre national, numéro de carte "
-"d'identité ou numéro de passeport"
+"Le participant doit remplir au minimum un des 3 champs suivants : numéro de "
+"registre national, numéro de carte d'identité ou numéro de passeport"
 
 #: business/xls/xls_common.py:68 templates/admission_form.html:179
 #: templates/fragment/tab_admission.html:111

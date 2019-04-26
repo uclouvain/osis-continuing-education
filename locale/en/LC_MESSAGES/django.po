@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-26 11:55+0200\n"
+"POT-Creation-Date: 2019-04-26 12:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,7 +177,7 @@ msgstr ""
 
 #: templates/registration_form.html:84
 msgid ""
-"At least one of the 3 following fields(national registry, id card number or "
+"At least one of the 3 following fields (national registry, id card number or "
 "passport number) must be filled-in be the participant"
 msgstr ""
 
