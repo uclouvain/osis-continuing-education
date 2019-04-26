@@ -74,7 +74,8 @@ class Admission(SerializableModel):
         'continuing_education.ContinuingEducationPerson',
         blank=True,
         null=True,
-        verbose_name=_("Person information")
+        verbose_name=_("Person information"),
+        on_delete=models.CASCADE
     )
 
     formation = models.ForeignKey(
@@ -89,13 +90,15 @@ class Admission(SerializableModel):
         blank=True,
         null=True,
         related_name='citizenship',
-        verbose_name=_("Citizenship")
+        verbose_name=_("Citizenship"),
+        on_delete=models.CASCADE
     )
     address = models.ForeignKey(
         'continuing_education.Address',
         blank=True,
         null=True,
-        verbose_name=_("Address")
+        verbose_name=_("Address"),
+        on_delete=models.CASCADE
     )
     phone_mobile = models.CharField(
         max_length=30,
@@ -247,7 +250,8 @@ class Admission(SerializableModel):
         blank=True,
         null=True,
         related_name="billing_address",
-        verbose_name=_("Billing address")
+        verbose_name=_("Billing address"),
+        on_delete=models.CASCADE
     )
 
     head_office_name = models.CharField(
@@ -318,7 +322,8 @@ class Admission(SerializableModel):
         blank=True,
         null=True,
         related_name="residence_address",
-        verbose_name=_("Residence address")
+        verbose_name=_("Residence address"),
+        on_delete=models.CASCADE
     )
 
     residence_phone = models.CharField(

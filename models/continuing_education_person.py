@@ -34,7 +34,8 @@ class ContinuingEducationPerson(SerializableModel):
         blank=True,
         null=True,
         related_name='birth_country',
-        verbose_name=_("Birth country")
+        verbose_name=_("Birth country"),
+        on_delete=models.CASCADE
     )
 
     def __str__(self):

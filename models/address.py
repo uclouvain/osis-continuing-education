@@ -29,5 +29,6 @@ class Address(SerializableModel):
         blank=True,
         null=True,
         related_name='address_country',
-        verbose_name=_("Country")
+        verbose_name=_("Country"),
+        on_delete=models.CASCADE
     )
