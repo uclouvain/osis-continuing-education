@@ -43,6 +43,7 @@ from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIEL
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -139,6 +140,7 @@ class SendEmailTest(TestCase):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
         self.manager = PersonFactory(last_name="AAA")
+        self.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=self.manager, training=cet)
         PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)
@@ -146,7 +148,9 @@ class SendEmailTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_state_changed_email(self, mock_send):
+        self.admission.state = admission_state_choices.ACCEPTED
         self.admission._original_state = self.admission.state
+        self.admission.save()
         admission.send_state_changed_email(self.admission)
         args = mock_send.call_args[1]
 
@@ -180,8 +184,6 @@ class SendEmailTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_submission_email_to_admin(self, mock_send):
-        group = GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP)
-        self.manager.user.groups.add(group)
         admission.send_submission_email_to_admin(self.admission, connected_user=None)
         args = mock_send.call_args[1]
         self.assertEqual(_(self.admission.formation.acronym), args.get('data').get('subject').get('formation'))

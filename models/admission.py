@@ -480,7 +480,8 @@ class Admission(Model):
         permissions = (
             ("can_access_admission", "Can consult IUFC admission information"),
             ("can_validate_registration", "Can validate IUFC registration file"),
-            ("can_create_json", "Can create JSON file")
+            ("can_create_json", "Can create JSON file"),
+            ("can_edit_received_file_field", "Can edit received file field"),
         )
 
 
