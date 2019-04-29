@@ -99,6 +99,7 @@ def send_submission_email_to_admin(admission, connected_user):
                 'formation': admission.formation,
                 'state': _(admission.state),
                 'formation_link': formation_url,
+                'admission_data': _get_formatted_admission_data(admission),
             },
             'subject': {
                 'formation': admission.formation.acronym,
