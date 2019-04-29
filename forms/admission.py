@@ -229,7 +229,7 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
             (True, _("Conditionally")),
             (False, _("Unconditionally"))
         ],
-        label=_('Predefined reason'),
+        label=_('Accept the file'),
     )
     condition_of_acceptance = forms.CharField(
         widget=forms.Textarea,
