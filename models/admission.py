@@ -408,7 +408,6 @@ class Admission(Model):
 
     condition_of_acceptance = models.TextField(
         blank=True,
-        null=True,
         verbose_name=_("Condition of acceptance")
     )
 
