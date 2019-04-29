@@ -25,8 +25,8 @@
 ##############################################################################
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.urls import reverse
+from django.utils.translation import gettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY

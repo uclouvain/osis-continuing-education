@@ -55,7 +55,8 @@ class AdmissionFile(Model):
         'continuing_education.Admission',
         blank=True,
         null=True,
-        verbose_name=pgettext("continuing_education", "Admission")
+        verbose_name=pgettext("continuing_education", "Admission"),
+        on_delete=models.CASCADE
     )
 
     name = models.CharField(
@@ -89,7 +90,7 @@ class AdmissionFile(Model):
     )
 
     def save(self, *args, **kwargs):
-        if not(self.size and self.name):
+        if not (self.size and self.name):
             self.size = self.path.size
             self.name = get_valid_filename(self.path.name)
         if len(self.name) > MAX_ADMISSION_FILE_NAME_LENGTH:
