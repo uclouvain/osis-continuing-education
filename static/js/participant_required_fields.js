@@ -29,10 +29,14 @@ function registration_submitted_confirmed(newState) {
     $('#form').submit();
 }
 
-$('button[name="btn_save"]').click(function(){
+$('button[name="btn_save_registration"]').click(function(){
     if (check_mandatory_fields_in_screen()){
         $('#form').submit();
     }
+});
+
+$('button[name="btn_save"]').click(function(){
+    $('#form').submit();
 });
 
 function form_submit() {
