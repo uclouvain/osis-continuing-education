@@ -41,7 +41,7 @@ from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
-    ADMISSION_PARTICIPANT_REQUIRED_FIELDS
+    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models import continuing_education_person
@@ -49,7 +49,7 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED
+    REGISTRATION_SUBMITTED, ACCEPTED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors
 from continuing_education.views.common import get_object_list
@@ -106,8 +106,13 @@ def admission_detail(request, admission_id):
         instance=admission,
         )
 
+    condition_acceptance_adm_form = ConditionAcceptanceAdmissionForm(
+        request.POST or None,
+        instance=admission,
+        )
+
     if adm_form.is_valid():
-        forms = (adm_form, waiting_adm_form, rejected_adm_form)
+        forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form)
         return _change_state(request, forms, accepted_states, admission)
 
     return render(
@@ -120,13 +125,14 @@ def admission_detail(request, admission_id):
             'rejected_adm_form': rejected_adm_form,
             'waiting_adm_form': waiting_adm_form,
             'file_categories_choices': _get_file_category_choices_with_disabled_parameter(admission),
-            'invoice': file_category_choices.INVOICE
+            'invoice': file_category_choices.INVOICE,
+            'condition_acceptance_adm_form': condition_acceptance_adm_form
         }
     )
 
 
 def _change_state(request, forms, accepted_states, admission):
-    adm_form, waiting_adm_form, rejected_adm_form = forms
+    adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
         return _new_state_management(request, forms, admission, new_state)
@@ -222,8 +228,8 @@ def admission_form(request, admission_id=None):
 
 def _new_state_management(request, forms, admission, new_state):
     admission._original_state = admission.state
-    adm_form, waiting_adm_form, rejected_adm_form = forms
-    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state)
+    adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form = forms
+    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form)
     if new_state != VALIDATED:
         adm_form.save()
     else:
@@ -232,13 +238,16 @@ def _new_state_management(request, forms, admission, new_state):
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
-def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state):
+def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form):
     if new_state == REJECTED:
         if rejected_adm_form.is_valid():
             rejected_adm_form.save()
     elif new_state == WAITING:
         if waiting_adm_form.is_valid():
             waiting_adm_form.save()
+    elif new_state == ACCEPTED:
+        if condition_acceptance_adm_form.is_valid():
+            condition_acceptance_adm_form.save()
 
 
 def _validate_admission(request, adm_form):

@@ -219,3 +219,59 @@ class WaitingAdmissionForm(ModelForm):
             instance.state_reason = self.cleaned_data["waiting_reason"]
         instance.save()
         return instance
+
+
+class ConditionAcceptanceAdmissionForm(ModelForm):
+
+    condition_of_acceptance_existing = forms.ChoiceField(
+        widget=forms.RadioSelect,
+        choices=[
+            (True, _("Conditionally")),
+            (False, _("Unconditionally"))
+        ],
+        label=_('Predefined reason'),
+    )
+    condition_of_acceptance = forms.CharField(
+        widget=forms.Textarea,
+        required=False,
+        label=_('Condition of acceptance'),
+    )
+
+    class Meta:
+        model = Admission
+        fields = [
+            'state',
+            'condition_of_acceptance',
+        ]
+
+    def __init__(self, data, **kwargs):
+
+        super().__init__(data, **kwargs)
+
+        if data is None:
+            # GET
+            if self.instance.state == admission_state_choices.ACCEPTED:
+                self._accepted_state_init()
+            else:
+                self.fields['condition_of_acceptance'].initial = self.instance.condition_of_acceptance
+                self.fields['condition_of_acceptance_existing'].initial = False
+                self.fields['condition_of_acceptance'].disabled = True
+
+    def _accepted_state_init(self):
+        self.fields['condition_of_acceptance'].initial = self.instance.condition_of_acceptance
+
+        if not self.instance.condition_of_acceptance:
+            self.fields['condition_of_acceptance_existing'].initial = False
+            self.fields['condition_of_acceptance'].disabled = True
+        elif self.instance.state_reason:
+            self.fields['condition_of_acceptance_existing'].initial = True
+            self.fields['condition_of_acceptance'].disabled = False
+
+    def save(self):
+        instance = super().save(commit=False)
+        if self.cleaned_data["condition_of_acceptance_existing"]:
+            instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
+        else:
+            instance.condition_of_acceptance = None
+        instance.save()
+        return instance
