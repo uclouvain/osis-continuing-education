@@ -44,7 +44,7 @@
             <a class="btn btn-default pull-right" id="cancel_registration_edit" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
-            <button type="button" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save"
+            <button type="button" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save_registration"
                     data-modal_class="modal-lg"
                     {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
@@ -150,7 +150,7 @@
         <a class="btn btn-default pull-right" id="cancel_registration_edit_bottom" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
         </a>
-        <button type="button" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save"
+        <button type="button" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save_registration"
                 data-modal_class="modal-lg"
                 {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
