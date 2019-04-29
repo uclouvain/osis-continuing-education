@@ -239,14 +239,11 @@ def _new_state_management(request, forms, admission, new_state):
 
 
 def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form):
-    if new_state == REJECTED:
-        if rejected_adm_form.is_valid():
+    if new_state == REJECTED and rejected_adm_form.is_valid():
             rejected_adm_form.save()
-    elif new_state == WAITING:
-        if waiting_adm_form.is_valid():
+    elif new_state == WAITING and waiting_adm_form.is_valid():
             waiting_adm_form.save()
-    elif new_state == ACCEPTED:
-        if condition_acceptance_adm_form.is_valid():
+    elif new_state == ACCEPTED and condition_acceptance_adm_form.is_valid():
             condition_acceptance_adm_form.save()
 
 
