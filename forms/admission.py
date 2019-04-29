@@ -263,13 +263,14 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         if not self.instance.condition_of_acceptance:
             self.fields['condition_of_acceptance_existing'].initial = False
             self.fields['condition_of_acceptance'].disabled = True
-        elif self.instance.state_reason:
+        else:
             self.fields['condition_of_acceptance_existing'].initial = True
             self.fields['condition_of_acceptance'].disabled = False
 
     def save(self):
         instance = super().save(commit=False)
-        if self.cleaned_data["condition_of_acceptance_existing"]:
+
+        if eval(self.cleaned_data["condition_of_acceptance_existing"]):
             instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
         else:
             instance.condition_of_acceptance = None

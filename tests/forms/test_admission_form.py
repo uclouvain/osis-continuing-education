@@ -31,8 +31,8 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm
-from continuing_education.models.enums.admission_state_choices import REJECTED
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm
+from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -147,3 +147,63 @@ def convert_dates(person):
     person['birth_date'] = person['birth_date'].strftime('%Y-%m-%d')
     person['high_school_graduation_year'] = person['high_school_graduation_year'].strftime('%Y-%m-%d')
     person['last_degree_graduation_year'] = person['last_degree_graduation_year'].strftime('%Y-%m-%d')
+
+
+class TestAcceptedAdmissionForm(TestCase):
+
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        self.accepted_admission_without_condition = AdmissionFactory(
+            state=ACCEPTED,
+            formation=self.formation
+        )
+        self.accepted_admission_with_condition = AdmissionFactory(
+            state=ACCEPTED,
+            condition_of_acceptance="Condition",
+            formation=self.formation
+        )
+
+    def test_init_accepted_init_with_condition(self):
+
+        form = ConditionAcceptanceAdmissionForm(None, instance=self.accepted_admission_with_condition)
+
+        self.assertEqual(form.fields['condition_of_acceptance'].initial, self.accepted_admission_with_condition.condition_of_acceptance)
+        self.assertFalse(form.fields['condition_of_acceptance'].disabled)
+        self.assertTrue(form.fields['condition_of_acceptance_existing'].initial)
+
+    def test_init_accepted_init_without_condition(self):
+        form = ConditionAcceptanceAdmissionForm(None, instance=self.accepted_admission_without_condition)
+
+        self.assertEqual(form.fields['condition_of_acceptance'].initial, '')
+        self.assertTrue(form.fields['condition_of_acceptance'].disabled)
+        self.assertFalse(form.fields['condition_of_acceptance_existing'].initial)
+
+    def test_save_with_condition(self):
+        data = self.accepted_admission_with_condition.__dict__
+
+        data['condition_of_acceptance_existing'] = True
+        data['condition_of_acceptance'] = 'New Condition'
+
+        form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_with_condition)
+        obj_updated = form.save()
+        self.assertEqual(obj_updated.state, ACCEPTED)
+        self.assertEqual(obj_updated.condition_of_acceptance, 'New Condition')
+
+    def test_save_without_condition(self):
+        data = self.accepted_admission_without_condition.__dict__
+
+        data['condition_of_acceptance_existing'] = False
+        data['condition_of_acceptance'] = 'If false before no condition possible'
+
+        form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_without_condition)
+        obj_updated = form.save()
+        self.assertEqual(obj_updated.state, ACCEPTED)
+        self.assertIsNone(obj_updated.condition_of_acceptance)
