@@ -87,7 +87,6 @@
                     {% endif %}
                 </div>
             </div>
-        
             {% bootstrap_form admission_form exclude="state_reason,condition_of_acceptance" form_group_class="hidden" %}
             {% include "fragment/waiting_reason_modal.html" %}
             {% include "fragment/warning_modal.html" %}
@@ -120,7 +119,7 @@
         {% if admission.is_accepted %}
             <div class="alert alert-info" role="alert">
                 <b>{% trans 'Condition of acceptance' %} : </b>
-                {{ admission.condition_of_acceptance | default:'-' }}
+                {{ admission.condition_of_acceptance }}
             </div>
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
