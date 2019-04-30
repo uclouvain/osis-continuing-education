@@ -87,7 +87,8 @@
                     {% endif %}
                 </div>
             </div>
-            {% bootstrap_form admission_form exclude="state_reason,condition_of_acceptance" form_group_class="hidden" %}
+            {% bootstrap_form admission_form exclude="state_reason, condition_of_acceptance" form_group_class="hidden" %}
+
             {% include "fragment/waiting_reason_modal.html" %}
             {% include "fragment/warning_modal.html" %}
             {% include "fragment/rejected_reason_modal.html" %}
