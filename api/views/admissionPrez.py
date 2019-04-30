@@ -12,12 +12,15 @@ class AdmissionBasic(generics.ListAPIView):
 
     filter_fields = (
         'formation',
+        'person_information'
     )
     search_fields = (
         'formation',
+        'person_information'
     )
     ordering_fields = (
         'formation',
+        'person_information'
     )
     ordering = (
         'formation',
@@ -34,23 +37,9 @@ class AdmissionBasic(generics.ListAPIView):
 
 class AdmissionDetails(generics.RetrieveAPIView):
     """
-       Return a list of all the admission with optional filtering.
+       Return the details of an admission.
     """
     name = 'admission-details'
-
-    filter_fields = (
-        'formation',
-    )
-    search_fields = (
-        'formation',
-    )
-    ordering_fields = (
-        'formation',
-    )
-    ordering = (
-        'formation',
-    )  # Default ordering
-
     serializer_class = AdmissionDetailsSerializer
     queryset = Admission.admission_objects.all()
     lookup_field = 'uuid'
