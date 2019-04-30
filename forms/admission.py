@@ -273,6 +273,6 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         if eval(self.cleaned_data["condition_of_acceptance_existing"]):
             instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
         else:
-            instance.condition_of_acceptance = None
+            instance.condition_of_acceptance = ''
         instance.save()
         return instance

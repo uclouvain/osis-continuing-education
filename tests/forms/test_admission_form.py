@@ -206,4 +206,4 @@ class TestAcceptedAdmissionForm(TestCase):
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_without_condition)
         obj_updated = form.save()
         self.assertEqual(obj_updated.state, ACCEPTED)
-        self.assertIsNone(obj_updated.condition_of_acceptance)
+        self.assertEqual(obj_updated.condition_of_acceptance, '')
