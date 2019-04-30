@@ -55,4 +55,3 @@ class AdmissionDetailsSerializer(AdmissionBasicSerializer):
             'birth_location',
             'birth_date'
         )
-
