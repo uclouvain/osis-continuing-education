@@ -6,7 +6,6 @@ from reference.models.country import Country
 
 
 class AdmissionBasicSerializer(serializers.HyperlinkedModelSerializer):
-
     participant = serializers.SerializerMethodField()
     formation = serializers.CharField(source='formation.acronym')
 
@@ -39,7 +38,6 @@ class AddressSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AdmissionDetailsSerializer(AdmissionBasicSerializer):
-
     address = AddressSerializer()
     birth_location = serializers.CharField(source='person_information.birth_location')
     birth_date = serializers.CharField(source='person_information.birth_date')
