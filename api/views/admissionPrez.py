@@ -4,7 +4,7 @@ from continuing_education.api.serializers.admissionPrez import AdmissionBasicSer
 from continuing_education.models.admission import Admission
 
 
-class AdmissionBasic(generics.ListAPIView):
+class AdmissionBasic(generics.ListCreateAPIView):
     """
        Return a list of all the admission with optional filtering.
     """
@@ -35,7 +35,7 @@ class AdmissionBasic(generics.ListAPIView):
         )
 
 
-class AdmissionDetails(generics.RetrieveAPIView):
+class AdmissionDetails(generics.RetrieveUpdateDestroyAPIViewAPIView):
     """
        Return the details of an admission.
     """
