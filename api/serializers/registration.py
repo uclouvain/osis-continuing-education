@@ -111,7 +111,8 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'assessment_succeeded',
             'sessions',
             'reduced_rates',
-            'spreading_payments'
+            'spreading_payments',
+            'condition_of_acceptance'
 
         )
 
