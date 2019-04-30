@@ -35,7 +35,7 @@ class AdmissionBasic(generics.ListCreateAPIView):
         )
 
 
-class AdmissionDetails(generics.RetrieveUpdateDestroyAPIViewAPIView):
+class AdmissionDetails(generics.RetrieveUpdateDestroyAPIView):
     """
        Return the details of an admission.
     """
