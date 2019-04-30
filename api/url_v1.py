@@ -27,6 +27,7 @@ from django.conf.urls import url
 
 from continuing_education.api.views.address import AddressDetailUpdate, AddressListCreate
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetailUpdate, AdmissionCreate
+from continuing_education.api.views.admissionPrez import AdmissionBasic, AdmissionDetails
 from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonListCreate, \
     ContinuingEducationPersonDetail
 from continuing_education.api.views.continuing_education_training import ContinuingEducationTrainingListCreate, \
@@ -96,4 +97,11 @@ urlpatterns = [
         name=RegistrationListForEpc.name),
     url(r'^registration/for_epc/(?P<id>[0-9]+)/$', RegistrationDetailForEpc.as_view(),
         name=RegistrationDetailForEpc.name),
+
+    url(r'admission_simple/$', AdmissionBasic.as_view(), name=AdmissionBasic.name),
+    url(
+        r'admission_simple/(?P<uuid>[0-9a-f-]+)$',
+        AdmissionDetails.as_view(),
+        name=AdmissionDetails.name
+    )
 ]
