@@ -98,9 +98,9 @@ urlpatterns = [
     url(r'^registration/for_epc/(?P<id>[0-9]+)/$', RegistrationDetailForEpc.as_view(),
         name=RegistrationDetailForEpc.name),
 
-    url(r'admission_simple/$', AdmissionBasic.as_view(), name=AdmissionBasic.name),
+    url(r'simple_admissions/$', AdmissionBasic.as_view(), name=AdmissionBasic.name),
     url(
-        r'admission_simple/(?P<uuid>[0-9a-f-]+)$',
+        r'simple_admissions/(?P<uuid>[0-9a-f-]+)$',
         AdmissionDetails.as_view(),
         name=AdmissionDetails.name
     )
