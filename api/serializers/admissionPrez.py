@@ -2,13 +2,13 @@ from rest_framework import serializers
 
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from reference.models.country import Country
 
 
 class AdmissionBasicSerializer(serializers.HyperlinkedModelSerializer):
 
     participant = serializers.SerializerMethodField()
-
-    formation = serializers.SerializerMethodField()
+    formation = serializers.CharField(source='formation.acronym')
 
     class Meta:
         model = Admission
@@ -21,26 +21,28 @@ class AdmissionBasicSerializer(serializers.HyperlinkedModelSerializer):
     def get_participant(self, obj):
         return obj.person_information.person.first_name + " " + obj.person_information.person.last_name
 
-    def get_formation(self, obj):
-        return obj.formation.acronym
 
-
-class AddressGetSerializer(serializers.HyperlinkedModelSerializer):
-
-    zip_code = serializers.CharField(source='postal_code')
+class AddressSerializer(serializers.HyperlinkedModelSerializer):
+    country = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+    )
 
     class Meta:
         model = Address
         fields = (
-            'zip_code',
+            'postal_code',
             'city',
             'location',
+            'country'
         )
 
 
 class AdmissionDetailsSerializer(AdmissionBasicSerializer):
 
-    address = AddressGetSerializer()
+    address = AddressSerializer()
+    birth_location = serializers.CharField(source='person_information.birth_location')
+    birth_date = serializers.CharField(source='person_information.birth_date')
 
     class Meta:
         model = Admission
@@ -49,6 +51,8 @@ class AdmissionDetailsSerializer(AdmissionBasicSerializer):
             'phone_mobile',
             'high_school_diploma',
             'high_school_graduation_year',
-            'address'
+            'address',
+            'birth_location',
+            'birth_date'
         )
 
