@@ -119,8 +119,12 @@
         {% endif %}
         {% if admission.is_accepted %}
             <div class="alert alert-info" role="alert">
-                <b>{% trans 'Condition of acceptance' %} : </b>
-                {{ admission.condition_of_acceptance }}
+                {% if admission.condition_of_acceptance %}
+                    <b>{% trans 'Condition of acceptance' %} : </b>
+                    {{ admission.condition_of_acceptance }}
+                {% else %}
+                    <b>{% trans 'Accepted' %} : {% trans 'Unconditionally' %}</b>
+                {% endif %}
             </div>
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
