@@ -38,17 +38,20 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
-    CONTINUING_EDUCATION_MANAGERS_GROUP, check_required_field_for_participant
+    CONTINUING_EDUCATION_MANAGERS_GROUP, check_required_field_for_participant, _get_attachments
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
+from continuing_education.models.file import AdmissionFile
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from reference.tests.factories.country import CountryFactory
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 
 
 class TestAdmission(TestCase):
@@ -145,6 +148,16 @@ class SendEmailTest(TestCase):
         PersonTrainingFactory(person=self.manager, training=cet)
         PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)
         self.admission = AdmissionFactory(formation=cet)
+        uploaded_file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode('content'),
+            content_type="application/pdf"
+        )
+
+        self.admission_file = AdmissionFileFactory(
+            admission=self.admission,
+            path=uploaded_file,
+        )
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_state_changed_email(self, mock_send):
@@ -249,3 +262,12 @@ class SendEmailTest(TestCase):
         )
         self.assertEqual(len(args.get('receivers')), 1)
         self.assertIsNone(args.get('attachment'))
+
+    def test_attachments_too_big(self):
+        max_size_to_check = self.admission_file.size - 1
+        self.assertIsNone(_get_attachments(self.admission.id, max_size_to_check))
+
+    def test_attachments(self):
+        max_size_to_check = self.admission_file.size + 1
+        self.assertEqual(len(_get_attachments(self.admission.id, max_size_to_check)), 1)
+

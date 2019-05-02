@@ -30,11 +30,13 @@ from django.utils.translation import gettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from continuing_education.models.file import AdmissionFile
 from continuing_education.models.enums import admission_state_choices
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
+MAX_DOCUMENTS_SIZE = 20000000
 
 
 def send_state_changed_email(admission, connected_user=None):
@@ -87,6 +89,8 @@ def send_submission_email_to_admin(admission, connected_user):
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
 
     managers = _get_continuing_education_managers()
+    attachments = _get_attachments(admission.id, MAX_DOCUMENTS_SIZE)
+
     send_email(
         template_references={
             'html': _get_template_reference(admission, receiver='admin', suffix='html'),
@@ -100,10 +104,12 @@ def send_submission_email_to_admin(admission, connected_user):
                 'state': _(admission.state),
                 'formation_link': formation_url,
                 'admission_data': _get_formatted_admission_data(admission),
+                'attachment': True if attachments else None,
             },
             'subject': {
                 'formation': admission.formation.acronym,
-            }
+            },
+            'attachment': attachments
         },
         receivers=[
             message_config.create_receiver(
@@ -183,7 +189,8 @@ def send_email(template_references, receivers, data, connected_user=None):
         [],
         receivers,
         data['template'],
-        data['subject']
+        data['subject'],
+        data.get('attachment', None)
     )
     message_service.send_messages(message_content, connected_user)
 
@@ -277,3 +284,14 @@ def _build_validation_msg(extra, key, meta, response):
         response[extra_key] = '{} : {}'.format(extra, meta.get_field(key).verbose_name)
     else:
         response[key] = meta.get_field(key).verbose_name
+
+
+def _get_attachments(id, max_size):
+    tot_size = 0
+    attachments = []
+    for file in AdmissionFile.objects.all().filter(admission=id):
+        tot_size += file.size
+        attachments.append((file.name, file.path.read()))
+    if tot_size < max_size:
+        return attachments
+    return None
