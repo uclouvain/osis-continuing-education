@@ -33,6 +33,12 @@ from continuing_education.models.admission import is_continuing_education_manage
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def main_view(request):
     continuing_education_manager = is_continuing_education_manager(request.user)
+    continuing_education_student_worker = is_continuing_education_student_worker(request.user)
     return render(request, "admin_home.html", {
-        'continuing_education_manager': continuing_education_manager
+        'continuing_education_manager': continuing_education_manager,
+        'continuing_education_student_worker': continuing_education_student_worker,
     })
+
+
+def is_continuing_education_student_worker(user):
+    return user.groups.filter(name='continuing_education_student_worker').exists()
