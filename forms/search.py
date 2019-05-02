@@ -149,6 +149,8 @@ class RegistrationFilterForm(AdmissionFilterForm):
         required=False,
     )
 
+    registration_file_received = forms.ChoiceField(choices=BOOLEAN_CHOICES, required=False)
+
     def __init__(self, *args, **kwargs):
         super(RegistrationFilterForm, self).__init__(*args, **kwargs)
         self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES)
@@ -163,7 +165,8 @@ class RegistrationFilterForm(AdmissionFilterForm):
         qs = get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
                                                self.cleaned_data.get('formation'),
                                                STATE_FOR_REGISTRATION,
-                                               False)
+                                               False,
+                                               self.cleaned_data.get('registration_file_received'))
 
         if registered:
             qs = qs.filter(ucl_registration_complete=registered)
@@ -214,7 +217,7 @@ class ArchiveFilterForm(AdmissionFilterForm):
         return qs.distinct()
 
 
-def get_queryset_by_faculty_formation(faculty, formation, states, archived_status):
+def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
 
     qs = Admission.objects.all()
 
@@ -239,6 +242,9 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
         qs = qs.filter(formation=formation)
 
     qs = qs.filter(archived=archived_status)
+
+    if received_file:
+        qs = qs.filter(registration_file_received=received_file)
 
     return qs.order_by('person_information')
 
