@@ -202,7 +202,7 @@
         });
         //check when page is loaded
         $("[name='use_address_for_post']:radio").prop('checked')?copy_address("residence"):empty_address(("residence"), residence_address);
-        let fields_to_enable = ["birth_country", "gender"];
+        let fields_to_enable = ["birth_country", "billing-country", "residence-country", "gender"];
         //re-enable disabled field on form submit
         $( "#form" ).submit(function( event ) {
             enableFields(fields_to_enable);

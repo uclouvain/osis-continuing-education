@@ -47,19 +47,23 @@
             <form style="display: inline;" action="{% url 'registration' %}" method="get" class="" id="search_form">
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="faculty_id">{% trans 'Faculty' %}</label>
                         {{ search_form.faculty }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="faculty_id">{% trans 'Formation' %}</label>
                         {{ search_form.formation }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="state_id">{% trans 'State' %}</label>
                         {{ search_form.state }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <label for="registration_file_received_id">{% trans 'Received file' %}</label>
+                        {{ search_form.registration_file_received }}
+                    </div>
+                    <div class="col-md-2" >
                         <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         </button>
@@ -68,15 +72,15 @@
 
                 </div>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="ucl_registration_complete_id">{% trans 'Registered' %}</label>
                         {{ search_form.ucl_registration_complete }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="payment_complete_id">{% trans 'Paid' %}</label>
                         {{ search_form.payment_complete }}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label for="free_text_id">{% trans 'In all fields' %}</label>
                         {{ search_form.free_text }}
                     </div>
@@ -115,6 +119,7 @@
                             <th class="searchable">{% trans 'Registered' %}</th>
                             <th class="searchable">{% trans 'Paid' %}</th>
                             <th class="searchable">{% trans 'State' %}</th>
+                            <th class="searchable">{% trans 'Received file' %}</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -160,6 +165,13 @@
                                     <span class="label label-success show">{% trans admission.state %}</span>
                                 {% elif admission.is_registration_submitted %}
                                     <span class="label label-info show">{% trans admission.state %}</span>
+                                {% endif %}
+                            </td>
+                            <td style="vertical-align: middle;">
+                                {% if admission.registration_file_received %}
+                                    <span class="label label-success show">{% trans 'Yes' %}</span>
+                                {% else %}
+                                    <span class="label label-danger show">{% trans 'No' %}</span>
                                 {% endif %}
                             </td>
                         </tr>

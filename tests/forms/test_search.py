@@ -330,6 +330,24 @@ class TestFilterForm(TestCase):
             results = form.get_registrations()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    def test_get_registration_received_file_param(self):
+        self.registrations[0].registration_file_received = True
+        self.registrations[0].save()
+        form = RegistrationFilterForm({"registration_file_received": True})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registrations[0]])
+
+        form = RegistrationFilterForm({"registration_file_received": False})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registrations[1]])
+
+        form = RegistrationFilterForm({})
+        if form.is_valid():
+            results = form.get_registrations()
+            self.assertCountEqual(results, [self.registrations[0], self.registrations[1]])
+
     def test_get_archives_by_free_text(self):
         self._create_admissions_for_free_text_search()
         for admission in self.admissions_free_text:
@@ -504,8 +522,8 @@ class TestManagerFilterForm(TestCase):
         self.training_managers = []
         for _ in range(1, 2):
             training_manager = PersonWithPermissionsFactory(
-                    'can_access_admission',
-                    'change_admission',
+                'can_access_admission',
+                'change_admission',
             )
             training_manager.user.groups.add(training_manager_group)
             self.training_managers.append(training_manager)
