@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-29 13:41+0200\n"
+"POT-Creation-Date: 2019-05-03 15:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: business/admission.py:253 tests/business/test_admission.py:98
+#: business/admission.py:261 tests/business/test_admission.py:102
 msgid " or "
 msgstr ""
 
@@ -27,7 +27,7 @@ msgstr ""
 "'Accepté'"
 
 #: tests/views/test_admission.py:277 tests/views/test_admission.py:297
-#: tests/views/test_file.py:92 views/admission.py:147 views/file.py:71
+#: tests/views/test_file.py:92 views/admission.py:152 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr "Un email de notification a été envoyé au participant"
 
@@ -47,11 +47,12 @@ msgstr "Accepter le dossier"
 #: models/enums/admission_state_choices.py:28
 #: models/enums/admission_state_choices.py:52
 #: models/enums/admission_state_choices.py:76
-#: models/enums/admission_state_choices.py:82 tests/forms/test_search.py:205
+#: models/enums/admission_state_choices.py:82
+#: templates/admission_detail.html:147 tests/forms/test_search.py:205
 msgid "Accepted"
 msgstr "Accepté"
 
-#: business/xls/xls_formation.py:77 forms/search.py:277
+#: business/xls/xls_formation.py:77 forms/search.py:283
 #: templates/formations.html:52 templates/formations.html:144
 msgid "Acronym"
 msgstr "Acronyme"
@@ -72,9 +73,9 @@ msgstr "Activer"
 msgid "Active"
 msgstr "Actif"
 
-#: business/admission.py:209 business/xls/xls_common.py:60
+#: business/admission.py:217 business/xls/xls_common.py:60
 #: models/admission.py:170 templates/admission_form.html:149
-#: templates/fragment/tab_admission.html:79 tests/business/test_admission.py:78
+#: templates/fragment/tab_admission.html:79 tests/business/test_admission.py:82
 msgid "Activity sector"
 msgstr "Secteur d'activité"
 
@@ -82,21 +83,21 @@ msgstr "Secteur d'activité"
 msgid "Address"
 msgstr "Adresse"
 
-#: templates/admin_home.html:32 templates/admin_home.html:37
+#: templates/admin_home.html:32 templates/admin_home.html:52
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#: models/file.py:58 templates/admission_detail.html:127
+#: models/file.py:58 templates/admission_detail.html:152
 #: templates/admission_form.html:37
 msgctxt "continuing_education"
 msgid "Admission"
 msgstr "Admission"
 
-#: templates/admission_detail.html:76
+#: templates/admission_detail.html:95
 msgid "Admission archived"
 msgstr "Dossier archivé"
 
-#: templates/admission_detail.html:83
+#: templates/admission_detail.html:102
 msgid "Admission is not archived"
 msgstr "Dossier non-archivé"
 
@@ -104,7 +105,7 @@ msgstr "Dossier non-archivé"
 msgid "Admissions"
 msgstr "Admissions"
 
-#: templates/admin_home.html:44 templates/admission_detail.html:41
+#: templates/admin_home.html:59 templates/admission_detail.html:41
 #: templates/admissions.html:38 templates/admissions.html:43
 msgctxt "continuing_education"
 msgid "Admissions"
@@ -120,8 +121,8 @@ msgstr "Liste des admissions"
 msgid "Admissions_list"
 msgstr "Liste_admissions"
 
-#: forms/search.py:32 forms/search.py:79 forms/search.py:87 forms/search.py:347
-#: forms/search.py:356 forms/search.py:366 tests/forms/test_search.py:192
+#: forms/search.py:32 forms/search.py:79 forms/search.py:87 forms/search.py:353
+#: forms/search.py:362 forms/search.py:372 tests/forms/test_search.py:192
 #: tests/forms/test_search.py:204
 msgctxt "plural"
 msgid "All"
@@ -131,7 +132,7 @@ msgstr "Toutes"
 msgid "Alternate notification email addresses"
 msgstr "Adresses email de notification alternatives"
 
-#: templates/admission_detail.html:85 templates/blocks/button/archive.html:5
+#: templates/admission_detail.html:104 templates/blocks/button/archive.html:5
 msgid "Archive"
 msgstr "Archiver"
 
@@ -143,7 +144,7 @@ msgstr "Archivé"
 msgid "Archives"
 msgstr "Archives"
 
-#: templates/admin_home.html:79 templates/archives.html:37
+#: templates/admin_home.html:94 templates/archives.html:37
 #: templates/archives.html:42
 msgctxt "continuing_education"
 msgid "Archives"
@@ -199,7 +200,7 @@ msgid "Billing"
 msgstr "Facturation"
 
 #: business/xls/xls_common.py:112 models/admission.py:267
-#: views/admission.py:276
+#: views/admission.py:280
 msgid "Billing address"
 msgstr "Adresse de facturation"
 
@@ -302,7 +303,7 @@ msgstr "Annuler"
 #: templates/formations.html:141
 #: templates/fragment/tasks/diplomas_to_produce.html:29
 #: templates/fragment/tasks/registrations_to_validate.html:28
-#: templates/registrations.html:107
+#: templates/registrations.html:111
 msgid "Check All"
 msgstr "Tout sélectionner"
 
@@ -332,8 +333,8 @@ msgstr "Ville"
 msgid "Company number"
 msgstr "Numéro unique d'entreprise"
 
-#: forms/admission.py:237 models/admission.py:412
-#: templates/admission_detail.html:122
+#: forms/admission.py:237 models/admission.py:411
+#: templates/admission_detail.html:144
 #: templates/fragment/condition_acceptance_modal.html:33
 msgid "Condition of acceptance"
 msgstr "Condition d'acceptation"
@@ -358,7 +359,7 @@ msgstr "Confirmer le refus"
 msgid "Contact"
 msgstr "Contact"
 
-#: business/xls/xls_common.py:50 views/admission.py:272
+#: business/xls/xls_common.py:50 views/admission.py:276
 #, fuzzy
 #| msgid "Contact"
 msgid "Contact address"
@@ -373,12 +374,12 @@ msgstr "Adresse de contact"
 msgid "Continuing Education"
 msgstr "Formations Continues"
 
-#: templates/admin_home.html:68
+#: templates/admin_home.html:83
 msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
-#: tests/views/test_registration.py:212 views/admission.py:259
+#: tests/views/test_registration.py:212 views/admission.py:262
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
@@ -391,20 +392,20 @@ msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
 msgid "Country"
 msgstr "Pays"
 
-#: templates/blocks/dropdown/list_actions.html:22
-#: templates/blocks/dropdown/list_actions.html:23
+#: templates/blocks/dropdown/list_actions.html:29
+#: templates/blocks/dropdown/list_actions.html:30
 msgid "Create Json file to export data to EPC"
 msgstr "Créer un fichier Json pour exporter des données vers EPC"
 
-#: business/admission.py:208 business/xls/xls_common.py:59
+#: business/admission.py:216 business/xls/xls_common.py:59
 #: models/admission.py:164 templates/admission_form.html:148
-#: templates/fragment/tab_admission.html:78 tests/business/test_admission.py:77
+#: templates/fragment/tab_admission.html:78 tests/business/test_admission.py:81
 msgid "Current employer"
 msgstr "Employeur actuel"
 
-#: business/admission.py:207 business/xls/xls_common.py:58
+#: business/admission.py:215 business/xls/xls_common.py:58
 #: models/admission.py:159 templates/admission_form.html:145
-#: templates/fragment/tab_admission.html:77 tests/business/test_admission.py:76
+#: templates/fragment/tab_admission.html:77 tests/business/test_admission.py:80
 msgid "Current occupation"
 msgstr "Fonction actuelle"
 
@@ -434,7 +435,7 @@ msgstr "Divorcé"
 msgid "Do you confirm you want to save?"
 msgstr "Vous confirmez que vous voulez enregistrer?"
 
-#: templates/admission_detail.html:95
+#: templates/admission_detail.html:116
 msgid "Do you confirm you want to submit?"
 msgstr "Vous confirmez que vous voulez soumettre l'inscription?"
 
@@ -442,7 +443,7 @@ msgstr "Vous confirmez que vous voulez soumettre l'inscription?"
 msgid "Document"
 msgstr "Document"
 
-#: templates/admission_detail.html:129
+#: templates/admission_detail.html:155
 msgid "Documents"
 msgstr "Documents"
 
@@ -478,7 +479,7 @@ msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 #: templates/archives.html:119 templates/fragment/tab_admission.html:42
 #: templates/fragment/tasks/diplomas_to_produce.html:34
 #: templates/fragment/tasks/registrations_to_validate.html:33
-#: templates/prospects.html:60 templates/registrations.html:112
+#: templates/prospects.html:60 templates/registrations.html:116
 msgid "Email"
 msgstr "Email"
 
@@ -487,12 +488,12 @@ msgid "Employee"
 msgstr "Employé"
 
 #: business/xls/xls_archive.py:39 business/xls/xls_common.py:66
-#: business/xls/xls_formation.py:78 forms/search.py:81 forms/search.py:358
+#: business/xls/xls_formation.py:78 forms/search.py:81 forms/search.py:364
 #: templates/admissions.html:53 templates/admissions.html:130
 #: templates/archives.html:51 templates/archives.html:121
 #: templates/formations.html:60 templates/formations.html:145
 #: templates/fragment/tab_admission.html:106 templates/managers.html:58
-#: templates/registrations.html:51 templates/registrations.html:114
+#: templates/registrations.html:51 templates/registrations.html:118
 msgid "Faculty"
 msgstr "Faculté"
 
@@ -518,15 +519,23 @@ msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
 
 #: tests/views/test_archive.py:169 tests/views/test_archive.py:184
-#: views/archive.py:104
+#: views/archive.py:108
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: tests/views/test_archive.py:152 views/archive.py:104
+#: views/registration.py:199
+msgid "File is now mark as "
+msgstr "Le dossier est maintenant enregistré comme "
+
+#: tests/views/test_archive.py:152 views/archive.py:108
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
-#: business/admission.py:197 business/xls/xls_archive.py:36
+#: views/registration.py:199
+msgid "Files are now mark as "
+msgstr "Les dossiers sont maintenant enregistrés comme "
+
+#: business/admission.py:205 business/xls/xls_archive.py:36
 #: business/xls/xls_common.py:41 models/prospect.py:50
 #: templates/admission_form.html:84 templates/admissions.html:127
 #: templates/archives.html:118
@@ -534,12 +543,12 @@ msgstr "Les dossiers sont maintenant"
 #: templates/fragment/tasks/diplomas_to_produce.html:33
 #: templates/fragment/tasks/registrations_to_validate.html:32
 #: templates/managers.html:87 templates/prospects.html:59
-#: templates/registrations.html:111 tests/business/test_admission.py:66
+#: templates/registrations.html:115 tests/business/test_admission.py:70
 msgid "First name"
 msgstr "Prénom"
 
-#: business/admission.py:198 business/xls/xls_archive.py:38
-#: business/xls/xls_common.py:64 forms/search.py:89 forms/search.py:368
+#: business/admission.py:206 business/xls/xls_archive.py:38
+#: business/xls/xls_common.py:64 forms/search.py:89 forms/search.py:374
 #: models/admission.py:83 models/prospect.py:74
 #: templates/admission_form.html:170 templates/admission_form.html:173
 #: templates/admissions.html:57 templates/admissions.html:129
@@ -549,7 +558,7 @@ msgstr "Prénom"
 #: templates/fragment/tasks/diplomas_to_produce.html:35
 #: templates/fragment/tasks/registrations_to_validate.html:34
 #: templates/prospects.html:62 templates/registrations.html:55
-#: templates/registrations.html:113 tests/business/test_admission.py:67
+#: templates/registrations.html:117 tests/business/test_admission.py:71
 msgid "Formation"
 msgstr "Formation"
 
@@ -558,20 +567,20 @@ msgstr "Formation"
 msgid "Formation administrator(s)"
 msgstr "Gestionnaire(s) de formation"
 
-#: tests/views/test_formation.py:168 views/formation.py:124
+#: tests/views/test_formation.py:168 views/formation.py:127
 msgid "Formation are now active"
 msgstr "Les formations sont maintenant actives"
 
-#: tests/views/test_formation.py:197 views/formation.py:126
+#: tests/views/test_formation.py:197 views/formation.py:129
 msgid "Formation are now inactive"
 msgstr "Les formations sont maintenant inactives"
 
 #: tests/views/test_formation.py:151 tests/views/test_formation.py:209
-#: views/formation.py:119
+#: views/formation.py:122
 msgid "Formation is now active"
 msgstr "La formation est maintenant active"
 
-#: tests/views/test_formation.py:180 views/formation.py:121
+#: tests/views/test_formation.py:180 views/formation.py:124
 msgid "Formation is now inactive"
 msgstr "La formation est maintenant inactive"
 
@@ -619,16 +628,16 @@ msgstr "Nom du siège social"
 msgid "Health"
 msgstr "Santé"
 
-#: business/admission.py:199 business/xls/xls_common.py:51
+#: business/admission.py:207 business/xls/xls_common.py:51
 #: forms/admission.py:42 models/admission.py:117
 #: templates/admission_form.html:120 templates/fragment/tab_admission.html:57
-#: tests/business/test_admission.py:68
+#: tests/business/test_admission.py:72
 msgid "High school diploma"
 msgstr "Diplôme d'études secondaires"
 
-#: business/admission.py:200 business/xls/xls_common.py:52
+#: business/admission.py:208 business/xls/xls_common.py:52
 #: models/admission.py:122 templates/admission_form.html:121
-#: templates/fragment/tab_admission.html:58 tests/business/test_admission.py:69
+#: templates/fragment/tab_admission.html:58 tests/business/test_admission.py:73
 msgid "High school graduation year"
 msgstr "Année d'obtention (secondaire)"
 
@@ -651,7 +660,7 @@ msgstr "Numéro de carte d'identité"
 msgid "Identification"
 msgstr "Identification"
 
-#: templates/admission_detail.html:76 templates/admission_detail.html:83
+#: templates/admission_detail.html:95 templates/admission_detail.html:102
 msgid "Impossible to archive/unarchive while in draft state"
 msgstr ""
 "Impossible d'archiver/désarchiver quand une admission est à l'état "
@@ -663,9 +672,9 @@ msgstr ""
 "Impossible d'uploader des documents quand une admission est à l'état "
 "'Brouillon'"
 
-#: forms/search.py:96 forms/search.py:281 templates/admissions.html:73
+#: forms/search.py:96 forms/search.py:287 templates/admissions.html:73
 #: templates/archives.html:71 templates/formations.html:80
-#: templates/registrations.html:80
+#: templates/registrations.html:84
 msgid "In all fields"
 msgstr "Dans tous les champs"
 
@@ -681,33 +690,33 @@ msgstr "Facture"
 msgid "Job seeker"
 msgstr "Chercheur d'emploi"
 
-#: business/admission.py:202 models/admission.py:132
+#: business/admission.py:210 models/admission.py:132
 #: templates/admission_form.html:125 templates/fragment/tab_admission.html:62
-#: tests/business/test_admission.py:71
+#: tests/business/test_admission.py:75
 msgid "Last degree field"
 msgstr "Domaine d'étude"
 
-#: business/admission.py:204 business/xls/xls_common.py:55
+#: business/admission.py:212 business/xls/xls_common.py:55
 #: models/admission.py:142 templates/admission_form.html:129
-#: templates/fragment/tab_admission.html:64 tests/business/test_admission.py:73
+#: templates/fragment/tab_admission.html:64 tests/business/test_admission.py:77
 msgid "Last degree graduation year"
 msgstr "Année d'obtention"
 
-#: business/admission.py:203 business/xls/xls_common.py:54
+#: business/admission.py:211 business/xls/xls_common.py:54
 #: models/admission.py:137 templates/admission_form.html:128
-#: templates/fragment/tab_admission.html:63 tests/business/test_admission.py:72
+#: templates/fragment/tab_admission.html:63 tests/business/test_admission.py:76
 msgid "Last degree institution"
 msgstr "Institution"
 
-#: business/admission.py:201 business/xls/xls_common.py:53
+#: business/admission.py:209 business/xls/xls_common.py:53
 #: models/admission.py:127 templates/admission_form.html:124
-#: templates/fragment/tab_admission.html:61 tests/business/test_admission.py:70
+#: templates/fragment/tab_admission.html:61 tests/business/test_admission.py:74
 msgid "Last degree level"
 msgstr "Niveau du dernier diplôme"
 
-#: business/admission.py:196 templates/admission_form.html:85
+#: business/admission.py:204 templates/admission_form.html:85
 #: templates/fragment/section_identification.html:35
-#: tests/business/test_admission.py:65
+#: tests/business/test_admission.py:69
 msgid "Last name"
 msgstr "Nom"
 
@@ -727,7 +736,7 @@ msgstr "Ville"
 msgid "Male"
 msgstr "Homme"
 
-#: forms/search.py:349
+#: forms/search.py:355
 #: templates/fragment/managers/person_training_modal.html:41
 msgid "Manager"
 msgstr "Gestionnaire"
@@ -742,6 +751,14 @@ msgstr "Le gestionnaire est déjà assigné à cette formation"
 msgid "Marital status"
 msgstr "Etat civil"
 
+#: templates/admission_detail.html:59
+msgid "Mark as not received"
+msgstr "Noter le dossier d'inscription comme non-reçu"
+
+#: templates/admission_detail.html:65
+msgid "Mark as received file"
+msgstr "Noter le dossier d'inscription comme reçu"
+
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:33
 msgid "Mark diplomas produced for selected registrations ?"
 msgstr "Indiquer le diplôme produit pour les inscriptions sélectionnées ?"
@@ -755,10 +772,10 @@ msgstr "Marié"
 msgid "Mobile phone"
 msgstr "GSM"
 
-#: business/admission.py:211 business/xls/xls_common.py:62
+#: business/admission.py:219 business/xls/xls_common.py:62
 #: models/admission.py:180 templates/admission_form.html:160
 #: templates/admission_form.html:163 templates/fragment/tab_admission.html:87
-#: templates/fragment/tab_admission.html:91 tests/business/test_admission.py:80
+#: templates/fragment/tab_admission.html:91 tests/business/test_admission.py:84
 msgid "Motivation"
 msgstr "Motivation"
 
@@ -773,7 +790,7 @@ msgstr "NOMA"
 #: templates/fragment/tasks/diplomas_to_produce.html:32
 #: templates/fragment/tasks/registrations_to_validate.html:31
 #: templates/managers.html:86 templates/prospects.html:58
-#: templates/registrations.html:110
+#: templates/registrations.html:114
 msgid "Name"
 msgstr "Nom"
 
@@ -791,16 +808,16 @@ msgstr "Nouvelle admission"
 msgid "New person"
 msgstr "Nouvelle personne"
 
-#: business/admission.py:199 business/xls/xls_common.py:85
+#: business/admission.py:207 business/xls/xls_common.py:85
 #: business/xls/xls_common.py:99 business/xls/xls_common.py:151
 #: business/xls/xls_common.py:152 business/xls/xls_common.py:153
 #: business/xls/xls_common.py:154 business/xls/xls_common.py:155
 #: business/xls/xls_common.py:156 business/xls/xls_common.py:157
 #: business/xls/xls_common.py:158 business/xls/xls_formation.py:70
 #: forms/search.py:37 models/enums/enums.py:4 templates/formations.html:113
-#: templates/registrations.html:146 templates/registrations.html:153
-#: tests/business/test_admission.py:68
-#: tests/business/xls/test_xls_registration.py:91 views/formation.py:146
+#: templates/registrations.html:151 templates/registrations.html:158
+#: templates/registrations.html:174 tests/business/test_admission.py:72
+#: tests/business/xls/test_xls_registration.py:91 views/formation.py:149
 msgid "No"
 msgstr "Non"
 
@@ -812,7 +829,7 @@ msgstr "Aucune formation assignée"
 #: templates/formations.html:197
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:73
-#: templates/prospects.html:96 templates/registrations.html:183
+#: templates/prospects.html:96 templates/registrations.html:195
 msgid "No data"
 msgstr "Pas de données"
 
@@ -824,15 +841,15 @@ msgstr "Aucun document disponible"
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
 
-#: views/formation.py:132
+#: views/formation.py:135
 msgid "No formation activated"
 msgstr "Aucune formation activée"
 
-#: views/formation.py:134
+#: views/formation.py:137
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
-#: tests/views/test_registration.py:304 views/registration.py:157
+#: tests/views/test_registration.py:304 views/registration.py:163
 msgid "No registration validated, so no data available to export!"
 msgstr "Aucune inscription validée à exporter"
 
@@ -849,15 +866,15 @@ msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
 
 #: business/enums/rejected_reason.py:32 business/enums/waiting_reason.py:36
-#: models/admission.py:219 models/admission.py:453 models/enums/enums.py:32
+#: models/admission.py:219 models/admission.py:452 models/enums/enums.py:32
 #: models/enums/enums.py:40 templates/admission_form.html:201
 #: templates/fragment/tab_admission.html:150 tests/models/test_admission.py:118
 msgid "Other"
 msgstr "Autre"
 
-#: business/admission.py:205 business/xls/xls_common.py:56
+#: business/admission.py:213 business/xls/xls_common.py:56
 #: models/admission.py:146 templates/admission_form.html:132
-#: templates/fragment/tab_admission.html:67 tests/business/test_admission.py:74
+#: templates/fragment/tab_admission.html:67 tests/business/test_admission.py:78
 msgid "Other educational background"
 msgstr "Autres formations"
 
@@ -869,8 +886,8 @@ msgstr "Autre motif de refus"
 msgid "Other waiting reason"
 msgstr "Autre motif de mise en attente"
 
-#: forms/search.py:145 templates/registrations.html:76
-#: templates/registrations.html:116
+#: forms/search.py:145 templates/registrations.html:80
+#: templates/registrations.html:120
 msgid "Paid"
 msgstr "Payé"
 
@@ -884,9 +901,9 @@ msgstr "Participant"
 msgid "Passport number"
 msgstr "Numéro de passeport"
 
-#: business/admission.py:210 business/xls/xls_common.py:61
+#: business/admission.py:218 business/xls/xls_common.py:61
 #: models/admission.py:174 templates/admission_form.html:152
-#: templates/fragment/tab_admission.html:82 tests/business/test_admission.py:79
+#: templates/fragment/tab_admission.html:82 tests/business/test_admission.py:83
 msgid "Past professional activities"
 msgstr "Expériences professionnelles passées"
 
@@ -913,19 +930,23 @@ msgid "Phone number"
 msgstr "Numéro de téléphone"
 
 #: tests/views/test_archive.py:110 tests/views/test_archive.py:124
-#: views/archive.py:123
+#: views/archive.py:127
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
 
-#: tests/views/test_formation.py:138 views/formation.py:69
+#: views/registration.py:215
+msgid "Please select at least one file to mark as received"
+msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
+
+#: tests/views/test_formation.py:138 views/formation.py:72
 msgid "Please select at least one formation"
 msgstr "Veuillez sélectionner au moins une formation"
 
-#: views/tasks.py:80
+#: views/tasks.py:83
 msgid "Please select at least one registration to validate."
 msgstr "Veuillez sélectionner au moins une inscription à valider"
 
-#: views/tasks.py:107
+#: views/tasks.py:111
 msgid "Please select at least one registration."
 msgstr "Veuillez sélectionner au moins une inscription"
 
@@ -975,7 +996,7 @@ msgid "Private"
 msgstr "Privé"
 
 #: templates/admissions.html:82 templates/archives.html:79
-#: templates/formations.html:118 templates/registrations.html:89
+#: templates/formations.html:118 templates/registrations.html:93
 msgid "Produce xls"
 msgstr "Produire un fichier xls"
 
@@ -987,9 +1008,9 @@ msgstr "Produire un fichier xls avec la liste des admissions"
 msgid "Professional"
 msgstr "Professionel"
 
-#: business/admission.py:212 business/xls/xls_common.py:63
+#: business/admission.py:220 business/xls/xls_common.py:63
 #: models/admission.py:184 templates/admission_form.html:164
-#: templates/fragment/tab_admission.html:92 tests/business/test_admission.py:81
+#: templates/fragment/tab_admission.html:92 tests/business/test_admission.py:85
 msgid "Professional and personal interests"
 msgstr "Intérêts professionnels et personnels"
 
@@ -997,13 +1018,13 @@ msgstr "Intérêts professionnels et personnels"
 msgid "Professional background"
 msgstr "Parcours professionnel"
 
-#: business/admission.py:206 business/xls/xls_common.py:57
+#: business/admission.py:214 business/xls/xls_common.py:57
 #: models/admission.py:154 templates/admission_form.html:142
-#: templates/fragment/tab_admission.html:76 tests/business/test_admission.py:75
+#: templates/fragment/tab_admission.html:76 tests/business/test_admission.py:79
 msgid "Professional status"
 msgstr "Statut professionel"
 
-#: templates/admin_home.html:72 templates/prospects.html:37
+#: templates/admin_home.html:87 templates/prospects.html:37
 #: templates/prospects.html:42 templates/prospects.html:51
 msgid "Prospects"
 msgstr "Prospects"
@@ -1020,21 +1041,25 @@ msgstr "Fonctionnaire"
 msgid "Reason for waiting"
 msgstr "Raison de mise en attente"
 
+#: templates/registrations.html:63 templates/registrations.html:122
+msgid "Received file"
+msgstr "Dossier reçu"
+
 #: models/admission.py:401 templates/fragment/tab_registration.html:104
 #: templates/registration_form.html:132
 msgid "Reduced rates"
 msgstr "Droits réduits"
 
-#: templates/admission_detail.html:116
+#: templates/admission_detail.html:137
 msgid "Refusal state reason"
 msgstr "Motif d'état de refus"
 
-#: forms/search.py:140 templates/registrations.html:72
-#: templates/registrations.html:115
+#: forms/search.py:140 templates/registrations.html:76
+#: templates/registrations.html:119
 msgid "Registered"
 msgstr "Inscrit"
 
-#: templates/admission_detail.html:128
+#: templates/admission_detail.html:153
 #: templates/fragment/tab_registration.html:60
 #: templates/registration_form.html:37 templates/registration_form.html:80
 msgid "Registration"
@@ -1046,6 +1071,8 @@ msgid "Registration complete"
 msgstr "En ordre d'inscription"
 
 #: business/xls/xls_common.py:125 models/admission.py:381
+#: templates/admission_detail.html:57
+#: templates/blocks/dropdown/list_actions.html:13
 #: templates/fragment/tab_registration.html:102
 #: templates/registration_form.html:130
 msgid "Registration file received"
@@ -1064,10 +1091,10 @@ msgstr "Inscription soumise"
 msgid "Registration type"
 msgstr "Inscription à titre"
 
-#: business/data_export.py:51 templates/admin_home.html:48
-#: templates/admission_detail.html:39 templates/registrations.html:37
-#: templates/registrations.html:42 templates/registrations.html:94
-#: tests/business/test_data_export.py:70
+#: business/data_export.py:51 templates/admin_home.html:45
+#: templates/admin_home.html:63 templates/admission_detail.html:39
+#: templates/registrations.html:37 templates/registrations.html:42
+#: templates/registrations.html:98 tests/business/test_data_export.py:70
 msgid "Registrations"
 msgstr "Inscriptions"
 
@@ -1100,7 +1127,7 @@ msgid "Rejected reason"
 msgstr "Motif de refus"
 
 #: business/xls/xls_common.py:121 models/admission.py:339
-#: views/admission.py:280
+#: views/admission.py:284
 msgid "Residence address"
 msgstr "Adresse"
 
@@ -1166,15 +1193,15 @@ msgstr "Nom du conjoint"
 msgid "Spreading payments"
 msgstr "Etalement des paiements"
 
-#: business/admission.py:214 business/xls/xls_archive.py:40
+#: business/admission.py:222 business/xls/xls_archive.py:40
 #: business/xls/xls_common.py:43 business/xls/xls_formation.py:80
-#: forms/search.py:279 models/admission.py:243
-#: templates/admission_detail.html:50 templates/admission_detail.html:53
+#: forms/search.py:285 models/admission.py:243
+#: templates/admission_detail.html:69 templates/admission_detail.html:72
 #: templates/admission_form.html:216 templates/admissions.html:61
 #: templates/admissions.html:131 templates/archives.html:59
 #: templates/archives.html:122 templates/formations.html:72
 #: templates/formations.html:147 templates/registrations.html:59
-#: templates/registrations.html:117 tests/business/test_admission.py:82
+#: templates/registrations.html:121 tests/business/test_admission.py:86
 msgid "State"
 msgstr "Etat"
 
@@ -1194,6 +1221,10 @@ msgstr "Rue - numéro - boîte"
 msgid "Student sheet"
 msgstr "Fiche de l'étudiant"
 
+#: templates/admin_home.html:38
+msgid "Student worker"
+msgstr "Jobiste"
+
 #: templates/admin_home.html:30 templates/admission_detail.html:36
 #: templates/admission_form.html:35 templates/admissions.html:36
 #: templates/archives.html:35 templates/formations.html:36
@@ -1207,16 +1238,16 @@ msgstr "Etudes"
 #: models/enums/admission_state_choices.py:23
 #: models/enums/admission_state_choices.py:70
 #: models/enums/admission_state_choices.py:85
-#: templates/admission_detail.html:69 tests/forms/test_search.py:195
+#: templates/admission_detail.html:88 tests/forms/test_search.py:195
 msgid "Submitted"
 msgstr "Soumis"
 
-#: tests/views/test_manager.py:88 views/managers.py:62
+#: tests/views/test_manager.py:88 views/managers.py:65
 #, python-format
 msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr "%(manager)s a été assigné·e avec succès à la formation %(training)s"
 
-#: tests/views/test_formation.py:263 views/formation.py:145
+#: tests/views/test_formation.py:263 views/formation.py:148
 #, python-format
 msgid ""
 "Successfully defined training aid to %(new_value)s for %(quantity_updated)s "
@@ -1225,18 +1256,18 @@ msgstr ""
 "\"Aide à la formation\" définie à %(new_value)s pour %(quantity_updated)s "
 "formations."
 
-#: tests/views/test_manager.py:131 views/managers.py:89
+#: tests/views/test_manager.py:131 views/managers.py:93
 #, python-format
 msgid "Successfully desassigned %(manager)s from the training %(training)s"
 msgstr ""
 "%(manager)s a été désassigné·e avec succès de la formation %(training)s"
 
-#: views/tasks.py:104
+#: views/tasks.py:108
 #, python-format
 msgid "Successfully marked diploma as produced for %s registrations."
 msgstr "Le diplôme a été marqué \"produit\" pour %s inscriptions."
 
-#: views/tasks.py:77
+#: views/tasks.py:80
 #, python-format
 msgid "Successfully validated %s registrations."
 msgstr "%s inscriptions ont été validées avec succès."
@@ -1245,7 +1276,7 @@ msgstr "%s inscriptions ont été validées avec succès."
 msgid "Sure you want to unarchive the file(s) ?"
 msgstr "Etes-vous sûr.e de vouloir désarchiver les archives?"
 
-#: templates/admin_home.html:56 templates/tasks.html:37 templates/tasks.html:42
+#: templates/admin_home.html:71 templates/tasks.html:37 templates/tasks.html:42
 msgid "Tasks"
 msgstr "Tâches"
 
@@ -1262,11 +1293,11 @@ msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"
 
-#: views/tasks.py:90
+#: views/tasks.py:93
 msgid "The registration must be submitted to be validated."
 msgstr "L'inscription doit être soumise pour êter validée"
 
-#: views/tasks.py:116
+#: views/tasks.py:120
 msgid "The registrations must be validated to mark diploma as produced."
 msgstr ""
 "Les inscriptions doivent être validées pour marquer le diplôme comme "
@@ -1276,7 +1307,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr "L'admission doit être en statut Accepté pour uploader une facture."
 
-#: tests/views/test_admission.py:293 views/admission.py:149
+#: tests/views/test_admission.py:293 views/admission.py:154
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
@@ -1326,7 +1357,7 @@ msgstr ""
 "Les inscriptions sélectionnées vont être validées. Êtes-vous certain·e de "
 "vouloir continuer ?"
 
-#: business/xls/xls_formation.py:79 forms/search.py:278
+#: business/xls/xls_formation.py:79 forms/search.py:284
 #: templates/formations.html:56 templates/formations.html:146
 msgid "Title"
 msgstr ""
@@ -1346,13 +1377,13 @@ msgstr "Pour soumettre une admission, son état doit être Brouillon."
 msgid "Training"
 msgstr "Formation"
 
-#: templates/admin_home.html:60 templates/managers.html:37
+#: templates/admin_home.html:75 templates/managers.html:37
 #: templates/managers.html:42
 msgid "Training Managers"
 msgstr "Gestionnaires de formation"
 
 #: business/xls/xls_common.py:65 business/xls/xls_formation.py:81
-#: forms/search.py:280 models/continuing_education_training.py:70
+#: forms/search.py:286 models/continuing_education_training.py:70
 #: templates/formations.html:76 templates/formations.html:108
 #: templates/formations.html:113 templates/formations.html:148
 #: templates/fragment/tab_admission.html:105
@@ -1371,17 +1402,21 @@ msgstr "Formations"
 msgid "UCLouvain registration complete"
 msgstr "En ordre d'inscription UCLouvain"
 
-#: templates/admission_detail.html:79 templates/archives.html:94
+#: templates/admission_detail.html:98 templates/archives.html:94
 msgid "Unarchive"
 msgstr "Désarchiver"
 
-#: forms/admission.py:230
+#: forms/admission.py:230 templates/admission_detail.html:147
 msgid "Unconditionally"
 msgstr "Sans condition"
 
 #: forms/account.py:39
 msgid "Unknown birth place"
 msgstr "Lieu de naissance inconnu"
+
+#: templates/admission_detail.html:63
+msgid "Unreceived file"
+msgstr "Dossier d'inscription non reçu"
 
 #: templates/fragment/upload_file_modal.html:91
 msgid "Upload"
@@ -1438,7 +1473,7 @@ msgstr "Validé"
 msgid "Waiting"
 msgstr "En attente"
 
-#: templates/admission_detail.html:110
+#: templates/admission_detail.html:131
 msgid "Waiting state reason"
 msgstr "Raison de la mise en attente"
 
@@ -1468,17 +1503,17 @@ msgstr ""
 msgid "Widowed"
 msgstr "Veuf(ve)"
 
-#: business/admission.py:199 business/xls/xls_common.py:85
+#: business/admission.py:207 business/xls/xls_common.py:85
 #: business/xls/xls_common.py:99 business/xls/xls_common.py:151
 #: business/xls/xls_common.py:152 business/xls/xls_common.py:153
 #: business/xls/xls_common.py:154 business/xls/xls_common.py:155
 #: business/xls/xls_common.py:156 business/xls/xls_common.py:157
 #: business/xls/xls_common.py:158 business/xls/xls_formation.py:70
 #: forms/search.py:36 models/enums/enums.py:5 templates/formations.html:108
-#: templates/registrations.html:144 templates/registrations.html:151
-#: tests/business/test_admission.py:68
+#: templates/registrations.html:149 templates/registrations.html:156
+#: templates/registrations.html:172 tests/business/test_admission.py:72
 #: tests/business/xls/test_xls_registration.py:90
-#: tests/views/test_formation.py:264 views/formation.py:146
+#: tests/views/test_formation.py:264 views/formation.py:149
 msgid "Yes"
 msgstr "Oui"
 
@@ -1561,7 +1596,7 @@ msgid "an other address"
 msgstr "une autre adresse"
 
 #: tests/views/test_archive.py:153 tests/views/test_archive.py:170
-#: tests/views/test_archive.py:185 views/archive.py:105
+#: tests/views/test_archive.py:185 views/archive.py:109
 msgid "archived"
 msgstr "archivé"
 
@@ -1569,10 +1604,18 @@ msgstr "archivé"
 msgid "managers"
 msgstr "gestionnaires"
 
+#: views/registration.py:200
+msgid "not received"
+msgstr "non reçu"
+
+#: views/registration.py:200
+msgid "received"
+msgstr "reçu"
+
 #: forms/registration.py:16 forms/registration.py:24
 msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
 
-#: views/archive.py:105
+#: views/archive.py:109
 msgid "unarchived"
 msgstr "non-archivé"

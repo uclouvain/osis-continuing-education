@@ -197,7 +197,7 @@ def _set_received_file_status(registration, received_file_state):
 def _set_success_message(request, is_plural, received_file_state=True):
     success_msg = "{} {}".format(
         _('Files are now mark as ') if is_plural else _('File is now mark as '),
-        _('received ') if received_file_state else _('not received')
+        _('received') if received_file_state else _('not received')
     )
     display_success_messages(request, success_msg)
 

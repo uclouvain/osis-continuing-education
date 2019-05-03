@@ -54,7 +54,7 @@
                 </button>
                 {% if admission.registration_file_received %}
                     <a href="{% url 'receive_file_procedure' admission.id %}"
-                       title="{% trans 'Received file' %}"
+                       title="{% trans 'Registration file received' %}"
                        class="btn btn-default" >
                         <i class="fa fa-folder-plus" style="font-size: larger"></i>&nbsp;{% trans 'Mark as not received' %}
                     </a>
