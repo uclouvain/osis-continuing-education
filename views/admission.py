@@ -26,7 +26,7 @@
 import itertools
 from collections import OrderedDict
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -55,10 +55,12 @@ from continuing_education.views.common import display_errors
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from osis_common.decorators.ajax import ajax_required
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
@@ -80,6 +82,7 @@ def list_admissions(request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def admission_detail(request, admission_id):
     can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
@@ -140,6 +143,7 @@ def _change_state(request, forms, accepted_states, admission):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def send_invoice_notification_mail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     if _invoice_file_exists_for_admission(admission):
@@ -157,6 +161,7 @@ def _invoice_file_exists_for_admission(admission):
 
 @login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     if admission:
@@ -260,6 +265,7 @@ def _validate_admission(request, adm_form):
 @ajax_required
 @login_required
 @permission_required("continuing_education.change_admission", raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def validate_field(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     response = {}
@@ -284,8 +290,8 @@ def validate_field(request, admission_id):
 
 
 def _get_states_choices(accepted_states, admission, request):
-    if not request.user.has_perm('continuing_education.can_validate_registration') and \
-                    admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+    if not request.user.has_perm('continuing_education.can_validate_registration') \
+            and admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
         return []
     else:
         return [] if admission and admission.is_draft() else accepted_states.get('choices', ())

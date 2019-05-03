@@ -30,12 +30,12 @@ from django.utils.translation import gettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.models.enums import admission_state_choices
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
-CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 MAX_DOCUMENTS_SIZE = 20000000
 
 
@@ -196,7 +196,7 @@ def send_email(template_references, receivers, data, connected_user=None):
 
 
 def _get_continuing_education_managers():
-    return User.objects.filter(groups=Group.objects.get(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+    return User.objects.filter(groups=Group.objects.get(name=MANAGERS_GROUP))
 
 
 def _get_formatted_admission_data(admission):

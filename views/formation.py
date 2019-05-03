@@ -25,7 +25,7 @@
 ##############################################################################
 import ast
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -37,10 +37,12 @@ from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_formations(request):
     formation_list = []
@@ -61,6 +63,7 @@ def list_formations(request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def update_formations(request):
     redirect_url = request.META.get('HTTP_REFERER', reverse('formation'))
 

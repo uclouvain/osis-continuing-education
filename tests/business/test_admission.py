@@ -38,7 +38,8 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
-    CONTINUING_EDUCATION_MANAGERS_GROUP, check_required_field_for_participant, _get_attachments
+    check_required_field_for_participant, _get_attachments
+from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
@@ -116,7 +117,7 @@ class TestAdmission(TestCase):
                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS)
         expected = {'country': _(Address._meta.get_field('country').verbose_name),
                     'location': _(Address._meta.get_field('location').verbose_name),
-                    'city': _(Address._meta.get_field('city').verbose_name),}
+                    'city': _(Address._meta.get_field('city').verbose_name), }
         self.assertDictEqual(response, expected)
 
         a_complete_address = AddressFactory(city="Malonne",
@@ -143,7 +144,7 @@ class SendEmailTest(TestCase):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
         self.manager = PersonFactory(last_name="AAA")
-        self.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+        self.manager.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=self.manager, training=cet)
         PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)

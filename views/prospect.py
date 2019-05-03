@@ -24,15 +24,17 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.shortcuts import render
 
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def list_prospects(request):
     prospects_list = list(Prospect.objects.all())
     return render(request, "prospects.html", {
