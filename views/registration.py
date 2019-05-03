@@ -33,7 +33,7 @@ from django.utils.translation import ugettext_lazy as _
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.utils.cache import cache_filter
-from base.views.common import display_error_messages
+from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business import data_export
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
@@ -44,11 +44,12 @@ from continuing_education.models.admission import Admission, filter_authorized_a
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors, get_object_list
 from continuing_education.business.perms import is_not_student_worker
+from continuing_education.views.home import is_continuing_education_student_worker
+from django.http import HttpResponseRedirect
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
@@ -64,7 +65,8 @@ def list_registrations(request):
     return render(request, "registrations.html", {
         'admissions': get_object_list(request, admission_list),
         'admissions_number': len(admission_list),
-        'search_form': search_form
+        'search_form': search_form,
+        'continuing_education_student_worker': is_continuing_education_student_worker(request.user)
     })
 
 
@@ -160,3 +162,61 @@ def create_json(request):
     else:
         display_error_messages(request, _("No registration validated, so no data available to export!"))
         return redirect('registration')
+
+
+@login_required
+@permission_required('continuing_education.can_edit_received_file_field', raise_exception=True)
+def receive_files_procedure(request):
+    selected_admissions_id = request.POST.getlist("selected_action", default=[])
+    redirection = request.META.get('HTTP_REFERER')
+    if selected_admissions_id:
+        _mark_folders_as_received(request, selected_admissions_id, True)
+        return redirect(reverse('registration'))
+    else:
+        _set_error_message(request)
+        return HttpResponseRedirect(redirection)
+
+
+def _mark_folders_as_received(request, selected_admissions_id, new_received_file_state):
+    for admission_id in selected_admissions_id:
+        _mark_as_received(admission_id, new_received_file_state)
+    _set_success_message(request, len(selected_admissions_id) > 1, new_received_file_state)
+
+
+def _mark_as_received(admission_id, received_file_state=True):
+    registration = get_object_or_404(Admission, pk=admission_id)
+    _set_received_file_status(registration, received_file_state)
+
+
+def _set_received_file_status(registration, received_file_state):
+    if registration:
+        registration.registration_file_received = received_file_state
+        registration.save()
+
+
+def _set_success_message(request, is_plural, received_file_state=True):
+    success_msg = "{} {}".format(
+        _('Files are now mark as ') if is_plural else _('File is now mark as '),
+        _('received ') if received_file_state else _('not received')
+    )
+    display_success_messages(request, success_msg)
+
+
+@login_required
+@permission_required('continuing_education.can_edit_received_file_field', raise_exception=True)
+def receive_file_procedure(request, admission_id):
+    redirection = request.META.get('HTTP_REFERER')
+    admission = _switch_received_file_state(admission_id)
+    _set_success_message(request, False, admission.registration_file_received)
+    return HttpResponseRedirect(redirection)
+
+
+def _set_error_message(request):
+    error_msg = _('Please select at least one file to mark as received')
+    display_error_messages(request, error_msg)
+
+
+def _switch_received_file_state(admission_id):
+    admission = get_object_or_404(Admission, pk=admission_id)
+    _set_received_file_status(admission, not admission.registration_file_received)
+    return admission

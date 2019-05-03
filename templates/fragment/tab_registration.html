@@ -26,7 +26,7 @@
 * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-{% if not admission.is_accepted %}
+{% if not admission.is_accepted and not continuing_education_student_worker %}
     <a class="btn btn-default pull-right {% if admission.is_draft %}disabled {% endif %}"
        style="margin: 0.5em;"
        href="{% url 'registration_edit' admission_id=admission.pk %}"

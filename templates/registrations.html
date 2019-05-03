@@ -99,7 +99,7 @@
                     </div>
                 </div>
             {% endif %}
-            <form id="admissions_form" method="post" action="{% url 'archives_procedure' %}">
+            <form id="admissions_form" method="post" action="{% if continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
                 {% csrf_token %}
 
                 <table class="table table-striped table-hover" id="order_student">
@@ -206,7 +206,9 @@
         $("#btn_produce_xls").click(function(e) {
             prepare_xls(e, 'xls_registrations');
         });
-
+        $("#btn_received_file").click(function(e) {
+            $("#admissions_form").submit();
+        });
     </script>
 
     <script src="{% static 'js/continuing_xls.js' %}"></script>
