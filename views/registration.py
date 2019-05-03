@@ -24,7 +24,7 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -43,10 +43,12 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors, get_object_list
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
@@ -82,6 +84,7 @@ def _get_formations_by_faculty(faculty):
 
 @login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def registration_edit(request, admission_id):
     can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
@@ -148,6 +151,7 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @permission_required('continuing_education.can_create_json', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def create_json(request):
     registrations = Admission.objects.filter(state=admission_state_choices.VALIDATED)
 

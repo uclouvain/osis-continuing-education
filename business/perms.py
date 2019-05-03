@@ -23,23 +23,14 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
-from django.shortcuts import render
 
-from continuing_education.models.admission import is_continuing_education_manager
-from continuing_education.business.perms import is_not_student_worker
+from django.core.exceptions import PermissionDenied
 
-
-@login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
-def main_view(request):
-    continuing_education_manager = is_continuing_education_manager(request.user)
-    continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-    return render(request, "admin_home.html", {
-        'continuing_education_manager': continuing_education_manager,
-        'continuing_education_student_worker': continuing_education_student_worker,
-    })
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 
 
-def is_continuing_education_student_worker(user):
-    return user.groups.filter(name='continuing_education_student_worker').exists()
+def is_not_student_worker(user):
+    if user.groups.filter(name=STUDENT_WORKERS_GROUP).exists():
+        raise PermissionDenied
+    else:
+        return True

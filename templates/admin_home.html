@@ -33,22 +33,25 @@
 {% endblock %}
 
 {% block content %}
-    <div class="page-header">
-        <h2 class="text-capitalize">{% trans 'Administrator' %}</h2>
-    </div>
     {% if continuing_education_student_worker %}
-    <div class="panel panel-default">
-        <div class="panel panel-body">
-            <div class="row">
-                <div class="col-md-1"><i class="fa fa-file-alt" style="font-size: 400%; color: #6699FF;"></i></div>
-                <div class="col-md-5">
-                    <h4 class="media-heading"><a href="{% url 'registration' %}">{% trans 'Registrations' %}</a></h4>
+        <div class="page-header">
+            <h2 class="text-capitalize">{% trans 'Student worker' %}</h2>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel panel-body">
+                <div class="row">
+                    <div class="col-md-1"><i class="fa fa-file-alt" style="font-size: 400%; color: #6699FF;"></i></div>
+                    <div class="col-md-5">
+                        <h4 class="media-heading"><a href="{% url 'registration' %}">{% trans 'Registrations' %}</a></h4>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     {% else %}
-    <div class="panel panel-default">
+        <div class="page-header">
+            <h2 class="text-capitalize">{% trans 'Administrator' %}</h2>
+        </div>
+        <div class="panel panel-default">
         <div class="panel panel-body">
             <div class="row">
                 <div class="col-md-1"><i class="fa fa-file" style="font-size: 400%; color: #6699FF;"></i></div>

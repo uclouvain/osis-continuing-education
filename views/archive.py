@@ -24,7 +24,7 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
@@ -36,10 +36,12 @@ from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.views.common import get_object_list
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_archives(request):
     search_form = ArchiveFilterForm(data=request.GET, user=request.user)
@@ -62,6 +64,7 @@ def list_archives(request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def archive_procedure(request, admission_id):
     can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
@@ -75,6 +78,7 @@ def archive_procedure(request, admission_id):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def archives_procedure(request):
     new_archive_status = True
     return change_archive_status(new_archive_status, request)
@@ -132,5 +136,6 @@ def _switch_archived_state(admission_id):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def unarchives_procedure(request):
     return change_archive_status(False, request)

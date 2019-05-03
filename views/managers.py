@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -35,12 +35,15 @@ from base.views.common import display_success_messages
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list, display_errors
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_validate_registration', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 @cache_filter()
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
@@ -51,7 +54,7 @@ def list_managers(request):
         managers = search_form.get_managers()
     else:
         managers = Person.objects.filter(
-            user__groups__name='continuing_education_training_managers'
+            user__groups__name=TRAINING_MANAGERS_GROUP
         ).order_by('last_name')
 
     errors = []
@@ -82,6 +85,7 @@ def list_managers(request):
 
 @login_required
 @permission_required('continuing_education.can_validate_registration', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def delete_person_training(request, training, manager):
     redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
 
@@ -97,6 +101,6 @@ def delete_person_training(request, training, manager):
 
 
 def _append_user_to_training_managers(user):
-    group = Group.objects.get(name='continuing_education_training_managers')
+    group = Group.objects.get(name=TRAINING_MANAGERS_GROUP)
     if user and not user.groups.filter(name=group.name).exists():
         group.user_set.add(user)

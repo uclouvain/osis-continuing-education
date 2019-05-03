@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -34,10 +34,12 @@ from base.views.common import display_error_messages, display_success_messages
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def list_tasks(request):
     if not is_continuing_education_manager(request.user):
         raise PermissionDenied
@@ -68,6 +70,7 @@ def list_tasks(request):
 @login_required
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def validate_registrations(request):
     if not is_continuing_education_manager(request.user):
         raise PermissionDenied
@@ -95,6 +98,7 @@ def _validate_registrations_list(registrations_ids_list):
 @login_required
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
 def mark_diplomas_produced(request):
     if not is_continuing_education_manager(request.user):
         raise PermissionDenied
