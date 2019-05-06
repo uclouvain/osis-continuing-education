@@ -84,9 +84,9 @@ def list_admissions(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
-    continuing_education_student_worker = is_continuing_education_student_worker(request.user)
+    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
-    if not continuing_education_student_worker:
+    if not user_is_continuing_education_student_worker:
         can_access_admission(request.user, admission_id)
 
     admission = get_object_or_404(Admission, pk=admission_id)
@@ -134,7 +134,7 @@ def admission_detail(request, admission_id):
             'file_categories_choices': _get_file_category_choices_with_disabled_parameter(admission),
             'invoice': file_category_choices.INVOICE,
             'condition_acceptance_adm_form': condition_acceptance_adm_form,
-            'continuing_education_student_worker': continuing_education_student_worker,
+            'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
         }
     )
 

@@ -35,10 +35,10 @@ from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def main_view(request):
     continuing_education_manager = is_continuing_education_manager(request.user)
-    continuing_education_student_worker = is_continuing_education_student_worker(request.user)
+    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
     return render(request, "admin_home.html", {
         'continuing_education_manager': continuing_education_manager,
-        'continuing_education_student_worker': continuing_education_student_worker,
+        'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
     })
 
 
