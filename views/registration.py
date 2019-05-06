@@ -177,15 +177,9 @@ def receive_files_procedure(request):
         return HttpResponseRedirect(redirection)
 
 
-def _mark_folders_as_received(request, selected_admissions_id, new_received_file_state):
-    for admission_id in selected_admissions_id:
-        _mark_as_received(admission_id, new_received_file_state)
-    _set_success_message(request, len(selected_admissions_id) > 1, new_received_file_state)
-
-
-def _mark_as_received(admission_id, received_file_state=True):
-    registration = get_object_or_404(Admission, pk=admission_id)
-    _set_received_file_status(registration, received_file_state)
+def _mark_folders_as_received(request, selected_admissions_ids, new_received_file_state):
+    Admission.objects.filter(pk__in=selected_admissions_ids).update(registration_file_received=new_received_file_state)
+    _set_success_message(request, len(selected_admissions_ids) > 1, new_received_file_state)
 
 
 def _set_received_file_status(registration, received_file_state):
