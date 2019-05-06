@@ -38,6 +38,7 @@ from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
 from continuing_education.business.perms import is_not_student_worker
+from base.views.common import page_not_found
 
 
 @login_required
@@ -150,3 +151,20 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
         "quantity_updated": len(selected_formations_ids)
     }
     display_success_messages(request, success_msg)
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def formation_detail(request, formation_id):
+    formation = ContinuingEducationTraining.objects.filter(
+        education_group__id=formation_id).first()
+    if formation:
+        return render(
+            request, "formation_detail.html",
+            {
+                'formation': formation,
+            }
+        )
+    else:
+        return page_not_found(request)
