@@ -85,7 +85,7 @@ def list_admissions(request):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
     continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-    
+
     if not continuing_education_student_worker:
         can_access_admission(request.user, admission_id)
 
