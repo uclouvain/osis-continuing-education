@@ -7,22 +7,30 @@
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
-        <li>
-            {% include 'blocks/button/archive.html' %}
-        </li>
-        <li role="separator" class="divider"></li>
-        <li>
-            {% include "blocks/button/xls.html" with button_title=button_title %}
-        </li>
-        {% if perms.admission.can_create_json %}
-            <li role="separator" class="divider"></li>
+        {% if continuing_education_student_worker %}
             <li>
-                <a id="btn_create_json"
-                   href="{% url 'json_file' %}"
-                   title="{%  trans 'Create Json file to export data to EPC' %}">
-                    &nbsp;{%  trans 'Create Json file to export data to EPC' %}
+                <a id="btn_received_file" style="margin-right:10px;">
+                    &nbsp;{% trans 'Registration file received' %}
                 </a>
             </li>
+        {% else %}
+            <li>
+                {% include 'blocks/button/archive.html' %}
+            </li>
+            <li role="separator" class="divider"></li>
+            <li>
+                {% include "blocks/button/xls.html" with button_title=button_title %}
+            </li>
+            {% if perms.admission.can_create_json %}
+                <li role="separator" class="divider"></li>
+                <li>
+                    <a id="btn_create_json"
+                       href="{% url 'json_file' %}"
+                       title="{%  trans 'Create Json file to export data to EPC' %}">
+                        &nbsp;{%  trans 'Create Json file to export data to EPC' %}
+                    </a>
+                </li>
+            {% endif %}
         {% endif %}
 
     </ul>

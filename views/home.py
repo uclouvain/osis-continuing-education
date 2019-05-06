@@ -26,8 +26,9 @@
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.shortcuts import render
 
-from continuing_education.models.admission import is_continuing_education_manager
 from continuing_education.business.perms import is_not_student_worker
+from continuing_education.models.admission import is_continuing_education_manager
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 
 
 @login_required
@@ -42,4 +43,4 @@ def main_view(request):
 
 
 def is_continuing_education_student_worker(user):
-    return user.groups.filter(name='continuing_education_student_worker').exists()
+    return user.groups.filter(name=STUDENT_WORKERS_GROUP).exists()
