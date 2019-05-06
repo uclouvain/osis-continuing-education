@@ -56,6 +56,7 @@ from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from osis_common.decorators.ajax import ajax_required
 from continuing_education.business.perms import is_not_student_worker
+from continuing_education.views.home import is_continuing_education_student_worker
 
 
 @login_required
@@ -82,7 +83,6 @@ def list_admissions(request):
 
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
 def admission_detail(request, admission_id):
     can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
@@ -129,7 +129,8 @@ def admission_detail(request, admission_id):
             'waiting_adm_form': waiting_adm_form,
             'file_categories_choices': _get_file_category_choices_with_disabled_parameter(admission),
             'invoice': file_category_choices.INVOICE,
-            'condition_acceptance_adm_form': condition_acceptance_adm_form
+            'condition_acceptance_adm_form': condition_acceptance_adm_form,
+            'continuing_education_student_worker': is_continuing_education_student_worker(request.user),
         }
     )
 

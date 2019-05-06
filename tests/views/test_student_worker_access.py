@@ -63,7 +63,6 @@ class ViewsLimitedForStudentWorker(TestCase):
 
     def test_get_access(self):
         urls = [reverse('admission'),
-                reverse('admission_detail', args=[self.admission.id]),
                 reverse('send_invoice_notification_mail', args=[self.admission.id]),
                 reverse('admission_new', ),
                 reverse('admission_edit', args=[self.admission.id]),
@@ -76,7 +75,6 @@ class ViewsLimitedForStudentWorker(TestCase):
                 reverse('list_managers'),
                 reverse('delete_person_training', args=[self.formation.id, self.training_manager.id]),
                 reverse('prospects'),
-                reverse('registration'),
                 reverse('json_file'),
                 reverse('registration_edit', args=[self.admission.id]),
                 reverse('list_tasks'),
@@ -93,6 +91,6 @@ class ViewsLimitedForStudentWorker(TestCase):
             reverse('mark_diplomas_produced')
         ]
         for url in urls:
-            response = self.client.post(reverse('validate_registrations'))
+            response = self.client.post(url)
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
             self.assertTemplateUsed(response, 'access_denied.html')

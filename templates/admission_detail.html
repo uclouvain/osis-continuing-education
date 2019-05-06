@@ -46,7 +46,26 @@
     <div class="page-header">
         <form id="form" method="POST" class="post-form">
         {% csrf_token %}
-            <div class="btn-group pull-right">
+        <div class="btn-group pull-right">
+            {% if continuing_education_student_worker %}
+                <button id="button-state" type="button" class="btn btn-default"
+                        style="margin-right: 10px;">
+                    {% if admission.state %}{% trans admission.state %}{% endif %}
+                </button>
+                {% if admission.registration_file_received %}
+                    <a href="{% url 'receive_file_procedure' admission.id %}"
+                       title="{% trans 'Registration file received' %}"
+                       class="btn btn-default" >
+                        <i class="fa fa-folder-plus" style="font-size: larger"></i>&nbsp;{% trans 'Mark as not received' %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'receive_file_procedure' admission.id %}"
+                       title="{% trans 'Unreceived file' %}"
+                       class="btn btn-default">
+                        <i class="fa fa-folder-minus"v style="font-size: larger"></i>&nbsp;{% trans 'Mark as received file' %}
+                    </a>
+                {% endif %}
+            {% else %}
                 <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
                 <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% if not states %} disabled {% endif %}>
                 <span class="caret"></span>
@@ -86,6 +105,8 @@
                         </a>
                     {% endif %}
                 </div>
+
+                {% endif %}
             </div>
             {% bootstrap_form admission_form exclude="state_reason, condition_of_acceptance" form_group_class="hidden" %}
 
@@ -130,7 +151,9 @@
         <ul id="tabs" class="nav nav-tabs">
           <li role="presentation" class="active"><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
           <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
-          <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
+          {% if not continuing_education_student_worker%}
+              <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
+          {% endif %}
         </ul>
         <div class="tab-content">
             {% csrf_token %}
@@ -140,9 +163,11 @@
             <div role="tabpanel" class="tab-pane" id="registration">
                 {% include "fragment/tab_registration.html" %}
             </div>
-            <div role="tabpanel" class="tab-pane" id="documents">
-                {% include "fragment/tab_documents.html" %}
-            </div>
+            {% if not continuing_education_student_worker%}
+                <div role="tabpanel" class="tab-pane" id="documents">
+                    {% include "fragment/tab_documents.html" %}
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
