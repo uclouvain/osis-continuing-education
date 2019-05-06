@@ -39,36 +39,24 @@ class AdmissionList(generics.ListAPIView):
        Return a list of all the admission with optional filtering.
     """
     name = 'admission-list'
+    serializer_class = AdmissionListSerializer
 
     filter_fields = (
-        'person_information',
-        'formation',
-        'state'
+        'state',
     )
     search_fields = (
-        'person_information',
-        'formation',
         'state',
     )
     ordering_fields = (
-        'person_information__person__last_name',
-        'formation',
         'state',
     )
     ordering = (
         'state',
-        'formation',
     )  # Default ordering
-
-    serializer_class = AdmissionListSerializer
 
     def get_queryset(self):
         person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
-        return Admission.admission_objects.filter(person_information=person).select_related(
-            'person_information',
-            'citizenship',
-            'address',
-        )
+        return Admission.admission_objects.filter(person_information=person)
 
 
 class AdmissionCreate(generics.CreateAPIView):

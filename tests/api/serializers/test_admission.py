@@ -1,9 +1,11 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
+from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -17,8 +19,8 @@ class AdmissionListSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
-
+        edy = EducationGroupYearFactory(education_group=ed, )
+        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
             formation=ContinuingEducationTrainingFactory(education_group=ed)
@@ -30,11 +32,11 @@ class AdmissionListSerializerTestCase(TestCase):
         expected_fields = [
             'uuid',
             'url',
-            'person_information',
-            'email',
-            'formation',
+            'acronym',
             'state',
             'state_text',
+            'title_fr',
+            'faculty'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

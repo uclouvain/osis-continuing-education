@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import datetime
-import unittest
 import uuid
 from unittest import mock
 
@@ -32,13 +31,14 @@ from django.forms import model_to_dict
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
+from base.models.enums.entity_type import FACULTY
 from base.models.person import Person
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
@@ -61,11 +61,7 @@ class AdmissionListTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
 
-        cls.citizenship = CountryFactory(iso_code='FR')
-        new_country = CountryFactory(iso_code='NL')
-        cls.person = ContinuingEducationPersonFactory(
-            birth_country=cls.citizenship
-        )
+        cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
 
@@ -73,13 +69,13 @@ class AdmissionListTestCase(APITestCase):
 
         for state in [SUBMITTED, ACCEPTED, REJECTED, DRAFT]:
             education_group = EducationGroupFactory()
-            EducationGroupYearFactory(
+            edy = EducationGroupYearFactory(
                 education_group=education_group,
                 academic_year=cls.academic_year
             )
+            EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
             cls.formation = ContinuingEducationTrainingFactory(education_group=education_group)
             cls.admission = AdmissionFactory(
-                citizenship=cls.citizenship,
                 person_information=cls.person,
                 address=cls.address,
                 state=state,
@@ -128,26 +124,9 @@ class AdmissionListTestCase(APITestCase):
             admission_state_choices.ACCEPTED,
             admission_state_choices.REGISTRATION_SUBMITTED,
             admission_state_choices.VALIDATED
-        ]).order_by('state', 'formation')
+        ]).order_by('state')
         serializer = AdmissionListSerializer(admissions, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'], serializer.data)
-
-    @unittest.skip("formation and person_information ordering is not correct")
-    def test_get_all_admission_specify_ordering_field(self):
-        ordering_managed = ['state', 'formation__acronym', 'person_information__person__last_name']
-
-        for order in ordering_managed:
-            query_string = {api_settings.ORDERING_PARAM: order}
-            response = self.client.get(self.url, kwargs=query_string)
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-            admissions = Admission.admission_objects.all().order_by(order)
-            serializer = AdmissionListSerializer(
-                admissions,
-                many=True,
-                context={'request': RequestFactory().get(self.url, query_string)},
-            )
-            self.assertEqual(response.data['results'], serializer.data)
 
 
 class AdmissionCreateTestCase(APITestCase):

@@ -27,9 +27,7 @@ from rest_framework import serializers
 
 from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
-    ContinuingEducationPersonPostSerializer
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonPostSerializer
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
@@ -44,24 +42,32 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
         view_name='continuing_education_api_v1:admission-detail-update',
         lookup_field='uuid'
     )
-
-    person_information = ContinuingEducationPersonSerializer()
-
-    # Display human readable value
+    acronym = serializers.SerializerMethodField()
     state_text = serializers.CharField(source='get_state_display', read_only=True)
+    faculty = serializers.SerializerMethodField()
+    title_fr = serializers.SerializerMethodField()
 
-    formation = ContinuingEducationTrainingSerializer()
+    def get_acronym(self, obj):
+        return obj.formation.acronym
+
+    def get_title_fr(self, obj):
+        return obj.formation.title
+
+    def get_faculty(self, obj):
+        ac = obj.formation.academic_year
+        faculty_version = obj.formation.management_entity.entityversion_set.first().find_faculty_version(ac)
+        return faculty_version.acronym
 
     class Meta:
         model = Admission
         fields = (
             'uuid',
             'url',
-            'person_information',
-            'email',
-            'formation',
+            'acronym',
             'state',
             'state_text',
+            'title_fr',
+            'faculty'
         )
 
 
