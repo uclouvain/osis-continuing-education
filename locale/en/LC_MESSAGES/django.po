@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-03 15:29+0200\n"
+"POT-Creation-Date: 2019-05-06 09:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
-#: templates/admin_home.html:32 templates/admin_home.html:52
+#: templates/admin_home.html:36 templates/admin_home.html:58
 msgid "Administrator"
 msgstr ""
 
@@ -104,7 +104,7 @@ msgstr ""
 msgid "Admissions"
 msgstr ""
 
-#: templates/admin_home.html:59 templates/admission_detail.html:41
+#: templates/admin_home.html:65 templates/admission_detail.html:41
 #: templates/admissions.html:38 templates/admissions.html:43
 msgctxt "continuing_education"
 msgid "Admissions"
@@ -143,7 +143,7 @@ msgstr ""
 msgid "Archives"
 msgstr ""
 
-#: templates/admin_home.html:94 templates/archives.html:37
+#: templates/admin_home.html:100 templates/archives.html:37
 #: templates/archives.html:42
 msgctxt "continuing_education"
 msgid "Archives"
@@ -362,14 +362,14 @@ msgstr ""
 
 #: templates/admin_home.html:31 templates/admission_detail.html:37
 #: templates/admission_form.html:36 templates/admissions.html:37
-#: templates/archives.html:36 templates/formations.html:37
-#: templates/managers.html:36 templates/prospects.html:36
-#: templates/registration_form.html:36 templates/registrations.html:36
-#: templates/tasks.html:36
+#: templates/archives.html:36 templates/formation_detail.html:38
+#: templates/formations.html:37 templates/managers.html:36
+#: templates/prospects.html:36 templates/registration_form.html:36
+#: templates/registrations.html:36 templates/tasks.html:36
 msgid "Continuing Education"
 msgstr ""
 
-#: templates/admin_home.html:83
+#: templates/admin_home.html:89 templates/formation_detail.html:39
 msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
@@ -518,7 +518,7 @@ msgstr ""
 msgid "File is now"
 msgstr ""
 
-#: views/registration.py:199
+#: views/registration.py:193
 msgid "File is now mark as "
 msgstr ""
 
@@ -526,7 +526,7 @@ msgstr ""
 msgid "Files are now"
 msgstr ""
 
-#: views/registration.py:199
+#: views/registration.py:193
 msgid "Files are now mark as "
 msgstr ""
 
@@ -548,7 +548,7 @@ msgstr ""
 #: templates/admission_form.html:170 templates/admission_form.html:173
 #: templates/admissions.html:57 templates/admissions.html:129
 #: templates/archives.html:55 templates/archives.html:120
-#: templates/fragment/tab_admission.html:97
+#: templates/formation_detail.html:40 templates/fragment/tab_admission.html:97
 #: templates/fragment/tab_admission.html:101
 #: templates/fragment/tasks/diplomas_to_produce.html:35
 #: templates/fragment/tasks/registrations_to_validate.html:34
@@ -562,20 +562,20 @@ msgstr ""
 msgid "Formation administrator(s)"
 msgstr ""
 
-#: tests/views/test_formation.py:168 views/formation.py:127
+#: tests/views/test_formation.py:185 views/formation.py:128
 msgid "Formation are now active"
 msgstr ""
 
-#: tests/views/test_formation.py:197 views/formation.py:129
+#: tests/views/test_formation.py:214 views/formation.py:130
 msgid "Formation are now inactive"
 msgstr ""
 
-#: tests/views/test_formation.py:151 tests/views/test_formation.py:209
-#: views/formation.py:122
+#: tests/views/test_formation.py:168 tests/views/test_formation.py:226
+#: views/formation.py:123
 msgid "Formation is now active"
 msgstr ""
 
-#: tests/views/test_formation.py:180 views/formation.py:124
+#: tests/views/test_formation.py:197 views/formation.py:125
 msgid "Formation is now inactive"
 msgstr ""
 
@@ -808,7 +808,7 @@ msgstr ""
 #: forms/search.py:37 models/enums/enums.py:4 templates/formations.html:113
 #: templates/registrations.html:151 templates/registrations.html:158
 #: templates/registrations.html:174 tests/business/test_admission.py:72
-#: tests/business/xls/test_xls_registration.py:91 views/formation.py:149
+#: tests/business/xls/test_xls_registration.py:91 views/formation.py:150
 msgid "No"
 msgstr ""
 
@@ -817,7 +817,7 @@ msgid "No assigned training"
 msgstr ""
 
 #: templates/admissions.html:186 templates/archives.html:195
-#: templates/formations.html:197
+#: templates/formations.html:201
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:73
 #: templates/prospects.html:96 templates/registrations.html:195
@@ -832,11 +832,11 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-#: views/formation.py:135
+#: views/formation.py:136
 msgid "No formation activated"
 msgstr ""
 
-#: views/formation.py:137
+#: views/formation.py:138
 msgid "No formation inactivated"
 msgstr ""
 
@@ -925,11 +925,11 @@ msgstr ""
 msgid "Please select at least one file to archive"
 msgstr ""
 
-#: views/registration.py:215
+#: views/registration.py:209
 msgid "Please select at least one file to mark as received"
 msgstr ""
 
-#: tests/views/test_formation.py:138 views/formation.py:72
+#: tests/views/test_formation.py:155 views/formation.py:73
 msgid "Please select at least one formation"
 msgstr ""
 
@@ -1013,7 +1013,7 @@ msgstr ""
 msgid "Professional status"
 msgstr ""
 
-#: templates/admin_home.html:87 templates/prospects.html:37
+#: templates/admin_home.html:93 templates/prospects.html:37
 #: templates/prospects.html:42 templates/prospects.html:51
 msgid "Prospects"
 msgstr ""
@@ -1080,8 +1080,8 @@ msgstr ""
 msgid "Registration type"
 msgstr ""
 
-#: business/data_export.py:51 templates/admin_home.html:45
-#: templates/admin_home.html:63 templates/admission_detail.html:39
+#: business/data_export.py:51 templates/admin_home.html:51
+#: templates/admin_home.html:69 templates/admission_detail.html:39
 #: templates/registrations.html:37 templates/registrations.html:42
 #: templates/registrations.html:98 tests/business/test_data_export.py:70
 msgid "Registrations"
@@ -1148,6 +1148,7 @@ msgid "Send notification email"
 msgstr ""
 
 #: models/continuing_education_training.py:75
+#: templates/formation_detail.html:54 templates/formation_detail.html:55
 msgid "Send notification emails"
 msgstr ""
 
@@ -1188,9 +1189,10 @@ msgstr ""
 #: templates/admission_detail.html:69 templates/admission_detail.html:72
 #: templates/admission_form.html:216 templates/admissions.html:61
 #: templates/admissions.html:131 templates/archives.html:59
-#: templates/archives.html:122 templates/formations.html:72
-#: templates/formations.html:147 templates/registrations.html:59
-#: templates/registrations.html:121 tests/business/test_admission.py:86
+#: templates/archives.html:122 templates/formation_detail.html:50
+#: templates/formations.html:72 templates/formations.html:147
+#: templates/registrations.html:59 templates/registrations.html:121
+#: tests/business/test_admission.py:86
 msgid "State"
 msgstr ""
 
@@ -1210,16 +1212,16 @@ msgstr ""
 msgid "Student sheet"
 msgstr ""
 
-#: templates/admin_home.html:38
+#: templates/admin_home.html:34 templates/admin_home.html:44
 msgid "Student worker"
 msgstr ""
 
 #: templates/admin_home.html:30 templates/admission_detail.html:36
 #: templates/admission_form.html:35 templates/admissions.html:36
-#: templates/archives.html:35 templates/formations.html:36
-#: templates/managers.html:35 templates/prospects.html:35
-#: templates/registration_form.html:35 templates/registrations.html:35
-#: templates/tasks.html:35
+#: templates/archives.html:35 templates/formation_detail.html:37
+#: templates/formations.html:36 templates/managers.html:35
+#: templates/prospects.html:35 templates/registration_form.html:35
+#: templates/registrations.html:35 templates/tasks.html:35
 msgid "Studies"
 msgstr ""
 
@@ -1236,7 +1238,7 @@ msgstr ""
 msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr ""
 
-#: tests/views/test_formation.py:263 views/formation.py:148
+#: tests/views/test_formation.py:280 views/formation.py:149
 #, python-format
 msgid ""
 "Successfully defined training aid to %(new_value)s for %(quantity_updated)s "
@@ -1262,7 +1264,7 @@ msgstr ""
 msgid "Sure you want to unarchive the file(s) ?"
 msgstr ""
 
-#: templates/admin_home.html:71 templates/tasks.html:37 templates/tasks.html:42
+#: templates/admin_home.html:77 templates/tasks.html:37 templates/tasks.html:42
 msgid "Tasks"
 msgstr ""
 
@@ -1345,7 +1347,7 @@ msgstr ""
 msgid "Training"
 msgstr ""
 
-#: templates/admin_home.html:75 templates/managers.html:37
+#: templates/admin_home.html:81 templates/managers.html:37
 #: templates/managers.html:42
 msgid "Training Managers"
 msgstr ""
@@ -1477,7 +1479,7 @@ msgstr ""
 #: templates/registrations.html:149 templates/registrations.html:156
 #: templates/registrations.html:172 tests/business/test_admission.py:72
 #: tests/business/xls/test_xls_registration.py:90
-#: tests/views/test_formation.py:264 views/formation.py:149
+#: tests/views/test_formation.py:281 views/formation.py:150
 msgid "Yes"
 msgstr ""
 
@@ -1556,11 +1558,11 @@ msgstr ""
 msgid "managers"
 msgstr ""
 
-#: views/registration.py:200
+#: views/registration.py:194
 msgid "not received"
 msgstr ""
 
-#: views/registration.py:200
+#: views/registration.py:194
 msgid "received"
 msgstr ""
 

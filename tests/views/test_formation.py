@@ -42,6 +42,7 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from rest_framework import status
 
 STR_TRUE = "True"
 STR_FALSE = "False"
@@ -83,6 +84,9 @@ class ViewFormationTestCase(TestCase):
         self.entity_version = EntityVersionFactory(
             entity=self.formation_AAAA.management_entity,
         )
+        self.continuing_education_training = ContinuingEducationTrainingFactory(
+            education_group=self.formation_AAAA.education_group
+        )
 
     def test_current_year_formation_list(self):
         response = self.client.get(reverse('formation'))
@@ -100,6 +104,19 @@ class ViewFormationTestCase(TestCase):
         self.assertEqual(response.context['formations'].object_list[0], self.formation_AAAA.education_group)
         self.assertEqual(response.context['formations'].object_list[1], self.formation_ABBB.education_group)
         self.assertEqual(response.context['formations_number'], 2)
+
+    def test_formation_detail(self):
+        url = reverse('formation_detail', args=[self.continuing_education_training.education_group.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'formation_detail.html')
+
+    def test_formation_detail_not_found(self):
+        response = self.client.get(reverse('formation_detail', kwargs={
+            'formation_id': 0,
+        }))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTemplateUsed(response, 'page_not_found.html')
 
 
 class FormationActivateTestCase(TestCase):

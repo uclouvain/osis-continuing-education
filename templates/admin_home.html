@@ -29,7 +29,13 @@
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
-    <li class="active">{% trans 'Administrator' %}</li>
+    <li class="active">
+        {% if continuing_education_student_worker %}
+            {% trans 'Student worker' %}
+        {% else %}
+            {% trans 'Administrator' %}
+        {% endif %}
+    </li>
 {% endblock %}
 
 {% block content %}

@@ -53,11 +53,13 @@ from django.http import HttpResponseRedirect
 @cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
+    continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
 
-    admission_list = filter_authorized_admissions(request.user, admission_list)
+    if not continuing_education_student_worker:
+        admission_list = filter_authorized_admissions(request.user, admission_list)
 
     if request.GET.get('xls_status') == "xls_registrations":
         return create_xls_registration(request.user, admission_list, search_form)
@@ -66,7 +68,7 @@ def list_registrations(request):
         'admissions': get_object_list(request, admission_list),
         'admissions_number': len(admission_list),
         'search_form': search_form,
-        'continuing_education_student_worker': is_continuing_education_student_worker(request.user)
+        'continuing_education_student_worker': continuing_education_student_worker
     })
 
 
