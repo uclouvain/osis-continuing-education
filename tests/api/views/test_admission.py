@@ -408,7 +408,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
                     self.user
                 )
 
-    @mock.patch('continuing_education.business.admission.send_submission_email_to_admin')
+    @mock.patch('continuing_education.business.admission.send_submission_email_to_admission_managers')
     def test_update_valid_admission_address(self, mock_mail):
         data = {
             'main_address': {
