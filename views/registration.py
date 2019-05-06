@@ -54,7 +54,7 @@ from django.http import HttpResponseRedirect
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
     continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-    
+
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
 
