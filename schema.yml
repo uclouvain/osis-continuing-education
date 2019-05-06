@@ -443,6 +443,10 @@ components:
               $ref: '#/components/schemas/Uuid'
             state:
               $ref: '#/components/schemas/StateEnum'
+            state_text:
+              type: string
+              readOnly: true
+
         - $ref: '#/components/schemas/FormationBasicGet'
 
     AdmissionPostPutPatch:
