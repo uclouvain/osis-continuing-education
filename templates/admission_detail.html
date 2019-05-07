@@ -47,7 +47,7 @@
         <form id="form" method="POST" class="post-form">
         {% csrf_token %}
         <div class="btn-group pull-right">
-            {% if continuing_education_student_worker %}
+            {% if user_is_continuing_education_student_worker %}
                 <button id="button-state" type="button" class="btn btn-default"
                         style="margin-right: 10px;">
                     {% if admission.state %}{% trans admission.state %}{% endif %}
@@ -151,7 +151,7 @@
         <ul id="tabs" class="nav nav-tabs">
           <li role="presentation" class="active"><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
           <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
-          {% if not continuing_education_student_worker%}
+          {% if not user_is_continuing_education_student_worker%}
               <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
           {% endif %}
         </ul>
@@ -163,7 +163,7 @@
             <div role="tabpanel" class="tab-pane" id="registration">
                 {% include "fragment/tab_registration.html" %}
             </div>
-            {% if not continuing_education_student_worker%}
+            {% if not user_is_continuing_education_student_worker%}
                 <div role="tabpanel" class="tab-pane" id="documents">
                     {% include "fragment/tab_documents.html" %}
                 </div>

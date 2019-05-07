@@ -52,7 +52,7 @@
             <br/>
             <div class="row">
                 <div class="col-md-4">{% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}</div>
-                <div class="col-md-8">{% bootstrap_label _("Send notification emails") %} <br/> {{ formation.alternate_notification_email_addresses| default_if_none:'' }}</div>
+                <div class="col-md-8">{% bootstrap_label _("Alternate notification email addresses") %} <br/> {{ formation.alternate_notification_email_addresses| default_if_none:'' }}</div>
             </div>
         </div>
     </div>
