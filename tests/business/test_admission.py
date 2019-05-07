@@ -103,6 +103,20 @@ class TestAdmission(TestCase):
 
         self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
 
+    def test_get_managers_mail_mail_missing(self):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        manager = PersonFactory(last_name="AAA", email=None)
+        manager_2 = PersonFactory(last_name="BBB")
+        cet = ContinuingEducationTrainingFactory(education_group=ed)
+        PersonTrainingFactory(person=manager, training=cet)
+        PersonTrainingFactory(person=manager_2, training=cet)
+        admission = AdmissionFactory(formation=cet)
+        expected_mails = "{}".format(manager_2.email)
+
+        self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
+
+
     @override_settings(LANGUAGES=[('fr-be', 'French'), ('en', 'English'), ], LANGUAGE_CODE='fr-be')
     def test_check_address_required_field_for_participant(self):
         an_incomplete_address = AddressFactory(
