@@ -121,7 +121,7 @@ class ContinuingEducationTraining(Model):
         return " - ".join([str(mgr) for mgr in self.managers.all().order_by('last_name', 'first_name')])
 
     def get_alternative_notification_email_receivers(self):
-        return self.alternate_notification_email_addresses.split(',')
+        return [adr.strip() for adr in self.alternate_notification_email_addresses.split(',')]
 
     def __str__(self):
         education_group_year = self.get_most_recent_education_group_year()

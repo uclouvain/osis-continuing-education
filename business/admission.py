@@ -122,18 +122,23 @@ def _get_admission_managers_email_receivers(admission):
 
     alternative_email_receivers = admission.formation.get_alternative_notification_email_receivers()
     if alternative_email_receivers:
-        managers = admission.formation.managers.all()
+        return [
+            message_config.create_receiver(
+                None,
+                receiver_email,
+                None
+            )
+            for receiver_email in admission.formation.get_alternative_notification_email_receivers()
+        ]
     else:
-        managers = admission.formation.managers.all()
-
-    return [
-        message_config.create_receiver(
-            manager.user.id,
-            manager.email,
-            None
-        )
-        for manager in managers
-    ]
+        return [
+            message_config.create_receiver(
+                manager.id,
+                manager.email,
+                manager.language
+            )
+            for manager in admission.formation.managers.all()
+        ]
 
 
 def send_submission_email_to_participant(admission, connected_user):

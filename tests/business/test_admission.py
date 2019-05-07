@@ -56,6 +56,7 @@ from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
+
 class TestAdmission(TestCase):
     def test_get_formatted_admission_data(self):
         academic_year = AcademicYearFactory(year=2018)
@@ -294,3 +295,49 @@ class SendEmailSettingsTest(TestCase):
         admission.send_submission_email_to_admission_managers(self.admission, None)
         receivers = mock_send_mail.call_args[1].get('receivers')
         self.assertEqual(len(receivers), 0)
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_setting_true_no_alternate_receivers(self, mock_send_mail):
+        self.cet.send_notification_emails = True
+        self.cet.save()
+        self.admission.state = SUBMITTED
+        self.admission.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+        self.assertEqual(
+            receivers,
+            [
+                {
+                    'receiver_person_id': self.manager.id,
+                    'receiver_email': self.manager.email,
+                    'receiver_lang': self.manager.language
+                }
+            ]
+        )
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_setting_true_with_alternate_receivers(self, mock_send_mail):
+        self.cet.send_notification_emails = True
+        self.cet.alternate_notification_email_addresses = "jane.doe@test.be, test2@domain.com"
+        self.cet.save()
+        self.admission.state = SUBMITTED
+        self.admission.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+        self.assertCountEqual(
+            receivers,
+            [
+                {
+                    'receiver_person_id': None,
+                    'receiver_email': "jane.doe@test.be",
+                    'receiver_lang': None
+                },
+                {
+                    'receiver_person_id': None,
+                    'receiver_email': "test2@domain.com",
+                    'receiver_lang': None
+                }
+            ]
+        )
