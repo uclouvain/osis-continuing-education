@@ -42,6 +42,7 @@ MAX_DOCUMENTS_SIZE = 20000000
 def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    condition_of_acceptance = None
     if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
         send_submission_email_to_admin(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
@@ -51,6 +52,8 @@ def send_state_changed_email(admission, connected_user=None):
                              admission_state_choices.WAITING,
                              admission_state_choices.VALIDATED):
         lower_state = admission.state.lower()
+        if admission.state == admission_state_choices.ACCEPTED and admission.condition_of_acceptance != '':
+            condition_of_acceptance = admission.condition_of_acceptance
     else:
         lower_state = 'other'
     send_email(
@@ -67,6 +70,7 @@ def send_state_changed_email(admission, connected_user=None):
                 'reason': admission.state_reason if admission.state_reason else '-',
                 'mails': mails,
                 'original_state': _(admission._original_state),
+                'condition_of_acceptance': condition_of_acceptance
             },
             'subject': {
                 'state': _(admission.state)
