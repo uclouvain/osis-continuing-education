@@ -70,7 +70,9 @@
                     <br/>
                     {% bootstrap_label _("Who will receive notification emails ?") %}
                     <br/>
-                    {% if not formation.get_alternative_notification_email_receivers %}
+                    {% if not formation.send_notification_emails %}
+                        {% trans 'Nobody (because "Send notifications emails" setting is set to "No").' %}
+                    {% elif not formation.get_alternative_notification_email_receivers %}
                         {% trans "The managers (list above) will receive the notification emails." %}
                     {% else %}
                         <p>

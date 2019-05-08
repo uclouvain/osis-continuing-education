@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-08 13:12+0200\n"
+"POT-Creation-Date: 2019-05-08 15:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -464,7 +464,7 @@ msgstr ""
 msgid "Education"
 msgstr ""
 
-#: models/continuing_education_training.py:87
+#: models/continuing_education_training.py:88
 msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr ""
 
@@ -821,7 +821,7 @@ msgid "No assigned training"
 msgstr ""
 
 #: templates/admissions.html:186 templates/archives.html:195
-#: templates/formations.html:201
+#: templates/formations.html:205
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:73
 #: templates/prospects.html:96 templates/registrations.html:195
@@ -848,6 +848,11 @@ msgstr ""
 msgid "No registration validated, so no data available to export!"
 msgstr ""
 
+#: templates/formation_detail.html:74
+msgid ""
+"Nobody (because \"Send notifications emails\" setting is set to \"No\")."
+msgstr ""
+
 #: templates/formation_detail.html:61
 msgid "None"
 msgstr ""
@@ -860,7 +865,7 @@ msgstr ""
 msgid "Not updatable because it's in draft state"
 msgstr ""
 
-#: templates/formation_detail.html:75
+#: templates/formation_detail.html:79
 msgid ""
 "Notification emails will be sent to the following addresse(s) instead of the "
 "managers"
@@ -1286,7 +1291,7 @@ msgstr ""
 msgid "The document is uploaded correctly"
 msgstr ""
 
-#: templates/formation_detail.html:72
+#: templates/formation_detail.html:76
 msgid "The managers (list above) will receive the notification emails."
 msgstr ""
 
@@ -1378,7 +1383,7 @@ msgstr ""
 msgid "Training aid"
 msgstr ""
 
-#: models/continuing_education_training.py:128
+#: models/continuing_education_training.py:129
 msgid "Training aid available"
 msgstr ""
 
@@ -1483,7 +1488,7 @@ msgid ""
 "those fields aren't filled-in yet."
 msgstr ""
 
-#: templates/formation_detail.html:69
+#: templates/formation_detail.html:71
 msgid "Who will receive notification emails ?"
 msgstr ""
 
