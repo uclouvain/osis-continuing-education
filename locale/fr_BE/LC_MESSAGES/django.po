@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-08 13:12+0200\n"
+"POT-Creation-Date: 2019-05-08 15:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -327,6 +327,10 @@ msgstr "Nationalité"
 msgid "City"
 msgstr "Ville"
 
+#: models/continuing_education_training.py:82
+msgid "Comma-separated addresses - Leave empty if no address"
+msgstr "Adresses séparées par des virgules - Laisser vide si pas d'adresses alternatives"
+
 #: business/xls/xls_common.py:110 models/admission.py:279
 #: templates/fragment/tab_registration.html:48
 #: templates/registration_form.html:65
@@ -469,7 +473,7 @@ msgstr "Modifier informations inscription"
 msgid "Education"
 msgstr "Education"
 
-#: models/continuing_education_training.py:87
+#: models/continuing_education_training.py:89
 msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 
@@ -830,7 +834,7 @@ msgid "No assigned training"
 msgstr "Aucune formation assignée"
 
 #: templates/admissions.html:186 templates/archives.html:195
-#: templates/formations.html:201
+#: templates/formations.html:205
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:73
 #: templates/prospects.html:96 templates/registrations.html:195
@@ -857,6 +861,13 @@ msgstr "Aucune formation inactivée"
 msgid "No registration validated, so no data available to export!"
 msgstr "Aucune inscription validée à exporter"
 
+#: templates/formation_detail.html:74
+msgid ""
+"Nobody (because \"Send notifications emails\" setting is set to \"No\")."
+msgstr ""
+"Personne (car le paramètre \"Envoyer les emails de notification\" est défini "
+"à \"Non\")"
+
 #: templates/formation_detail.html:61
 msgid "None"
 msgstr "Aucun"
@@ -869,7 +880,7 @@ msgstr "Non organisé"
 msgid "Not updatable because it's in draft state"
 msgstr "Non-éditable car l'admission est en état 'Brouillon'"
 
-#: templates/formation_detail.html:75
+#: templates/formation_detail.html:79
 msgid ""
 "Notification emails will be sent to the following addresse(s) instead of the "
 "managers"
@@ -1302,7 +1313,7 @@ msgstr "Tâches"
 msgid "The document is uploaded correctly"
 msgstr "Le document a bien été uploadé"
 
-#: templates/formation_detail.html:72
+#: templates/formation_detail.html:76
 msgid "The managers (list above) will receive the notification emails."
 msgstr ""
 "Les gestionnaires (liste ci-dessus) recevront les emails de notification."
@@ -1413,7 +1424,7 @@ msgstr "Gestionnaires de formation"
 msgid "Training aid"
 msgstr "Aide à la formation"
 
-#: models/continuing_education_training.py:128
+#: models/continuing_education_training.py:130
 msgid "Training aid available"
 msgstr "Aide à la formation disponible"
 
@@ -1522,7 +1533,7 @@ msgstr ""
 "Quand le participant remplit son dossier certains champs sont obligatoires. "
 "Actuellement certains de ces champs ne sont pas remplis."
 
-#: templates/formation_detail.html:69
+#: templates/formation_detail.html:71
 msgid "Who will receive notification emails ?"
 msgstr "Qui recevra les emails de notification ?"
 
