@@ -59,6 +59,7 @@
                     <br/>
                     {% if not formation.managers.all %}
                         {% trans 'None' %}
+                        <br/>
                     {% else %}
                         <ul>
                             {% for manager in formation.managers.all %}
@@ -66,6 +67,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
+                    <br/>
                     {% bootstrap_label _("Who will receive notification emails ?") %}
                     <br/>
                     {% if not formation.get_alternative_notification_email_receivers %}
