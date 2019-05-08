@@ -26,6 +26,7 @@
 from unittest.mock import patch
 
 from django.contrib.sites.models import Site
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
@@ -39,20 +40,21 @@ from base.tests.factories.person import PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
     check_required_field_for_participant, _get_attachments
-from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
-from continuing_education.models.file import AdmissionFile
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import SUBMITTED
+from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from reference.tests.factories.country import CountryFactory
-from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
+
+CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
 
 class TestAdmission(TestCase):
@@ -212,7 +214,7 @@ class SendEmailTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_submission_email_to_admin(self, mock_send):
-        admission.send_submission_email_to_admin(self.admission, connected_user=None)
+        admission.send_submission_email_to_admission_managers(self.admission, connected_user=None)
         args = mock_send.call_args[1]
         self.assertEqual(_(self.admission.formation.acronym), args.get('data').get('subject').get('formation'))
         self.assertEqual(
@@ -237,7 +239,7 @@ class SendEmailTest(TestCase):
             url,
             args.get('data').get('template').get('formation_link')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     @patch('continuing_education.business.admission.send_email')
@@ -286,3 +288,70 @@ class SendEmailTest(TestCase):
         max_size_to_check = self.admission_file.size + 1
         self.assertEqual(len(_get_attachments(self.admission.id, max_size_to_check)), 1)
 
+
+class SendEmailSettingsTest(TestCase):
+    def setUp(self):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        self.manager = PersonFactory(last_name="AAA")
+        self.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+        self.cet = ContinuingEducationTrainingFactory(education_group=ed)
+        PersonTrainingFactory(person=self.manager, training=self.cet)
+        self.admission = AdmissionFactory(formation=self.cet)
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_setting_false(self, mock_send_mail):
+        self.cet.send_notification_emails = False
+        self.cet.save()
+        self.admission.state = SUBMITTED
+        self.admission.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+        self.assertEqual(len(receivers), 0)
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_setting_true_no_alternate_receivers(self, mock_send_mail):
+        self.cet.send_notification_emails = True
+        self.cet.save()
+        self.admission.state = SUBMITTED
+        self.admission.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+        self.assertEqual(
+            receivers,
+            [
+                {
+                    'receiver_person_id': self.manager.id,
+                    'receiver_email': self.manager.email,
+                    'receiver_lang': self.manager.language
+                }
+            ]
+        )
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_setting_true_with_alternate_receivers(self, mock_send_mail):
+        self.cet.send_notification_emails = True
+        self.cet.alternate_notification_email_addresses = "jane.doe@test.be, test2@domain.com"
+        self.cet.save()
+        self.admission.state = SUBMITTED
+        self.admission.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+        self.assertCountEqual(
+            receivers,
+            [
+                {
+                    'receiver_person_id': None,
+                    'receiver_email': "jane.doe@test.be",
+                    'receiver_lang': None
+                },
+                {
+                    'receiver_person_id': None,
+                    'receiver_email': "test2@domain.com",
+                    'receiver_lang': None
+                }
+            ]
+        )

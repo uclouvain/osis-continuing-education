@@ -30,9 +30,9 @@ from django.utils.translation import gettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
-from continuing_education.models.enums import admission_state_choices
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -44,7 +44,7 @@ def send_state_changed_email(admission, connected_user=None):
     mails = _get_managers_mails(admission.formation)
     condition_of_acceptance = None
     if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
-        send_submission_email_to_admin(admission, connected_user)
+        send_submission_email_to_admission_managers(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
         return
     elif admission.state in (admission_state_choices.ACCEPTED,
@@ -87,7 +87,7 @@ def send_state_changed_email(admission, connected_user=None):
     )
 
 
-def send_submission_email_to_admin(admission, connected_user):
+def send_submission_email_to_admission_managers(admission, connected_user):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
@@ -115,16 +115,26 @@ def send_submission_email_to_admin(admission, connected_user):
             },
             'attachment': attachments
         },
-        receivers=[
-            message_config.create_receiver(
-                manager.id,
-                manager.email,
-                None
-            )
-            for manager in managers
-        ],
+        receivers=_get_admission_managers_email_receivers(admission),
         connected_user=connected_user
     )
+
+
+def _get_admission_managers_email_receivers(admission):
+    if admission.formation.send_notification_emails is False:
+        return []
+
+    alternative_email_receivers = admission.formation.get_alternative_notification_email_receivers()
+    if alternative_email_receivers:
+        return [
+            message_config.create_receiver(None, receiver_email, None)
+            for receiver_email in alternative_email_receivers
+        ]
+    else:
+        return [
+            message_config.create_receiver(manager.id, manager.email, manager.language)
+            for manager in admission.formation.managers.all()
+        ]
 
 
 def send_submission_email_to_participant(admission, connected_user):

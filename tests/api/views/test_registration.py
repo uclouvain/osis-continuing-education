@@ -207,7 +207,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         response = self.client.get(self.invalid_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    @mock.patch('continuing_education.business.admission.send_submission_email_to_admin')
+    @mock.patch('continuing_education.business.admission.send_submission_email_to_admission_managers')
     def test_update_valid_registration(self, mock_mail):
         self.admission.state = ACCEPTED
         self.admission.save()
@@ -228,7 +228,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(1, Admission.registration_objects.all().count())
 
-    @mock.patch('continuing_education.business.admission.send_submission_email_to_admin')
+    @mock.patch('continuing_education.business.admission.send_submission_email_to_admission_managers')
     def test_update_valid_registration_billing_address(self, mock_mail):
         self.admission.state = ACCEPTED
         self.admission.save()

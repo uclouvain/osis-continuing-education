@@ -120,6 +120,9 @@ class ContinuingEducationTraining(Model):
     def formation_administrators(self):
         return " - ".join([str(mgr) for mgr in self.managers.all().order_by('last_name', 'first_name')])
 
+    def get_alternative_notification_email_receivers(self):
+        return [adr.strip() for adr in self.alternate_notification_email_addresses.split(',') if adr]
+
     def __str__(self):
         education_group_year = self.get_most_recent_education_group_year()
         training_aid_mention = " ({})".format(_('Training aid available')) if self.training_aid else ''
