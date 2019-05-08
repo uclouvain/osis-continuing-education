@@ -171,7 +171,6 @@
                                 {% else %}
                                     {{ formation.most_recent_acronym }}
                                 {% endif %}
-
                             </td>
                             <td>{{ most_recent_education_group|get_faculty  | default_if_none:'' }}</td>
                             <td>{{ most_recent_education_group.title | default_if_none:'' }}</td>
