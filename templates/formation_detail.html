@@ -55,7 +55,7 @@
                 <div class="col-md-6">
                     {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}
                     <br/><br/>
-                    {% bootstrap_label _("Managers of the training") %}
+                    {% bootstrap_label _("Manager(s) of the training") %}
                     <br/>
                     {% if not formation.managers.all %}
                         {% trans 'None' %}
