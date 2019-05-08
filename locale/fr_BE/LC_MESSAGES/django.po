@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-08 15:08+0200\n"
+"POT-Creation-Date: 2019-05-08 15:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -327,6 +327,10 @@ msgstr "Nationalité"
 msgid "City"
 msgstr "Ville"
 
+#: models/continuing_education_training.py:82
+msgid "Comma-separated addresses - Leave empty if no address"
+msgstr "Adresses séparées par des virgules - Laisser vide si pas d'adresses alternatives"
+
 #: business/xls/xls_common.py:110 models/admission.py:279
 #: templates/fragment/tab_registration.html:48
 #: templates/registration_form.html:65
@@ -469,7 +473,7 @@ msgstr "Modifier informations inscription"
 msgid "Education"
 msgstr "Education"
 
-#: models/continuing_education_training.py:88
+#: models/continuing_education_training.py:89
 msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 
@@ -860,7 +864,9 @@ msgstr "Aucune inscription validée à exporter"
 #: templates/formation_detail.html:74
 msgid ""
 "Nobody (because \"Send notifications emails\" setting is set to \"No\")."
-msgstr "Personne (car le paramètre \"Envoyer les emails de notification\" est défini à \"Non\")"
+msgstr ""
+"Personne (car le paramètre \"Envoyer les emails de notification\" est défini "
+"à \"Non\")"
 
 #: templates/formation_detail.html:61
 msgid "None"
@@ -1418,7 +1424,7 @@ msgstr "Gestionnaires de formation"
 msgid "Training aid"
 msgstr "Aide à la formation"
 
-#: models/continuing_education_training.py:129
+#: models/continuing_education_training.py:130
 msgid "Training aid available"
 msgstr "Aide à la formation disponible"
 

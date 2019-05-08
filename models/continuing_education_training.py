@@ -78,7 +78,8 @@ class ContinuingEducationTraining(Model):
     alternate_notification_email_addresses = models.TextField(
         default='',
         verbose_name=_("Alternate notification email addresses"),
-        blank=True
+        blank=True,
+        help_text=_("Comma-separated addresses - Leave empty if no address"),
     )
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
