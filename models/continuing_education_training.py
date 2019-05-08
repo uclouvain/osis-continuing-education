@@ -77,7 +77,8 @@ class ContinuingEducationTraining(Model):
 
     alternate_notification_email_addresses = models.TextField(
         default='',
-        verbose_name=_("Alternate notification email addresses")
+        verbose_name=_("Alternate notification email addresses"),
+        blank=True
     )
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
