@@ -44,8 +44,8 @@
     <div class="row form-group">
         <div class="col-md-3">{% bootstrap_label _("Street Address") %} <br/> {{ admission.address.location | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Postal code") %} <br/> {{ admission.address.postal_code | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.address.city | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.address.country | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.address.city|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.address.country|upper | default:"-" }} </div>
     </div>
 </div>
 

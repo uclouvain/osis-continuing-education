@@ -536,5 +536,5 @@ def is_continuing_education_manager(user):
 def _build_address(address):
     return "{} - {} {} {}".format(address.location if address.location else '',
                                   address.postal_code if address.postal_code else '',
-                                  address.city if address.city else '',
-                                  "- {}".format(address.country.name) if address.country else '')
+                                  address.city.upper() if address.city else '',
+                                  "- {}".format(address.country.name.upper()) if address.country else '')
