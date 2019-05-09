@@ -32,6 +32,7 @@ from continuing_education.api.serializers.continuing_education_training import C
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from reference.api.serializers.country import CountrySerializer
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
@@ -67,6 +68,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
+    citizenship = CountrySerializer()
 
     class Meta:
         model = Admission
@@ -74,6 +76,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
 
             # CONTACTS
             'address',
+            'citizenship',
 
             # REGISTRATION
             # BILLING
