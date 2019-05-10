@@ -37,7 +37,6 @@ from reference.models.country import Country
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
-    print('RegistrationListSerializer')
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:registration-detail-update',
         lookup_field='uuid'
