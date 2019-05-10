@@ -27,7 +27,8 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.shortcuts import render
 
 from continuing_education.business.perms import is_not_student_worker
-from continuing_education.models.admission import is_continuing_education_manager
+from continuing_education.models.admission import is_continuing_education_manager, \
+    is_continuing_education_training_manager
 from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 
 
@@ -39,6 +40,7 @@ def main_view(request):
     return render(request, "admin_home.html", {
         'continuing_education_manager': continuing_education_manager,
         'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
+        'continuing_education_training_manager': is_continuing_education_training_manager(request.user)
     })
 
 

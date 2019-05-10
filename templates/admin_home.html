@@ -70,16 +70,18 @@
                 </div>
             </div>
             <br>
-            {% if continuing_education_manager %}
+            {% if continuing_education_manager or continuing_education_training_manager %}
             <div class="row">
                 <div class="col-md-1"><i class="fa fa-tasks" style="font-size: 400%; color: #6699FF;"></i></div>
                 <div class="col-md-5">
                     <h4 class="media-heading"><a href="{% url 'list_tasks' %}">{% trans 'Tasks' %}</a></h4>
                 </div>
-                <div class="col-md-1"><i class="fa fa-user-tie" style="font-size: 400%; color: #6699FF;"></i></div>
-                <div class="col-md-5">
-                    <h4 class="media-heading"><a href="{% url 'list_managers' %}">{% trans 'Training Managers' %}</a></h4>
-                </div>
+                {% if continuing_education_manager %}
+                    <div class="col-md-1"><i class="fa fa-user-tie" style="font-size: 400%; color: #6699FF;"></i></div>
+                    <div class="col-md-5">
+                        <h4 class="media-heading"><a href="{% url 'list_managers' %}">{% trans 'Training Managers' %}</a></h4>
+                    </div>
+                {% endif %}
             </div>
             <br>
             {% endif %}
