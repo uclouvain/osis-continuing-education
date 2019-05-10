@@ -31,6 +31,7 @@ from django.db import models
 from django.db.models import Manager, Model
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from reversion.admin import VersionAdmin
 
 from continuing_education.models.enums import admission_state_choices, enums, groups
 from continuing_education.models.person_training import PersonTraining
@@ -56,7 +57,7 @@ class AdmissionManager(models.Manager):
         ])
 
 
-class AdmissionAdmin(ModelAdmin):
+class AdmissionAdmin(VersionAdmin, ModelAdmin):
     list_display = ('person_information', 'formation', 'state')
 
 
