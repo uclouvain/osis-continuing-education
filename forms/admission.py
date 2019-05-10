@@ -13,6 +13,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
+from continuing_education.forms.common import CountryChoiceField
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
@@ -30,11 +31,12 @@ class AdmissionForm(ModelForm):
         choices=admission_state_choices.STATE_CHOICES,
         required=False
     )
-    citizenship = forms.ModelChoiceField(
+    citizenship = CountryChoiceField(
         queryset=Country.objects.all().order_by('name'),
         label=_("Citizenship"),
         required=False,
     )
+
     high_school_diploma = forms.TypedChoiceField(
         coerce=lambda x: x == 'True',
         required=False,
