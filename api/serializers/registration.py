@@ -32,6 +32,8 @@ from continuing_education.api.serializers.continuing_education_training import C
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from reference.api.serializers.country import CountrySerializer
+from reference.models.country import Country
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
@@ -60,6 +62,8 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
 
 class RegistrationDetailSerializer(RegistrationListSerializer):
 
+    citizenship = CountrySerializer()
+
     address = AddressSerializer()
     billing_address = AddressSerializer()
     residence_address = AddressSerializer()
@@ -71,9 +75,9 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
     class Meta:
         model = Admission
         fields = RegistrationListSerializer.Meta.fields + (
-
             # CONTACTS
             'address',
+            'citizenship',
 
             # REGISTRATION
             # BILLING
@@ -118,6 +122,12 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
 
 
 class RegistrationPostSerializer(RegistrationDetailSerializer):
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=False,
+        allow_null=True
+    )
     person_information = ContinuingEducationPersonPostSerializer(required=False)
 
     address = AddressPostSerializer(required=False)

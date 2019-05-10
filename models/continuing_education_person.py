@@ -11,6 +11,7 @@ class ContinuingEducationPersonAdmin(ModelAdmin):
     list_display = ('person', 'birth_date',)
     search_fields = ['person__first_name', 'person__last_name']
     list_filter = ('birth_country',)
+    raw_id_fields = ('person',)
 
 
 class ContinuingEducationPerson(Model):
