@@ -5,10 +5,11 @@ from django.utils.translation import ugettext_lazy as _
 from continuing_education.business.admission import disable_existing_fields
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from reference.models.country import Country
+from continuing_education.forms.common import CountryChoiceField
 
 
 class ContinuingEducationPersonForm(ModelForm):
-    birth_country = forms.ModelChoiceField(
+    birth_country = CountryChoiceField(
         queryset=Country.objects.all().order_by('name'),
         label=_("Birth country"),
         required=False,
@@ -36,5 +37,5 @@ class ContinuingEducationPersonChoiceField(ModelChoiceField):
             continuing_education_person.person.last_name,
             continuing_education_person.person.first_name,
             continuing_education_person.birth_date,
-            continuing_education_person.birth_location or _("Unknown birth place"),
+            continuing_education_person.birth_location.upper() if continuing_education_person.birth_location else _("Unknown birth place") ,
         )
