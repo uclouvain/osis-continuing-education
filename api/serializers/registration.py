@@ -33,9 +33,11 @@ from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from reference.api.serializers.country import CountrySerializer
+from reference.models.country import Country
 
 
 class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
+    print('RegistrationListSerializer')
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:registration-detail-update',
         lookup_field='uuid'
@@ -61,6 +63,8 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
 
 class RegistrationDetailSerializer(RegistrationListSerializer):
 
+    citizenship = CountrySerializer()
+
     address = AddressSerializer()
     billing_address = AddressSerializer()
     residence_address = AddressSerializer()
@@ -68,12 +72,10 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
-    citizenship = CountrySerializer()
 
     class Meta:
         model = Admission
         fields = RegistrationListSerializer.Meta.fields + (
-
             # CONTACTS
             'address',
             'citizenship',
@@ -121,6 +123,12 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
 
 
 class RegistrationPostSerializer(RegistrationDetailSerializer):
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=False,
+        allow_null=True
+    )
     person_information = ContinuingEducationPersonPostSerializer(required=False)
 
     address = AddressPostSerializer(required=False)

@@ -77,6 +77,7 @@ class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
     """
         Return the detail of the registration or update it.
     """
+    print('RegistrationDetailUpdate')
     name = 'registration-detail-update'
     permission_classes = (HasAdmissionAccess, CanSubmitRegistration, IsAuthenticated)
     queryset = Admission.objects.all()
