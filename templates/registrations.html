@@ -137,11 +137,11 @@
                             </td>
                             <td>
                                 <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
-                                    {{ admission.person_information.person.last_name }}
+                                    {{ admission.person_information.person.last_name | default_if_none:'-'}}
                                 </a>
                             </td>
-                            <td>{{ admission.person_information.person.first_name }}</td>
-                            <td>{{ admission.person_information.person.email }}</td>
+                            <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
+                            <td>{{ admission.person_information.person.email | default_if_none:'-'}}</td>
                             <td>{{ admission.formation }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
                             <td style="vertical-align: middle;">

@@ -55,6 +55,10 @@ def list_tasks(request):
         state=admission_state_choices.REGISTRATION_SUBMITTED
     )
 
+    admissions_to_accept = all_admissions.filter(
+        state=admission_state_choices.SUBMITTED
+    )
+
     admissions_diploma_to_produce = all_admissions.filter(
         state=admission_state_choices.VALIDATED,
         diploma_produced=False
@@ -63,7 +67,8 @@ def list_tasks(request):
         'registrations_to_validate': registrations_to_validate,
         'to_validate_count': registrations_to_validate.count(),
         'admissions_diploma_to_produce': admissions_diploma_to_produce,
-        'diplomas_count': admissions_diploma_to_produce.count()
+        'diplomas_count': admissions_diploma_to_produce.count(),
+        'admissions_to_accept': admissions_to_accept,
     })
 
 
@@ -120,3 +125,31 @@ def _mark_diplomas_produced_list(registrations_ids_list):
         raise PermissionDenied(_('The registrations must be validated to mark diploma as produced.'))
 
     registrations_list.update(diploma_produced=True)
+
+
+@login_required
+@require_http_methods(['POST'])
+@permission_required('continuing_education.change_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def accept_admissions(request):
+    if not is_continuing_education_manager(request.user):
+        raise PermissionDenied
+    selected_admission_ids = request.POST.getlist("selected_admissions_to_accept", default=[])
+    if selected_admission_ids:
+        _accept_admissions_list(selected_admission_ids)
+        msg = _('Successfully accept %s admissions.') % len(selected_admission_ids)
+        display_success_messages(request, msg)
+    else:
+        display_error_messages(request, _('Please select at least one admission to accept.'))
+
+    return redirect(reverse("list_tasks"))
+
+
+def _accept_admissions_list(registrations_ids_list):
+    admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
+
+    admissions_list_states = admissions_list.values_list('state', flat=True)
+    if not all(state == admission_state_choices.SUBMITTED for state in admissions_list_states):
+        raise PermissionDenied(_('The admission must be submitted to be accepted.'))
+
+    admissions_list.update(state=admission_state_choices.ACCEPTED, condition_of_acceptance='')
