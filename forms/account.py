@@ -37,5 +37,6 @@ class ContinuingEducationPersonChoiceField(ModelChoiceField):
             continuing_education_person.person.last_name,
             continuing_education_person.person.first_name,
             continuing_education_person.birth_date,
-            continuing_education_person.birth_location.upper() if continuing_education_person.birth_location else _("Unknown birth place") ,
+            continuing_education_person.birth_location.upper() if continuing_education_person.birth_location
+            else _("Unknown birth place"),
         )
