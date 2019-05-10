@@ -118,7 +118,7 @@
             {% include "fragment/condition_acceptance_modal.html" %}
         </form>
         <h3>
-            {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
+            {{ admission.person_information.person.last_name | default_if_none:'-' }}, {{ admission.person_information.person.first_name | default_if_none:'-' }}
         </h3>
         <h4>
             {{ admission.formation }}
