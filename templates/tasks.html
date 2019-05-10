@@ -45,6 +45,7 @@
         <ul id="tabs" class="nav nav-tabs">
           <li role="presentation" class="active"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
           <li role="presentation"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
+            <li role="presentation"><a href="#admissions_to_validate" role="tab" data-toggle="tab">{% trans 'Admissions to accept' %}</a></li>
         </ul>
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="registration_to_validate">
@@ -52,6 +53,9 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="diploma_to_produce">
                 {% include "fragment/tasks/diplomas_to_produce.html" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="admissions_to_validate">
+                {% include "fragment/tasks/admissions_to_accept.html" %}
             </div>
         </div>
     </div>

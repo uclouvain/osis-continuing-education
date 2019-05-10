@@ -79,12 +79,24 @@ class ViewUpdateTasksTestCase(TestCase):
             formation=self.formation
         )
 
+        self.admissions_to_accept = [
+            AdmissionFactory(
+                state=admission_state_choices.SUBMITTED,
+                formation=self.formation
+            ) for _ in range(2)
+            ]
+        self.admission_not_to_accept = AdmissionFactory(
+            state=admission_state_choices.DRAFT,
+            formation=self.formation
+        )
+
     def test_list_tasks(self):
         response = self.client.get(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertTemplateUsed(response, 'tasks.html')
         self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
         self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
+        self.assertTemplateUsed(response, 'fragment/tasks/admissions_to_accept.html')
 
         self.assertCountEqual(
             response.context['registrations_to_validate'],
@@ -105,6 +117,16 @@ class ViewUpdateTasksTestCase(TestCase):
         self.assertNotIn(
             self.no_diploma_to_produce,
             response.context['admissions_diploma_to_produce']
+        )
+
+        self.assertCountEqual(
+            response.context['admissions_to_accept'],
+            self.admissions_to_accept
+        )
+
+        self.assertNotIn(
+            self.admission_not_to_accept,
+            response.context['admissions_to_accept']
         )
 
     def test_validate_registrations(self):
@@ -158,6 +180,31 @@ class ViewUpdateTasksTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
+    def test_accept_admissions(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept]
+        }
+        response = self.client.post(reverse('accept_admissions'), data=post_data)
+
+        for registration in self.admissions_to_accept:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.ACCEPTED)
+
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_accept_admissions_incorrect_state(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(self.admission_not_to_accept.pk)]
+        }
+        response = self.client.post(reverse('accept_admissions'), data=post_data)
+
+        self.admission_not_to_accept.refresh_from_db()
+        self.assertEqual(self.admission_not_to_accept.state, admission_state_choices.DRAFT)
+
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
 
 class UpdateTasksPermissionsTestCase(TestCase):
     def setUp(self):
@@ -171,6 +218,10 @@ class UpdateTasksPermissionsTestCase(TestCase):
         self.diplomas_to_produce = [
             AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False) for _ in range(2)
         ]
+
+        self.admissions_to_validate = [
+            AdmissionFactory(state=admission_state_choices.SUBMITTED) for _ in range(2)
+            ]
 
     def test_validate_registrations_without_permission(self):
         post_data = {
@@ -199,6 +250,19 @@ class UpdateTasksPermissionsTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
+    def test_accept_admissions_without_permission(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(admission.pk) for admission in self.admissions_to_validate]
+        }
+        response = self.client.post(reverse('accept_admissions'), data=post_data)
+
+        for admission in self.admissions_to_validate:
+            admission.refresh_from_db()
+            self.assertEqual(admission.state, admission_state_choices.SUBMITTED)
+
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
 
 class ViewTasksTrainingManagerTestCase(TestCase):
     def setUp(self):
@@ -223,6 +287,10 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             formation=self.formation,
             state=VALIDATED,
         )
+        self.admission_to_validate = AdmissionFactory(
+            formation=self.formation,
+            state=admission_state_choices.SUBMITTED,
+        )
 
     def test_task_list_inacessible(self):
         response = self.client.post(reverse('list_tasks'))
@@ -246,6 +314,17 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         }
         response = self.client.post(
             reverse('mark_diplomas_produced'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_accept_admission_denied(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(self.admission_to_validate.pk)]
+        }
+        response = self.client.post(
+            reverse('accept_admissions'),
             data=post_data
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)

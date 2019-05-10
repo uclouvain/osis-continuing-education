@@ -147,10 +147,10 @@
                                 {% endif %}
                             </td>
                             <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
-                                {{ admission.person_information.person.last_name }}
+                                {{ admission.person_information.person.last_name | default_if_none:'-' }}
                             </a>
                             </td>
-                            <td>{{ admission.person_information.person.first_name }}</td>
+                            <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
                             <td>{{ admission.email | default_if_none:'' }}</td>
                             <td title="{{admission.formation.title}}">{{ admission.formation_display }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
