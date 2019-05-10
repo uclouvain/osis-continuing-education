@@ -32,7 +32,7 @@ from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
-    is_continuing_education_manager
+    is_continuing_education_manager, is_continuing_education_training_manager
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.business.perms import is_not_student_worker
 
@@ -41,7 +41,9 @@ from continuing_education.business.perms import is_not_student_worker
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def list_tasks(request):
-    if not is_continuing_education_manager(request.user):
+    is_continuing_education_mgr = is_continuing_education_manager(request.user)
+    is_continuing_education_training_mgr = is_continuing_education_training_manager(request.user)
+    if not is_continuing_education_mgr and not is_continuing_education_training_mgr:
         raise PermissionDenied
     all_admissions = Admission.objects.select_related(
         'person_information__person', 'formation__education_group'
@@ -69,6 +71,8 @@ def list_tasks(request):
         'admissions_diploma_to_produce': admissions_diploma_to_produce,
         'diplomas_count': admissions_diploma_to_produce.count(),
         'admissions_to_accept': admissions_to_accept,
+        'continuing_education_manager': is_continuing_education_mgr,
+        'continuing_education_training_manager': is_continuing_education_training_mgr,
     })
 
 

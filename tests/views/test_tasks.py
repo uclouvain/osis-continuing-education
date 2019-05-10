@@ -35,13 +35,14 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class ViewUpdateTasksTestCase(TestCase):
     def setUp(self):
-        group = GroupFactory(name='continuing_education_managers')
+        group = GroupFactory(name=MANAGERS_GROUP)
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
@@ -89,6 +90,24 @@ class ViewUpdateTasksTestCase(TestCase):
             state=admission_state_choices.DRAFT,
             formation=self.formation
         )
+        training_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
+        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.training_manager.user.groups.add(training_group)
+
+    def test_list_tasks_html_content_for_iufc(self):
+        response = self.client.get(reverse('list_tasks'))
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertTemplateUsed(response, 'tasks.html')
+        self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
+        self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
+
+    def test_list_tasks_html_content_for_manager(self):
+        self.client.force_login(self.training_manager.user)
+        response = self.client.get(reverse('list_tasks'))
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertTemplateUsed(response, 'tasks.html')
+        self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
+        self.assertTemplateUsed(response, 'fragment/tasks/admissions_to_accept.html')
 
     def test_list_tasks(self):
         response = self.client.get(reverse('list_tasks'))
@@ -96,7 +115,6 @@ class ViewUpdateTasksTestCase(TestCase):
         self.assertTemplateUsed(response, 'tasks.html')
         self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
         self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/admissions_to_accept.html')
 
         self.assertCountEqual(
             response.context['registrations_to_validate'],
@@ -275,7 +293,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
-        group = GroupFactory(name='continuing_education_training_managers')
+        group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
         self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.training_manager.user.groups.add(group)
         self.client.force_login(self.training_manager.user)
@@ -293,6 +311,10 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         )
 
     def test_task_list_inacessible(self):
+        student_group = GroupFactory(name=STUDENT_WORKERS_GROUP)
+        self.student = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.student.user.groups.add(student_group)
+        self.client.force_login(self.student.user)
         response = self.client.post(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
