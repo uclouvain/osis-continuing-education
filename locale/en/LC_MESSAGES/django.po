@@ -1372,7 +1372,7 @@ msgstr ""
 #: templates/fragment/tasks/admissions_to_accept.html:6
 msgid ""
 "This page contains the admissions submitted by the participants. These must "
-"be accepted by IUFC."
+"be accepted by the manager."
 msgstr ""
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:38
