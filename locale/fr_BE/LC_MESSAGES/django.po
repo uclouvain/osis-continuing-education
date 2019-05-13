@@ -1480,7 +1480,7 @@ msgstr "Formations"
 #: templates/fragment/tab_registration.html:100
 #: templates/registration_form.html:128
 msgid "UCLouvain registration complete"
-msgstr "En ordre d'inscription UCLouvain"
+msgstr "Inscription au rôle"
 
 #: templates/admission_detail.html:98 templates/archives.html:94
 msgid "Unarchive"
