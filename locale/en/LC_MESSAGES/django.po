@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 11:08+0200\n"
+"POT-Creation-Date: 2019-05-13 11:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,11 +50,11 @@ msgstr ""
 msgid "Accept the file"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:13
-#: models/enums/admission_state_choices.py:28
-#: models/enums/admission_state_choices.py:52
-#: models/enums/admission_state_choices.py:76
-#: models/enums/admission_state_choices.py:82
+#: models/enums/admission_state_choices.py:15
+#: models/enums/admission_state_choices.py:31
+#: models/enums/admission_state_choices.py:55
+#: models/enums/admission_state_choices.py:79
+#: models/enums/admission_state_choices.py:85
 #: templates/admission_detail.html:147 tests/forms/test_search.py:205
 msgid "Accepted"
 msgstr ""
@@ -310,6 +310,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: models/enums/admission_state_choices.py:22
+msgid "Cancelled"
+msgstr ""
+
 #: templates/admissions.html:123 templates/archives.html:114
 #: templates/formations.html:141
 #: templates/fragment/tasks/admissions_to_accept.html:28
@@ -465,9 +469,9 @@ msgstr ""
 msgid "Download document"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:16
-#: models/enums/admission_state_choices.py:31
-#: models/enums/admission_state_choices.py:73 tests/forms/test_search.py:196
+#: models/enums/admission_state_choices.py:18
+#: models/enums/admission_state_choices.py:34
+#: models/enums/admission_state_choices.py:76 tests/forms/test_search.py:196
 msgid "Draft"
 msgstr ""
 
@@ -1109,10 +1113,10 @@ msgstr ""
 msgid "Registration file received"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:18
-#: models/enums/admission_state_choices.py:38
-#: models/enums/admission_state_choices.py:77
-#: models/enums/admission_state_choices.py:86 tests/forms/test_search.py:206
+#: models/enums/admission_state_choices.py:20
+#: models/enums/admission_state_choices.py:41
+#: models/enums/admission_state_choices.py:80
+#: models/enums/admission_state_choices.py:89 tests/forms/test_search.py:206
 msgid "Registration submitted"
 msgstr ""
 
@@ -1145,11 +1149,11 @@ msgstr ""
 msgid "Registrations_list"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:14
-#: models/enums/admission_state_choices.py:29
-#: models/enums/admission_state_choices.py:53
-#: models/enums/admission_state_choices.py:71
-#: models/enums/admission_state_choices.py:83 tests/forms/test_search.py:194
+#: models/enums/admission_state_choices.py:16
+#: models/enums/admission_state_choices.py:32
+#: models/enums/admission_state_choices.py:56
+#: models/enums/admission_state_choices.py:74
+#: models/enums/admission_state_choices.py:86 tests/forms/test_search.py:194
 msgid "Rejected"
 msgstr ""
 
@@ -1267,10 +1271,10 @@ msgstr ""
 msgid "Studies"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:17
-#: models/enums/admission_state_choices.py:23
-#: models/enums/admission_state_choices.py:70
-#: models/enums/admission_state_choices.py:85
+#: models/enums/admission_state_choices.py:19
+#: models/enums/admission_state_choices.py:26
+#: models/enums/admission_state_choices.py:73
+#: models/enums/admission_state_choices.py:88
 #: templates/admission_detail.html:88 tests/forms/test_search.py:195
 msgid "Submitted"
 msgstr ""
@@ -1495,18 +1499,18 @@ msgstr ""
 msgid "Validate selected registrations"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:19
-#: models/enums/admission_state_choices.py:45
-#: models/enums/admission_state_choices.py:78
-#: models/enums/admission_state_choices.py:87 tests/forms/test_search.py:207
+#: models/enums/admission_state_choices.py:21
+#: models/enums/admission_state_choices.py:48
+#: models/enums/admission_state_choices.py:81
+#: models/enums/admission_state_choices.py:90 tests/forms/test_search.py:207
 msgid "Validated"
 msgstr ""
 
-#: models/enums/admission_state_choices.py:15
-#: models/enums/admission_state_choices.py:30
-#: models/enums/admission_state_choices.py:54
-#: models/enums/admission_state_choices.py:72
-#: models/enums/admission_state_choices.py:84 tests/forms/test_search.py:193
+#: models/enums/admission_state_choices.py:17
+#: models/enums/admission_state_choices.py:33
+#: models/enums/admission_state_choices.py:57
+#: models/enums/admission_state_choices.py:75
+#: models/enums/admission_state_choices.py:87 tests/forms/test_search.py:193
 msgid "Waiting"
 msgstr ""
 
