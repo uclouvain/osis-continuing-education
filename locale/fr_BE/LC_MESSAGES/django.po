@@ -385,8 +385,6 @@ msgid "Contact"
 msgstr "Contact"
 
 #: business/xls/xls_common.py:50 views/admission.py:322
-#, fuzzy
-#| msgid "Contact"
 msgid "Contact address"
 msgstr "Adresse de contact"
 
@@ -436,7 +434,7 @@ msgstr "Fonction actuelle"
 
 #: templates/fragment/tab_history.html:40
 msgid "Datetime"
-msgstr ""
+msgstr "Date/Heure"
 
 #: templates/fragment/tab_documents.html:75
 msgid "Delete document"
@@ -675,7 +673,7 @@ msgstr "Année d'obtention (secondaire)"
 
 #: templates/admission_detail.html:157
 msgid "History"
-msgstr ""
+msgstr "Historique"
 
 #: forms/registration.py:19
 msgid "I would like the billing address to be :"
@@ -1465,8 +1463,6 @@ msgid "To submit a registration, its state must be ACCEPTED."
 msgstr "Pour soumettre une inscription, son état doit être Accepté."
 
 #: api/views/perms/perms.py:50
-#, fuzzy
-#| msgid "To submit a registration, its state must be ACCEPTED."
 msgid "To submit an admission, its state must be DRAFT."
 msgstr "Pour soumettre une admission, son état doit être Brouillon."
 
@@ -1546,7 +1542,7 @@ msgstr "Utiliser l'adresse enregistrée pour le courrier"
 
 #: templates/fragment/tab_history.html:41
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
 #: business/xls/xls_common.py:111 models/admission.py:285
 #: templates/fragment/tab_registration.html:49
@@ -1731,6 +1727,3 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 #: views/archive.py:109
 msgid "unarchived"
 msgstr "non-archivé"
-
-#~ msgid "Registration complete"
-#~ msgstr "En ordre d'inscription"
