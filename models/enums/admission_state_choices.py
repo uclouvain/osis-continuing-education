@@ -9,6 +9,8 @@ SUBMITTED = 'Submitted'
 REGISTRATION_SUBMITTED = 'Registration submitted'
 VALIDATED = 'Validated'
 
+CANCELLED = 'Cancelled'
+
 STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
     (REJECTED, _('Rejected')),
@@ -17,6 +19,7 @@ STATE_CHOICES = (
     (SUBMITTED, _('Submitted')),
     (REGISTRATION_SUBMITTED, _('Registration submitted')),
     (VALIDATED, _('Validated')),
+    (CANCELLED, _('Cancelled')),
 )
 
 STATES_DRAFT = {
