@@ -28,6 +28,7 @@ import random
 from unittest import mock
 from unittest.mock import patch
 
+import reversion
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -235,6 +236,26 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.post(reverse('admission'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['admissions'].object_list[0], self.admission)
+
+    def test_versions(self):
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission.pk})
+        response = self.client.get(url)
+        self.assertEqual(len(response.context["version"]), 0)
+
+        with reversion.create_revision():
+            self.admission.current_occupation = "curr_occ"
+            self.admission.save()
+
+        response = self.client.get(url)
+        self.assertEqual(len(response.context["version"]), 0)
+
+        with reversion.create_revision():
+            self.admission.state = ACCEPTED
+            self.admission.save()
+            reversion.set_comment('Changed : "state"')
+
+        response = self.client.get(url)
+        self.assertEqual(len(response.context["version"]), 1)
 
 
 class InvoiceNotificationEmailTestCase(TestCase):

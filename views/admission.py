@@ -163,7 +163,7 @@ def _get_versions(admission):
         )
 
     ).order_by(
-        "revision__date_created"
+        "-revision__date_created"
     )
     version_list = []
     for version in reversion:
@@ -292,11 +292,11 @@ def _save_and_create_revision(adm_form, request):
 
 def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form):
     if new_state == REJECTED and rejected_adm_form.is_valid():
-            rejected_adm_form.save()
+        rejected_adm_form.save()
     elif new_state == WAITING and waiting_adm_form.is_valid():
-            waiting_adm_form.save()
+        waiting_adm_form.save()
     elif new_state == ACCEPTED and condition_acceptance_adm_form.is_valid():
-            condition_acceptance_adm_form.save()
+        condition_acceptance_adm_form.save()
 
 
 def _validate_admission(request, adm_form):
