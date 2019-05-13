@@ -44,7 +44,9 @@ class RegistrationManager(models.Manager):
         return super().get_queryset().filter(state__in=[
             admission_state_choices.ACCEPTED,
             admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED
+            admission_state_choices.VALIDATED,
+            admission_state_choices.CANCELLED
+
         ])
 
 
@@ -53,7 +55,8 @@ class AdmissionManager(models.Manager):
         return super().get_queryset().exclude(state__in=[
             admission_state_choices.ACCEPTED,
             admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED
+            admission_state_choices.VALIDATED,
+            admission_state_choices.CANCELLED
         ])
 
 
@@ -476,6 +479,9 @@ class Admission(Model):
 
     def is_validated(self):
         return self.state == admission_state_choices.VALIDATED
+
+    def is_cancelled(self):
+        return self.state == admission_state_choices.CANCELLED
 
     def is_registration(self):
         return self.is_accepted() or self.is_validated() or self.is_registration_submitted()

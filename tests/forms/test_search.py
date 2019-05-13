@@ -194,6 +194,7 @@ class TestFilterForm(TestCase):
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
                 ('Draft', _('Draft')),
+                ('Cancelled', _('Cancelled'))
             ])
 
     def test_queryset_registration_state_init(self):
@@ -203,6 +204,7 @@ class TestFilterForm(TestCase):
             [
                 ('', pgettext_lazy("plural", "All")),
                 ('Accepted', _('Accepted')),
+                ('Cancelled', _('Cancelled')),
                 ('Registration submitted',  _('Registration submitted')),
                 ('Validated', _('Validated'))
             ]

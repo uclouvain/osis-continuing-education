@@ -278,3 +278,19 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
             instance.condition_of_acceptance = ''
         instance.save()
         return instance
+
+
+class CancelAdmissionForm(ModelForm):
+
+    class Meta:
+        model = Admission
+        fields = [
+            'state',
+            'state_reason',
+        ]
+
+    def save(self):
+        instance = super().save(commit=False)
+        instance.condition_of_acceptance = ''
+        instance.save()
+        return instance
