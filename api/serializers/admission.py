@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import reversion
 from rest_framework import serializers
 
 from base.models.person import Person
@@ -144,8 +145,15 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         if 'person_information' in validated_data:
             validated_data.pop('person_information')
         instance._original_state = instance.state
+        update_result = self._update_and_create_revision(instance, validated_data)
+        return update_result
+
+    def _update_and_create_revision(self, instance, validated_data):
         update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
         if instance.state != instance._original_state:
+            with reversion.create_revision():
+                reversion.set_user(self.context.get('request').user)
+                reversion.set_comment('Changed : "state"')
             send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
@@ -159,7 +167,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         if 'person_information' in validated_data:
             iufc_person_data = validated_data.pop('person_information')
             person_data = iufc_person_data.pop('person')
-
             Person.objects.filter(email=person_data['email']).update(**person_data)
             person = Person.objects.get(email=person_data['email'])
             ContinuingEducationPerson.objects.filter(person=person).update(**iufc_person_data)
