@@ -38,6 +38,14 @@ msgstr ""
 msgid "A problem occured during delete"
 msgstr ""
 
+#: templates/fragment/tasks/admissions_to_accept_modal.html:33
+msgid "Accept all selected admissions ?"
+msgstr ""
+
+#: templates/fragment/tasks/admissions_to_accept.html:9
+msgid "Accept selected admissions"
+msgstr ""
+
 #: forms/admission.py:234
 msgid "Accept the file"
 msgstr ""
@@ -114,6 +122,11 @@ msgstr ""
 #: tests/business/xls/test_xls_admission.py:96
 #: tests/business/xls/test_xls_admission.py:101
 msgid "Admissions list"
+msgstr ""
+
+#: templates/fragment/tasks/admissions_to_accept.html:14
+#: templates/tasks.html:48
+msgid "Admissions to accept"
 msgstr ""
 
 #: business/xls/xls_admission.py:34 tests/business/xls/test_xls_admission.py:97
@@ -287,6 +300,7 @@ msgstr ""
 #: templates/fragment/rejected_reason_modal.html:49
 #: templates/fragment/send_notification_mail_modal.html:44
 #: templates/fragment/submit_confirm_modal.html:49
+#: templates/fragment/tasks/admissions_to_accept_modal.html:42
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:42
 #: templates/fragment/tasks/registrations_to_validate_modal.html:42
 #: templates/fragment/upload_file_modal.html:88
@@ -302,6 +316,7 @@ msgstr ""
 
 #: templates/admissions.html:123 templates/archives.html:114
 #: templates/formations.html:141
+#: templates/fragment/tasks/admissions_to_accept.html:28
 #: templates/fragment/tasks/diplomas_to_produce.html:29
 #: templates/fragment/tasks/registrations_to_validate.html:28
 #: templates/registrations.html:111
@@ -484,6 +499,7 @@ msgstr ""
 #: models/admission.py:112 models/prospect.py:64
 #: templates/admission_form.html:102 templates/admissions.html:128
 #: templates/archives.html:119 templates/fragment/tab_admission.html:42
+#: templates/fragment/tasks/admissions_to_accept.html:33
 #: templates/fragment/tasks/diplomas_to_produce.html:34
 #: templates/fragment/tasks/registrations_to_validate.html:33
 #: templates/prospects.html:60 templates/registrations.html:116
@@ -547,6 +563,7 @@ msgstr ""
 #: templates/admission_form.html:84 templates/admissions.html:127
 #: templates/archives.html:118
 #: templates/fragment/section_identification.html:34
+#: templates/fragment/tasks/admissions_to_accept.html:32
 #: templates/fragment/tasks/diplomas_to_produce.html:33
 #: templates/fragment/tasks/registrations_to_validate.html:32
 #: templates/managers.html:87 templates/prospects.html:59
@@ -562,6 +579,7 @@ msgstr ""
 #: templates/archives.html:55 templates/archives.html:120
 #: templates/formation_detail.html:40 templates/fragment/tab_admission.html:97
 #: templates/fragment/tab_admission.html:101
+#: templates/fragment/tasks/admissions_to_accept.html:34
 #: templates/fragment/tasks/diplomas_to_produce.html:35
 #: templates/fragment/tasks/registrations_to_validate.html:34
 #: templates/prospects.html:62 templates/registrations.html:55
@@ -802,6 +820,7 @@ msgstr ""
 #: business/xls/xls_archive.py:35 business/xls/xls_common.py:40
 #: models/file.py:64 models/prospect.py:45 templates/admissions.html:126
 #: templates/archives.html:117 templates/fragment/tab_documents.html:47
+#: templates/fragment/tasks/admissions_to_accept.html:31
 #: templates/fragment/tasks/diplomas_to_produce.html:32
 #: templates/fragment/tasks/registrations_to_validate.html:31
 #: templates/managers.html:86 templates/prospects.html:58
@@ -842,6 +861,7 @@ msgstr ""
 
 #: templates/admissions.html:186 templates/archives.html:195
 #: templates/formations.html:205
+#: templates/fragment/tasks/admissions_to_accept.html:73
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:73
 #: templates/prospects.html:96 templates/registrations.html:195
@@ -959,6 +979,10 @@ msgstr ""
 msgid "Phone number"
 msgstr ""
 
+#: views/tasks.py:143
+msgid "Please select at least one admission to accept."
+msgstr ""
+
 #: tests/views/test_archive.py:110 tests/views/test_archive.py:124
 #: views/archive.py:127
 msgid "Please select at least one file to archive"
@@ -972,11 +996,11 @@ msgstr ""
 msgid "Please select at least one formation"
 msgstr ""
 
-#: views/tasks.py:83
+#: views/tasks.py:88
 msgid "Please select at least one registration to validate."
 msgstr ""
 
-#: views/tasks.py:111
+#: views/tasks.py:116
 msgid "Please select at least one registration."
 msgstr ""
 
@@ -1276,6 +1300,11 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
+#: views/tasks.py:140
+#, python-format
+msgid "Successfully accept %s admissions."
+msgstr ""
+
 #: tests/views/test_manager.py:88 views/managers.py:65
 #, python-format
 msgid "Successfully assigned %(manager)s to the training %(training)s"
@@ -1293,12 +1322,12 @@ msgstr ""
 msgid "Successfully desassigned %(manager)s from the training %(training)s"
 msgstr ""
 
-#: views/tasks.py:108
+#: views/tasks.py:113
 #, python-format
 msgid "Successfully marked diploma as produced for %s registrations."
 msgstr ""
 
-#: views/tasks.py:80
+#: views/tasks.py:85
 #, python-format
 msgid "Successfully validated %s registrations."
 msgstr ""
@@ -1309,6 +1338,10 @@ msgstr ""
 
 #: templates/admin_home.html:77 templates/tasks.html:37 templates/tasks.html:42
 msgid "Tasks"
+msgstr ""
+
+#: views/tasks.py:153
+msgid "The admission must be submitted to be accepted."
 msgstr ""
 
 #: tests/views/test_file.py:65 tests/views/test_file.py:88 views/file.py:68
@@ -1328,11 +1361,11 @@ msgstr ""
 msgid "The programme is already complete"
 msgstr ""
 
-#: views/tasks.py:93
+#: views/tasks.py:98
 msgid "The registration must be submitted to be validated."
 msgstr ""
 
-#: views/tasks.py:120
+#: views/tasks.py:125
 msgid "The registrations must be validated to mark diploma as produced."
 msgstr ""
 
@@ -1354,6 +1387,16 @@ msgstr ""
 msgid ""
 "This page contains the Registrations submitted by the participants. These "
 "must be validated by IUFC."
+msgstr ""
+
+#: templates/fragment/tasks/admissions_to_accept.html:6
+msgid ""
+"This page contains the admissions submitted by the participants. These must "
+"be accepted by the manager."
+msgstr ""
+
+#: templates/fragment/tasks/admissions_to_accept_modal.html:38
+msgid "This will accept all selected admissions. Are you sure ?"
 msgstr ""
 
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:38
@@ -1536,6 +1579,10 @@ msgstr ""
 #: tests/business/xls/test_xls_registration.py:89
 #: tests/views/test_formation.py:281 views/formation.py:150
 msgid "Yes"
+msgstr ""
+
+#: templates/fragment/tasks/admissions_to_accept_modal.html:43
+msgid "Yes, accept all selected admissions"
 msgstr ""
 
 #: templates/fragment/tasks/diplomas_to_produce_modal.html:43

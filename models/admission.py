@@ -33,7 +33,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from reversion.admin import VersionAdmin
 
-from continuing_education.models.enums import admission_state_choices, enums
+from continuing_education.models.enums import admission_state_choices, enums, groups
 from continuing_education.models.person_training import PersonTraining
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -531,7 +531,7 @@ def can_access_admission(user, admission_id):
 
 
 def is_continuing_education_manager(user):
-    return user.groups.filter(name='continuing_education_managers').exists()
+    return user.groups.filter(name=groups.MANAGERS_GROUP).exists()
 
 
 def _build_address(address):
@@ -539,3 +539,7 @@ def _build_address(address):
                                   address.postal_code if address.postal_code else '',
                                   address.city.upper() if address.city else '',
                                   "- {}".format(address.country.name.upper()) if address.country else '')
+
+
+def is_continuing_education_training_manager(user):
+    return user.groups.filter(name=groups.TRAINING_MANAGERS_GROUP).exists()

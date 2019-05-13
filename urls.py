@@ -71,6 +71,7 @@ urlpatterns = [
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
+        url(r'^accept_admissions', tasks.accept_admissions, name='accept_admissions'),
     ])),
     url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
     url(r'^managers/', include([
