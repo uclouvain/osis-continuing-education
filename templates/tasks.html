@@ -46,16 +46,16 @@
         {% if continuing_education_training_manager %}
             <li role="presentation" class="active"><a href="#admissions_to_validate" role="tab" data-toggle="tab">{% trans 'Admissions to accept' %}</a></li>
         {% endif %}
-          <li role="presentation" class="{% if not continuing_education_training_manager %}active{% endif %}"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
           {% if continuing_education_manager %}
+                <li role="presentation" class="{% if not continuing_education_training_manager %}active{% endif %}"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
                 <li role="presentation"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
           {% endif %}
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane {% if not continuing_education_training_manager %}active{% endif %}" id="registration_to_validate">
-                {% include "fragment/tasks/registrations_to_validate.html" %}
-            </div>
             {% if continuing_education_manager %}
+                <div role="tabpanel" class="tab-pane {% if not continuing_education_training_manager %}active{% endif %}" id="registration_to_validate">
+                    {% include "fragment/tasks/registrations_to_validate.html" %}
+                </div>
                 <div role="tabpanel" class="tab-pane" id="diploma_to_produce">
                     {% include "fragment/tasks/diplomas_to_produce.html" %}
                 </div>

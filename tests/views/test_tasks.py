@@ -106,7 +106,6 @@ class ViewUpdateTasksTestCase(TestCase):
         response = self.client.get(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertTemplateUsed(response, 'tasks.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
         self.assertTemplateUsed(response, 'fragment/tasks/admissions_to_accept.html')
 
     def test_list_tasks(self):
