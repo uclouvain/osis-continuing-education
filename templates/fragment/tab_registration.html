@@ -97,7 +97,7 @@
 <div class="panel-body">
     <div class="row form-group">
         <div class="col-md-4">
-            {% bootstrap_label _("Registration complete") %} : {{ admission.ucl_registration_complete | yesno }}
+            {% bootstrap_label _("UCLouvain registration complete") %} : {{ admission.ucl_registration_complete | yesno }}
             <br/> {% bootstrap_label _("Payment complete") %} : {{ admission.payment_complete | yesno }}
             <br/> {% bootstrap_label _("Registration file received") %} : {{ admission.registration_file_received | yesno }}
             <br/> {% bootstrap_label _("NOMA") %} : {{ admission.noma | default:"-"}}

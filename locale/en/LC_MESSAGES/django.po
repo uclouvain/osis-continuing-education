@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 08:35+0200\n"
+"POT-Creation-Date: 2019-05-13 11:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,8 @@ msgstr ""
 msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
 msgstr ""
 
-#: tests/views/test_admission.py:277 tests/views/test_admission.py:297
-#: tests/views/test_file.py:92 views/admission.py:184 views/file.py:71
+#: tests/views/test_admission.py:298 tests/views/test_admission.py:318
+#: tests/views/test_file.py:92 views/admission.py:191 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr ""
 
@@ -125,7 +125,7 @@ msgid "Admissions list"
 msgstr ""
 
 #: templates/fragment/tasks/admissions_to_accept.html:14
-#: templates/tasks.html:48
+#: templates/tasks.html:47
 msgid "Admissions to accept"
 msgstr ""
 
@@ -156,7 +156,7 @@ msgstr ""
 msgid "Archives"
 msgstr ""
 
-#: templates/admin_home.html:100 templates/archives.html:37
+#: templates/admin_home.html:102 templates/archives.html:37
 #: templates/archives.html:42
 msgctxt "continuing_education"
 msgid "Archives"
@@ -210,7 +210,7 @@ msgid "Billing"
 msgstr ""
 
 #: business/xls/xls_common.py:112 models/admission.py:268
-#: views/admission.py:312
+#: views/admission.py:326
 msgid "Billing address"
 msgstr ""
 
@@ -310,8 +310,8 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: templates/fragment/tab_history.html:38
-msgid "Change made on"
+#: templates/fragment/tab_history.html:39
+msgid "Change made"
 msgstr ""
 
 #: templates/admissions.html:123 templates/archives.html:114
@@ -379,7 +379,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: business/xls/xls_common.py:50 views/admission.py:308
+#: business/xls/xls_common.py:50 views/admission.py:322
 msgid "Contact address"
 msgstr ""
 
@@ -392,12 +392,12 @@ msgstr ""
 msgid "Continuing Education"
 msgstr ""
 
-#: templates/admin_home.html:89 templates/formation_detail.html:39
+#: templates/admin_home.html:91 templates/formation_detail.html:39
 msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
 
-#: tests/views/test_registration.py:212 views/admission.py:294
+#: tests/views/test_registration.py:212 views/admission.py:308
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
@@ -427,7 +427,7 @@ msgstr ""
 msgid "Current occupation"
 msgstr ""
 
-#: templates/fragment/tab_history.html:39
+#: templates/fragment/tab_history.html:40
 msgid "Datetime"
 msgstr ""
 
@@ -441,7 +441,7 @@ msgstr ""
 msgid "Diploma produced"
 msgstr ""
 
-#: templates/fragment/tasks/diplomas_to_produce.html:15 templates/tasks.html:47
+#: templates/fragment/tasks/diplomas_to_produce.html:15 templates/tasks.html:51
 msgid "Diplomas to produce"
 msgstr ""
 
@@ -979,7 +979,7 @@ msgstr ""
 msgid "Phone number"
 msgstr ""
 
-#: views/tasks.py:143
+#: views/tasks.py:147
 msgid "Please select at least one admission to accept."
 msgstr ""
 
@@ -996,11 +996,11 @@ msgstr ""
 msgid "Please select at least one formation"
 msgstr ""
 
-#: views/tasks.py:88
+#: views/tasks.py:92
 msgid "Please select at least one registration to validate."
 msgstr ""
 
-#: views/tasks.py:116
+#: views/tasks.py:120
 msgid "Please select at least one registration."
 msgstr ""
 
@@ -1076,7 +1076,7 @@ msgstr ""
 msgid "Professional status"
 msgstr ""
 
-#: templates/admin_home.html:93 templates/prospects.html:37
+#: templates/admin_home.html:95 templates/prospects.html:37
 #: templates/prospects.html:42 templates/prospects.html:51
 msgid "Prospects"
 msgstr ""
@@ -1117,11 +1117,6 @@ msgstr ""
 msgid "Registration"
 msgstr ""
 
-#: templates/fragment/tab_registration.html:100
-#: templates/registration_form.html:128
-msgid "Registration complete"
-msgstr ""
-
 #: business/xls/xls_common.py:125 models/admission.py:382
 #: templates/admission_detail.html:57
 #: templates/blocks/dropdown/list_actions.html:13
@@ -1157,7 +1152,7 @@ msgid "Registrations list"
 msgstr ""
 
 #: templates/fragment/tasks/registrations_to_validate.html:14
-#: templates/tasks.html:46
+#: templates/tasks.html:50
 msgid "Registrations to validate"
 msgstr ""
 
@@ -1179,7 +1174,7 @@ msgid "Rejected reason"
 msgstr ""
 
 #: business/xls/xls_common.py:121 models/admission.py:340
-#: views/admission.py:316
+#: views/admission.py:330
 msgid "Residence address"
 msgstr ""
 
@@ -1259,7 +1254,7 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: templates/fragment/tab_history.html:47
+#: templates/fragment/tab_history.html:48
 msgid "State changed to"
 msgstr ""
 
@@ -1300,7 +1295,7 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: views/tasks.py:140
+#: views/tasks.py:144
 #, python-format
 msgid "Successfully accept %s admissions."
 msgstr ""
@@ -1322,12 +1317,12 @@ msgstr ""
 msgid "Successfully desassigned %(manager)s from the training %(training)s"
 msgstr ""
 
-#: views/tasks.py:113
+#: views/tasks.py:117
 #, python-format
 msgid "Successfully marked diploma as produced for %s registrations."
 msgstr ""
 
-#: views/tasks.py:85
+#: views/tasks.py:89
 #, python-format
 msgid "Successfully validated %s registrations."
 msgstr ""
@@ -1340,7 +1335,7 @@ msgstr ""
 msgid "Tasks"
 msgstr ""
 
-#: views/tasks.py:153
+#: views/tasks.py:157
 msgid "The admission must be submitted to be accepted."
 msgstr ""
 
@@ -1361,11 +1356,11 @@ msgstr ""
 msgid "The programme is already complete"
 msgstr ""
 
-#: views/tasks.py:98
+#: views/tasks.py:102
 msgid "The registration must be submitted to be validated."
 msgstr ""
 
-#: views/tasks.py:125
+#: views/tasks.py:129
 msgid "The registrations must be validated to mark diploma as produced."
 msgstr ""
 
@@ -1373,7 +1368,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr ""
 
-#: tests/views/test_admission.py:293 views/admission.py:186
+#: tests/views/test_admission.py:314 views/admission.py:193
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 
@@ -1437,7 +1432,7 @@ msgstr ""
 msgid "Training"
 msgstr ""
 
-#: templates/admin_home.html:81 templates/managers.html:37
+#: templates/admin_home.html:82 templates/managers.html:37
 #: templates/managers.html:42
 msgid "Training Managers"
 msgstr ""
@@ -1459,6 +1454,8 @@ msgid "Trainings"
 msgstr ""
 
 #: business/xls/xls_common.py:123 models/admission.py:353
+#: templates/fragment/tab_registration.html:100
+#: templates/registration_form.html:128
 msgid "UCLouvain registration complete"
 msgstr ""
 
@@ -1504,7 +1501,7 @@ msgstr ""
 msgid "Use address for post"
 msgstr ""
 
-#: templates/fragment/tab_history.html:40
+#: templates/fragment/tab_history.html:41
 msgid "User"
 msgstr ""
 
