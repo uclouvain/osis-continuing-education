@@ -62,7 +62,7 @@ STATES_REJECTED_WAITING = {
         (WAITING, _('Waiting')),
         (CANCELLED, _('Cancelled')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING,CANCELLED]
+    'states': [ACCEPTED, REJECTED, WAITING, CANCELLED]
 }
 
 STATES_CANCELLED = {

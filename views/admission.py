@@ -285,7 +285,8 @@ def admission_form(request, admission_id=None):
 def _new_state_management(request, forms, admission, new_state):
     admission._original_state = admission.state
     adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form = forms
-    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form, cancel_adm_form)
+    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
+                                    cancel_adm_form)
     if new_state != VALIDATED:
         _save_and_create_revision(adm_form, request)
     else:
@@ -301,7 +302,8 @@ def _save_and_create_revision(adm_form, request):
         reversion.set_comment('Changed : "state"')
 
 
-def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form, cancel_adm_form):
+def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
+                                    cancel_adm_form):
     if new_state == REJECTED and rejected_adm_form.is_valid():
         rejected_adm_form.save()
     elif new_state == WAITING and waiting_adm_form.is_valid():
