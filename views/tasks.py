@@ -136,7 +136,7 @@ def _mark_diplomas_produced_list(registrations_ids_list):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def accept_admissions(request):
-    if not is_continuing_education_manager(request.user):
+    if not is_continuing_education_training_manager(request.user):
         raise PermissionDenied
     selected_admission_ids = request.POST.getlist("selected_admissions_to_accept", default=[])
     if selected_admission_ids:
