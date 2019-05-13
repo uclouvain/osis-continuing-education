@@ -31,10 +31,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager, is_continuing_education_training_manager
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required

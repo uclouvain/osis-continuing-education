@@ -161,6 +161,7 @@
           {% if not user_is_continuing_education_student_worker%}
               <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
           {% endif %}
+        <li role="presentation"><a href="#history" role="tab" data-toggle="tab">{% trans 'History' %}</a></li>
         </ul>
         <div class="tab-content">
             {% csrf_token %}
@@ -175,6 +176,9 @@
                     {% include "fragment/tab_documents.html" %}
                 </div>
             {% endif %}
+            <div role="tabpanel" class="tab-pane" id="history">
+                {% include "fragment/tab_history.html" %}
+            </div>
         </div>
     </div>
 {% endblock %}
