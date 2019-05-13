@@ -197,13 +197,17 @@ class ViewUpdateTasksTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
+    def test_accept_admissions_denied(self):
+        response = self.client.post(reverse('accept_admissions'), data={})
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
     def test_accept_admissions(self):
         post_data = {
             "selected_admissions_to_accept":
                 [str(registration.pk) for registration in self.admissions_to_accept]
         }
+        self.client.force_login(self.training_manager.user)
         response = self.client.post(reverse('accept_admissions'), data=post_data)
-
         for registration in self.admissions_to_accept:
             registration.refresh_from_db()
             self.assertEqual(registration.state, admission_state_choices.ACCEPTED)
@@ -335,17 +339,6 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         }
         response = self.client.post(
             reverse('mark_diplomas_produced'),
-            data=post_data
-        )
-        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
-
-    def test_accept_admission_denied(self):
-        post_data = {
-            "selected_admissions_to_accept":
-                [str(self.admission_to_validate.pk)]
-        }
-        response = self.client.post(
-            reverse('accept_admissions'),
             data=post_data
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
