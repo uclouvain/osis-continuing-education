@@ -106,6 +106,8 @@ def admission_detail(request, admission_id):
 
     version_list = _get_versions(admission)
 
+    version_list = _get_versions(admission)
+
     if request.method == 'POST' and request.FILES:
         return _upload_file(request, admission)
 
@@ -313,7 +315,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
     elif new_state == CANCELLED and cancel_adm_form.is_valid():
         cancel_adm_form.save()
 
-
+        
 def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
         _save_and_create_revision(adm_form, request)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 15:22+0200\n"
+"POT-Creation-Date: 2019-05-13 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,8 @@ msgstr ""
 msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
 msgstr ""
 
-#: tests/views/test_admission.py:277 tests/views/test_admission.py:297
-#: tests/views/test_file.py:92 views/admission.py:202 views/file.py:71
+#: tests/views/test_admission.py:298 tests/views/test_admission.py:318
+#: tests/views/test_file.py:92 views/admission.py:204 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr ""
 
@@ -211,7 +211,7 @@ msgid "Billing"
 msgstr ""
 
 #: business/xls/xls_common.py:112 models/admission.py:271
-#: views/admission.py:339
+#: views/admission.py:343
 msgid "Billing address"
 msgstr ""
 
@@ -328,6 +328,10 @@ msgstr ""
 msgid "Cancelled"
 msgstr ""
 
+#: templates/fragment/tab_history.html:39
+msgid "Change made"
+msgstr ""
+
 #: templates/admissions.html:123 templates/archives.html:114
 #: templates/formations.html:141
 #: templates/fragment/tasks/admissions_to_accept.html:28
@@ -394,7 +398,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: business/xls/xls_common.py:50 views/admission.py:335
+#: business/xls/xls_common.py:50 views/admission.py:339
 msgid "Contact address"
 msgstr ""
 
@@ -412,7 +416,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
 
-#: tests/views/test_registration.py:212 views/admission.py:321
+#: tests/views/test_registration.py:212 views/admission.py:325
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
@@ -440,6 +444,10 @@ msgstr ""
 #: models/admission.py:163 templates/admission_form.html:145
 #: templates/fragment/tab_admission.html:77 tests/business/test_admission.py:82
 msgid "Current occupation"
+msgstr ""
+
+#: templates/fragment/tab_history.html:40
+msgid "Datetime"
 msgstr ""
 
 #: templates/fragment/tab_documents.html:75
@@ -678,6 +686,10 @@ msgstr ""
 msgid "High school graduation year"
 msgstr ""
 
+#: templates/admission_detail.html:164
+msgid "History"
+msgstr ""
+
 #: forms/registration.py:19
 msgid "I would like the billing address to be :"
 msgstr ""
@@ -745,6 +757,10 @@ msgstr ""
 #: models/admission.py:131 templates/admission_form.html:124
 #: templates/fragment/tab_admission.html:61 tests/business/test_admission.py:76
 msgid "Last degree level"
+msgstr ""
+
+#: templates/fragment/tab_history.html:32
+msgid "Last modifications"
 msgstr ""
 
 #: business/admission.py:218 templates/admission_form.html:85
@@ -1184,7 +1200,7 @@ msgid "Rejected reason"
 msgstr ""
 
 #: business/xls/xls_common.py:121 models/admission.py:343
-#: views/admission.py:343
+#: views/admission.py:347
 msgid "Residence address"
 msgstr ""
 
@@ -1262,6 +1278,10 @@ msgstr ""
 #: templates/registrations.html:59 templates/registrations.html:121
 #: tests/business/test_admission.py:88
 msgid "State"
+msgstr ""
+
+#: templates/fragment/tab_history.html:48
+msgid "State changed to"
 msgstr ""
 
 #: models/admission.py:252
@@ -1375,7 +1395,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr ""
 
-#: tests/views/test_admission.py:293 views/admission.py:204
+#: tests/views/test_admission.py:314 views/admission.py:206
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 
@@ -1506,6 +1526,10 @@ msgstr ""
 
 #: models/admission.py:336
 msgid "Use address for post"
+msgstr ""
+
+#: templates/fragment/tab_history.html:41
+msgid "User"
 msgstr ""
 
 #: business/xls/xls_common.py:111 models/admission.py:288

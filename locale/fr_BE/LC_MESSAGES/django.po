@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 15:22+0200\n"
+"POT-Creation-Date: 2019-05-13 15:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,8 +26,8 @@ msgstr ""
 "La catégorie de fichier 'Facture' n'est disponible que pour un dossier "
 "'Accepté'"
 
-#: tests/views/test_admission.py:277 tests/views/test_admission.py:297
-#: tests/views/test_file.py:92 views/admission.py:202 views/file.py:71
+#: tests/views/test_admission.py:298 tests/views/test_admission.py:318
+#: tests/views/test_file.py:92 views/admission.py:204 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr "Un email de notification a été envoyé au participant"
 
@@ -214,7 +214,7 @@ msgid "Billing"
 msgstr "Facturation"
 
 #: business/xls/xls_common.py:112 models/admission.py:271
-#: views/admission.py:339
+#: views/admission.py:343
 msgid "Billing address"
 msgstr "Adresse de facturation"
 
@@ -331,6 +331,10 @@ msgstr "Motif d'état d'annulation"
 msgid "Cancelled"
 msgstr "Annulé"
 
+#: templates/fragment/tab_history.html:39
+msgid "Change made"
+msgstr "Changement effectué"
+
 #: templates/admissions.html:123 templates/archives.html:114
 #: templates/formations.html:141
 #: templates/fragment/tasks/admissions_to_accept.html:28
@@ -399,9 +403,7 @@ msgstr "Confirmer le refus"
 msgid "Contact"
 msgstr "Contact"
 
-#: business/xls/xls_common.py:50 views/admission.py:335
-#, fuzzy
-#| msgid "Contact"
+#: business/xls/xls_common.py:50 views/admission.py:339
 msgid "Contact address"
 msgstr "Adresse de contact"
 
@@ -419,7 +421,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
-#: tests/views/test_registration.py:212 views/admission.py:321
+#: tests/views/test_registration.py:212 views/admission.py:325
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
@@ -448,6 +450,10 @@ msgstr "Employeur actuel"
 #: templates/fragment/tab_admission.html:77 tests/business/test_admission.py:82
 msgid "Current occupation"
 msgstr "Fonction actuelle"
+
+#: templates/fragment/tab_history.html:40
+msgid "Datetime"
+msgstr "Date/Heure"
 
 #: templates/fragment/tab_documents.html:75
 msgid "Delete document"
@@ -685,6 +691,10 @@ msgstr "Diplôme d'études secondaires"
 msgid "High school graduation year"
 msgstr "Année d'obtention (secondaire)"
 
+#: templates/admission_detail.html:164
+msgid "History"
+msgstr "Historique"
+
 #: forms/registration.py:19
 msgid "I would like the billing address to be :"
 msgstr "Je souhaite que l'adresse de facturation soit :"
@@ -757,6 +767,10 @@ msgstr "Institution"
 #: templates/fragment/tab_admission.html:61 tests/business/test_admission.py:76
 msgid "Last degree level"
 msgstr "Niveau du dernier diplôme"
+
+#: templates/fragment/tab_history.html:32
+msgid "Last modifications"
+msgstr "Dernières modifications"
 
 #: business/admission.py:218 templates/admission_form.html:85
 #: templates/fragment/section_identification.html:35
@@ -1112,7 +1126,7 @@ msgstr "Fonctionnaire"
 
 #: templates/fragment/cancel_reason_modal.html:33
 msgid "Reason for cancelling"
-msgstr "Raison d'annulation"
+msgstr "Raison de mise en annulation"
 
 #: templates/fragment/waiting_reason_modal.html:33
 msgid "Reason for waiting"
@@ -1201,7 +1215,7 @@ msgid "Rejected reason"
 msgstr "Motif de refus"
 
 #: business/xls/xls_common.py:121 models/admission.py:343
-#: views/admission.py:343
+#: views/admission.py:347
 msgid "Residence address"
 msgstr "Adresse"
 
@@ -1280,6 +1294,10 @@ msgstr "Etalement des paiements"
 #: tests/business/test_admission.py:88
 msgid "State"
 msgstr "Etat"
+
+#: templates/fragment/tab_history.html:48
+msgid "State changed to"
+msgstr "Etat modifié à"
 
 #: models/admission.py:252
 msgid "State reason"
@@ -1398,7 +1416,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr "L'admission doit être en statut Accepté pour uploader une facture."
 
-#: tests/views/test_admission.py:293 views/admission.py:204
+#: tests/views/test_admission.py:314 views/admission.py:206
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
@@ -1472,8 +1490,6 @@ msgid "To submit a registration, its state must be ACCEPTED."
 msgstr "Pour soumettre une inscription, son état doit être Accepté."
 
 #: api/views/perms/perms.py:50
-#, fuzzy
-#| msgid "To submit a registration, its state must be ACCEPTED."
 msgid "To submit an admission, its state must be DRAFT."
 msgstr "Pour soumettre une admission, son état doit être Brouillon."
 
@@ -1550,6 +1566,10 @@ msgstr "Utiliser l'adresse enregistrée pour la facturation"
 #: models/admission.py:336
 msgid "Use address for post"
 msgstr "Utiliser l'adresse enregistrée pour le courrier"
+
+#: templates/fragment/tab_history.html:41
+msgid "User"
+msgstr "Utilisateur"
 
 #: business/xls/xls_common.py:111 models/admission.py:288
 #: templates/fragment/tab_registration.html:49
@@ -1654,7 +1674,7 @@ msgstr "Condition d'acceptation"
 #: templates/fragment/cancel_reason_modal.html:38
 msgid "You can enter a reason to cancel this admission"
 msgstr ""
-"Vous pouvez indiquer la raison pour laquelle cette admission est annulée "
+    "Vous pouvez indiquer la raison pour laquelle cette admission est annulée "
 
 #: templates/fragment/waiting_reason_modal.html:38
 msgid "You can enter a reason to put this admission on hold"
