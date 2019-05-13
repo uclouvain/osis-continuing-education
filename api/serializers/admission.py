@@ -142,21 +142,19 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
 
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)
-        changed_state = 'state' in validated_data
         if 'person_information' in validated_data:
             validated_data.pop('person_information')
         instance._original_state = instance.state
-        update_result = self._update_and_create_revision(instance, validated_data, changed_state)
-        if instance.state != instance._original_state:
-            send_state_changed_email(instance, connected_user=self.context.get('request').user)
+        update_result = self._update_and_create_revision(instance, validated_data)
         return update_result
 
-    def _update_and_create_revision(self, instance, validated_data, changed_state):
+    def _update_and_create_revision(self, instance, validated_data):
         update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
-        if changed_state:
+        if instance.state != instance._original_state:
             with reversion.create_revision():
                 reversion.set_user(self.context.get('request').user)
                 reversion.set_comment('Changed : "state"')
+            send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
     def update_field(self, field, validated_data, instance):
