@@ -733,10 +733,8 @@ msgid "Last degree level"
 msgstr "Niveau du dernier diplôme"
 
 #: templates/fragment/tab_history.html:32
-#, fuzzy
-#| msgid "Identification"
 msgid "Last modifications"
-msgstr "Identification"
+msgstr "Dernières modifications"
 
 #: business/admission.py:218 templates/admission_form.html:85
 #: templates/fragment/section_identification.html:35
