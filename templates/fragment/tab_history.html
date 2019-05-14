@@ -42,10 +42,10 @@
             </tr>
             <thead>
             <tbody>
-            {% for ver, change in version %}
+            {% for ver in version %}
                 <tr>
                     <td>
-                        {% trans "State changed to" %} {% trans change %}
+                        {{ ver.revision.comment }}
                     </td>
                     <td>
                         {{ ver.revision.date_created }}

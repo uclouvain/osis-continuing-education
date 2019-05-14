@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 11:56+0200\n"
+"POT-Creation-Date: 2019-05-14 11:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,16 @@ msgstr ""
 
 #: business/admission.py:276 tests/business/test_admission.py:104
 msgid " or "
-msgstr ""
+msgstr " ou "
+
+#: views/common.py:52
+msgid " to "
+msgstr " à "
+
+#: views/common.py:44
+#, python-format
+msgid "%(old_state)s to %(new_state)s"
+msgstr "%(old_state)s à %(new_state)s"
 
 #: templates/fragment/upload_file_modal.html:63
 msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
@@ -27,7 +36,7 @@ msgstr ""
 "'Accepté'"
 
 #: tests/views/test_admission.py:298 tests/views/test_admission.py:318
-#: tests/views/test_file.py:92 views/admission.py:191 views/file.py:71
+#: tests/views/test_file.py:92 views/admission.py:160 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr "Un email de notification a été envoyé au participant"
 
@@ -213,7 +222,7 @@ msgid "Billing"
 msgstr "Facturation"
 
 #: business/xls/xls_common.py:112 models/admission.py:268
-#: views/admission.py:326
+#: views/admission.py:292
 msgid "Billing address"
 msgstr "Adresse de facturation"
 
@@ -388,7 +397,7 @@ msgstr "Confirmer le refus"
 msgid "Contact"
 msgstr "Contact"
 
-#: business/xls/xls_common.py:50 views/admission.py:322
+#: business/xls/xls_common.py:50 views/admission.py:288
 msgid "Contact address"
 msgstr "Adresse de contact"
 
@@ -406,7 +415,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
-#: tests/views/test_registration.py:212 views/admission.py:308
+#: tests/views/test_registration.py:212 views/admission.py:274
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
@@ -423,6 +432,10 @@ msgstr "Pays"
 #: templates/blocks/dropdown/list_actions.html:30
 msgid "Create Json file to export data to EPC"
 msgstr "Créer un fichier Json pour exporter des données vers EPC"
+
+#: views/common.py:43
+msgid "Creation of the admission"
+msgstr "Création de l'admission"
 
 #: business/admission.py:230 business/xls/xls_common.py:59
 #: models/admission.py:165 templates/admission_form.html:148
@@ -541,6 +554,10 @@ msgstr "Champ requis quand le participant remplit le formulaire d'admission"
 msgid "Fields missing"
 msgstr "Champs manquants"
 
+#: views/common.py:41
+msgid "File archived"
+msgstr "Dossier archivé"
+
 #: templates/fragment/tab_documents.html:48
 #: templates/fragment/upload_file_modal.html:60
 msgid "File category"
@@ -555,15 +572,19 @@ msgstr "Le fichier a bien été supprimé"
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: views/registration.py:195
+#: views/registration.py:197
 msgid "File is now mark as "
 msgstr "Le dossier est maintenant enregistré comme "
+
+#: views/common.py:42
+msgid "File unarchived"
+msgstr "Dossier désarchivé"
 
 #: tests/views/test_archive.py:152 views/archive.py:108
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
-#: views/registration.py:195
+#: views/registration.py:197
 msgid "Files are now mark as "
 msgstr "Les dossiers sont maintenant enregistrés comme "
 
@@ -897,7 +918,7 @@ msgstr "Aucune formation activée"
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
-#: tests/views/test_registration.py:304 views/registration.py:165
+#: tests/views/test_registration.py:304 views/registration.py:167
 msgid "No registration validated, so no data available to export!"
 msgstr "Aucune inscription validée à exporter"
 
@@ -1005,7 +1026,7 @@ msgstr "Veuillez sélectionner au moins une admission à accepter"
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
 
-#: views/registration.py:211
+#: views/registration.py:213
 msgid "Please select at least one file to mark as received"
 msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
 
@@ -1140,7 +1161,7 @@ msgstr "Inscription"
 #: templates/admission_detail.html:57
 #: templates/blocks/dropdown/list_actions.html:13
 #: templates/fragment/tab_registration.html:102
-#: templates/registration_form.html:130
+#: templates/registration_form.html:130 views/common.py:40
 msgid "Registration file received"
 msgstr "Dossier d'inscription reçu"
 
@@ -1193,7 +1214,7 @@ msgid "Rejected reason"
 msgstr "Motif de refus"
 
 #: business/xls/xls_common.py:121 models/admission.py:340
-#: views/admission.py:330
+#: views/admission.py:296
 msgid "Residence address"
 msgstr "Adresse"
 
@@ -1272,10 +1293,6 @@ msgstr "Etalement des paiements"
 #: tests/business/test_admission.py:88
 msgid "State"
 msgstr "Etat"
-
-#: templates/fragment/tab_history.html:48
-msgid "State changed to"
-msgstr "Etat modifié à"
 
 #: models/admission.py:249
 msgid "State reason"
@@ -1393,7 +1410,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr "L'admission doit être en statut Accepté pour uploader une facture."
 
-#: tests/views/test_admission.py:314 views/admission.py:193
+#: tests/views/test_admission.py:314 views/admission.py:162
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
@@ -1460,7 +1477,7 @@ msgstr ""
 #: business/xls/xls_formation.py:79 forms/search.py:284
 #: templates/formations.html:56 templates/formations.html:146
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #: api/views/perms/perms.py:41
 msgid "To submit a registration, its state must be ACCEPTED."
@@ -1498,7 +1515,7 @@ msgstr "Formations"
 
 #: business/xls/xls_common.py:123 models/admission.py:353
 #: templates/fragment/tab_registration.html:100
-#: templates/registration_form.html:128
+#: templates/registration_form.html:128 views/common.py:39
 msgid "UCLouvain registration complete"
 msgstr "Inscription au rôle"
 
@@ -1535,6 +1552,8 @@ msgstr "Envoyé par"
 msgid ""
 "Uploading and deleting files is not allowed if admission is not editable."
 msgstr ""
+"Ajouter et supprimer des fichiers n'est pas permis si l'admission n'est pas "
+"éditable."
 
 #: models/admission.py:261
 msgid "Use address for billing"
@@ -1716,11 +1735,11 @@ msgstr "archivé"
 msgid "managers"
 msgstr "gestionnaires"
 
-#: views/registration.py:196
+#: views/registration.py:198
 msgid "not received"
 msgstr "non reçu"
 
-#: views/registration.py:196
+#: views/registration.py:198
 msgid "received"
 msgstr "reçu"
 
@@ -1731,3 +1750,6 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 #: views/archive.py:109
 msgid "unarchived"
 msgstr "non-archivé"
+
+#~ msgid "State changed to"
+#~ msgstr "Etat modifié à"

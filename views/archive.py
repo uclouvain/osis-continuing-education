@@ -32,11 +32,11 @@ from django.utils.translation import ugettext_lazy as _
 
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
-from continuing_education.views.common import get_object_list
-from continuing_education.business.perms import is_not_student_worker
+from continuing_education.views.common import get_object_list, FILE_ARCHIVED, _save_and_create_revision, FILE_UNARCHIVED
 
 
 @login_required
@@ -71,7 +71,7 @@ def archive_procedure(request, admission_id):
     if admission.is_draft():
         raise PermissionDenied
     redirection = request.META.get('HTTP_REFERER')
-    admission = _switch_archived_state(admission_id)
+    admission = _switch_archived_state(request, admission_id)
     _set_success_message(request, False, admission.archived)
     return HttpResponseRedirect(redirection)
 
@@ -99,7 +99,7 @@ def change_archive_status(new_archive_status, request):
 
 def _mark_folders_as_archived(request, selected_admissions_id, new_archive_status):
     for admission_id in selected_admissions_id:
-        _mark_as_archived(admission_id, new_archive_status)
+        _mark_as_archived(request, admission_id, new_archive_status)
     _set_success_message(request, len(selected_admissions_id) > 1, new_archive_status)
 
 
@@ -112,15 +112,15 @@ def _set_success_message(request, is_plural, admission_archived=True):
     display_success_messages(request, success_msg)
 
 
-def _mark_as_archived(admission_id, archive_state=True):
+def _mark_as_archived(request, admission_id, archive_state=True):
     admission = get_object_or_404(Admission, pk=admission_id)
-    _set_archived_state(admission, archive_state)
+    _set_archived_state(request, admission, archive_state)
 
 
-def _set_archived_state(admission, archived_state):
+def _set_archived_state(request, admission, archived_state):
     if admission:
         admission.archived = archived_state
-        admission.save()
+        _save_and_create_revision(admission, request, FILE_ARCHIVED if admission.archived else FILE_UNARCHIVED)
 
 
 def _set_error_message(request):
@@ -128,9 +128,9 @@ def _set_error_message(request):
     display_error_messages(request, error_msg)
 
 
-def _switch_archived_state(admission_id):
+def _switch_archived_state(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    _set_archived_state(admission, not admission.archived)
+    _set_archived_state(request, admission, not admission.archived)
     return admission
 
 

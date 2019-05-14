@@ -35,6 +35,7 @@ from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager, is_continuing_education_training_manager
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.views.common import _save_and_create_revision, REGISTRATION_VALIDATED
 
 
 @login_required
@@ -85,7 +86,7 @@ def validate_registrations(request):
         raise PermissionDenied
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
-        _validate_registrations_list(selected_registration_ids)
+        _validate_registrations_list(request, selected_registration_ids)
         msg = _('Successfully validated %s registrations.') % len(selected_registration_ids)
         display_success_messages(request, msg)
     else:
@@ -94,7 +95,7 @@ def validate_registrations(request):
     return redirect(reverse("list_tasks"))
 
 
-def _validate_registrations_list(registrations_ids_list):
+def _validate_registrations_list(request, registrations_ids_list):
     registrations_list = Admission.objects.filter(id__in=registrations_ids_list)
 
     registrations_list_states = registrations_list.values_list('state', flat=True)
@@ -102,6 +103,8 @@ def _validate_registrations_list(registrations_ids_list):
         raise PermissionDenied(_('The registration must be submitted to be validated.'))
 
     registrations_list.update(state=admission_state_choices.VALIDATED)
+    for registration in registrations_list:
+        _save_and_create_revision(registration, request, REGISTRATION_VALIDATED)
 
 
 @login_required

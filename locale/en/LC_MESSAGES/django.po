@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-13 11:56+0200\n"
+"POT-Creation-Date: 2019-05-14 11:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,12 +21,21 @@ msgstr ""
 msgid " or "
 msgstr ""
 
+#: views/common.py:52
+msgid " to "
+msgstr ""
+
+#: views/common.py:44
+#, python-format
+msgid "%(old_state)s to %(new_state)s"
+msgstr ""
+
 #: templates/fragment/upload_file_modal.html:63
 msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
 msgstr ""
 
 #: tests/views/test_admission.py:298 tests/views/test_admission.py:318
-#: tests/views/test_file.py:92 views/admission.py:191 views/file.py:71
+#: tests/views/test_file.py:92 views/admission.py:160 views/file.py:71
 msgid "A notification email has been sent to the participant"
 msgstr ""
 
@@ -210,7 +219,7 @@ msgid "Billing"
 msgstr ""
 
 #: business/xls/xls_common.py:112 models/admission.py:268
-#: views/admission.py:326
+#: views/admission.py:292
 msgid "Billing address"
 msgstr ""
 
@@ -383,7 +392,7 @@ msgstr ""
 msgid "Contact"
 msgstr ""
 
-#: business/xls/xls_common.py:50 views/admission.py:322
+#: business/xls/xls_common.py:50 views/admission.py:288
 msgid "Contact address"
 msgstr ""
 
@@ -401,7 +410,7 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
 
-#: tests/views/test_registration.py:212 views/admission.py:308
+#: tests/views/test_registration.py:212 views/admission.py:274
 msgid ""
 "Continuing education managers only are allowed to validate a registration"
 msgstr ""
@@ -417,6 +426,10 @@ msgstr ""
 #: templates/blocks/dropdown/list_actions.html:29
 #: templates/blocks/dropdown/list_actions.html:30
 msgid "Create Json file to export data to EPC"
+msgstr ""
+
+#: views/common.py:43
+msgid "Creation of the admission"
 msgstr ""
 
 #: business/admission.py:230 business/xls/xls_common.py:59
@@ -536,6 +549,10 @@ msgstr ""
 msgid "Fields missing"
 msgstr ""
 
+#: views/common.py:41
+msgid "File archived"
+msgstr ""
+
 #: templates/fragment/tab_documents.html:48
 #: templates/fragment/upload_file_modal.html:60
 msgid "File category"
@@ -550,15 +567,19 @@ msgstr ""
 msgid "File is now"
 msgstr ""
 
-#: views/registration.py:195
+#: views/registration.py:197
 msgid "File is now mark as "
+msgstr ""
+
+#: views/common.py:42
+msgid "File unarchived"
 msgstr ""
 
 #: tests/views/test_archive.py:152 views/archive.py:108
 msgid "Files are now"
 msgstr ""
 
-#: views/registration.py:195
+#: views/registration.py:197
 msgid "Files are now mark as "
 msgstr ""
 
@@ -888,7 +909,7 @@ msgstr ""
 msgid "No formation inactivated"
 msgstr ""
 
-#: tests/views/test_registration.py:304 views/registration.py:165
+#: tests/views/test_registration.py:304 views/registration.py:167
 msgid "No registration validated, so no data available to export!"
 msgstr ""
 
@@ -992,7 +1013,7 @@ msgstr ""
 msgid "Please select at least one file to archive"
 msgstr ""
 
-#: views/registration.py:211
+#: views/registration.py:213
 msgid "Please select at least one file to mark as received"
 msgstr ""
 
@@ -1125,7 +1146,7 @@ msgstr ""
 #: templates/admission_detail.html:57
 #: templates/blocks/dropdown/list_actions.html:13
 #: templates/fragment/tab_registration.html:102
-#: templates/registration_form.html:130
+#: templates/registration_form.html:130 views/common.py:40
 msgid "Registration file received"
 msgstr ""
 
@@ -1178,7 +1199,7 @@ msgid "Rejected reason"
 msgstr ""
 
 #: business/xls/xls_common.py:121 models/admission.py:340
-#: views/admission.py:330
+#: views/admission.py:296
 msgid "Residence address"
 msgstr ""
 
@@ -1256,10 +1277,6 @@ msgstr ""
 #: templates/registrations.html:59 templates/registrations.html:121
 #: tests/business/test_admission.py:88
 msgid "State"
-msgstr ""
-
-#: templates/fragment/tab_history.html:48
-msgid "State changed to"
 msgstr ""
 
 #: models/admission.py:249
@@ -1372,7 +1389,7 @@ msgstr ""
 msgid "The status of the admission must be Accepted to upload an invoice."
 msgstr ""
 
-#: tests/views/test_admission.py:314 views/admission.py:193
+#: tests/views/test_admission.py:314 views/admission.py:162
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 
@@ -1459,7 +1476,7 @@ msgstr ""
 
 #: business/xls/xls_common.py:123 models/admission.py:353
 #: templates/fragment/tab_registration.html:100
-#: templates/registration_form.html:128
+#: templates/registration_form.html:128 views/common.py:39
 msgid "UCLouvain registration complete"
 msgstr ""
 
@@ -1661,11 +1678,11 @@ msgstr ""
 msgid "managers"
 msgstr ""
 
-#: views/registration.py:196
+#: views/registration.py:198
 msgid "not received"
 msgstr ""
 
-#: views/registration.py:196
+#: views/registration.py:198
 msgid "received"
 msgstr ""
 
