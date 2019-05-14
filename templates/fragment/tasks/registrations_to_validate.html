@@ -32,6 +32,7 @@
             <th>{% trans 'First name' %}</th>
             <th>{% trans 'Email' %}</th>
             <th>{% trans 'Formation' %}</th>
+            <th>{% trans 'UCLouvain registration complete' %}</th>
         </tr>
         </thead>
         <tbody>
@@ -48,6 +49,13 @@
                     <td>{{ admission.person_information.person.first_name }}</td>
                     <td>{{ admission.person_information.person.email }}</td>
                     <td>{{ admission.formation }}</td>
+                    <td style="vertical-align: middle;">
+                        {% if admission.ucl_registration_complete %}
+                                <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
+                        {% else %}
+                                <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
