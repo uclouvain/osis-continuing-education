@@ -216,3 +216,19 @@ def _switch_received_file_state(admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     _set_received_file_status(admission, not admission.registration_file_received)
     return admission
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def list_cancelled(request):
+    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
+
+    admission_list = Admission.objects.filter(state=admission_state_choices.CANCELLED)
+
+    if not user_is_continuing_education_student_worker:
+        admission_list = filter_authorized_admissions(request.user, admission_list)
+
+    return render(request, "cancellations.html", {
+        'admissions': get_object_list(request, admission_list)
+    })

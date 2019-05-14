@@ -78,7 +78,8 @@ class ViewsLimitedForStudentWorker(TestCase):
                 reverse('json_file'),
                 reverse('registration_edit', args=[self.admission.id]),
                 reverse('list_tasks'),
-                reverse('formation_detail', args = [1]),
+                reverse('formation_detail', args=[1]),
+                reverse('cancelled_files'),
                 ]
         for url in urls:
             response = self.client.get(url)
