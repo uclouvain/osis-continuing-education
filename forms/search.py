@@ -22,6 +22,7 @@ from continuing_education.models.enums.admission_state_choices import REGISTRATI
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, CANCELLED
 from continuing_education.models.person_training import PersonTraining
+import unicodedata
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT, CANCELLED]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED, CANCELLED]
@@ -121,13 +122,18 @@ class AdmissionFilterForm(BootstrapForm):
 
 
 def search_admissions_with_free_text(free_text, qs):
+    free_text_unaccent = strip_accents(free_text)
     qs = qs.filter(
         Q(person_information__person__first_name__icontains=free_text) |
         Q(person_information__person__last_name__icontains=free_text) |
         Q(person_information__person__email__icontains=free_text) |
         Q(email__icontains=free_text) |
         Q(formation__education_group__educationgroupyear__acronym__icontains=free_text) |
-        Q(formation__education_group__educationgroupyear__title__icontains=free_text)
+        Q(formation__education_group__educationgroupyear__title__icontains=free_text) |
+        Q(address__country__name__icontains=free_text_unaccent) |
+        Q(address__country__name__icontains=free_text) |
+        Q(address__city__icontains=free_text_unaccent) |
+        Q(address__city__icontains=free_text)
     )
     return qs
 
@@ -405,3 +411,7 @@ class ManagerFilterForm(BootstrapForm):
                 ).values_list('person__id')
             )
         return qs
+
+
+def strip_accents(value):
+    return ''.join((c for c in unicodedata.normalize('NFD', value) if unicodedata.category(c) != 'Mn'))
