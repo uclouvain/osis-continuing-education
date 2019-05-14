@@ -1,7 +1,10 @@
 function openModal(idReasonModal, reason, otherReason) {
     $('#'+idReasonModal).modal('show');
     $('#'+reason.Old).val($('#'+reason.New).val());
-    $('#'+otherReason.Old).val($('#'+otherReason.New).val());
+    if (otherReason){
+        $('#'+otherReason.Old).val($('#'+otherReason.New).val());
+    }
+
 }
 
 function disabledEnabledOtherReasonInputText(elementIdReason, otherReasonId){

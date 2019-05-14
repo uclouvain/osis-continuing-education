@@ -163,6 +163,8 @@
                                     <span class="label label-info show">{% trans admission.state %}</span>
                                 {% elif admission.is_draft %}
                                     <span class="label label-default show">{% trans admission.state %}</span>
+                                {% elif admission.is_cancelled %}
+                                    <span class="label label-warning show">{% trans admission.state %}</span>
                                 {% endif %}
                             </td>
                         </tr>

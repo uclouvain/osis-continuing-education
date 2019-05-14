@@ -165,6 +165,8 @@
                                     <span class="label label-success show">{% trans admission.state %}</span>
                                 {% elif admission.is_registration_submitted %}
                                     <span class="label label-info show">{% trans admission.state %}</span>
+                                {% elif admission.is_cancelled %}
+                                    <span class="label label-warning show">{% trans admission.state %}</span>
                                 {% endif %}
                             </td>
                             <td style="vertical-align: middle;">
