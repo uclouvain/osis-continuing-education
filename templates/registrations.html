@@ -116,10 +116,10 @@
                             <th class="searchable">{% trans 'Email' %}</th>
                             <th class="searchable">{% trans 'Formation' %}</th>
                             <th class="searchable">{% trans 'Faculty' %}</th>
-                            <th class="searchable">{% trans 'Registered' %}</th>
-                            <th class="searchable">{% trans 'Paid' %}</th>
                             <th class="searchable">{% trans 'State' %}</th>
                             <th class="searchable">{% trans 'Received file' %}</th>
+                            <th class="searchable">{% trans 'Paid' %}</th>
+                            <th class="searchable">{% trans 'UCLouvain registration complete' %}</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -144,20 +144,6 @@
                             <td>{{ admission.person_information.person.email | default_if_none:'-'}}</td>
                             <td>{{ admission.formation }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
-                            <td style="vertical-align: middle;">
-                            {% if admission.ucl_registration_complete %}
-                                    <span class="label label-success show">{% trans 'Yes' %}</span>
-                            {% else %}
-                                    <span class="label label-danger show">{% trans 'No' %}</span>
-                            {% endif %}
-                            </td>
-                            <td style="vertical-align: middle;">
-                            {% if admission.payment_complete %}
-                                    <span class="label label-success show">{% trans 'Yes' %}</span>
-                            {% else %}
-                                    <span class="label label-danger show">{% trans 'No' %}</span>
-                            {% endif %}
-                            </td>
                             <td style="vertical-align: middle;" class="admission-state">
                                 {% if admission.is_accepted %}
                                     <span class="label label-default show">{% trans admission.state %}</span>
@@ -171,11 +157,27 @@
                             </td>
                             <td style="vertical-align: middle;">
                                 {% if admission.registration_file_received %}
-                                    <span class="label label-success show">{% trans 'Yes' %}</span>
+                                    <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
                                 {% else %}
-                                    <span class="label label-danger show">{% trans 'No' %}</span>
+                                    <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
                                 {% endif %}
                             </td>
+                            <td style="vertical-align: middle;">
+                            {% if admission.payment_complete %}
+                                    <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
+                            {% else %}
+                                    <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
+                            {% endif %}
+                            </td>
+                            <td style="vertical-align: middle;">
+                            {% if admission.ucl_registration_complete %}
+                                    <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
+                            {% else %}
+                                    <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
+                            {% endif %}
+                            </td>
+
+
                         </tr>
                     {% endfor %}
                 </table>
