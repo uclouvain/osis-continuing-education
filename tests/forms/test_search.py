@@ -54,7 +54,6 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 from reference.tests.factories.country import CountryFactory
 
 COUNTRY_NAME_WITHOUT_ACCENT = 'Belgique'
-
 COUNTRY_NAME_WITH_ACCENT = 'Algérie'
 
 
