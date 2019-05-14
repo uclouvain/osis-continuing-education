@@ -131,7 +131,7 @@ def search_admissions_with_free_text(free_text, qs):
         Q(formation__education_group__educationgroupyear__acronym__icontains=free_text) |
         Q(formation__education_group__educationgroupyear__title__icontains=free_text) |
         Q(address__country__name__icontains=free_text_unaccent) |
-        Q(address__country__name__icontains=free_text)|
+        Q(address__country__name__icontains=free_text) |
         Q(address__city__icontains=free_text_unaccent) |
         Q(address__city__icontains=free_text)
     )
