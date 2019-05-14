@@ -106,8 +106,6 @@ def admission_detail(request, admission_id):
 
     version_list = _get_versions(admission)
 
-    version_list = _get_versions(admission)
-
     if request.method == 'POST' and request.FILES:
         return _upload_file(request, admission)
 
