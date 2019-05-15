@@ -71,7 +71,7 @@ def archive_procedure(request, admission_id):
     if admission.is_draft():
         raise PermissionDenied
     redirection = request.META.get('HTTP_REFERER')
-    admission = _switch_archived_state(request, admission_id)
+    admission = _switch_archived_state(request.user, admission_id)
     _set_success_message(request, False, admission.archived)
     return HttpResponseRedirect(redirection)
 
@@ -99,7 +99,7 @@ def change_archive_status(new_archive_status, request):
 
 def _mark_folders_as_archived(request, selected_admissions_id, new_archive_status):
     for admission_id in selected_admissions_id:
-        _mark_as_archived(request, admission_id, new_archive_status)
+        _mark_as_archived(request.user, admission_id, new_archive_status)
     _set_success_message(request, len(selected_admissions_id) > 1, new_archive_status)
 
 
@@ -108,19 +108,18 @@ def _set_success_message(request, is_plural, admission_archived=True):
         _('Files are now') if is_plural else _('File is now'),
         _('archived') if admission_archived else _('unarchived')
     )
-
     display_success_messages(request, success_msg)
 
 
-def _mark_as_archived(request, admission_id, archive_state=True):
+def _mark_as_archived(user, admission_id, archive_state=True):
     admission = get_object_or_404(Admission, pk=admission_id)
-    _set_archived_state(request, admission, archive_state)
+    _set_archived_state(user, admission, archive_state)
 
 
-def _set_archived_state(request, admission, archived_state):
+def _set_archived_state(user, admission, archived_state):
     if admission:
         admission.archived = archived_state
-        _save_and_create_revision(admission, request.user, FILE_ARCHIVED if admission.archived else FILE_UNARCHIVED)
+        _save_and_create_revision(admission, user, FILE_ARCHIVED if admission.archived else FILE_UNARCHIVED)
 
 
 def _set_error_message(request):
@@ -128,9 +127,9 @@ def _set_error_message(request):
     display_error_messages(request, error_msg)
 
 
-def _switch_archived_state(request, admission_id):
+def _switch_archived_state(user, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
-    _set_archived_state(request, admission, not admission.archived)
+    _set_archived_state(user, admission, not admission.archived)
     return admission
 
 

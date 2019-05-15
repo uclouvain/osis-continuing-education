@@ -125,6 +125,7 @@ def admission_detail(request, admission_id):
         request.POST or None,
         instance=admission,
     )
+
     admission._original_state = admission.state
     if adm_form.is_valid():
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
@@ -153,7 +154,9 @@ def _change_state(request, forms, accepted_states, admission):
     adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(request, forms, admission, new_state)
+        _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
+                                        cancel_adm_form)
+        return _new_state_management(request, adm_form, admission, new_state)
 
 
 @login_required
@@ -246,16 +249,13 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(request, forms, admission, new_state):
-    adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form = forms
-    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
-                                    cancel_adm_form)
+def _new_state_management(request, adm_form, admission, new_state):
     message = _get_valid_state_change_message(admission)
     if new_state != VALIDATED:
         _save_and_create_revision(adm_form, request.user, message)
+        send_state_changed_email(adm_form.instance, request.user)
     else:
-        _validate_admission(request, adm_form, message)
-    send_state_changed_email(adm_form.instance, request.user)
+        _validate_admission(request, adm_form)
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
@@ -271,9 +271,9 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
         cancel_adm_form.save()
 
 
-def _validate_admission(request, adm_form, message):
+def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
-        _save_and_create_revision(adm_form, request.user, message)
+        send_state_changed_email(adm_form.instance, request.user)
     else:
         display_error_messages(
             request,
