@@ -32,7 +32,7 @@ from continuing_education.api.serializers.continuing_education_training import C
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.views.common import _update_and_create_revision
+from continuing_education.views.common import update_and_create_revision
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
@@ -157,7 +157,7 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
         instance._original_state = instance.state
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
-            _update_and_create_revision(self.context.get('request').user, instance)
+            update_and_create_revision(self.context.get('request').user, instance)
             send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
 

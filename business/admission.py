@@ -33,8 +33,8 @@ from base.models.enums.entity_type import FACULTY
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
-from continuing_education.views.common import _save_and_create_revision, MAIL_MESSAGE, MAIL, \
-    _get_valid_state_change_message, _get_messages
+from continuing_education.views.common import save_and_create_revision, MAIL_MESSAGE, MAIL, \
+    _get_valid_state_change_message, get_messages
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -89,12 +89,12 @@ def send_state_changed_email(admission, connected_user=None):
         connected_user=connected_user
     )
     state_message = _get_valid_state_change_message(admission)
-    _save_and_create_revision(admission, connected_user, _get_messages(state_message))
+    save_and_create_revision(admission, connected_user, get_messages(state_message))
     MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
-    _save_and_create_revision(
+    save_and_create_revision(
         admission,
         connected_user,
-        _get_messages(MAIL)
+        get_messages(MAIL)
     )
 
 
@@ -132,10 +132,10 @@ def send_submission_email_to_admission_managers(admission, connected_user):
     MAIL['text'] = MAIL_MESSAGE % {
         'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]),
     }
-    _save_and_create_revision(
+    save_and_create_revision(
         admission,
         connected_user,
-        _get_messages(MAIL) if receivers else ''
+        get_messages(MAIL) if receivers else ''
     )
 
 
@@ -182,10 +182,10 @@ def send_submission_email_to_participant(admission, connected_user):
         connected_user=connected_user
     )
     MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email}
-    _save_and_create_revision(
+    save_and_create_revision(
         admission,
         connected_user,
-        _get_messages(MAIL)
+        get_messages(MAIL)
     )
 
 
@@ -220,10 +220,10 @@ def send_invoice_uploaded_email(admission):
         ],
     )
     MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
-    _save_and_create_revision(
+    save_and_create_revision(
         admission,
         None,
-        _get_messages(MAIL)
+        get_messages(MAIL)
     )
 
 

@@ -35,8 +35,8 @@ from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager, is_continuing_education_training_manager
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import _save_and_create_revision, REGISTRATION_VALIDATED, ADMISSION_ACCEPTED, \
-    _get_messages
+from continuing_education.views.common import save_and_create_revision, REGISTRATION_VALIDATED, ADMISSION_ACCEPTED, \
+    get_messages
 
 
 @login_required
@@ -105,7 +105,7 @@ def _validate_registrations_list(request, registrations_ids_list):
 
     registrations_list.update(state=admission_state_choices.VALIDATED)
     for registration in registrations_list:
-        _save_and_create_revision(registration, request.user, _get_messages(REGISTRATION_VALIDATED))
+        save_and_create_revision(registration, request.user, get_messages(REGISTRATION_VALIDATED))
 
 
 @login_required
@@ -162,4 +162,4 @@ def _accept_admissions_list(request, registrations_ids_list):
 
     admissions_list.update(state=admission_state_choices.ACCEPTED, condition_of_acceptance='')
     for admission in admissions_list:
-        _save_and_create_revision(admission, request.user, _get_messages(ADMISSION_ACCEPTED))
+        save_and_create_revision(admission, request.user, get_messages(ADMISSION_ACCEPTED))

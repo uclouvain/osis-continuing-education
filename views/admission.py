@@ -52,8 +52,8 @@ from continuing_education.models.enums import admission_state_choices, file_cate
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
 from continuing_education.models.file import AdmissionFile
-from continuing_education.views.common import display_errors, _save_and_create_revision, _get_versions, \
-    ADMISSION_CREATION, _get_messages
+from continuing_education.views.common import display_errors, save_and_create_revision, _get_versions, \
+    ADMISSION_CREATION, get_messages
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -228,7 +228,7 @@ def admission_form(request, admission_id=None):
         if admission_id:
             admission.save()
         else:
-            _save_and_create_revision(admission, request.user, _get_messages(ADMISSION_CREATION))
+            save_and_create_revision(admission, request.user, get_messages(ADMISSION_CREATION))
         if admission.state == DRAFT:
             return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
