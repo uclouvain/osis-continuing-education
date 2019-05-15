@@ -28,17 +28,17 @@ import ast
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.education_group import EducationGroup
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
+from base.views.common import page_not_found
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
-from continuing_education.business.perms import is_not_student_worker
-from base.views.common import page_not_found
 
 
 @login_required

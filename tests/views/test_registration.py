@@ -31,7 +31,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import reverse
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
@@ -209,7 +209,7 @@ class RegistrationStateChangedTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("Continuing education managers only are allowed to validate a registration")),
+            gettext(_("Continuing education managers only are allowed to validate a registration")),
             str(messages_list[0])
         )
 

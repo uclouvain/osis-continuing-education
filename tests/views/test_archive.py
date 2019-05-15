@@ -30,7 +30,7 @@ from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -90,17 +90,18 @@ class ViewArchiveTestCase(TestCase):
         )
 
     def test_switch_archived_state(self):
-        admision_changed = _switch_archived_state(self.admission_archived.id)
+        admision_changed = _switch_archived_state(self.manager.user, self.admission_archived.id)
         self.assertFalse(admision_changed.archived)
-        admision_changed = _switch_archived_state(self.registration_1_unarchived.id)
+        admision_changed = _switch_archived_state(self.manager.user, self.registration_1_unarchived.id)
         self.assertTrue(admision_changed.archived)
 
     def test_error_message_no_admission_selected(self):
-        response = self.client.post(reverse('archives_procedure'),
-                                    data={},
-                                    follow=True,
-                                    HTTP_REFERER=reverse('admission', args=[])
-                                    )
+        response = self.client.post(
+            reverse('archives_procedure'),
+            data={},
+            follow=True,
+            HTTP_REFERER=reverse('admission', args=[])
+        )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]
@@ -124,11 +125,11 @@ class ViewArchiveTestCase(TestCase):
         self.assertEqual(msg[0], _('Please select at least one file to archive'))
 
     def test_mark_as_archived(self):
-        _mark_as_archived(self.registration_1_unarchived.id)
+        _mark_as_archived(self.manager.user, self.registration_1_unarchived.id)
         ad = Admission.objects.get(id=self.registration_1_unarchived.id)
         self.assertTrue(ad.archived)
 
-        _mark_as_archived(self.admission_archived.id)
+        _mark_as_archived(self.manager.user, self.admission_archived.id)
         ad = Admission.objects.get(id=self.admission_archived.id)
         self.assertTrue(ad.archived)
 

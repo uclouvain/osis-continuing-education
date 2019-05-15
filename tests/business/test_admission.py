@@ -118,7 +118,6 @@ class TestAdmission(TestCase):
 
         self.assertEqual(_get_managers_mails(admission.formation), expected_mails)
 
-
     @override_settings(LANGUAGES=[('fr-be', 'French'), ('en', 'English'), ], LANGUAGE_CODE='fr-be')
     def test_check_address_required_field_for_participant(self):
         an_incomplete_address = AddressFactory(

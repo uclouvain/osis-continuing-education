@@ -27,18 +27,18 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.person import Person
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list, display_errors
-from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required

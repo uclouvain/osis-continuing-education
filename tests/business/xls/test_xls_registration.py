@@ -24,7 +24,7 @@
 #
 ##############################################################################
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.enums import entity_type
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory

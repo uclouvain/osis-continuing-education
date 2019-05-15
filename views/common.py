@@ -23,9 +23,50 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import operator
+from functools import reduce
+
+import reversion
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.utils.translation import ugettext_lazy as _
+from django.db.models import Prefetch, Q
+from django.utils.translation import gettext_lazy as _
+from reversion.models import Version
+
+from continuing_education.models.admission import Admission
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, VALIDATED, REGISTRATION_SUBMITTED, \
+    SUBMITTED
+
+UCL_REGISTRATION_COMPLETE = {'icon': 'fas fa-university', 'text': _('UCLouvain registration complete')}
+REGISTRATION_FILE_RECEIVED = {'icon': 'fas fa-receipt', 'text': _('Registration file received')}
+FILE_ARCHIVED = {'icon': 'fas fa-folder-plus', 'text': _('File archived')}
+FILE_UNARCHIVED = {'icon': 'fas fa-folder-minus', 'text': _('File unarchived')}
+ADMISSION_CREATION = {'icon': 'fas fa-plus-circle', 'text': _('Creation of the admission')}
+REGISTRATION_VALIDATED = {'icon': 'fas fa-check-double', 'text': _('Registration validated')}
+ADMISSION_ACCEPTED = {'icon': 'fas fa-check', 'text': _('Admission accepted')}
+SUBMITTED_REGISTRATION = {'icon': 'far fa-paper-plane', 'text': _('Registration submitted')}
+SUBMITTED_ADMISSION = {'icon': 'far fa-paper-plane', 'text': _('Admission submitted')}
+
+STATE_CHANGED = {'icon': 'fas fa-exchange-alt', 'text': ''}
+STATE_CHANGED_MESSAGE = _('State : %(old_state)s ► %(new_state)s')
+
+MAIL = {'icon': 'far fa-envelope-open', 'text': ''}
+MAIL_MESSAGE = _('Mail sent to %(receiver)s')
+
+VERSION_MESSAGES = [
+    UCL_REGISTRATION_COMPLETE['text'],
+    REGISTRATION_FILE_RECEIVED['text'],
+    FILE_ARCHIVED['text'],
+    FILE_UNARCHIVED['text'],
+    ADMISSION_CREATION['text'],
+    REGISTRATION_VALIDATED['text'],
+    ADMISSION_ACCEPTED['text'],
+    SUBMITTED_REGISTRATION['text'],
+    SUBMITTED_ADMISSION['text'],
+    _('Mail sent to '),
+    ' ► ',
+]
 
 
 def display_errors(request, errors):
@@ -47,3 +88,70 @@ def get_object_list(request, objects):
     except EmptyPage:
         object_list = paginator.page(paginator.num_pages)
     return object_list
+
+
+def save_and_create_revision(user, message, admission=None):
+    with reversion.create_revision():
+        existing_message = reversion.get_comment()
+        if admission:
+            admission.save()
+        reversion.set_user(user)
+        reversion.set_comment(
+            (existing_message + " <br> &nbsp; " if existing_message else '') + message if message
+            else existing_message
+        )
+
+
+def _get_icon(message):
+    return '<i class="{type}"></i> '.format(type=message['icon'])
+
+
+def get_revision_messages(message, msgs=None):
+    return ("<br>" if msgs else '') + _get_icon(message) + str(message['text'])
+
+
+def get_appropriate_revision_message(form):
+    msgs = []
+    if 'ucl_registration_complete' in form.changed_data and form.cleaned_data['ucl_registration_complete']:
+        msgs.append(get_revision_messages(UCL_REGISTRATION_COMPLETE, msgs))
+    if 'registration_file_received' in form.changed_data and form.cleaned_data['registration_file_received']:
+        msgs.append(get_revision_messages(REGISTRATION_FILE_RECEIVED, msgs))
+    return ' '.join(msgs) if msgs else ''
+
+
+def get_versions(admission):
+    query = reduce(operator.or_, (Q(revision__comment__contains=item) for item in VERSION_MESSAGES))
+    reversions = Version.objects.filter(
+        content_type=ContentType.objects.get_for_model(Admission),
+        object_id=admission.id,
+    ).filter(query).select_related(
+        "revision",
+        "revision__user",
+    ).prefetch_related(
+        Prefetch(
+            "revision__user__person",
+            to_attr="author"
+        )
+
+    ).order_by(
+        "-revision__date_created"
+    )
+    return reversions
+
+
+def get_valid_state_change_message(instance):
+    if instance.state == ACCEPTED:
+        message = ADMISSION_ACCEPTED
+    elif instance.state == VALIDATED:
+        message = REGISTRATION_VALIDATED
+    elif instance.state == REGISTRATION_SUBMITTED:
+        message = SUBMITTED_REGISTRATION
+    elif instance.state == SUBMITTED:
+        message = SUBMITTED_ADMISSION
+    else:
+        STATE_CHANGED['text'] = STATE_CHANGED_MESSAGE % {
+            'old_state': _(instance._original_state),
+            'new_state': _(instance.state)
+        }
+        message = STATE_CHANGED
+    return message

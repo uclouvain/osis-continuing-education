@@ -1,11 +1,12 @@
+import unicodedata
 from datetime import datetime
 from operator import itemgetter
 
 from django import forms
 from django.db.models import Q
 from django.forms import ModelChoiceField
+from django.utils.translation import gettext_lazy as _, pgettext
 from django.utils.translation import pgettext_lazy
-from django.utils.translation import ugettext_lazy as _, pgettext
 
 from base.business.entity import get_entities_ids
 from base.models import entity_version
@@ -22,7 +23,6 @@ from continuing_education.models.enums.admission_state_choices import REGISTRATI
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, CANCELLED
 from continuing_education.models.person_training import PersonTraining
-import unicodedata
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT, CANCELLED]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED, CANCELLED]

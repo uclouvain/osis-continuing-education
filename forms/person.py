@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.person import Person
 from continuing_education.business.admission import disable_existing_fields

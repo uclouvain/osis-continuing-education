@@ -28,7 +28,6 @@ import random
 from unittest import mock
 from unittest.mock import patch
 
-import reversion
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
@@ -37,7 +36,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
@@ -56,6 +55,8 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
+    get_revision_messages
 
 FILE_CONTENT = "test-content"
 
@@ -237,25 +238,17 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['admissions'].object_list[0], self.admission)
 
-    def test_versions(self):
-        url = reverse('admission_detail', kwargs={'admission_id': self.admission.pk})
-        response = self.client.get(url)
-        self.assertEqual(len(response.context["version"]), 0)
+    def test_get_versions(self):
+        version_list = get_versions(self.admission)
 
-        with reversion.create_revision():
-            self.admission.current_occupation = "curr_occ"
-            self.admission.save()
-
-        response = self.client.get(url)
-        self.assertEqual(len(response.context["version"]), 0)
-
-        with reversion.create_revision():
-            self.admission.state = ACCEPTED
-            self.admission.save()
-            reversion.set_comment('Changed : "state"')
-
-        response = self.client.get(url)
-        self.assertEqual(len(response.context["version"]), 1)
+        self.assertEqual(len(version_list), 0)
+        i = 1
+        for msg in VERSION_MESSAGES:
+            save_and_create_revision(self.training_manager.user, get_revision_messages({'icon': '', 'text': msg}),
+                                     self.admission)
+            version_list = get_versions(self.admission)
+            self.assertEqual(len(version_list), i)
+            i += 1
 
 
 class InvoiceNotificationEmailTestCase(TestCase):
@@ -295,7 +288,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("A notification email has been sent to the participant")),
+            gettext(_("A notification email has been sent to the participant")),
             messages_list
         )
         self.assertTrue(mock_send_mail.called)
@@ -311,11 +304,11 @@ class InvoiceNotificationEmailTestCase(TestCase):
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("There is no invoice for this admission, notification email not sent")),
+            gettext(_("There is no invoice for this admission, notification email not sent")),
             messages_list
         )
         self.assertNotIn(
-            ugettext(_("A notification email has been sent to the participant")),
+            gettext(_("A notification email has been sent to the participant")),
             messages_list
         )
         self.assertFalse(mock_send_mail.called)

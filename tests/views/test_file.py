@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import gettext, gettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -62,7 +62,7 @@ class UploadFileTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("The document is uploaded correctly")),
+            gettext(_("The document is uploaded correctly")),
             str(messages_list[0])
         )
 
@@ -85,11 +85,11 @@ class UploadFileTestCase(TestCase):
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("The document is uploaded correctly")),
+            gettext(_("The document is uploaded correctly")),
             messages_list
         )
         self.assertIn(
-            ugettext(_("A notification email has been sent to the participant")),
+            gettext(_("A notification email has been sent to the participant")),
             messages_list
         )
         self.assertTrue(mock_send_mail.called)
@@ -110,7 +110,7 @@ class UploadFileTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("A problem occured : the document is not uploaded")),
+            gettext(_("A problem occured : the document is not uploaded")),
             str(messages_list[0])
         )
 
@@ -158,7 +158,7 @@ class UploadFileTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("The status of the admission must be Accepted to upload an invoice.")),
+            gettext(_("The status of the admission must be Accepted to upload an invoice.")),
             str(messages_list[0])
         )
 
@@ -196,7 +196,7 @@ class DeleteFileTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("File correctly deleted")),
+            gettext(_("File correctly deleted")),
             str(messages_list[0])
         )
 
@@ -211,6 +211,6 @@ class DeleteFileTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("A problem occured during delete")),
+            gettext(_("A problem occured during delete")),
             str(messages_list[0])
         )

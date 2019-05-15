@@ -1,5 +1,5 @@
-from django.utils.translation import ugettext_lazy as _
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 
 def set_participant_required_fields(fields, list_required_fields_for_participant):

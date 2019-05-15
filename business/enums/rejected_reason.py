@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 COURSE_NOT_ADAPTED_TO_PROGRAM = _('Your course is not adapted to the program of this training')
 DONT_MEET_ADMISSION_REQUIREMENTS = _('You do not meet the admission requirements')
