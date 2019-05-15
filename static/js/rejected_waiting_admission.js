@@ -18,7 +18,7 @@ function disabledEnabledOtherReasonInputText(elementIdReason, otherReasonId){
 }
 
 function otherSelected(elementIdReason){
-    var selected_element = document.getElementById(elementIdReason).value;
+    let selected_element = document.getElementById(elementIdReason).value;
     return selected_element === "Other" || selected_element === "Autre";
 }
 
