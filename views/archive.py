@@ -28,7 +28,7 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages

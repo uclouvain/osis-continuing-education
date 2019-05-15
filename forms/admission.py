@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, ChoiceField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \

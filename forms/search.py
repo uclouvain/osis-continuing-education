@@ -5,8 +5,8 @@ from operator import itemgetter
 from django import forms
 from django.db.models import Q
 from django.forms import ModelChoiceField
+from django.utils.translation import gettext_lazy as _, pgettext
 from django.utils.translation import pgettext_lazy
-from django.utils.translation import ugettext_lazy as _, pgettext
 
 from base.business.entity import get_entities_ids
 from base.models import entity_version

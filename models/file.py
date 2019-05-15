@@ -29,7 +29,7 @@ from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
 from django.utils.text import get_valid_filename
-from django.utils.translation import ugettext_lazy as _, pgettext
+from django.utils.translation import gettext_lazy as _, pgettext
 
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException

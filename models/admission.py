@@ -30,7 +30,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Manager, Model
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
 from continuing_education.models.enums import admission_state_choices, enums, groups

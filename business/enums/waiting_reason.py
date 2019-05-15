@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 PROGRAM_COMPLETE_PART1 = _('The programme is already complete')
 PROGRAM_COMPLETE_PART2 = _('We will contact you again for the next edition')

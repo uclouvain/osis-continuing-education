@@ -36,7 +36,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
@@ -288,7 +288,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("A notification email has been sent to the participant")),
+            gettext(_("A notification email has been sent to the participant")),
             messages_list
         )
         self.assertTrue(mock_send_mail.called)
@@ -304,11 +304,11 @@ class InvoiceNotificationEmailTestCase(TestCase):
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("There is no invoice for this admission, notification email not sent")),
+            gettext(_("There is no invoice for this admission, notification email not sent")),
             messages_list
         )
         self.assertNotIn(
-            ugettext(_("A notification email has been sent to the participant")),
+            gettext(_("A notification email has been sent to the participant")),
             messages_list
         )
         self.assertFalse(mock_send_mail.called)

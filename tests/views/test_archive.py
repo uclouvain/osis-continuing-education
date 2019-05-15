@@ -30,7 +30,7 @@ from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory

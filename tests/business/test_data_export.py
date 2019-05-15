@@ -25,20 +25,20 @@
 ##############################################################################
 import json
 
-from django.test import TestCase, RequestFactory
-from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
 from django.shortcuts import reverse
+from django.test import TestCase, RequestFactory
+from django.utils.translation import gettext_lazy as _
 
-from base.tests.factories.person import PersonFactory
-from continuing_education.models.enums import admission_state_choices
-from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
-from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.business.data_export import create_json, APPLICATION_JSON_CONTENT_TYPE
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonFactory
+from continuing_education.business.data_export import create_json, APPLICATION_JSON_CONTENT_TYPE
+from continuing_education.models.enums import admission_state_choices
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
 class DataExportTestCase(TestCase):

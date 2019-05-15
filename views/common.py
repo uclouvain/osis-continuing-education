@@ -31,7 +31,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Prefetch, Q
-from django.utils.translation import gettext_lazy as _, ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from reversion.models import Version
 
 from continuing_education.models.admission import Admission
