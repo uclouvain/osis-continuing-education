@@ -43,12 +43,14 @@ REGISTRATION_FILE_RECEIVED = {'icon': 'fas fa-receipt', 'text': _('Registration 
 FILE_ARCHIVED = {'icon': 'fas fa-folder-plus', 'text': _('File archived')}
 FILE_UNARCHIVED = {'icon': 'fas fa-folder-minus', 'text': _('File unarchived')}
 ADMISSION_CREATION = {'icon': 'fas fa-plus-circle', 'text': _('Creation of the admission')}
-STATE_CHANGED = {'icon': 'fas fa-exchange-alt', 'text': ''}
-STATE_CHANGED_MESSAGE = _('State : %(old_state)s ► %(new_state)s')
 REGISTRATION_VALIDATED = {'icon': 'fas fa-check-double', 'text': _('Registration validated')}
 ADMISSION_ACCEPTED = {'icon': 'fas fa-check', 'text': _('Admission accepted')}
 SUBMITTED_REGISTRATION = {'icon': 'far fa-paper-plane', 'text': _('Registration submitted')}
 SUBMITTED_ADMISSION = {'icon': 'far fa-paper-plane', 'text': _('Admission submitted')}
+
+STATE_CHANGED = {'icon': 'fas fa-exchange-alt', 'text': ''}
+STATE_CHANGED_MESSAGE = _('State : %(old_state)s ► %(new_state)s')
+
 MAIL = {'icon': 'far fa-envelope-open', 'text': ''}
 MAIL_MESSAGE = _('Mail sent to %(receiver)s')
 
