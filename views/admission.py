@@ -53,7 +53,7 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, _save_and_create_revision, _get_versions, \
-    ADMISSION_CREATION, _get_valid_state_change_message
+    ADMISSION_CREATION
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -250,9 +250,7 @@ def admission_form(request, admission_id=None):
 
 
 def _new_state_management(request, adm_form, admission, new_state):
-    message = _get_valid_state_change_message(admission)
     if new_state != VALIDATED:
-        _save_and_create_revision(adm_form, request.user, message)
         send_state_changed_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)

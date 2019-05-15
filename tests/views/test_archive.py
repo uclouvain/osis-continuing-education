@@ -96,11 +96,12 @@ class ViewArchiveTestCase(TestCase):
         self.assertTrue(admision_changed.archived)
 
     def test_error_message_no_admission_selected(self):
-        response = self.client.post(reverse('archives_procedure'),
-                                    data={},
-                                    follow=True,
-                                    HTTP_REFERER=reverse('admission', args=[])
-                                    )
+        response = self.client.post(
+            reverse('archives_procedure'),
+            data={},
+            follow=True,
+            HTTP_REFERER=reverse('admission', args=[])
+        )
         self.assertEqual(response.status_code, 200)
 
         msg = [m.message for m in get_messages(response.wsgi_request)]

@@ -33,7 +33,8 @@ from base.models.enums.entity_type import FACULTY
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
-from continuing_education.views.common import _save_and_create_revision, MAIL_MESSAGE, MAIL
+from continuing_education.views.common import _save_and_create_revision, MAIL_MESSAGE, MAIL, \
+    _get_valid_state_change_message
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -87,6 +88,7 @@ def send_state_changed_email(admission, connected_user=None):
         ],
         connected_user=connected_user
     )
+    _save_and_create_revision(admission, connected_user, _get_valid_state_change_message(admission))
     MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
     _save_and_create_revision(
         admission,

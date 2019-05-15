@@ -64,7 +64,7 @@ VERSION_MESSAGES = [
     SUBMITTED_REGISTRATION['text'],
     SUBMITTED_ADMISSION['text'],
     _('Mail sent to '),
-    ' => ',
+    ' ► ',
 ]
 
 
@@ -93,7 +93,7 @@ def _save_and_create_revision(admission, user, message):
     if type(message) == str:
         new_message = message
     else:
-        new_message = '<i class="{type}"></i> '.format(type=message['icon']) + str(message['text']) if message else ''
+        new_message = _get_icon(message) + str(message['text']) if message else ''
     with reversion.create_revision():
         existing_message = reversion.get_comment()
         admission.save()
@@ -104,21 +104,29 @@ def _save_and_create_revision(admission, user, message):
         )
 
 
+def _update_and_create_revision(user, instance):
+    message = _get_valid_state_change_message(instance)
+    new_message = _get_icon(message) + str(message['text'])
+    with reversion.create_revision():
+        reversion.set_user(user)
+        reversion.set_comment(mark_safe(new_message))
+
+
 def _get_icon(message):
     return '<i class="{type}"></i> '.format(type=message['icon'])
 
 
-def _get_messages(messages, message):
-    return ("<br>" if messages else '') + _get_icon(message) + str(message['text'])
+def _get_messages(msgs, message):
+    return ("<br>" if msgs else '') + _get_icon(message) + str(message['text'])
 
 
 def _get_appropriate_revision_message(form):
-    messages = []
+    msgs = []
     if 'ucl_registration_complete' in form.changed_data and form.cleaned_data['ucl_registration_complete']:
-        messages.append(_get_messages(messages, UCL_REGISTRATION_COMPLETE))
+        msgs.append(_get_messages(msgs, UCL_REGISTRATION_COMPLETE))
     if 'registration_file_received' in form.changed_data and form.cleaned_data['registration_file_received']:
-        messages.append(_get_messages(messages, REGISTRATION_FILE_RECEIVED))
-    message = ' '.join(messages) if messages else ''
+        msgs.append(_get_messages(msgs, REGISTRATION_FILE_RECEIVED))
+    message = ' '.join(msgs) if msgs else ''
     return message
 
 
@@ -158,11 +166,3 @@ def _get_valid_state_change_message(instance):
         }
         message = STATE_CHANGED
     return message
-
-
-def _update_and_create_revision(user, instance):
-    message = _get_valid_state_change_message(instance)
-    new_message = '<i class="{type}"></i> '.format(type=message['icon']) + str(message['text'])
-    with reversion.create_revision():
-        reversion.set_user(user)
-        reversion.set_comment(mark_safe(new_message))
