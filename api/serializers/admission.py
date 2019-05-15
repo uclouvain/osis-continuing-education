@@ -35,7 +35,8 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.views.common import _save_and_create_revision, ADMISSION_CREATION, _update_and_create_revision
+from continuing_education.views.common import _save_and_create_revision, ADMISSION_CREATION, \
+    _update_and_create_revision, _get_messages
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
@@ -176,5 +177,5 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         admission = Admission(**validated_data)
         admission.residence_address = admission.address
         admission.billing_address = admission.address
-        _save_and_create_revision(admission, self.context.get('request').user, ADMISSION_CREATION)
+        _save_and_create_revision(admission, self.context.get('request').user, _get_messages(ADMISSION_CREATION))
         return admission

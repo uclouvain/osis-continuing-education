@@ -34,7 +34,7 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import _save_and_create_revision, MAIL_MESSAGE, MAIL, \
-    _get_valid_state_change_message
+    _get_valid_state_change_message, _get_messages
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -88,12 +88,13 @@ def send_state_changed_email(admission, connected_user=None):
         ],
         connected_user=connected_user
     )
-    _save_and_create_revision(admission, connected_user, _get_valid_state_change_message(admission))
+    state_message = _get_valid_state_change_message(admission)
+    _save_and_create_revision(admission, connected_user, _get_messages(state_message))
     MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
     _save_and_create_revision(
         admission,
         connected_user,
-        MAIL
+        _get_messages(MAIL)
     )
 
 
@@ -134,7 +135,7 @@ def send_submission_email_to_admission_managers(admission, connected_user):
     _save_and_create_revision(
         admission,
         connected_user,
-        MAIL if receivers else ''
+        _get_messages(MAIL) if receivers else ''
     )
 
 
@@ -184,7 +185,7 @@ def send_submission_email_to_participant(admission, connected_user):
     _save_and_create_revision(
         admission,
         connected_user,
-        MAIL
+        _get_messages(MAIL)
     )
 
 
@@ -222,7 +223,7 @@ def send_invoice_uploaded_email(admission):
     _save_and_create_revision(
         admission,
         None,
-        MAIL
+        _get_messages(MAIL)
     )
 
 

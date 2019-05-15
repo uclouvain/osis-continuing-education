@@ -90,16 +90,12 @@ def get_object_list(request, objects):
 
 
 def _save_and_create_revision(admission, user, message):
-    if type(message) == str:
-        new_message = message
-    else:
-        new_message = _get_icon(message) + str(message['text']) if message else ''
     with reversion.create_revision():
         existing_message = reversion.get_comment()
         admission.save()
         reversion.set_user(user)
         reversion.set_comment(
-            (existing_message + " <br> &nbsp; " if existing_message else '') + new_message if new_message
+            (existing_message + " <br> &nbsp; " if existing_message else '') + message if message
             else existing_message
         )
 
@@ -116,18 +112,17 @@ def _get_icon(message):
     return '<i class="{type}"></i> '.format(type=message['icon'])
 
 
-def _get_messages(msgs, message):
+def _get_messages(message, msgs=None):
     return ("<br>" if msgs else '') + _get_icon(message) + str(message['text'])
 
 
 def _get_appropriate_revision_message(form):
     msgs = []
     if 'ucl_registration_complete' in form.changed_data and form.cleaned_data['ucl_registration_complete']:
-        msgs.append(_get_messages(msgs, UCL_REGISTRATION_COMPLETE))
+        msgs.append(_get_messages(UCL_REGISTRATION_COMPLETE, msgs))
     if 'registration_file_received' in form.changed_data and form.cleaned_data['registration_file_received']:
-        msgs.append(_get_messages(msgs, REGISTRATION_FILE_RECEIVED))
-    message = ' '.join(msgs) if msgs else ''
-    return message
+        msgs.append(_get_messages(REGISTRATION_FILE_RECEIVED, msgs))
+    return ' '.join(msgs) if msgs else ''
 
 
 def _get_versions(admission):
