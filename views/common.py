@@ -45,9 +45,9 @@ FILE_ARCHIVED = {'icon': 'fas fa-folder-plus', 'text': _('File archived')}
 FILE_UNARCHIVED = {'icon': 'fas fa-folder-minus', 'text': _('File unarchived')}
 ADMISSION_CREATION = {'icon': 'fas fa-plus-circle', 'text': _('Creation of the admission')}
 STATE_CHANGED = {'icon': 'fas fa-exchange-alt', 'text': ''}
-STATE_CHANGED_MESSAGE = _('State : %(old_state)s => %(new_state)s')
+STATE_CHANGED_MESSAGE = _('State : %(old_state)s ► %(new_state)s')
 REGISTRATION_VALIDATED = {'icon': 'fas fa-check-double', 'text': _('Registration validated')}
-ADMISSION_ACCEPTED = {'icon': 'fas fa-check', 'text': _(' Admission accepted')}
+ADMISSION_ACCEPTED = {'icon': 'fas fa-check', 'text': _('Admission accepted')}
 SUBMITTED_REGISTRATION = {'icon': 'far fa-paper-plane', 'text': _('Registration submitted')}
 SUBMITTED_ADMISSION = {'icon': 'far fa-paper-plane', 'text': _('Admission submitted')}
 MAIL = {'icon': 'far fa-envelope-open', 'text': ''}
@@ -141,19 +141,20 @@ def _get_versions(admission):
 
 def _get_valid_state_change_message(instance):
     if instance.state == ACCEPTED:
-        return ADMISSION_ACCEPTED
+        message = ADMISSION_ACCEPTED
     elif instance.state == VALIDATED:
-        return REGISTRATION_VALIDATED
+        message = REGISTRATION_VALIDATED
     elif instance.state == REGISTRATION_SUBMITTED:
-        return SUBMITTED_REGISTRATION
+        message = SUBMITTED_REGISTRATION
     elif instance.state == SUBMITTED:
-        return SUBMITTED_ADMISSION
+        message = SUBMITTED_ADMISSION
     else:
         STATE_CHANGED['text'] = STATE_CHANGED_MESSAGE % {
             'old_state': _(instance._original_state),
             'new_state': _(instance.state)
         }
-        return STATE_CHANGED
+        message = STATE_CHANGED
+    return message
 
 
 def _update_and_create_revision(user, instance):
