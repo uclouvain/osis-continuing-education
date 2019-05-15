@@ -23,8 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import reversion
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from base.models.person import Person
@@ -37,7 +35,7 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.views.common import _save_and_create_revision, ADMISSION_CREATION, STATE_CHANGED
+from continuing_education.views.common import _save_and_create_revision, ADMISSION_CREATION, _update_and_create_revision
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
@@ -149,17 +147,9 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         instance._original_state = instance.state
         update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
         if instance.state != instance._original_state:
-            self._update_and_create_revision(instance)
+            _update_and_create_revision(self.context.get('request').user, instance)
             send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
-
-    def _update_and_create_revision(self, instance):
-        with reversion.create_revision():
-            reversion.set_user(self.context.get('request').user)
-            reversion.set_comment(STATE_CHANGED % {
-                'old_state': _(instance._original_state),
-                'new_state': _(instance.state)
-            })
 
     def update_field(self, field, validated_data, instance):
         if field in validated_data:
@@ -186,5 +176,5 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         admission = Admission(**validated_data)
         admission.residence_address = admission.address
         admission.billing_address = admission.address
-        _save_and_create_revision(admission, self.context.get('request'), ADMISSION_CREATION)
+        _save_and_create_revision(admission, self.context.get('request').user, ADMISSION_CREATION)
         return admission

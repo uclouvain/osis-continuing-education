@@ -120,7 +120,7 @@ def _mark_as_archived(request, admission_id, archive_state=True):
 def _set_archived_state(request, admission, archived_state):
     if admission:
         admission.archived = archived_state
-        _save_and_create_revision(admission, request, FILE_ARCHIVED if admission.archived else FILE_UNARCHIVED)
+        _save_and_create_revision(admission, request.user, FILE_ARCHIVED if admission.archived else FILE_UNARCHIVED)
 
 
 def _set_error_message(request):

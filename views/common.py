@@ -31,27 +31,40 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Prefetch, Q
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, ugettext_lazy as _
 from reversion.models import Version
 
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, VALIDATED, REGISTRATION_SUBMITTED, \
+    SUBMITTED
 
-UCL_REGISTRATION_COMPLETE = _('UCLouvain registration complete')
-REGISTRATION_FILE_RECEIVED = _('Registration file received')
-FILE_ARCHIVED = _('File archived')
-FILE_UNARCHIVED = _('File unarchived')
-ADMISSION_CREATION = _('Creation of the admission')
-STATE_CHANGED = _('%(old_state)s to %(new_state)s')
-REGISTRATION_VALIDATED = _('Registration validated')
+UCL_REGISTRATION_COMPLETE = {'icon': 'fas fa-university', 'text': _('UCLouvain registration complete')}
+REGISTRATION_FILE_RECEIVED = {'icon': 'fas fa-receipt', 'text': _('Registration file received')}
+FILE_ARCHIVED = {'icon': 'fas fa-folder-plus', 'text': _('File archived')}
+FILE_UNARCHIVED = {'icon': 'fas fa-folder-minus', 'text': _('File unarchived')}
+ADMISSION_CREATION = {'icon': 'fas fa-plus-circle', 'text': _('Creation of the admission')}
+STATE_CHANGED = {'icon': 'fas fa-exchange-alt', 'text': ''}
+STATE_CHANGED_MESSAGE = _('State : %(old_state)s => %(new_state)s')
+REGISTRATION_VALIDATED = {'icon': 'fas fa-check-double', 'text': _('Registration validated')}
+ADMISSION_ACCEPTED = {'icon': 'fas fa-check', 'text': _(' Admission accepted')}
+SUBMITTED_REGISTRATION = {'icon': 'far fa-paper-plane', 'text': _('Registration submitted')}
+SUBMITTED_ADMISSION = {'icon': 'far fa-paper-plane', 'text': _('Admission submitted')}
+MAIL = {'icon': 'far fa-envelope-open', 'text': ''}
+MAIL_MESSAGE = _('Mail sent to %(receiver)s')
 
 VERSION_MESSAGES = [
-    UCL_REGISTRATION_COMPLETE,
-    REGISTRATION_FILE_RECEIVED,
-    FILE_ARCHIVED,
-    FILE_UNARCHIVED,
-    ADMISSION_CREATION,
-    REGISTRATION_VALIDATED,
-    _(' to '),
+    UCL_REGISTRATION_COMPLETE['text'],
+    REGISTRATION_FILE_RECEIVED['text'],
+    FILE_ARCHIVED['text'],
+    FILE_UNARCHIVED['text'],
+    ADMISSION_CREATION['text'],
+    REGISTRATION_VALIDATED['text'],
+    ADMISSION_ACCEPTED['text'],
+    SUBMITTED_REGISTRATION['text'],
+    SUBMITTED_ADMISSION['text'],
+    _('Mail sent to '),
+    ' => ',
 ]
 
 
@@ -76,22 +89,33 @@ def get_object_list(request, objects):
     return object_list
 
 
-def _save_and_create_revision(adm_form, request, message):
+def _save_and_create_revision(admission, user, message):
+    if type(message) == str:
+        new_message = message
+    else:
+        new_message = '<i class="{type}"></i> '.format(type=message['icon']) + str(message['text']) if message else ''
     with reversion.create_revision():
-        adm_form.save()
-        reversion.set_user(request.user)
-        reversion.set_comment(message)
+        existing_message = reversion.get_comment()
+        admission.save()
+        reversion.set_user(user)
+        reversion.set_comment(
+            (existing_message + " <br> &nbsp; " if existing_message else '') + new_message if new_message
+            else existing_message
+        )
 
 
 def _get_appropriate_revision_message(form):
     messages = []
     if 'ucl_registration_complete' in form.changed_data and form.cleaned_data['ucl_registration_complete']:
-        messages.append(str(UCL_REGISTRATION_COMPLETE))
+        icon = '<i class="{type}"></i> '.format(type=UCL_REGISTRATION_COMPLETE['icon'])
+        messages.append(icon + str(UCL_REGISTRATION_COMPLETE['text']))
     if 'registration_file_received' in form.changed_data and form.cleaned_data['registration_file_received']:
-        messages.append(str(REGISTRATION_FILE_RECEIVED))
+        icon = '<i class="{type}"></i> '.format(type=REGISTRATION_FILE_RECEIVED['icon'])
+        messages.append(("<br>" if messages else '') + icon + str(REGISTRATION_FILE_RECEIVED['text']))
     if 'archived' in form.changed_data and form.cleaned_data['archived']:
-        messages.append(str(FILE_ARCHIVED))
-    message = ', '.join(messages) if messages else ''
+        icon = '<i class="{type}"></i> '.format(type=FILE_ARCHIVED['icon'])
+        messages.append(("<br>" if messages else '') + icon + str(FILE_ARCHIVED['text']))
+    message = ' '.join(messages) if messages else ''
     return message
 
 
@@ -113,3 +137,28 @@ def _get_versions(admission):
         "-revision__date_created"
     )
     return reversions
+
+
+def _get_valid_state_change_message(instance):
+    if instance.state == ACCEPTED:
+        return ADMISSION_ACCEPTED
+    elif instance.state == VALIDATED:
+        return REGISTRATION_VALIDATED
+    elif instance.state == REGISTRATION_SUBMITTED:
+        return SUBMITTED_REGISTRATION
+    elif instance.state == SUBMITTED:
+        return SUBMITTED_ADMISSION
+    else:
+        STATE_CHANGED['text'] = STATE_CHANGED_MESSAGE % {
+            'old_state': _(instance._original_state),
+            'new_state': _(instance.state)
+        }
+        return STATE_CHANGED
+
+
+def _update_and_create_revision(user, instance):
+    message = _get_valid_state_change_message(instance)
+    new_message = '<i class="{type}"></i> '.format(type=message['icon']) + str(message['text'])
+    with reversion.create_revision():
+        reversion.set_user(user)
+        reversion.set_comment(mark_safe(new_message))

@@ -52,8 +52,8 @@ from continuing_education.models.enums import admission_state_choices, file_cate
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED
 from continuing_education.models.file import AdmissionFile
-from continuing_education.views.common import display_errors, _save_and_create_revision, STATE_CHANGED, \
-    _get_versions, ADMISSION_CREATION
+from continuing_education.views.common import display_errors, _save_and_create_revision, _get_versions, \
+    ADMISSION_CREATION, _get_valid_state_change_message
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -216,7 +216,7 @@ def admission_form(request, admission_id=None):
         admission.residence_address = address
         if not admission.person_information:
             admission.person_information = person
-        _save_and_create_revision(admission, request, '' if admission_id else ADMISSION_CREATION)
+        _save_and_create_revision(admission, request.user, '' if admission_id else ADMISSION_CREATION)
         if admission.state == DRAFT:
             return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
@@ -243,12 +243,9 @@ def admission_form(request, admission_id=None):
 def _new_state_management(request, forms, admission, new_state):
     adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form = forms
     _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form)
-    message = STATE_CHANGED % {
-        'old_state': _(admission._original_state),
-        'new_state': _(new_state)
-    }
+    message = _get_valid_state_change_message(admission)
     if new_state != VALIDATED:
-        _save_and_create_revision(adm_form, request, message)
+        _save_and_create_revision(adm_form, request.user, message)
     else:
         _validate_admission(request, adm_form, message)
     send_state_changed_email(adm_form.instance, request.user)
@@ -266,7 +263,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 
 def _validate_admission(request, adm_form, message):
     if request.user.has_perm("continuing_education.can_validate_registration"):
-        _save_and_create_revision(adm_form, request, message)
+        _save_and_create_revision(adm_form, request.user, message)
     else:
         display_error_messages(
             request,
@@ -297,7 +294,6 @@ def validate_field(request, admission_id):
     response.update(check_required_field_for_participant(admission,
                                                          Admission._meta,
                                                          ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
-    print('validate', admission.state)
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
 
 

@@ -45,7 +45,7 @@
             {% for ver in version %}
                 <tr>
                     <td>
-                        {{ ver.revision.comment }}
+                        {{ ver.revision.comment | safe }}
                     </td>
                     <td>
                         {{ ver.revision.date_created }}

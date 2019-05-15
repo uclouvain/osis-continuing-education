@@ -33,6 +33,7 @@ from base.models.enums.entity_type import FACULTY
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
+from continuing_education.views.common import _save_and_create_revision, MAIL_MESSAGE, MAIL
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -56,6 +57,7 @@ def send_state_changed_email(admission, connected_user=None):
             condition_of_acceptance = admission.condition_of_acceptance
     else:
         lower_state = 'other'
+
     send_email(
         template_references={
             'html': 'iufc_participant_state_changed_{}_html'.format(lower_state),
@@ -85,6 +87,12 @@ def send_state_changed_email(admission, connected_user=None):
         ],
         connected_user=connected_user
     )
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
+    _save_and_create_revision(
+        admission,
+        connected_user,
+        MAIL
+    )
 
 
 def send_submission_email_to_admission_managers(admission, connected_user):
@@ -94,7 +102,7 @@ def send_submission_email_to_admission_managers(admission, connected_user):
 
     managers = _get_continuing_education_managers()
     attachments = _get_attachments(admission.id, MAX_DOCUMENTS_SIZE)
-
+    receivers = _get_admission_managers_email_receivers(admission)
     send_email(
         template_references={
             'html': _get_template_reference(admission, receiver='admin', suffix='html'),
@@ -115,8 +123,16 @@ def send_submission_email_to_admission_managers(admission, connected_user):
             },
             'attachment': attachments
         },
-        receivers=_get_admission_managers_email_receivers(admission),
+        receivers=receivers,
         connected_user=connected_user
+    )
+    MAIL['text'] = MAIL_MESSAGE % {
+        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]),
+    }
+    _save_and_create_revision(
+        admission,
+        connected_user,
+        MAIL if receivers else ''
     )
 
 
@@ -162,6 +178,12 @@ def send_submission_email_to_participant(admission, connected_user):
         ],
         connected_user=connected_user
     )
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email}
+    _save_and_create_revision(
+        admission,
+        connected_user,
+        MAIL
+    )
 
 
 def _get_template_reference(admission, receiver, suffix):
@@ -193,6 +215,12 @@ def send_invoice_uploaded_email(admission):
                 None
             )
         ],
+    )
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
+    _save_and_create_revision(
+        admission,
+        None,
+        MAIL
     )
 
 

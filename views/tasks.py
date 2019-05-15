@@ -35,7 +35,7 @@ from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager, is_continuing_education_training_manager
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import _save_and_create_revision, REGISTRATION_VALIDATED
+from continuing_education.views.common import _save_and_create_revision, REGISTRATION_VALIDATED, ADMISSION_ACCEPTED
 
 
 @login_required
@@ -104,7 +104,7 @@ def _validate_registrations_list(request, registrations_ids_list):
 
     registrations_list.update(state=admission_state_choices.VALIDATED)
     for registration in registrations_list:
-        _save_and_create_revision(registration, request, REGISTRATION_VALIDATED)
+        _save_and_create_revision(registration, request.user, REGISTRATION_VALIDATED)
 
 
 @login_required
@@ -143,7 +143,7 @@ def accept_admissions(request):
         raise PermissionDenied
     selected_admission_ids = request.POST.getlist("selected_admissions_to_accept", default=[])
     if selected_admission_ids:
-        _accept_admissions_list(selected_admission_ids)
+        _accept_admissions_list(request, selected_admission_ids)
         msg = _('Successfully accept %s admissions.') % len(selected_admission_ids)
         display_success_messages(request, msg)
     else:
@@ -152,7 +152,7 @@ def accept_admissions(request):
     return redirect(reverse("list_tasks"))
 
 
-def _accept_admissions_list(registrations_ids_list):
+def _accept_admissions_list(request, registrations_ids_list):
     admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
 
     admissions_list_states = admissions_list.values_list('state', flat=True)
@@ -160,3 +160,5 @@ def _accept_admissions_list(registrations_ids_list):
         raise PermissionDenied(_('The admission must be submitted to be accepted.'))
 
     admissions_list.update(state=admission_state_choices.ACCEPTED, condition_of_acceptance='')
+    for admission in admissions_list:
+        _save_and_create_revision(admission, request.user, ADMISSION_ACCEPTED)
