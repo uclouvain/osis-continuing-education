@@ -23,8 +23,10 @@ STATE_CHOICES = (
 )
 
 STATES_DRAFT = {
-    'choices': ((SUBMITTED, _('Submitted')),),
-    'states': [SUBMITTED]
+    'choices': ((SUBMITTED, _('Submitted')),
+                (CANCELLED, _('Cancelled')),
+                ),
+    'states': [SUBMITTED, CANCELLED]
 }
 STATES_SUBMITTED = {
     'choices': (
@@ -32,22 +34,25 @@ STATES_SUBMITTED = {
         (REJECTED, _('Rejected')),
         (WAITING, _('Waiting')),
         (DRAFT, _('Draft')),
+        (CANCELLED, _('Cancelled')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING, DRAFT]
+    'states': [ACCEPTED, REJECTED, WAITING, DRAFT, CANCELLED]
 }
 
 STATES_ACCEPTED_VALIDATED = {
     'choices': (
         (REGISTRATION_SUBMITTED, _('Registration submitted')),
+        (CANCELLED, _('Cancelled')),
     ),
-    'states': [REGISTRATION_SUBMITTED]
+    'states': [REGISTRATION_SUBMITTED, CANCELLED]
 }
 
 STATES_REGISTRATION_SUBMITTED = {
     'choices': (
         (VALIDATED, _('Validated')),
+        (CANCELLED, _('Cancelled')),
     ),
-    'states': [VALIDATED]
+    'states': [VALIDATED, CANCELLED]
 }
 
 STATES_REJECTED_WAITING = {
@@ -55,8 +60,22 @@ STATES_REJECTED_WAITING = {
         (ACCEPTED, _('Accepted')),
         (REJECTED, _('Rejected')),
         (WAITING, _('Waiting')),
+        (CANCELLED, _('Cancelled')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING]
+    'states': [ACCEPTED, REJECTED, WAITING, CANCELLED]
+}
+
+STATES_CANCELLED = {
+    'choices': (
+        (ACCEPTED, _('Accepted')),
+        (DRAFT, _('Draft')),
+        (WAITING, _('Waiting')),
+        (REGISTRATION_SUBMITTED, _('Registration submitted')),
+        (REJECTED, _('Rejected')),
+        (SUBMITTED, _('Submitted')),
+        (VALIDATED, _('Validated')),
+    ),
+    'states': [ACCEPTED, REJECTED, WAITING, VALIDATED, REGISTRATION_SUBMITTED, DRAFT, SUBMITTED]
 }
 
 NEW_ADMIN_STATE = {
@@ -66,7 +85,8 @@ NEW_ADMIN_STATE = {
     ACCEPTED: STATES_ACCEPTED_VALIDATED,
     REJECTED: STATES_REJECTED_WAITING,
     VALIDATED: STATES_ACCEPTED_VALIDATED,
-    REGISTRATION_SUBMITTED: STATES_REGISTRATION_SUBMITTED
+    REGISTRATION_SUBMITTED: STATES_REGISTRATION_SUBMITTED,
+    CANCELLED: STATES_CANCELLED
 }
 
 ADMISSION_STATE_CHOICES = (
@@ -74,11 +94,13 @@ ADMISSION_STATE_CHOICES = (
     (REJECTED, _('Rejected')),
     (WAITING, _('Waiting')),
     (DRAFT, _('Draft')),
+    (CANCELLED, _('Cancelled')),
 )
 REGISTRATION_STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
     (REGISTRATION_SUBMITTED, _('Registration submitted')),
     (VALIDATED, _('Validated')),
+    (CANCELLED, _('Cancelled')),
 )
 
 ARCHIVE_STATE_CHOICES = (

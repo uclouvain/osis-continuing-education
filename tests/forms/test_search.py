@@ -47,9 +47,15 @@ from continuing_education.models.enums.admission_state_choices import ARCHIVE_ST
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED
 from continuing_education.models.person_training import PersonTraining
+from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from reference.tests.factories.country import CountryFactory
+
+COUNTRY_NAME_WITHOUT_ACCENT = 'Belgique'
+COUNTRY_NAME_WITH_ACCENT = 'Algérie'
+CITY_NAME_WITH_ACCENT = 'Moignelée'
 
 
 class TestFilterForm(TestCase):
@@ -172,6 +178,8 @@ class TestFilterForm(TestCase):
         ]
         self.eds = [ed_free_text_title, ed_free_text_acronym]
         self.admissions_free_text = []
+        self.country_accent = CountryFactory(name=COUNTRY_NAME_WITH_ACCENT)
+        self.country_without_accent = CountryFactory(name=COUNTRY_NAME_WITHOUT_ACCENT)
 
     def test_queryset_faculty_init(self):
         form = AdmissionFilterForm()
@@ -194,6 +202,7 @@ class TestFilterForm(TestCase):
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
                 ('Draft', _('Draft')),
+                ('Cancelled', _('Cancelled'))
             ])
 
     def test_queryset_registration_state_init(self):
@@ -203,6 +212,7 @@ class TestFilterForm(TestCase):
             [
                 ('', pgettext_lazy("plural", "All")),
                 ('Accepted', _('Accepted')),
+                ('Cancelled', _('Cancelled')),
                 ('Registration submitted',  _('Registration submitted')),
                 ('Validated', _('Validated'))
             ]
@@ -268,6 +278,21 @@ class TestFilterForm(TestCase):
             results = form.get_admissions()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    def test_get_admissions_by_free_text_country_city(self):
+        admission_accent = self._build_admission_with_accent(SUBMITTED, False)
+        free_text_for_equivalent_results = [COUNTRY_NAME_WITH_ACCENT,
+                                            COUNTRY_NAME_WITH_ACCENT.lower(),
+                                            COUNTRY_NAME_WITH_ACCENT[3:],
+                                            CITY_NAME_WITH_ACCENT,
+                                            CITY_NAME_WITH_ACCENT.lower(),
+                                            CITY_NAME_WITH_ACCENT[3:]
+                                            ]
+        for search_term in free_text_for_equivalent_results:
+            form = AdmissionFilterForm({"free_text": search_term})
+            form.is_valid()
+            results = form.get_admissions()
+            self.assertCountEqual(results, [admission_accent])
+
     def test_get_registrations_no_criteria(self):
         form = RegistrationFilterForm({})
         if form.is_valid():
@@ -330,6 +355,21 @@ class TestFilterForm(TestCase):
             results = form.get_registrations()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    def test_get_registrations_by_free_text_country(self):
+        admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, False)
+        free_text_for_equivalent_results = [COUNTRY_NAME_WITH_ACCENT,
+                                            COUNTRY_NAME_WITH_ACCENT.lower(),
+                                            COUNTRY_NAME_WITH_ACCENT[3:],
+                                            CITY_NAME_WITH_ACCENT,
+                                            CITY_NAME_WITH_ACCENT.lower(),
+                                            CITY_NAME_WITH_ACCENT[3:]
+                                            ]
+        for search_term in free_text_for_equivalent_results:
+            form = RegistrationFilterForm({"free_text": search_term})
+            form.is_valid()
+            results = form.get_registrations()
+            self.assertCountEqual(results, [admission_accent])
+
     def test_get_registration_received_file_param(self):
         self.registrations[0].registration_file_received = True
         self.registrations[0].save()
@@ -358,6 +398,21 @@ class TestFilterForm(TestCase):
             results = form.get_archives()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    def test_get_archives_by_free_text_country(self):
+        admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, True)
+        free_text_for_equivalent_results = [COUNTRY_NAME_WITH_ACCENT,
+                                            COUNTRY_NAME_WITH_ACCENT.lower(),
+                                            COUNTRY_NAME_WITH_ACCENT[3:],
+                                            CITY_NAME_WITH_ACCENT,
+                                            CITY_NAME_WITH_ACCENT.lower(),
+                                            CITY_NAME_WITH_ACCENT[3:]
+                                            ]
+        for search_term in free_text_for_equivalent_results:
+            form = ArchiveFilterForm({"free_text": search_term})
+            form.is_valid()
+            results = form.get_archives()
+            self.assertCountEqual(results, [admission_accent])
+
     def test_get_archives_by_state_criteria(self):
         form = ArchiveFilterForm({"state": SUBMITTED})
         if form.is_valid():
@@ -380,6 +435,7 @@ class TestFilterForm(TestCase):
                     person_information=ContinuingEducationPersonFactory(
                         person=person
                     ),
+                    address=AddressFactory(country=self.country_without_accent),
                     state=SUBMITTED
                 )
             )
@@ -392,6 +448,16 @@ class TestFilterForm(TestCase):
                     state=SUBMITTED
                 )
             )
+
+    def _build_admission_with_accent(self, a_state, archived):
+        address_with_accent = AddressFactory(country=self.country_accent,
+                                             city=CITY_NAME_WITH_ACCENT)
+        admission_accent = AdmissionFactory(
+            address=address_with_accent,
+            state=a_state,
+            archived=archived
+        )
+        return admission_accent
 
 
 class TestFormationFilterForm(TestCase):
