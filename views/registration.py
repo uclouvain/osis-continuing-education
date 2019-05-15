@@ -44,7 +44,7 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import display_errors, get_object_list, save_and_create_revision, \
-    _get_appropriate_revision_message
+    get_appropriate_revision_message
 from continuing_education.views.home import is_continuing_education_student_worker
 
 
@@ -121,8 +121,8 @@ def registration_edit(request, admission_id):
         admission.address = address
         admission.billing_address = billing_address
         admission.residence_address = residence_address
-        message = _get_appropriate_revision_message(form)
-        save_and_create_revision(admission, request.user, message)
+        message = get_appropriate_revision_message(form)
+        save_and_create_revision(request.user, message, admission)
 
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:

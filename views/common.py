@@ -31,7 +31,6 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Prefetch, Q
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _, ugettext_lazy as _
 from reversion.models import Version
 
@@ -89,10 +88,11 @@ def get_object_list(request, objects):
     return object_list
 
 
-def save_and_create_revision(admission, user, message):
+def save_and_create_revision(user, message, admission=None):
     with reversion.create_revision():
         existing_message = reversion.get_comment()
-        admission.save()
+        if admission:
+            admission.save()
         reversion.set_user(user)
         reversion.set_comment(
             (existing_message + " <br> &nbsp; " if existing_message else '') + message if message
@@ -100,32 +100,24 @@ def save_and_create_revision(admission, user, message):
         )
 
 
-def update_and_create_revision(user, instance):
-    message = _get_valid_state_change_message(instance)
-    new_message = _get_icon(message) + str(message['text'])
-    with reversion.create_revision():
-        reversion.set_user(user)
-        reversion.set_comment(mark_safe(new_message))
-
-
 def _get_icon(message):
     return '<i class="{type}"></i> '.format(type=message['icon'])
 
 
-def get_messages(message, msgs=None):
+def get_revision_messages(message, msgs=None):
     return ("<br>" if msgs else '') + _get_icon(message) + str(message['text'])
 
 
-def _get_appropriate_revision_message(form):
+def get_appropriate_revision_message(form):
     msgs = []
     if 'ucl_registration_complete' in form.changed_data and form.cleaned_data['ucl_registration_complete']:
-        msgs.append(get_messages(UCL_REGISTRATION_COMPLETE, msgs))
+        msgs.append(get_revision_messages(UCL_REGISTRATION_COMPLETE, msgs))
     if 'registration_file_received' in form.changed_data and form.cleaned_data['registration_file_received']:
-        msgs.append(get_messages(REGISTRATION_FILE_RECEIVED, msgs))
+        msgs.append(get_revision_messages(REGISTRATION_FILE_RECEIVED, msgs))
     return ' '.join(msgs) if msgs else ''
 
 
-def _get_versions(admission):
+def get_versions(admission):
     query = reduce(operator.or_, (Q(revision__comment__contains=item) for item in VERSION_MESSAGES))
     reversions = Version.objects.filter(
         content_type=ContentType.objects.get_for_model(Admission),
@@ -145,7 +137,7 @@ def _get_versions(admission):
     return reversions
 
 
-def _get_valid_state_change_message(instance):
+def get_valid_state_change_message(instance):
     if instance.state == ACCEPTED:
         message = ADMISSION_ACCEPTED
     elif instance.state == VALIDATED:

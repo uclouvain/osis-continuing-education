@@ -55,7 +55,8 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
-from continuing_education.views.common import _get_versions, save_and_create_revision, VERSION_MESSAGES, get_messages
+from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
+    get_revision_messages
 
 FILE_CONTENT = "test-content"
 
@@ -238,17 +239,14 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.context['admissions'].object_list[0], self.admission)
 
     def test_get_versions(self):
-        version_list = _get_versions(self.admission)
+        version_list = get_versions(self.admission)
 
         self.assertEqual(len(version_list), 0)
         i = 1
         for msg in VERSION_MESSAGES:
-            save_and_create_revision(
-                self.admission,
-                self.training_manager.user,
-                get_messages({'icon': '', 'text': msg})
-            )
-            version_list = _get_versions(self.admission)
+            save_and_create_revision(self.training_manager.user, get_revision_messages({'icon': '', 'text': msg}),
+                                     self.admission)
+            version_list = get_versions(self.admission)
             self.assertEqual(len(version_list), i)
             i += 1
 

@@ -36,7 +36,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import save_and_create_revision, ADMISSION_CREATION, \
-    update_and_create_revision, get_messages
+    get_revision_messages, get_valid_state_change_message
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
@@ -148,7 +148,8 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         instance._original_state = instance.state
         update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
         if instance.state != instance._original_state:
-            update_and_create_revision(self.context.get('request').user, instance)
+            message = get_valid_state_change_message(instance)
+            save_and_create_revision(self.context.get('request').user, get_revision_messages(message))
             send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
@@ -177,5 +178,5 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         admission = Admission(**validated_data)
         admission.residence_address = admission.address
         admission.billing_address = admission.address
-        save_and_create_revision(admission, self.context.get('request').user, get_messages(ADMISSION_CREATION))
+        save_and_create_revision(self.context.get('request').user, get_revision_messages(ADMISSION_CREATION), admission)
         return admission

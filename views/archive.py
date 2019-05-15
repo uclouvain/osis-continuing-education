@@ -37,7 +37,7 @@ from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.views.common import get_object_list, FILE_ARCHIVED, save_and_create_revision, \
-    FILE_UNARCHIVED, get_messages
+    FILE_UNARCHIVED, get_revision_messages
 
 
 @login_required
@@ -120,12 +120,8 @@ def _mark_as_archived(user, admission_id, archive_state=True):
 def _set_archived_state(user, admission, archived_state):
     if admission:
         admission.archived = archived_state
-        save_and_create_revision(
-            admission,
-            user,
-            get_messages(FILE_ARCHIVED) if admission.archived
-            else get_messages(FILE_UNARCHIVED)
-        )
+        save_and_create_revision(user, get_revision_messages(FILE_ARCHIVED) if admission.archived
+        else get_revision_messages(FILE_UNARCHIVED), admission)
 
 
 def _set_error_message(request):
