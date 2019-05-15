@@ -104,17 +104,22 @@ def _save_and_create_revision(admission, user, message):
         )
 
 
+def _get_icon(message):
+    return '<i class="{type}"></i> '.format(type=message['icon'])
+
+
+def _get_messages(messages, message):
+    return ("<br>" if messages else '') + _get_icon(message) + str(message['text'])
+
+
 def _get_appropriate_revision_message(form):
     messages = []
     if 'ucl_registration_complete' in form.changed_data and form.cleaned_data['ucl_registration_complete']:
-        icon = '<i class="{type}"></i> '.format(type=UCL_REGISTRATION_COMPLETE['icon'])
-        messages.append(icon + str(UCL_REGISTRATION_COMPLETE['text']))
+        messages.append(_get_messages(messages, UCL_REGISTRATION_COMPLETE))
     if 'registration_file_received' in form.changed_data and form.cleaned_data['registration_file_received']:
-        icon = '<i class="{type}"></i> '.format(type=REGISTRATION_FILE_RECEIVED['icon'])
-        messages.append(("<br>" if messages else '') + icon + str(REGISTRATION_FILE_RECEIVED['text']))
+        messages.append(_get_messages(messages, REGISTRATION_FILE_RECEIVED))
     if 'archived' in form.changed_data and form.cleaned_data['archived']:
-        icon = '<i class="{type}"></i> '.format(type=FILE_ARCHIVED['icon'])
-        messages.append(("<br>" if messages else '') + icon + str(FILE_ARCHIVED['text']))
+        messages.append(_get_messages(messages, FILE_ARCHIVED))
     message = ' '.join(messages) if messages else ''
     return message
 
