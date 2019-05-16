@@ -225,9 +225,7 @@ def list_cancelled(request):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
     admission_list = Admission.objects.filter(state=admission_state_choices.CANCELLED)
-
-    if not user_is_continuing_education_student_worker:
-        admission_list = filter_authorized_admissions(request.user, admission_list)
+    admission_list = filter_authorized_admissions(request.user, admission_list)
 
     return render(request, "cancellations.html", {
         'admissions': get_object_list(request, admission_list)
