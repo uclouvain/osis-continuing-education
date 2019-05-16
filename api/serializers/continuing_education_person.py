@@ -28,24 +28,15 @@ from rest_framework import serializers
 from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
-    person = PersonDetailSerializer(read_only=True)
-
-    birth_country = CountrySerializer(read_only=True)
 
     class Meta:
         model = ContinuingEducationPerson
         fields = (
-            'id',
             'uuid',
-            'person',
-            'birth_date',
-            'birth_location',
-            'birth_country',
         )
 
 

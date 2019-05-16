@@ -26,36 +26,22 @@
 from rest_framework import serializers
 
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
-    ContinuingEducationPersonPostSerializer
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
+from continuing_education.api.serializers.admission import AdmissionListSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonPostSerializer
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
-class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
+class RegistrationListSerializer(AdmissionListSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='continuing_education_api_v1:registration-detail-update',
         lookup_field='uuid'
     )
-    person_information = ContinuingEducationPersonSerializer()
-
-    # Display human readable value
-    state_text = serializers.CharField(source='get_state_display', read_only=True)
-
-    formation = ContinuingEducationTrainingSerializer()
 
     class Meta:
         model = Admission
-        fields = (
-            'uuid',
-            'url',
-            'person_information',
-            'formation',
-            'state',
-            'state_text',
-        )
+        fields = AdmissionListSerializer.Meta.fields
 
 
 class RegistrationDetailSerializer(RegistrationListSerializer):

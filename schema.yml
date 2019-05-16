@@ -169,26 +169,6 @@ paths:
         204:
           description: Successful delete of the file
 
-  /registrations:
-    get:
-      description: Obtain the list of registrations
-      parameters:
-        - in: query
-          name: state
-          required: false
-          description: The state of the registrations to get
-          schema:
-            $ref: '#/components/schemas/StateEnum'
-      responses:
-        200:
-          description: Successful get of the list of registrations
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RegistrationGet'
-
   /registrations/{uuid}:
     get:
       description: Obtain information about a specific registration
@@ -383,6 +363,9 @@ components:
                 example: "jane_doe@personnalprovider.com"
               state:
                 $ref: '#/components/schemas/StateEnum'
+              state_text:
+                type: string
+                readOnly: true
               phone_mobile:
                 type: string
                 example: "0000/00.00.00."

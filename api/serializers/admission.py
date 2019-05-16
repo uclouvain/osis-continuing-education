@@ -42,16 +42,10 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
         view_name='continuing_education_api_v1:admission-detail-update',
         lookup_field='uuid'
     )
-    acronym = serializers.SerializerMethodField()
+    acronym = serializers.CharField(source='formation.acronym')
     state_text = serializers.CharField(source='get_state_display', read_only=True)
     faculty = serializers.SerializerMethodField()
-    title_fr = serializers.SerializerMethodField()
-
-    def get_acronym(self, obj):
-        return obj.formation.acronym
-
-    def get_title_fr(self, obj):
-        return obj.formation.title
+    title_fr = serializers.CharField(source='formation.title')
 
     def get_faculty(self, obj):
         ac = obj.formation.academic_year
@@ -76,13 +70,21 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
 
     address = AddressSerializer()
 
-    # Display human readable value
+    first_name = serializers.CharField(source='person_information.person.first_name')
+    last_name = serializers.CharField(source='person_information.person.last_name')
+    email = serializers.CharField(source='person_information.person.email')
+    gender = serializers.CharField(source='person_information.person.gender')
+
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
 
     class Meta:
         model = Admission
         fields = AdmissionListSerializer.Meta.fields + (
+            'first_name',
+            'last_name',
+            'email',
+            'gender',
             # CONTACTS
             'address',
             'citizenship',
