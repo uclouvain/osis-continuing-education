@@ -76,7 +76,7 @@ $("#cancel_waiting_reason").click(function(){
         'id_other_reason',
         'old_other_reason',
         'id_waiting_reason',
-        'old_predefined_waiting_reason',
+        'old_predefined_waiting_reason'
     )
 });
 
@@ -85,7 +85,7 @@ $("#cancel_rejected_reason").click(function(){
         'id_rejected-other_reason',
         'old_rejected_other_reason',
         'id_rejected-rejected_reason',
-        'old_predefined_rejected_reason',
+        'old_predefined_rejected_reason'
     )
 });
 

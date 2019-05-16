@@ -3,7 +3,7 @@ import uuid as uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class AddressAdmin(ModelAdmin):

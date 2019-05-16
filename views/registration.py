@@ -23,18 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business import data_export
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
@@ -42,10 +43,9 @@ from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import display_errors, get_object_list
-from continuing_education.business.perms import is_not_student_worker
+from continuing_education.views.common import display_errors, get_object_list, save_and_create_revision, \
+    get_appropriate_revision_message
 from continuing_education.views.home import is_continuing_education_student_worker
-from django.http import HttpResponseRedirect
 
 
 @login_required
@@ -121,7 +121,9 @@ def registration_edit(request, admission_id):
         admission.address = address
         admission.billing_address = billing_address
         admission.residence_address = residence_address
-        admission.save()
+        message = get_appropriate_revision_message(form)
+        save_and_create_revision(request.user, message, admission)
+
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:
         errors.append(form.errors)

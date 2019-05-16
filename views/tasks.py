@@ -27,7 +27,7 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
@@ -35,6 +35,8 @@ from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager, is_continuing_education_training_manager
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.views.common import save_and_create_revision, REGISTRATION_VALIDATED, ADMISSION_ACCEPTED, \
+    get_revision_messages
 
 
 @login_required
@@ -85,7 +87,7 @@ def validate_registrations(request):
         raise PermissionDenied
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
-        _validate_registrations_list(selected_registration_ids)
+        _validate_registrations_list(request, selected_registration_ids)
         msg = _('Successfully validated %s registrations.') % len(selected_registration_ids)
         display_success_messages(request, msg)
     else:
@@ -94,7 +96,7 @@ def validate_registrations(request):
     return redirect(reverse("list_tasks"))
 
 
-def _validate_registrations_list(registrations_ids_list):
+def _validate_registrations_list(request, registrations_ids_list):
     registrations_list = Admission.objects.filter(id__in=registrations_ids_list)
 
     registrations_list_states = registrations_list.values_list('state', flat=True)
@@ -102,6 +104,8 @@ def _validate_registrations_list(registrations_ids_list):
         raise PermissionDenied(_('The registration must be submitted to be validated.'))
 
     registrations_list.update(state=admission_state_choices.VALIDATED)
+    for registration in registrations_list:
+        save_and_create_revision(request.user, get_revision_messages(REGISTRATION_VALIDATED), registration)
 
 
 @login_required
@@ -140,7 +144,7 @@ def accept_admissions(request):
         raise PermissionDenied
     selected_admission_ids = request.POST.getlist("selected_admissions_to_accept", default=[])
     if selected_admission_ids:
-        _accept_admissions_list(selected_admission_ids)
+        _accept_admissions_list(request, selected_admission_ids)
         msg = _('Successfully accept %s admissions.') % len(selected_admission_ids)
         display_success_messages(request, msg)
     else:
@@ -149,7 +153,7 @@ def accept_admissions(request):
     return redirect(reverse("list_tasks"))
 
 
-def _accept_admissions_list(registrations_ids_list):
+def _accept_admissions_list(request, registrations_ids_list):
     admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
 
     admissions_list_states = admissions_list.values_list('state', flat=True)
@@ -157,3 +161,5 @@ def _accept_admissions_list(registrations_ids_list):
         raise PermissionDenied(_('The admission must be submitted to be accepted.'))
 
     admissions_list.update(state=admission_state_choices.ACCEPTED, condition_of_acceptance='')
+    for admission in admissions_list:
+        save_and_create_revision(request.user, get_revision_messages(ADMISSION_ACCEPTED), admission)

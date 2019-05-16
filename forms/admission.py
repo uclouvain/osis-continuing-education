@@ -1,11 +1,12 @@
 from django import forms
 from django.forms import ModelForm, ChoiceField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
+from continuing_education.forms.common import CountryChoiceField
 from continuing_education.forms.common import set_participant_required_fields
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -13,7 +14,6 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
-from continuing_education.forms.common import CountryChoiceField
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',

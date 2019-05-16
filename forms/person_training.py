@@ -28,7 +28,7 @@ from dal import autocomplete
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.person import Person
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
