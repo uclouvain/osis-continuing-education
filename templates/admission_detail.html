@@ -80,7 +80,7 @@
                                         data-modal_class="modal-lg"
                                         data-url="{% url 'validate_field' admission.id %}">{{state_trans}}</a>
                                  {% else %}
-                                     <a value="{{state_value}}" href="#" class="state-admission">{{state_trans}}</a>
+                                     <a value="{{state_value}}" href="#" class="state-admission" id="lnk_state_admission_{{ state_value }}">{{state_trans}}</a>
                                  {% endif %}
                              </li>
                           {% endwith %}
