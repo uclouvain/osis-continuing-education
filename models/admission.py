@@ -54,8 +54,7 @@ class AdmissionManager(models.Manager):
         return super().get_queryset().exclude(state__in=[
             admission_state_choices.ACCEPTED,
             admission_state_choices.REGISTRATION_SUBMITTED,
-            admission_state_choices.VALIDATED,
-            admission_state_choices.CANCELLED
+            admission_state_choices.VALIDATED
         ])
 
 
