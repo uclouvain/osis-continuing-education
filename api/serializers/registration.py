@@ -33,7 +33,6 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
     save_and_create_revision
-from reference.models.country import Country
 
 
 class RegistrationListSerializer(AdmissionListSerializer):
@@ -112,12 +111,7 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RegistrationPostSerializer(RegistrationDetailSerializer):
-    citizenship = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-        required=False,
-        allow_null=True
-    )
+    citizenship = serializers.CharField(source='citizenship.name')
 
     address = AddressPostSerializer(required=False)
     billing_address = AddressPostSerializer(required=False)
