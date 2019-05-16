@@ -31,6 +31,10 @@ from continuing_education.api.serializers.continuing_education_person import Con
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
+    save_and_create_revision
+from reference.api.serializers.country import CountrySerializer
+from reference.models.country import Country
 
 
 class RegistrationListSerializer(AdmissionListSerializer):
@@ -46,6 +50,8 @@ class RegistrationListSerializer(AdmissionListSerializer):
 
 class RegistrationDetailSerializer(RegistrationListSerializer):
 
+    citizenship = CountrySerializer()
+
     address = AddressSerializer()
     billing_address = AddressSerializer()
     residence_address = AddressSerializer()
@@ -57,9 +63,9 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
     class Meta:
         model = Admission
         fields = RegistrationListSerializer.Meta.fields + (
-
             # CONTACTS
             'address',
+            'citizenship',
 
             # REGISTRATION
             # BILLING
@@ -104,6 +110,12 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
 
 
 class RegistrationPostSerializer(RegistrationDetailSerializer):
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=False,
+        allow_null=True
+    )
     person_information = ContinuingEducationPersonPostSerializer(required=False)
 
     address = AddressPostSerializer(required=False)
@@ -132,6 +144,8 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
         instance._original_state = instance.state
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
+            message = get_valid_state_change_message(instance)
+            save_and_create_revision(self.context.get('request').user, get_revision_messages(message))
             send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
 

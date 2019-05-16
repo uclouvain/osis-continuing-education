@@ -43,16 +43,28 @@
     </div>
     <div class="panel panel-default">
         <ul id="tabs" class="nav nav-tabs">
-          <li role="presentation" class="active"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
-          <li role="presentation"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
+        {% if continuing_education_training_manager %}
+            <li role="presentation" class="active"><a href="#admissions_to_validate" role="tab" data-toggle="tab">{% trans 'Admissions to accept' %}</a></li>
+        {% endif %}
+          {% if continuing_education_manager %}
+                <li role="presentation" class="{% if not continuing_education_training_manager %}active{% endif %}"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to validate' %}</a></li>
+                <li role="presentation"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
+          {% endif %}
         </ul>
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="registration_to_validate">
-                {% include "fragment/tasks/registrations_to_validate.html" %}
-            </div>
-            <div role="tabpanel" class="tab-pane" id="diploma_to_produce">
-                {% include "fragment/tasks/diplomas_to_produce.html" %}
-            </div>
+            {% if continuing_education_manager %}
+                <div role="tabpanel" class="tab-pane {% if not continuing_education_training_manager %}active{% endif %}" id="registration_to_validate">
+                    {% include "fragment/tasks/registrations_to_validate.html" %}
+                </div>
+                <div role="tabpanel" class="tab-pane" id="diploma_to_produce">
+                    {% include "fragment/tasks/diplomas_to_produce.html" %}
+                </div>
+            {% endif %}
+            {% if continuing_education_training_manager %}
+                <div role="tabpanel" class="tab-pane {% if continuing_education_training_manager %}active{% endif %}" id="admissions_to_validate">
+                    {% include "fragment/tasks/admissions_to_accept.html" %}
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

@@ -1,7 +1,7 @@
-from django import forms
 from django.forms import ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
+from continuing_education.forms.common import CountryChoiceField
 from continuing_education.forms.common import set_participant_required_fields
 from continuing_education.models.address import Address
 from reference.models.country import Country
@@ -10,7 +10,7 @@ ADDRESS_PARTICIPANT_REQUIRED_FIELDS = ['location', 'postal_code', 'city', 'count
 
 
 class AddressForm(ModelForm):
-    country = forms.ModelChoiceField(
+    country = CountryChoiceField(
         queryset=Country.objects.all().order_by('name'),
         label=_("Country"),
         required=False,

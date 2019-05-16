@@ -147,10 +147,10 @@
                                 {% endif %}
                             </td>
                             <td><a href="{% url 'admission_detail' admission_id=admission.id %}">
-                                {{ admission.person_information.person.last_name }}
+                                {{ admission.person_information.person.last_name | default_if_none:'-' }}
                             </a>
                             </td>
-                            <td>{{ admission.person_information.person.first_name }}</td>
+                            <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
                             <td>{{ admission.email | default_if_none:'' }}</td>
                             <td title="{{admission.formation.title}}">{{ admission.formation_display }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
@@ -163,6 +163,8 @@
                                     <span class="label label-info show">{% trans admission.state %}</span>
                                 {% elif admission.is_draft %}
                                     <span class="label label-default show">{% trans admission.state %}</span>
+                                {% elif admission.is_cancelled %}
+                                    <span class="label label-warning show">{% trans admission.state %}</span>
                                 {% endif %}
                             </td>
                         </tr>

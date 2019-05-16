@@ -34,89 +34,34 @@
 {% block breadcrumb %}
     <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
     <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
-    <li class="active">{% trans 'Registrations' %}</li>
+    <li class="active">{% trans 'Files cancelled' %}</li>
 {% endblock %}
 
 {% block content %}
     <div class="page-header">
-        <h2>{% trans 'Registrations' %}</h2>
+        <h2>{% trans 'Files cancelled' %}</h2>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel panel-body">
-            <form style="display: inline;" action="{% url 'registration' %}" method="get" class="" id="search_form">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-md-2">
-                        <label for="faculty_id">{% trans 'Faculty' %}</label>
-                        {{ search_form.faculty }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="faculty_id">{% trans 'Formation' %}</label>
-                        {{ search_form.formation }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="state_id">{% trans 'State' %}</label>
-                        {{ search_form.state }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="registration_file_received_id">{% trans 'Received file' %}</label>
-                        {{ search_form.registration_file_received }}
-                    </div>
-                    <div class="col-md-2" >
-                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </button>
-                        {% include 'blocks/button/button_filter_refresh.html' %}
-                    </div>
 
-                </div>
-                <div class="row">
-                    <div class="col-md-2">
-                        <label for="ucl_registration_complete_id">{% trans 'Registered' %}</label>
-                        {{ search_form.ucl_registration_complete }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="payment_complete_id">{% trans 'Paid' %}</label>
-                        {{ search_form.payment_complete }}
-                    </div>
-                    <div class="col-md-2">
-                        <label for="free_text_id">{% trans 'In all fields' %}</label>
-                        {{ search_form.free_text }}
-                    </div>
-                </div>
-                {% include 'blocks/button/xls_hidden.html' %}
-            </form>
-            {% include 'blocks/form/search_form_reset.html' %}
-        </div>
         <div class="panel panel-body">
-            {% trans 'Produce xls' as title_xls_trans %}
-            {% include 'blocks/dropdown/list_actions.html' with button_title=title_xls_trans %}
             {% if admissions %}
                 <div class="row">
                     <div class="col-md-6">
-                        <strong style="margin-left:10px;color:grey;"> {{ admissions_number }} {% trans 'Registrations'|lower %} </strong>
+                        <strong style="margin-left:10px;color:grey;"> {{ admissions|length }} {% trans 'Files cancelled'|lower %} </strong>
                     </div>
                 </div>
             {% endif %}
-            <form id="admissions_form" method="post" action="{% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
-                {% csrf_token %}
+            <form id="admissions_form" >
 
                 <table class="table table-striped table-hover" id="order_student">
                     <thead>
                         <tr>
-                            <th>
-                                {% if admissions %}
-                                    <input id="id_check_all" type="checkbox" name="check_all"
-                                           title="{% trans 'Check All' %}"/>
-                                {% endif %}
-                            </th>
                             <th class="searchable">{% trans 'Name' %}</th>
                             <th class="searchable">{% trans 'First name' %}</th>
                             <th class="searchable">{% trans 'Email' %}</th>
                             <th class="searchable">{% trans 'Formation' %}</th>
                             <th class="searchable">{% trans 'Faculty' %}</th>
-                            <th class="searchable">{% trans 'State' %}</th>
                             <th class="searchable">{% trans 'Received file' %}</th>
                             <th class="searchable">{% trans 'Paid' %}</th>
                             <th class="searchable">{% trans 'UCLouvain registration complete' %}</th>
@@ -124,17 +69,13 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="10">
+                            <td colspan="9">
                                 {% bootstrap_pagination admissions extra=request.GET.urlencode %}
                             </td>
                         </tr>
                     </tfoot>
                     {% for admission in admissions %}
                         <tr>
-                            <td>
-                                <input type="checkbox" name="selected_action" class="selected_object"
-                                       value="{{ admission.id }}"/>
-                            </td>
                             <td>
                                 <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
                                     {{ admission.person_information.person.last_name | default_if_none:'-'}}
@@ -144,17 +85,6 @@
                             <td>{{ admission.person_information.person.email | default_if_none:'-'}}</td>
                             <td>{{ admission.formation }}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
-                            <td style="vertical-align: middle;" class="admission-state">
-                                {% if admission.is_accepted %}
-                                    <span class="label label-default show">{% trans admission.state %}</span>
-                                {% elif admission.is_validated %}
-                                    <span class="label label-success show">{% trans admission.state %}</span>
-                                {% elif admission.is_registration_submitted %}
-                                    <span class="label label-info show">{% trans admission.state %}</span>
-                                {% elif admission.is_cancelled %}
-                                    <span class="label label-warning show">{% trans admission.state %}</span>
-                                {% endif %}
-                            </td>
                             <td style="vertical-align: middle;">
                                 {% if admission.registration_file_received %}
                                     <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>

@@ -77,7 +77,9 @@ class ContinuingEducationTraining(Model):
 
     alternate_notification_email_addresses = models.TextField(
         default='',
-        verbose_name=_("Alternate notification email addresses")
+        verbose_name=_("Alternate notification email addresses"),
+        blank=True,
+        help_text=_("Comma-separated addresses - Leave empty if no address"),
     )
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
@@ -119,6 +121,9 @@ class ContinuingEducationTraining(Model):
     @property
     def formation_administrators(self):
         return " - ".join([str(mgr) for mgr in self.managers.all().order_by('last_name', 'first_name')])
+
+    def get_alternative_notification_email_receivers(self):
+        return [adr.strip() for adr in self.alternate_notification_email_addresses.split(',') if adr]
 
     def __str__(self):
         education_group_year = self.get_most_recent_education_group_year()

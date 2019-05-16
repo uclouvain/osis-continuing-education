@@ -37,11 +37,12 @@ from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
     check_required_field_for_participant
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
-    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm
+    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models import continuing_education_person
@@ -49,14 +50,14 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED, ACCEPTED
+    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
 from continuing_education.models.file import AdmissionFile
-from continuing_education.views.common import display_errors
+from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
+    ADMISSION_CREATION, get_revision_messages
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
-from osis_common.decorators.ajax import ajax_required
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.views.home import is_continuing_education_student_worker
+from osis_common.decorators.ajax import ajax_required
 
 
 @login_required
@@ -84,7 +85,11 @@ def list_admissions(request):
 @login_required
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 def admission_detail(request, admission_id):
-    can_access_admission(request.user, admission_id)
+    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
+
+    if not user_is_continuing_education_student_worker:
+        can_access_admission(request.user, admission_id)
+
     admission = get_object_or_404(Admission, pk=admission_id)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
@@ -95,6 +100,8 @@ def admission_detail(request, admission_id):
         instance=admission,
     )
 
+    version_list = get_versions(admission)
+
     if request.method == 'POST' and request.FILES:
         return _upload_file(request, admission)
 
@@ -102,20 +109,26 @@ def admission_detail(request, admission_id):
         request.POST or None,
         instance=admission,
         prefix='rejected',
-        )
+    )
 
     waiting_adm_form = WaitingAdmissionForm(
         request.POST or None,
         instance=admission,
-        )
+    )
 
     condition_acceptance_adm_form = ConditionAcceptanceAdmissionForm(
         request.POST or None,
         instance=admission,
-        )
+    )
 
+    cancel_adm_form = CancelAdmissionForm(
+        request.POST or None,
+        instance=admission,
+    )
+
+    admission._original_state = admission.state
     if adm_form.is_valid():
-        forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form)
+        forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
 
     return render(
@@ -127,19 +140,23 @@ def admission_detail(request, admission_id):
             'admission_form': adm_form,
             'rejected_adm_form': rejected_adm_form,
             'waiting_adm_form': waiting_adm_form,
+            'cancel_adm_form': cancel_adm_form,
             'file_categories_choices': _get_file_category_choices_with_disabled_parameter(admission),
             'invoice': file_category_choices.INVOICE,
             'condition_acceptance_adm_form': condition_acceptance_adm_form,
-            'continuing_education_student_worker': is_continuing_education_student_worker(request.user),
+            'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
+            'version': version_list
         }
     )
 
 
 def _change_state(request, forms, accepted_states, admission):
-    adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form = forms
+    adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form = forms
     new_state = adm_form.cleaned_data['state']
     if new_state in accepted_states.get('states', []):
-        return _new_state_management(request, forms, admission, new_state)
+        _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
+                                        cancel_adm_form)
+        return _new_state_management(request, adm_form, admission, new_state)
 
 
 @login_required
@@ -208,7 +225,10 @@ def admission_form(request, admission_id=None):
         admission.residence_address = address
         if not admission.person_information:
             admission.person_information = person
-        admission.save()
+        if admission_id:
+            admission.save()
+        else:
+            save_and_create_revision(request.user, get_revision_messages(ADMISSION_CREATION), admission)
         if admission.state == DRAFT:
             return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
@@ -232,30 +252,29 @@ def admission_form(request, admission_id=None):
     )
 
 
-def _new_state_management(request, forms, admission, new_state):
-    admission._original_state = admission.state
-    adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form = forms
-    _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form)
+def _new_state_management(request, adm_form, admission, new_state):
     if new_state != VALIDATED:
-        adm_form.save()
+        send_state_changed_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)
-    send_state_changed_email(adm_form.instance, request.user)
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 
-def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form):
+def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
+                                    cancel_adm_form):
     if new_state == REJECTED and rejected_adm_form.is_valid():
-            rejected_adm_form.save()
+        rejected_adm_form.save()
     elif new_state == WAITING and waiting_adm_form.is_valid():
-            waiting_adm_form.save()
+        waiting_adm_form.save()
     elif new_state == ACCEPTED and condition_acceptance_adm_form.is_valid():
-            condition_acceptance_adm_form.save()
+        condition_acceptance_adm_form.save()
+    elif new_state == CANCELLED and cancel_adm_form.is_valid():
+        cancel_adm_form.save()
 
 
 def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
-        adm_form.save()
+        send_state_changed_email(adm_form.instance, request.user)
     else:
         display_error_messages(
             request,
@@ -286,7 +305,6 @@ def validate_field(request, admission_id):
     response.update(check_required_field_for_participant(admission,
                                                          Admission._meta,
                                                          ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
-
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
 
 

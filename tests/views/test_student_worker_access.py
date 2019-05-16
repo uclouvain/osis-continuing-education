@@ -24,16 +24,16 @@
 #
 ##############################################################################
 
-from rest_framework import status
 from django.test import TestCase
 from django.urls import reverse
+from rest_framework import status
 
-from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
+from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
@@ -78,7 +78,8 @@ class ViewsLimitedForStudentWorker(TestCase):
                 reverse('json_file'),
                 reverse('registration_edit', args=[self.admission.id]),
                 reverse('list_tasks'),
-                reverse('formation_detail', args = [1]),
+                reverse('formation_detail', args=[1]),
+                reverse('cancelled_files'),
                 ]
         for url in urls:
             response = self.client.get(url)

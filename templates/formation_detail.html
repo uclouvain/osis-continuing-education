@@ -47,12 +47,44 @@
     <div class="panel panel-default">
         <div class="panel panel-body">
             <div class="row">
-                <div class="col-md-12">{% bootstrap_label _("State") %} <br/> {{ formation.education_group|get_active_continuing_education_formation }}</div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-md-4">{% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}</div>
-                <div class="col-md-8">{% bootstrap_label _("Send notification emails") %} <br/> {{ formation.alternate_notification_email_addresses| default_if_none:'' }}</div>
+                <div class="col-md-3">
+                    {% bootstrap_label _("State") %} <br/> {{ formation.education_group|get_active_continuing_education_formation }}
+                    <br/><br/>
+                    {% bootstrap_label _("Training aid") %} <br/> {{ formation.training_aid|yesno|title }}
+                </div>
+                <div class="col-md-9">
+                    {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}
+                    <br/><br/>
+                    {% bootstrap_label _("Manager(s) of the training") %}
+                    <br/>
+                    {% if not formation.managers.all %}
+                        {% trans 'None' %}
+                        <br/>
+                    {% else %}
+                        <ul>
+                            {% for manager in formation.managers.all %}
+                                <li>{{ manager.last_name }}, {{ manager.first_name }} ({{ manager.email }})</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <br/>
+                    {% bootstrap_label _("Who will receive notification emails ?") %}
+                    <br/>
+                    {% if not formation.send_notification_emails %}
+                        {% trans 'Nobody (because "Send notifications emails" setting is set to "No").' %}
+                    {% elif not formation.get_alternative_notification_email_receivers %}
+                        {% trans "The managers (list above) will receive the notification emails." %}
+                    {% else %}
+                        <p>
+                            {% trans "Notification emails will be sent to the following addresse(s) instead of the managers" %} :
+                        </p>
+                        <ul>
+                            {% for receiver in formation.get_alternative_notification_email_receivers %}
+                                <li>{{ receiver }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

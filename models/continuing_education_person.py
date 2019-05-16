@@ -4,13 +4,14 @@ import uuid as uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class ContinuingEducationPersonAdmin(ModelAdmin):
     list_display = ('person', 'birth_date',)
     search_fields = ['person__first_name', 'person__last_name']
     list_filter = ('birth_country',)
+    raw_id_fields = ('person',)
 
 
 class ContinuingEducationPerson(Model):

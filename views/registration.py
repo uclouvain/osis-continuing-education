@@ -23,18 +23,19 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business import data_export
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
@@ -42,10 +43,9 @@ from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import display_errors, get_object_list
-from continuing_education.business.perms import is_not_student_worker
+from continuing_education.views.common import display_errors, get_object_list, save_and_create_revision, \
+    get_appropriate_revision_message
 from continuing_education.views.home import is_continuing_education_student_worker
-from django.http import HttpResponseRedirect
 
 
 @login_required
@@ -53,12 +53,12 @@ from django.http import HttpResponseRedirect
 @cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
-    continuing_education_student_worker = is_continuing_education_student_worker(request.user)
+    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
 
-    if not continuing_education_student_worker:
+    if not user_is_continuing_education_student_worker:
         admission_list = filter_authorized_admissions(request.user, admission_list)
 
     if request.GET.get('xls_status') == "xls_registrations":
@@ -68,7 +68,7 @@ def list_registrations(request):
         'admissions': get_object_list(request, admission_list),
         'admissions_number': len(admission_list),
         'search_form': search_form,
-        'continuing_education_student_worker': continuing_education_student_worker
+        'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker
     })
 
 
@@ -121,7 +121,9 @@ def registration_edit(request, admission_id):
         admission.address = address
         admission.billing_address = billing_address
         admission.residence_address = residence_address
-        admission.save()
+        message = get_appropriate_revision_message(form)
+        save_and_create_revision(request.user, message, admission)
+
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:
         errors.append(form.errors)
@@ -216,3 +218,17 @@ def _switch_received_file_state(admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     _set_received_file_status(admission, not admission.registration_file_received)
     return admission
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def list_cancelled(request):
+    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
+
+    admission_list = Admission.objects.filter(state=admission_state_choices.CANCELLED)
+    admission_list = filter_authorized_admissions(request.user, admission_list)
+
+    return render(request, "cancellations.html", {
+        'admissions': get_object_list(request, admission_list)
+    })

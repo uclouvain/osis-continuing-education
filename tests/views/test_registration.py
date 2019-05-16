@@ -31,7 +31,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import reverse
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
 from base.tests.factories.academic_year import AcademicYearFactory
@@ -142,6 +142,28 @@ class ViewRegistrationTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_list_cancellations(self):
+        url = reverse('cancelled_files')
+        response = self.client.get(url)
+        admissions = response.context['admissions']
+        for admission in admissions:
+            self.assertEqual(admission.state, admission_state_choices.CANCELLED)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cancellations.html')
+
+    def test_list_cancellations_pagination_empty_page(self):
+        url = reverse('cancelled_files')
+        response = self.client.get(url, {'page': 0})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'cancellations.html')
+
+    def test_registration_list_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('cancelled_files')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
 
 class RegistrationStateChangedTestCase(TestCase):
     def setUp(self):
@@ -209,7 +231,7 @@ class RegistrationStateChangedTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEquals(response.status_code, 302)
         self.assertIn(
-            ugettext(_("Continuing education managers only are allowed to validate a registration")),
+            gettext(_("Continuing education managers only are allowed to validate a registration")),
             str(messages_list[0])
         )
 

@@ -24,7 +24,7 @@
 #
 ##############################################################################
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from base.models.enums import entity_type
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
@@ -49,7 +49,6 @@ class TestRegistrationXls(TestCase):
         self.user = UserFactory()
         current_academic_yr = create_current_academic_year()
         self.next_academic_yr = AcademicYearFactory(year=current_academic_yr.year + 1)
-        self.registration = AdmissionFactory()
         self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
         EducationGroupYearFactory(

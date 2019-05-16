@@ -30,9 +30,10 @@ from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Manager, Model
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from reversion.admin import VersionAdmin
 
-from continuing_education.models.enums import admission_state_choices, enums
+from continuing_education.models.enums import admission_state_choices, enums, groups
 from continuing_education.models.person_training import PersonTraining
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -44,6 +45,7 @@ class RegistrationManager(models.Manager):
             admission_state_choices.ACCEPTED,
             admission_state_choices.REGISTRATION_SUBMITTED,
             admission_state_choices.VALIDATED
+
         ])
 
 
@@ -56,7 +58,7 @@ class AdmissionManager(models.Manager):
         ])
 
 
-class AdmissionAdmin(ModelAdmin):
+class AdmissionAdmin(VersionAdmin, ModelAdmin):
     list_display = ('person_information', 'formation', 'state')
 
 
@@ -476,6 +478,9 @@ class Admission(Model):
     def is_validated(self):
         return self.state == admission_state_choices.VALIDATED
 
+    def is_cancelled(self):
+        return self.state == admission_state_choices.CANCELLED
+
     def is_registration(self):
         return self.is_accepted() or self.is_validated() or self.is_registration_submitted()
 
@@ -530,11 +535,15 @@ def can_access_admission(user, admission_id):
 
 
 def is_continuing_education_manager(user):
-    return user.groups.filter(name='continuing_education_managers').exists()
+    return user.groups.filter(name=groups.MANAGERS_GROUP).exists()
 
 
 def _build_address(address):
     return "{} - {} {} {}".format(address.location if address.location else '',
                                   address.postal_code if address.postal_code else '',
-                                  address.city if address.city else '',
-                                  "- {}".format(address.country.name) if address.country else '')
+                                  address.city.upper() if address.city else '',
+                                  "- {}".format(address.country.name.upper()) if address.country else '')
+
+
+def is_continuing_education_training_manager(user):
+    return user.groups.filter(name=groups.TRAINING_MANAGERS_GROUP).exists()

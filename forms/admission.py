@@ -1,11 +1,12 @@
 from django import forms
 from django.forms import ModelForm, ChoiceField
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
+from continuing_education.forms.common import CountryChoiceField
 from continuing_education.forms.common import set_participant_required_fields
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -30,11 +31,12 @@ class AdmissionForm(ModelForm):
         choices=admission_state_choices.STATE_CHOICES,
         required=False
     )
-    citizenship = forms.ModelChoiceField(
+    citizenship = CountryChoiceField(
         queryset=Country.objects.all().order_by('name'),
         label=_("Citizenship"),
         required=False,
     )
+
     high_school_diploma = forms.TypedChoiceField(
         coerce=lambda x: x == 'True',
         required=False,
@@ -274,5 +276,21 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
             instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
         else:
             instance.condition_of_acceptance = ''
+        instance.save()
+        return instance
+
+
+class CancelAdmissionForm(ModelForm):
+
+    class Meta:
+        model = Admission
+        fields = [
+            'state',
+            'state_reason',
+        ]
+
+    def save(self):
+        instance = super().save(commit=False)
+        instance.condition_of_acceptance = ''
         instance.save()
         return instance

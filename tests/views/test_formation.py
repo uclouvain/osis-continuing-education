@@ -30,7 +30,8 @@ from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from rest_framework import status
 
 from base.models.enums import education_group_types
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
@@ -42,7 +43,6 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from rest_framework import status
 
 STR_TRUE = "True"
 STR_FALSE = "False"

@@ -30,9 +30,11 @@ from django.utils.translation import gettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
-from continuing_education.models.enums import admission_state_choices
+from continuing_education.views.common import save_and_create_revision, MAIL_MESSAGE, MAIL, \
+    get_valid_state_change_message, get_revision_messages
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -42,8 +44,12 @@ MAX_DOCUMENTS_SIZE = 20000000
 def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    condition_of_acceptance = None
+    state_message = get_valid_state_change_message(admission)
+    save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
+
     if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
-        send_submission_email_to_admin(admission, connected_user)
+        send_submission_email_to_admission_managers(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
         return
     elif admission.state in (admission_state_choices.ACCEPTED,
@@ -51,8 +57,11 @@ def send_state_changed_email(admission, connected_user=None):
                              admission_state_choices.WAITING,
                              admission_state_choices.VALIDATED):
         lower_state = admission.state.lower()
+        if admission.state == admission_state_choices.ACCEPTED and admission.condition_of_acceptance != '':
+            condition_of_acceptance = admission.condition_of_acceptance
     else:
         lower_state = 'other'
+
     send_email(
         template_references={
             'html': 'iufc_participant_state_changed_{}_html'.format(lower_state),
@@ -67,6 +76,7 @@ def send_state_changed_email(admission, connected_user=None):
                 'reason': admission.state_reason if admission.state_reason else '-',
                 'mails': mails,
                 'original_state': _(admission._original_state),
+                'condition_of_acceptance': condition_of_acceptance
             },
             'subject': {
                 'state': _(admission.state)
@@ -82,15 +92,18 @@ def send_state_changed_email(admission, connected_user=None):
         connected_user=connected_user
     )
 
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
+    save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
 
-def send_submission_email_to_admin(admission, connected_user):
+
+def send_submission_email_to_admission_managers(admission, connected_user):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
 
     managers = _get_continuing_education_managers()
     attachments = _get_attachments(admission.id, MAX_DOCUMENTS_SIZE)
-
+    receivers = _get_admission_managers_email_receivers(admission)
     send_email(
         template_references={
             'html': _get_template_reference(admission, receiver='admin', suffix='html'),
@@ -111,16 +124,30 @@ def send_submission_email_to_admin(admission, connected_user):
             },
             'attachment': attachments
         },
-        receivers=[
-            message_config.create_receiver(
-                manager.id,
-                manager.email,
-                None
-            )
-            for manager in managers
-        ],
+        receivers=receivers,
         connected_user=connected_user
     )
+    MAIL['text'] = MAIL_MESSAGE % {
+        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]),
+    }
+    save_and_create_revision(connected_user, get_revision_messages(MAIL) if receivers else '', admission)
+
+
+def _get_admission_managers_email_receivers(admission):
+    if admission.formation.send_notification_emails is False:
+        return []
+
+    alternative_email_receivers = admission.formation.get_alternative_notification_email_receivers()
+    if alternative_email_receivers:
+        return [
+            message_config.create_receiver(None, receiver_email, None)
+            for receiver_email in alternative_email_receivers
+        ]
+    else:
+        return [
+            message_config.create_receiver(manager.id, manager.email, manager.language)
+            for manager in admission.formation.managers.all()
+        ]
 
 
 def send_submission_email_to_participant(admission, connected_user):
@@ -148,6 +175,8 @@ def send_submission_email_to_participant(admission, connected_user):
         ],
         connected_user=connected_user
     )
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email}
+    save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
 
 
 def _get_template_reference(admission, receiver, suffix):
@@ -180,6 +209,8 @@ def send_invoice_uploaded_email(admission):
             )
         ],
     )
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
+    save_and_create_revision(None, get_revision_messages(MAIL), admission)
 
 
 def send_email(template_references, receivers, data, connected_user=None):
@@ -256,8 +287,9 @@ def _get_faculty_parent(management_entity):
 
 
 def _get_managers_mails(formation):
-    managers_mail = formation.managers.all().order_by('last_name').values_list('email', flat=True) \
-        if formation else []
+    managers_mail = formation.managers.filter(email__isnull=False)\
+        .order_by('last_name').\
+        values_list('email', flat=True) if formation else []
     return _(" or ").join(managers_mail)
 
 

@@ -33,6 +33,8 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.views.common import save_and_create_revision, ADMISSION_CREATION, \
+    get_revision_messages, get_valid_state_change_message
 from reference.models.country import Country
 
 
@@ -167,6 +169,8 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         instance._original_state = instance.state
         update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
         if instance.state != instance._original_state:
+            message = get_valid_state_change_message(instance)
+            save_and_create_revision(self.context.get('request').user, get_revision_messages(message))
             send_state_changed_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
@@ -180,7 +184,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         if 'person_information' in validated_data:
             iufc_person_data = validated_data.pop('person_information')
             person_data = iufc_person_data.pop('person')
-
             Person.objects.filter(email=person_data['email']).update(**person_data)
             person = Person.objects.get(email=person_data['email'])
             ContinuingEducationPerson.objects.filter(person=person).update(**iufc_person_data)
@@ -196,5 +199,5 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         admission = Admission(**validated_data)
         admission.residence_address = admission.address
         admission.billing_address = admission.address
-        admission.save()
+        save_and_create_revision(self.context.get('request').user, get_revision_messages(ADMISSION_CREATION), admission)
         return admission
