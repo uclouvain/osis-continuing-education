@@ -94,13 +94,11 @@ ADMISSION_STATE_CHOICES = (
     (REJECTED, _('Rejected')),
     (WAITING, _('Waiting')),
     (DRAFT, _('Draft')),
-    (CANCELLED, _('Cancelled')),
 )
 REGISTRATION_STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
     (REGISTRATION_SUBMITTED, _('Registration submitted')),
     (VALIDATED, _('Validated')),
-    (CANCELLED, _('Cancelled')),
 )
 
 ARCHIVE_STATE_CHOICES = (

@@ -101,7 +101,12 @@
                 <div class="col-md-5">
                     <h4 class="media-heading"><a href="{% url 'archive' %}">{% trans 'Archives' context 'continuing_education' %}</a></h4>
                 </div>
+                <div class="col-md-1"><i class="fa fa-ban" style="font-size: 400%; color: #6699FF;"></i></div>
+                <div class="col-md-5">
+                    <h4 class="media-heading"><a href="{% url 'cancelled_files' %}">{% trans 'Files cancelled' %}</a></h4>
+                </div>
             </div>
+            <br>
         </div>
     </div>
     {% endif %}

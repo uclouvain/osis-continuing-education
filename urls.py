@@ -52,6 +52,8 @@ urlpatterns = [
         url(r'^list/receive_files/', registration.receive_files_procedure, name='receive_files_procedure'),
         url(r'^change_received_file_state/(?P<admission_id>[0-9]+)/', registration.receive_file_procedure,
             name='receive_file_procedure'),
+        url(r'^cancelled/', registration.list_cancelled, name='cancelled_files'),
+
 
     ])),
     url(r'^archive/', include([
