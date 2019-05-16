@@ -28,7 +28,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdmissionPostPutPatch'
+              $ref: '#/components/schemas/AdmissionPostSerializer'
       responses:
         201:
           description: Successful creation of a new admission
@@ -49,7 +49,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdmissionGet'
+                $ref: '#/components/schemas/AdmissionDetailSerializer'
     put:
       description: Edit an existing admission
       parameters:
@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdmissionPostPutPatch'
+              $ref: '#/components/schemas/AdmissionPostSerializer'
       responses:
         200:
           description: Successful edit of an admission's data.
@@ -83,7 +83,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdmissionPostPutPatch'
+              $ref: '#/components/schemas/AdmissionPostSerializer'
       responses:
         200:
           description: Successful edit of an admission's data.
@@ -256,7 +256,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AdmissionBasicGet'
+                  $ref: '#/components/schemas/AdmissionListSerializer'
 
   /persons/{uuid}/registrations:
     get:
@@ -276,7 +276,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/AdmissionBasicGet'
+                  $ref: '#/components/schemas/AdmissionListSerializer'
 
   /prospects:
     post:
@@ -309,7 +309,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FormationDetails'
+                  $ref: '#/components/schemas/ContinuingEducationTrainingSerializer'
 
   /trainings/{uuid}:
     get:
@@ -327,7 +327,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FormationDetails'
+                $ref: '#/components/schemas/ContinuingEducationTrainingSerializer'
 
 
 components:
@@ -339,13 +339,13 @@ components:
       description: Enter your token in the format **Token &lt;token>**
 
   schemas:
-    AdmissionGet:
+    AdmissionDetailSerializer:
       allOf:
-        - $ref: '#/components/schemas/PersonGet'
+        - $ref: '#/components/schemas/PersonDetailSerializer'
         - type: object
           properties:
               address:
-                $ref: '#/components/schemas/AddressGet'
+                $ref: '#/components/schemas/AddressSerializer'
               birth_date:
                 type: string
                 example: "2000-01-01"
@@ -357,7 +357,7 @@ components:
               citizenship:
                 $ref: '#/components/schemas/CountryName'
               formation:
-                $ref: '#/components/schemas/FormationBasicGet'
+                $ref: '#/components/schemas/ContinuingEducationTrainingSerializer'
               admission_email:
                 type: string
                 example: "jane_doe@personnalprovider.com"
@@ -369,6 +369,9 @@ components:
               phone_mobile:
                 type: string
                 example: "0000/00.00.00."
+              residence_phone:
+                type: string
+                example: "000/00.00.00."
               high_school_diploma:
                 type: boolean
               high_school_graduation_year:
@@ -387,17 +390,23 @@ components:
                 type: string
               professional_status:
                 type: string
+              professional_status_text:
+                type: string
+                readOnly: true
               current_occupation:
                 type: string
               current_employer:
                 type: string
               activity_sector:
                 type: string
+              activity_sector_text:
+                type: string
+                readOnly: true
               past_professional_activities:
                 type: string
               motivation:
                 type: string
-              professional_impact:
+              professional_personal_interests:
                 type: string
               awareness_ucl_website:
                 type: boolean
@@ -413,12 +422,22 @@ components:
                 type: boolean
               awareness_emailing:
                 type: boolean
+              awareness_word_of_mouth:
+                type: boolean
+              awareness_friends:
+                type: boolean
+              awareness_former_students:
+                type: boolean
+              awareness_moocs:
+                type: boolean
               awareness_other:
                 type: string
               condition_of_acceptance:
                 type: string
+              state_reason:
+                type: string
 
-    AdmissionBasicGet:
+    AdmissionListSerializer:
       allOf:
         - type: object
           properties:
@@ -430,15 +449,15 @@ components:
               type: string
               readOnly: true
 
-        - $ref: '#/components/schemas/FormationBasicGet'
+        - $ref: '#/components/schemas/FormationBasic'
 
-    AdmissionPostPutPatch:
+    AdmissionPostSerializer:
       allOf:
-        - $ref: '#/components/schemas/AdmissionGet'
+        - $ref: '#/components/schemas/AdmissionDetailSerializer'
         - type: object
           properties:
             address:
-              $ref: '#/components/schemas/AdressPostPutPatch'
+              $ref: '#/components/schemas/AddressPostSerializer'
             birth_country:
               $ref: '#/components/schemas/CountryIsoCode'
             citizenship:
@@ -448,17 +467,17 @@ components:
 
     RegistrationGet:
       allOf:
-        - $ref: '#/components/schemas/PersonGet'
+        - $ref: '#/components/schemas/PersonDetailSerializer'
         - type: object
           properties:
             address:
-              $ref: '#/components/schemas/AddressGet'
+              $ref: '#/components/schemas/AddressSerializer'
             registration_type:
               $ref: '#/components/schemas/RegistrationTypeEnum'
             use_address_for_billing:
               type: boolean
             billing_address:
-              $ref: '#/components/schemas/AddressGet'
+              $ref: '#/components/schemas/AddressSerializer'
             head_office_name:
               type: string
             company_number:
@@ -487,7 +506,7 @@ components:
             use_address_for_post:
               type: boolean
             residence_address:
-               $ref: '#/components/schemas/AddressGet'
+               $ref: '#/components/schemas/AddressSerializer'
             residence_phone:
               type: string
 
@@ -524,23 +543,23 @@ components:
         - type: object
           properties:
             address:
-              $ref: '#/components/schemas/AdressPostPutPatch'
+              $ref: '#/components/schemas/AddressPostSerializer'
             billing_address:
-              $ref: '#/components/schemas/AdressPostPutPatch'
+              $ref: '#/components/schemas/AddressPostSerializer'
             residence_address:
-              $ref: '#/components/schemas/AdressPostPutPatch'
+              $ref: '#/components/schemas/AddressPostSerializer'
 
     CityAndZip:
       type: object
       properties:
-        zip_code:
+        postal_code:
           type: string
           example: "1348"
         city:
           type: string
           example: Louvain-la-Neuve
 
-    AddressGet:
+    AddressSerializer:
       allOf:
         - $ref: '#/components/schemas/CityAndZip'
         - type: object
@@ -551,15 +570,15 @@ components:
             country:
               $ref: '#/components/schemas/CountryName'
 
-    AdressPostPutPatch:
+    AddressPostSerializer:
       allOf:
-        - $ref: '#/components/schemas/AddressGet'
+        - $ref: '#/components/schemas/AddressSerializer'
         - type: object
           properties:
               country:
                 $ref: '#/components/schemas/CountryIsoCode'
 
-    PersonGet:
+    PersonDetailSerializer:
       allOf:
         - $ref: '#/components/schemas/PersonBasic'
         - type: object
@@ -582,7 +601,7 @@ components:
           format: email
           example: jane.doe@provider.com
 
-    FormationBasicGet:
+    FormationBasic:
       type: object
       properties:
         uuid:
@@ -590,16 +609,16 @@ components:
         acronym:
           type: string
           example: DROI2M
-        title_fr:
+        title:
           type: string
           example : "Master en Droit"
         faculty:
           type: string
           example : "DRT"
 
-    FormationDetails:
+    ContinuingEducationTrainingSerializer:
       allOf:
-        - $ref: '#/components/schemas/FormationBasicGet'
+        - $ref: '#/components/schemas/FormationBasic'
         - type: object
           properties:
             active:
