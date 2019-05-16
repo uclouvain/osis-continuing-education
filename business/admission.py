@@ -45,7 +45,6 @@ def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     condition_of_acceptance = None
-    
     state_message = get_valid_state_change_message(admission)
     save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
 
