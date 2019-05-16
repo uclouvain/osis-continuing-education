@@ -27,13 +27,12 @@ from rest_framework import serializers
 
 from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonPostSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
@@ -45,7 +44,7 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
     acronym = serializers.CharField(source='formation.acronym')
     state_text = serializers.CharField(source='get_state_display', read_only=True)
     faculty = serializers.SerializerMethodField()
-    title_fr = serializers.CharField(source='formation.title')
+    title = serializers.CharField(source='formation.title')
 
     def get_faculty(self, obj):
         ac = obj.formation.academic_year
@@ -60,36 +59,51 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
             'acronym',
             'state',
             'state_text',
-            'title_fr',
+            'title',
             'faculty'
         )
 
 
 class AdmissionDetailSerializer(AdmissionListSerializer):
-    citizenship = CountrySerializer()
+    citizenship = serializers.CharField(source='citizenship.name')
 
     address = AddressSerializer()
 
+    state_text = serializers.CharField(source='get_state_display', read_only=True)
     first_name = serializers.CharField(source='person_information.person.first_name')
     last_name = serializers.CharField(source='person_information.person.last_name')
     email = serializers.CharField(source='person_information.person.email')
     gender = serializers.CharField(source='person_information.person.gender')
 
+    birth_date = serializers.DateField(source='person_information.birth_date')
+    birth_location = serializers.DateField(source='person_information.birth_location')
+    birth_country = serializers.DateField(source='person_information.birth_country.name')
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
+    admission_email = serializers.CharField(source='email')
+
+    formation = ContinuingEducationTrainingSerializer()
 
     class Meta:
         model = Admission
-        fields = AdmissionListSerializer.Meta.fields + (
+        fields = (
+            'uuid',
+            'state',
+            'state_text',
             'first_name',
             'last_name',
             'email',
             'gender',
             # CONTACTS
             'address',
+            'birth_date',
+            'birth_location',
+            'birth_country',
             'citizenship',
+            'formation',
             'phone_mobile',
             'residence_phone',
+            'admission_email',
 
             # EDUCATION
             'high_school_diploma',
@@ -140,7 +154,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         allow_null=True
     )
     address = AddressPostSerializer(required=False, allow_null=True)
-    person_information = ContinuingEducationPersonPostSerializer(required=True)
     formation = serializers.SlugRelatedField(
         queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',

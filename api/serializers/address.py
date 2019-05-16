@@ -26,12 +26,11 @@
 from rest_framework import serializers
 
 from continuing_education.models.address import Address
-from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
 class AddressSerializer(serializers.HyperlinkedModelSerializer):
-    country = CountrySerializer(read_only=True)
+    country = serializers.CharField(source='country.name', read_only=True)
 
     class Meta:
         model = Address
