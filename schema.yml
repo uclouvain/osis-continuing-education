@@ -185,7 +185,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegistrationGet'
+                $ref: '#/components/schemas/RegistrationDetailSerializer'
     put:
       description: Edit an existing registration
       parameters:
@@ -200,7 +200,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegistrationPutPatch'
+              $ref: '#/components/schemas/RegistrationPostSerializer'
       responses:
         200:
           description: Successful edit of a registration's data
@@ -219,7 +219,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegistrationPutPatch'
+              $ref: '#/components/schemas/RegistrationPostSerializer'
       responses:
         200:
           description: Successful edit of a registration's data
@@ -465,7 +465,7 @@ components:
             formation:
               $ref: '#/components/schemas/Uuid'
 
-    RegistrationGet:
+    RegistrationDetailSerializer:
       allOf:
         - $ref: '#/components/schemas/PersonDetailSerializer'
         - type: object
@@ -537,9 +537,9 @@ components:
             spreading_payments:
               type: boolean
 
-    RegistrationPutPatch:
+    RegistrationPostSerializer:
       allOf:
-        - $ref: '#/components/schemas/RegistrationGet'
+        - $ref: '#/components/schemas/RegistrationDetailSerializer'
         - type: object
           properties:
             address:

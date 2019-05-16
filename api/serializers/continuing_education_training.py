@@ -25,7 +25,6 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.models.education_group import EducationGroup
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
@@ -42,7 +41,7 @@ class PersonTrainingListField(serializers.RelatedField):
 
 class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:continuing-education-training-detail-update-delete',
+        view_name='continuing_education_api_v1:continuing-education-training-detail',
         lookup_field='uuid'
     )
     faculty = serializers.SerializerMethodField()
@@ -65,11 +64,3 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
         ac = obj.academic_year
         faculty_version = obj.management_entity.entityversion_set.first().find_faculty_version(ac)
         return faculty_version.acronym
-
-
-class ContinuingEducationTrainingPostSerializer(ContinuingEducationTrainingSerializer):
-    education_group = serializers.SlugRelatedField(
-        queryset=EducationGroup.objects.all(),
-        slug_field='uuid',
-        required=True
-    )

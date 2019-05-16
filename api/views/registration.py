@@ -37,40 +37,28 @@ from continuing_education.models.enums.admission_state_choices import REGISTRATI
 
 class RegistrationList(generics.ListAPIView):
     """
-       Return a list of all the registration with optional filtering or create one.
+       Return a list of all the registration with optional filtering.
     """
     name = 'registration-list'
 
     filter_fields = (
-        'person_information',
-        'formation',
         'state',
     )
     search_fields = (
-        'person_information',
-        'formation',
         'state',
     )
     ordering_fields = (
-        'person_information__person__last_name',
-        'formation',
         'state',
     )
     ordering = (
         'state',
-        'formation',
     )  # Default ordering
 
     serializer_class = RegistrationListSerializer
 
     def get_queryset(self):
         person = get_object_or_404(ContinuingEducationPerson, uuid=self.kwargs['uuid'])
-        return Admission.registration_objects.filter(person_information=person).select_related(
-            'person_information',
-            'address',
-            'billing_address',
-            'residence_address'
-        )
+        return Admission.registration_objects.filter(person_information=person)
 
 
 class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):

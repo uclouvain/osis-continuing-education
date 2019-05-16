@@ -25,15 +25,14 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.api.serializers.person import PersonDetailSerializer
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.admission import AdmissionListSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonPostSerializer
 from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
     save_and_create_revision
-from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
@@ -48,9 +47,13 @@ class RegistrationListSerializer(AdmissionListSerializer):
         fields = AdmissionListSerializer.Meta.fields
 
 
-class RegistrationDetailSerializer(RegistrationListSerializer):
+class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
+    first_name = serializers.CharField(source='person_information.person.first_name')
+    last_name = serializers.CharField(source='person_information.person.last_name')
+    email = serializers.CharField(source='person_information.person.email')
+    gender = serializers.CharField(source='person_information.person.gender')
 
-    citizenship = CountrySerializer()
+    citizenship = serializers.CharField(source='citizenship.name')
 
     address = AddressSerializer()
     billing_address = AddressSerializer()
@@ -62,7 +65,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
 
     class Meta:
         model = Admission
-        fields = RegistrationListSerializer.Meta.fields + (
+        fields = PersonDetailSerializer.Meta.fields + (
             # CONTACTS
             'address',
             'citizenship',
@@ -105,7 +108,6 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'reduced_rates',
             'spreading_payments',
             'condition_of_acceptance'
-
         )
 
 
@@ -116,7 +118,6 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
         required=False,
         allow_null=True
     )
-    person_information = ContinuingEducationPersonPostSerializer(required=False)
 
     address = AddressPostSerializer(required=False)
     billing_address = AddressPostSerializer(required=False)

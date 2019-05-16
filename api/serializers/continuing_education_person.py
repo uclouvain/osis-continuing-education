@@ -25,10 +25,7 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.api.serializers.person import PersonDetailSerializer
-from base.models.person import Person
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from reference.models.country import Country
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
@@ -40,19 +37,28 @@ class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer
         )
 
 
-class ContinuingEducationPersonPostSerializer(ContinuingEducationPersonSerializer):
-    person = PersonDetailSerializer()
-
-    birth_country = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-    )
-
-    def create(self, validated_data):
-        person_data = validated_data.pop('person')
-        Person.objects.filter(email=person_data['email']).update(**person_data)
-        person = Person.objects.get(email=person_data['email'])
-        validated_data['person'] = person
-
-        iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
-        return iufc_person
+# class ContinuingEducationPersonPostSerializer(ContinuingEducationPersonSerializer):
+#     person = PersonDetailSerializer()
+#
+#     birth_country = serializers.SlugRelatedField(
+#         slug_field='iso_code',
+#         queryset=Country.objects.all(),
+#     )
+#
+#     class Meta:
+#         model = ContinuingEducationPerson
+#         fields = ContinuingEducationPersonSerializer.Meta.fields + (
+#             'person',
+#             'birth_date',
+#             'birth_location',
+#             'birth_country',
+#         )
+#
+#     def create(self, validated_data):
+#         person_data = validated_data.pop('person')
+#         Person.objects.filter(email=person_data['email']).update(**person_data)
+#         person = Person.objects.get(email=person_data['email'])
+#         validated_data['person'] = person
+#
+#         iufc_person = ContinuingEducationPerson.objects.create(**validated_data)
+#         return iufc_person

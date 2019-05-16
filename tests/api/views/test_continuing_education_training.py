@@ -135,11 +135,11 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         cls.user = UserFactory()
         cls.url = reverse(
-            'continuing_education_api_v1:continuing-education-training-detail-update-delete',
+            'continuing_education_api_v1:continuing-education-training-detail',
             kwargs={'uuid': cls.continuing_education_training.uuid}
         )
         cls.invalid_url = reverse(
-            'continuing_education_api_v1:continuing-education-training-detail-update-delete',
+            'continuing_education_api_v1:continuing-education-training-detail',
             kwargs={'uuid': uuid.uuid4()}
         )
 

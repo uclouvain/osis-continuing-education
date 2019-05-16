@@ -27,10 +27,10 @@ from django.conf.urls import url
 
 from continuing_education.api.views.address import AddressDetailUpdate, AddressListCreate
 from continuing_education.api.views.admission import AdmissionList, AdmissionDetailUpdate, AdmissionCreate
-from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonListCreate, \
+from continuing_education.api.views.continuing_education_person import ContinuingEducationPersonList, \
     ContinuingEducationPersonDetail
-from continuing_education.api.views.continuing_education_training import ContinuingEducationTrainingListCreate, \
-    ContinuingEducationTrainingDetailUpdateDestroy
+from continuing_education.api.views.continuing_education_training import ContinuingEducationTrainingList, \
+    ContinuingEducationTrainingDetail
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
 from continuing_education.api.views.prospect import ProspectListCreate, ProspectDetailUpdate
 from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate, \
@@ -43,7 +43,7 @@ urlpatterns = [
         AddressDetailUpdate.as_view(),
         name=AddressDetailUpdate.name
     ),
-    url(r'^persons/$', ContinuingEducationPersonListCreate.as_view(), name=ContinuingEducationPersonListCreate.name),
+    url(r'^persons/$', ContinuingEducationPersonList.as_view(), name=ContinuingEducationPersonList.name),
     url(
         r'^persons/details$',
         ContinuingEducationPersonDetail.as_view(),
@@ -84,13 +84,13 @@ urlpatterns = [
     ),
     url(
         r'^training/$',
-        ContinuingEducationTrainingListCreate.as_view(),
-        name=ContinuingEducationTrainingListCreate.name
+        ContinuingEducationTrainingList.as_view(),
+        name=ContinuingEducationTrainingList.name
     ),
     url(
         r'^training/(?P<uuid>[0-9a-f-]+)$',
-        ContinuingEducationTrainingDetailUpdateDestroy.as_view(),
-        name=ContinuingEducationTrainingDetailUpdateDestroy.name
+        ContinuingEducationTrainingDetail.as_view(),
+        name=ContinuingEducationTrainingDetail.name
     ),
     url(r'^registration/for_epc/$', RegistrationListForEpc.as_view(),
         name=RegistrationListForEpc.name),

@@ -23,11 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from rest_framework import generics
 from django_filters import rest_framework as filters
+from rest_framework import generics
 
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
-    ContinuingEducationTrainingPostSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
@@ -39,11 +38,11 @@ class ContinuingEducationTrainingFilter(filters.FilterSet):
         fields = ['education_group', 'active']
 
 
-class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
+class ContinuingEducationTrainingList(generics.ListAPIView):
     """
-       Return a list of all the trainings with optional filtering or create a training.
+       Return a list of all the trainings with optional filtering.
     """
-    name = 'continuing-education-training-list-create'
+    name = 'continuing-education-training-list'
     queryset = ContinuingEducationTraining.objects.all().distinct()
     filter_class = ContinuingEducationTrainingFilter
     search_fields = (
@@ -53,21 +52,14 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
         'education_group__educationgroupyear__acronym',
     )
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return ContinuingEducationTrainingPostSerializer
-        return ContinuingEducationTrainingSerializer
+    serializer_class = ContinuingEducationTrainingSerializer
 
 
-class ContinuingEducationTrainingDetailUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+class ContinuingEducationTrainingDetail(generics.RetrieveAPIView):
     """
-        Return the detail of the training, destroy one or update one.
+        Return the detail of the training.
     """
-    name = 'continuing-education-training-detail-update-delete'
+    name = 'continuing-education-training-detail'
     queryset = ContinuingEducationTraining.objects.all()
     lookup_field = 'uuid'
-
-    def get_serializer_class(self):
-        if self.request.method in ['PUT', 'PATCH']:
-            return ContinuingEducationTrainingPostSerializer
-        return ContinuingEducationTrainingSerializer
+    serializer_class = ContinuingEducationTrainingSerializer

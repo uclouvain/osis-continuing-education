@@ -26,16 +26,15 @@
 from rest_framework import generics
 
 from base.models.person import Person
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
-    ContinuingEducationPersonPostSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
 
-class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
+class ContinuingEducationPersonList(generics.ListAPIView):
     """
-       Return a list of continuing education persons with optional filtering or create one.
+       Return a list of continuing education persons with optional filtering.
     """
-    name = 'person-list-create'
+    name = 'person-list'
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
@@ -52,10 +51,7 @@ class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
         'person',
     )  # Default ordering
 
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return ContinuingEducationPersonPostSerializer
-        return ContinuingEducationPersonSerializer
+    serializer_class = ContinuingEducationPersonSerializer
 
 
 class ContinuingEducationPersonDetail(generics.RetrieveAPIView):

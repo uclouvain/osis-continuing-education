@@ -43,7 +43,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:person-list-create')
+        cls.url = reverse('continuing_education_api_v1:person-list')
 
         cls.birth_country = CountryFactory()
         cls.country = CountryFactory(iso_code='FR')

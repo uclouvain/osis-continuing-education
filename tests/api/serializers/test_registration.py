@@ -1,9 +1,11 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
+from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.api.serializers.registration import RegistrationDetailSerializer, RegistrationListSerializer, \
     RegistrationPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -40,7 +42,8 @@ class RegistrationDetailSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        edy = EducationGroupYearFactory(education_group=ed)
+        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.person_information = ContinuingEducationPersonFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
         new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
