@@ -45,6 +45,10 @@ def send_state_changed_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     condition_of_acceptance = None
+    
+    state_message = get_valid_state_change_message(admission)
+    save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
+
     if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
         send_submission_email_to_admission_managers(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
@@ -88,8 +92,7 @@ def send_state_changed_email(admission, connected_user=None):
         ],
         connected_user=connected_user
     )
-    state_message = get_valid_state_change_message(admission)
-    save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
+
     MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
     save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
 

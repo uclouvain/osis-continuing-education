@@ -26,12 +26,13 @@
 * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-{% if version %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4>{% trans "Last modifications" %}</h4>
-        </div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>{% trans "Last modifications" %}</h4>
     </div>
+</div>
+{% if version %}
     <div class="panel-body">
         <table class="table table-striped">
             <thead>
@@ -57,5 +58,11 @@
             {% endfor %}
             </tbody>
         </table>
+    </div>
+{% else %}
+    <div class="panel-body">
+        <div class="jumbotron">
+            <p>{% trans 'No history available' %}</p>
+        </div>
     </div>
 {% endif %}
