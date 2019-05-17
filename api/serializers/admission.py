@@ -45,6 +45,8 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='uuid'
     )
     acronym = serializers.CharField(source='formation.acronym')
+    academic_year = serializers.CharField(source='formation.academic_year')
+    code = serializers.CharField(source='formation.partial_acronym')
     state_text = serializers.CharField(source='get_state_display', read_only=True)
     faculty = serializers.SerializerMethodField()
     title = serializers.CharField(source='formation.title')
@@ -63,7 +65,9 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
             'state',
             'state_text',
             'title',
-            'faculty'
+            'faculty',
+            'code',
+            'academic_year'
         )
 
 
@@ -79,8 +83,8 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     gender = serializers.CharField(source='person_information.person.gender')
 
     birth_date = serializers.DateField(source='person_information.birth_date')
-    birth_location = serializers.DateField(source='person_information.birth_location')
-    birth_country = serializers.DateField(source='person_information.birth_country.name')
+    birth_location = serializers.CharField(source='person_information.birth_location')
+    birth_country = serializers.CharField(source='person_information.birth_country.name')
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
     admission_email = serializers.CharField(source='email')

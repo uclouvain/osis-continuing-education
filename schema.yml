@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: "1"
+  version: "1.0.0"
   title: Continuing Education API
   description: 'This API delivers data for the Continuing Education project.'
   contact:
@@ -122,10 +122,14 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/FilePost'
+              $ref: '#/components/schemas/AdmissionFilePostSerializer'
       responses:
         201:
           description: Successful post of a new file linked to an admission
+        400:
+          description: Unsuccessful post of a file
+        406:
+          description: File name too long
 
   /admissions/{uuid}/files/{file_uuid}:
     get:
@@ -149,7 +153,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileDetails'
+                $ref: '#/components/schemas/AdmissionFileSerializer'
     delete:
       description: Delete a specific file
       parameters:
@@ -470,10 +474,20 @@ components:
         - $ref: '#/components/schemas/PersonDetailSerializer'
         - type: object
           properties:
+            state:
+              $ref: '#/components/schemas/StateEnum'
+            state_text:
+              type: string
+              readOnly: true
+            citizenship:
+              $ref: '#/components/schemas/CountryName'
             address:
               $ref: '#/components/schemas/AddressSerializer'
             registration_type:
               $ref: '#/components/schemas/RegistrationTypeEnum'
+            registration_type_text:
+              type: string
+              readOnly: true
             use_address_for_billing:
               type: boolean
             billing_address:
@@ -495,6 +509,7 @@ components:
               $ref: '#/components/schemas/MaritalStatusEnum'
             marital_status_text:
               type: string
+              readOnly: true
             spouse_name:
               type: string
             children_number:
@@ -509,7 +524,6 @@ components:
                $ref: '#/components/schemas/AddressSerializer'
             residence_phone:
               type: string
-
             ucl_registration_complete:
               type: boolean
             noma:
@@ -524,18 +538,14 @@ components:
               type: boolean
             assessment_succeeded:
               type: boolean
-            registration_file_received:
-              type: boolean
-            archived:
-              type: boolean
-            diploma_produced:
-              type: boolean
             sessions:
               type: boolean
             reduced_rates:
               type: boolean
             spreading_payments:
               type: boolean
+            condition_of_acceptance:
+              type: string
 
     RegistrationPostSerializer:
       allOf:
@@ -615,6 +625,8 @@ components:
         faculty:
           type: string
           example : "DRT"
+        code:
+          type: string
 
     ContinuingEducationTrainingSerializer:
       allOf:
@@ -637,7 +649,7 @@ components:
         name:
           type: string
 
-    FilePost:
+    AdmissionFilePostSerializer:
       allOf:
         - $ref: '#/components/schemas/File'
         - $ref: '#/components/schemas/FileContent'
@@ -658,8 +670,15 @@ components:
               example: "2020-01-01"
             uploaded_by:
               type: string
+            path:
+              type: string
+            file_category:
+              $ref: '#/components/schemas/FileCategoryEnum'
+            file_category_text:
+              type: string
+              readOnly: true
 
-    FileDetails:
+    AdmissionFileSerializer:
       allOf:
         - $ref: '#/components/schemas/FileListItem'
         - $ref: '#/components/schemas/FileContent'
@@ -723,6 +742,13 @@ components:
         - Divorced
         - Separated
         - Legal cohabitant
+
+    FileCategoryEnum:
+      type: string
+      enum:
+        - Document
+        - Invoice
+        - Participant
 
 security:
   - Token: []
