@@ -37,14 +37,14 @@ class ProspectListCreate(generics.ListCreateAPIView):
     queryset = Prospect.objects.all()
     filter_fields = (
         'first_name',
-        'name',
+        'last_name',
         'email',
         'postal_code',
         'formation'
     )
     search_fields = (
         'first_name',
-        'name',
+        'last_name',
         'email',
         'postal_code',
         'formation'

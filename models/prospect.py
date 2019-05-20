@@ -32,17 +32,17 @@ from django.utils.translation import gettext_lazy as _
 
 
 class ProspectAdmin(ModelAdmin):
-    list_display = ('first_name', 'name', 'email', 'postal_code', 'formation')
-    search_fields = ['first_name', 'name', 'email', 'postal_code', 'formation']
+    list_display = ('first_name', 'last_name', 'email', 'postal_code', 'formation')
+    search_fields = ['first_name', 'last_name', 'email', 'postal_code', 'formation']
     raw_id_fields = ('formation',)
 
 
 class Prospect(Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    name = models.CharField(
+    last_name = models.CharField(
         max_length=250,
         blank=True,
-        verbose_name=_('Name')
+        verbose_name=_('Last name')
     )
     first_name = models.CharField(
         max_length=250,

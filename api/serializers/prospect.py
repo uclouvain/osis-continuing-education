@@ -45,7 +45,7 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'url',
             'uuid',
-            'name',
+            'last_name',
             'first_name',
             'postal_code',
             'city',
