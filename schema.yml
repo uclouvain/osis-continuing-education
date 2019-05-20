@@ -474,6 +474,10 @@ components:
         - $ref: '#/components/schemas/PersonDetailSerializer'
         - type: object
           properties:
+            person_uuid:
+              $ref: '#/components/schemas/Uuid'
+            uuid:
+              $ref: '#/components/schemas/Uuid'
             state:
               $ref: '#/components/schemas/StateEnum'
             state_text:
@@ -574,6 +578,8 @@ components:
         - $ref: '#/components/schemas/CityAndZip'
         - type: object
           properties:
+            uuid:
+              $ref: '#/components/schemas/Uuid'
             location:
               type: string
               example: "Rue du Compas, 1"
@@ -625,8 +631,6 @@ components:
         faculty:
           type: string
           example : "DRT"
-        code:
-          type: string
 
     ContinuingEducationTrainingSerializer:
       allOf:

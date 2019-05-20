@@ -71,7 +71,7 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
-    citizenship = serializers.CharField(source='citizenship.name')
+    citizenship = serializers.CharField(source='citizenship.name', read_only=True)
 
     address = AddressSerializer()
     person_uuid = serializers.UUIDField(source='person_information.person.uuid', required=False)
