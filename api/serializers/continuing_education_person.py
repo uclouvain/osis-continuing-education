@@ -29,9 +29,13 @@ from continuing_education.models.continuing_education_person import ContinuingEd
 
 
 class ContinuingEducationPersonSerializer(serializers.HyperlinkedModelSerializer):
+    birth_country = serializers.CharField(source='birth_country.name', read_only=True)
 
     class Meta:
         model = ContinuingEducationPerson
         fields = (
             'uuid',
+            'birth_date',
+            'birth_location',
+            'birth_country'
         )

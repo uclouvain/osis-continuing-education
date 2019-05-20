@@ -63,4 +63,4 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
     def get_faculty(self, obj):
         ac = obj.academic_year
         faculty_version = obj.management_entity.entityversion_set.first().find_faculty_version(ac)
-        return faculty_version.acronym
+        return faculty_version.acronym if faculty_version else None
