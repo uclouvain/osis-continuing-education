@@ -25,7 +25,6 @@
 ##############################################################################
 from rest_framework import serializers
 
-from base.api.serializers.person import PersonDetailSerializer
 from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
@@ -75,6 +74,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     citizenship = serializers.CharField(source='citizenship.name')
 
     address = AddressSerializer()
+    person_uuid = serializers.UUIDField(source='person_information.person.uuid', required=False)
 
     state_text = serializers.CharField(source='get_state_display', read_only=True)
     first_name = serializers.CharField(source='person_information.person.first_name')
@@ -93,7 +93,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Admission
-        fields = PersonDetailSerializer.Meta.fields + (
+        fields = (
             'uuid',
             'state',
             'state_text',
@@ -101,6 +101,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             'last_name',
             'email',
             'gender',
+            'person_uuid',
             # CONTACTS
             'address',
             'birth_date',

@@ -63,11 +63,12 @@ class RegistrationDetailSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
+            'uuid',
             'first_name',
             'last_name',
             'email',
             'gender',
-            'uuid',
+            'person_uuid',
             'birth_date',
             'birth_country',
             'birth_location',
@@ -130,11 +131,12 @@ class RegistrationPostSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
-                        'first_name',
+            'uuid',
+            'first_name',
             'last_name',
             'email',
             'gender',
-            'uuid',
+            'person_uuid',
             'birth_date',
             'birth_country',
             'birth_location',

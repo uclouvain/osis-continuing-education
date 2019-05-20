@@ -67,13 +67,14 @@ class AdmissionDetailSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
+            'uuid',
+            'state',
+            'state_text',
             'first_name',
             'last_name',
             'email',
             'gender',
-            'uuid',
-            'state',
-            'state_text',
+            'person_uuid',
             'address',
             'birth_date',
             'birth_location',
@@ -138,13 +139,14 @@ class AdmissionPostSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
+            'uuid',
+            'state',
+            'state_text',
             'first_name',
             'last_name',
             'email',
             'gender',
-            'uuid',
-            'state',
-            'state_text',
+            'person_uuid',
             'address',
             'birth_date',
             'birth_location',
