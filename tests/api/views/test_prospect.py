@@ -98,7 +98,7 @@ class ProspectListCreateTestCase(APITestCase):
             academic_year=self.academic_year
         )
         data = {
-            'name': self.prospect.name,
+            'last_name': self.prospect.last_name,
             'first_name': self.prospect.first_name,
             'postal_code': self.prospect.postal_code,
             'city': self.prospect.city,

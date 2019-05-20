@@ -54,7 +54,7 @@ class ProspectSerializerTestCase(TestCase):
         expected_fields = [
             'url',
             'uuid',
-            'name',
+            'last_name',
             'first_name',
             'postal_code',
             'city',

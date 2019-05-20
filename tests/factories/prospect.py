@@ -31,7 +31,7 @@ class ProspectFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.prospect'
 
-    name = factory.Faker('last_name')
+    last_name = factory.Faker('last_name')
     first_name = factory.Faker('first_name')
     postal_code = factory.Faker('zipcode')
     city = factory.Faker('city')
