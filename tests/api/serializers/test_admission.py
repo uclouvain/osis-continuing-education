@@ -36,7 +36,9 @@ class AdmissionListSerializerTestCase(TestCase):
             'state',
             'state_text',
             'title',
-            'faculty'
+            'faculty',
+            'code',
+            'academic_year'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -65,13 +67,13 @@ class AdmissionDetailSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
-            'uuid',
-            'state',
-            'state_text',
             'first_name',
             'last_name',
             'email',
             'gender',
+            'uuid',
+            'state',
+            'state_text',
             'address',
             'birth_date',
             'birth_location',
@@ -136,13 +138,13 @@ class AdmissionPostSerializerTestCase(TestCase):
 
     def test_contains_expected_fields(self):
         expected_fields = [
-            'uuid',
-            'state',
-            'state_text',
             'first_name',
             'last_name',
             'email',
             'gender',
+            'uuid',
+            'state',
+            'state_text',
             'address',
             'birth_date',
             'birth_location',

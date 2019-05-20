@@ -133,7 +133,6 @@ class AdmissionCreateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-
         cls.citizenship = CountryFactory(iso_code='FR')
         new_country = CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory(birth_country=cls.citizenship)
@@ -177,17 +176,16 @@ class AdmissionCreateTestCase(APITestCase):
         self.assertEqual(3, Admission.admission_objects.all().count())
         self.assertEqual(1, ContinuingEducationPerson.objects.all().count())
         self.assertEqual(1, Person.objects.all().count())
+        person_information = self.admission.person_information
         data = {
-            'person_information': {
-                'uuid': self.admission.person_information.uuid,
-                'person': {
-                    'uuid': self.admission.person_information.person.uuid,
-                    'email': self.admission.person_information.person.email,
-                },
-                'birth_country': self.admission.person_information.birth_country.iso_code
-
-            },
-            'email': 'a@c.dk',
+            'first_name': person_information.person.first_name,
+            'last_name': person_information.person.last_name,
+            'gender': person_information.person.gender,
+            'email': person_information.person.email,
+            'birth_location': person_information.birth_location,
+            'birth_date': person_information.birth_date,
+            'birth_country': person_information.birth_country.iso_code,
+            'admission_email': 'a@c.dk',
             'formation': self.formation.uuid
         }
 
@@ -205,18 +203,14 @@ class AdmissionCreateTestCase(APITestCase):
         p = PersonFactory(email='b@d.be')
         ContinuingEducationPersonFactory(person=p)
         data = {
-            'person_information': {
-                'birth_date': datetime.date.today(),
-                'birth_country':  'NL',
-                'birth_location': 'Turlututu',
-                'person': {
-                    'first_name': 'Benjamin',
-                    'last_name': 'Dau',
-                    'gender': 'M',
-                    'email': 'b@d.be'
-                },
-            },
-            'email': 'a@c.dk',
+            'birth_date': datetime.date.today(),
+            'birth_country':  'NL',
+            'birth_location': 'Turlututu',
+            'first_name': 'Benjamin',
+            'last_name': 'Dau',
+            'gender': 'M',
+            'email': 'b@d.be',
+            'admission_email': 'a@c.dk',
             'formation': self.formation.uuid
         }
 
@@ -259,11 +253,11 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         self.user = UserFactory()
         self.academic_year = AcademicYearFactory(year=2018)
         education_group = EducationGroupFactory()
-        EducationGroupYearFactory(
+        edy = EducationGroupYearFactory(
             education_group=education_group,
             academic_year=self.academic_year
         )
-
+        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         self.admission = AdmissionFactory(
             citizenship=self.citizenship,
             person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=self.user)),

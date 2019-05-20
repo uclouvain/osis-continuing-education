@@ -23,14 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import datetime
 
 from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from base.models.person import Person
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
@@ -39,7 +37,7 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 from reference.tests.factories.country import CountryFactory
 
 
-class ContinuingEducationPersonListCreateTestCase(APITestCase):
+class ContinuingEducationPersonListTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
@@ -60,14 +58,8 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_create_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put']
+        methods_not_allowed = ['delete', 'put', 'patch', 'post']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -84,47 +76,6 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
         self.assertTrue('count' in response.data)
         expected_count = ContinuingEducationPerson.objects.all().count()
         self.assertEqual(response.data['count'], expected_count)
-
-    def test_create_valid_person(self):
-        self.assertEqual(3, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(4, Person.objects.all().count())
-        data = {
-            "person": {
-                'uuid': self.person.uuid,
-                'email': self.person.email,
-            },
-            'birth_date': datetime.date.today(),
-            'birth_location': 'Hilo',
-            'birth_country': 'FR',
-        }
-        response = self.client.post(self.url, data=data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(4, Person.objects.all().count())
-
-    def test_create_valid_person_with_new_user(self):
-        self.assertEqual(3, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(4, Person.objects.all().count())
-        PersonFactory(email="a@b.be")
-        data = {
-            "person": {
-                'first_name': "Ben",
-                'last_name': "Total",
-                'gender': "M",
-                'email': "a@b.be"
-            },
-            'birth_date': datetime.date.today(),
-            'birth_location': 'Hilo',
-            'birth_country': 'FR',
-        }
-        response = self.client.post(self.url, data=data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(4, ContinuingEducationPerson.objects.all().count())
-        self.assertEqual(5, Person.objects.all().count())
-
-    def test_create_invalid_person(self):
-        response = self.client.post(self.url)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class ContinuingEducationPersonDetailTestCase(APITestCase):

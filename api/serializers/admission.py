@@ -87,7 +87,7 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
     birth_country = serializers.CharField(source='person_information.birth_country.name')
     professional_status_text = serializers.CharField(source='get_professional_status_display', read_only=True)
     activity_sector_text = serializers.CharField(source='get_activity_sector_display', read_only=True)
-    admission_email = serializers.CharField(source='email')
+    admission_email = serializers.CharField(source='email', required=False)
 
     formation = ContinuingEducationTrainingSerializer()
 
@@ -165,6 +165,12 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
         required=True
+    )
+    birth_country = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=True,
+        source='person_information.birth_country'
     )
 
     def update(self, instance, validated_data):

@@ -30,9 +30,11 @@ from django.shortcuts import reverse
 from django.test import TestCase, RequestFactory
 from django.utils.translation import gettext_lazy as _
 
+from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonFactory
 from continuing_education.business.data_export import create_json, APPLICATION_JSON_CONTENT_TYPE
 from continuing_education.models.enums import admission_state_choices
@@ -48,11 +50,12 @@ class DataExportTestCase(TestCase):
         a_continuing_education_person = ContinuingEducationPersonFactory(person=a_person)
         academic_year = AcademicYearFactory(year=2018)
         education_group = EducationGroupFactory()
-        EducationGroupYearFactory(
+        edy = EducationGroupYearFactory(
             education_group=education_group,
             academic_year=academic_year,
             acronym='LBIR111ba'
         )
+        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         training = ContinuingEducationTrainingFactory(education_group=education_group)
         self.registration = AdmissionFactory(state=admission_state_choices.VALIDATED,
                                              formation=training,
@@ -76,13 +79,12 @@ class DataExportTestCase(TestCase):
         data = json.loads(json_response)
 
         registration_data = data[0]
-        person_information_data = registration_data['person_information']
 
-        self.assertEqual(person_information_data['id'], self.registration.person_information.id)
-        self.assertEqual(person_information_data['person']['last_name'],
+        self.assertEqual(registration_data['birth_country'], self.registration.person_information.birth_country.name)
+        self.assertEqual(registration_data['last_name'],
                          self.registration.person_information.person.last_name)
 
-        self.assertEqual(registration_data['formation']['education_group']['acronym'], "LBIR111ba")
+        self.assertEqual(registration_data['formation']['acronym'], "LBIR111ba")
 
         address_data = registration_data['address']
         self.assertEqual(address_data['city'], self.registration.address.city)

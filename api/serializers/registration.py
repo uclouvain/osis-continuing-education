@@ -33,6 +33,7 @@ from continuing_education.business.admission import send_state_changed_email
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
     save_and_create_revision
+from reference.models.country import Country
 
 
 class RegistrationListSerializer(AdmissionListSerializer):
@@ -47,25 +48,25 @@ class RegistrationListSerializer(AdmissionListSerializer):
 
 
 class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
-    first_name = serializers.CharField(source='person_information.person.first_name')
-    last_name = serializers.CharField(source='person_information.person.last_name')
-    email = serializers.CharField(source='person_information.person.email')
-    gender = serializers.CharField(source='person_information.person.gender')
+    first_name = serializers.CharField(source='person_information.person.first_name', required=False)
+    last_name = serializers.CharField(source='person_information.person.last_name', required=False)
+    email = serializers.CharField(source='person_information.person.email', required=False)
+    gender = serializers.CharField(source='person_information.person.gender', required=False)
 
     citizenship = serializers.CharField(source='citizenship.name')
 
     address = AddressSerializer()
     billing_address = AddressSerializer()
     residence_address = AddressSerializer()
-    birth_date = serializers.DateField(source='person_information.birth_date')
-    birth_location = serializers.CharField(source='person_information.birth_location')
-    birth_country = serializers.CharField(source='person_information.birth_country.name')
+    birth_date = serializers.DateField(source='person_information.birth_date', required=False)
+    birth_location = serializers.CharField(source='person_information.birth_location', required=False)
+    birth_country = serializers.CharField(source='person_information.birth_country.name', required=False)
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
     state_text = serializers.CharField(source='get_state_display', read_only=True)
 
-    formation = ContinuingEducationTrainingSerializer()
+    formation = ContinuingEducationTrainingSerializer(required=False)
 
     class Meta:
         model = Admission
@@ -122,7 +123,12 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RegistrationPostSerializer(RegistrationDetailSerializer):
-    citizenship = serializers.CharField(source='citizenship.name')
+    citizenship = serializers.SlugRelatedField(
+        slug_field='iso_code',
+        queryset=Country.objects.all(),
+        required=False,
+        allow_null=True
+    )
 
     address = AddressPostSerializer(required=False)
     billing_address = AddressPostSerializer(required=False)
@@ -142,7 +148,8 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             not validated_data['use_address_for_post']
         )
         instance._original_state = instance.state
-        validated_data.pop('person_information')
+        if 'person_information' in validated_data:
+            validated_data.pop('person_information')
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
             message = get_valid_state_change_message(instance)
