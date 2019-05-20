@@ -35,18 +35,17 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
-    ContinuingEducationTrainingPostSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
-class ContinuingEducationTrainingListCreateTestCase(APITestCase):
+class ContinuingEducationTrainingListTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
+        cls.url = reverse('continuing_education_api_v1:continuing-education-training-list')
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
@@ -66,14 +65,8 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_create_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['delete', 'put']
+        methods_not_allowed = ['delete', 'put', 'patch', 'post']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
@@ -106,21 +99,6 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         trainings = ContinuingEducationTraining.objects.all().order_by('education_group__educationgroupyear__acronym')
         serializer = ContinuingEducationTrainingSerializer(trainings, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'][0]['managers'], serializer.data[0]['managers'])
-
-    def test_create_valid_continuing_education_training(self):
-        self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
-        data = {
-            'education_group': EducationGroupFactory().uuid,
-            'active': True,
-        }
-        response = self.client.post(self.url, data=data)
-        serializer = ContinuingEducationTrainingPostSerializer(
-            ContinuingEducationTraining.objects.all().last(),
-            context={'request': RequestFactory().get(self.url)},
-        )
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(2, ContinuingEducationTraining.objects.all().count())
 
 
 class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
