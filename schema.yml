@@ -348,6 +348,10 @@ components:
         - $ref: '#/components/schemas/PersonDetailSerializer'
         - type: object
           properties:
+              person_uuid:
+                $ref: '#/components/schemas/Uuid'
+              uuid:
+                $ref: '#/components/schemas/Uuid'
               address:
                 $ref: '#/components/schemas/AddressSerializer'
               birth_date:
@@ -452,6 +456,11 @@ components:
             state_text:
               type: string
               readOnly: true
+            code:
+              type: string
+            academic_year:
+              type: string
+              example: '2021-22'
 
         - $ref: '#/components/schemas/FormationBasic'
 
