@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import uuid
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -116,92 +115,3 @@ class ProspectListCreateTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(2, Prospect.objects.all().count())
-
-
-class ProspectDetailUpdateTestCase(APITestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
-        cls.education_group = EducationGroupFactory()
-        EducationGroupYearFactory(
-            education_group=cls.education_group,
-            academic_year=cls.academic_year
-        )
-        formation = ContinuingEducationTrainingFactory(
-            education_group=cls.education_group
-        )
-        cls.prospect = ProspectFactory(formation=formation)
-        cls.user = UserFactory()
-        cls.url = reverse(
-            'continuing_education_api_v1:prospect-detail-update',
-            kwargs={'uuid': cls.prospect.uuid}
-        )
-        cls.invalid_url = reverse(
-            'continuing_education_api_v1:prospect-detail-update',
-            kwargs={'uuid': uuid.uuid4()}
-        )
-
-    def setUp(self):
-        self.client.force_authenticate(user=self.user)
-
-    def test_update_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_get_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post', 'delete']
-
-        for method in methods_not_allowed:
-            response = getattr(self.client, method)(self.url)
-            self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_update_valid_prospect(self):
-        self.assertEqual(1, Prospect.objects.all().count())
-        education_group = EducationGroupFactory()
-        EducationGroupYearFactory(
-            education_group=education_group,
-            academic_year=self.academic_year
-        )
-        data = {
-            'city': 'Dinant',
-            'name': 'Pompidou',
-            'email': 'fake@d.be',
-            'formation': ContinuingEducationTrainingFactory(
-                education_group=education_group,
-            ).uuid
-        }
-        response = self.client.put(self.url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        serializer = ProspectSerializer(
-            Prospect.objects.all().first(),
-            context={'request': RequestFactory().get(self.url)},
-        )
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(1, Prospect.objects.all().count())
-
-    def test_update_invalid_prospect(self):
-        response = self.client.put(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_get_valid_prospect(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        serializer = ProspectSerializer(
-            self.prospect,
-            context={'request': RequestFactory().get(self.url)},
-        )
-        self.assertEqual(response.data, serializer.data)
-
-    def test_get_invalid_prospect_case_not_found(self):
-        response = self.client.get(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

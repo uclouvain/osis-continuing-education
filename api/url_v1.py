@@ -32,7 +32,7 @@ from continuing_education.api.views.continuing_education_person import Continuin
 from continuing_education.api.views.continuing_education_training import ContinuingEducationTrainingList, \
     ContinuingEducationTrainingDetail
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
-from continuing_education.api.views.prospect import ProspectListCreate, ProspectDetailUpdate
+from continuing_education.api.views.prospect import ProspectListCreate
 from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate, \
     RegistrationDetailForEpc, RegistrationListForEpc
 
@@ -77,11 +77,6 @@ urlpatterns = [
         name=RegistrationDetailUpdate.name
     ),
     url(r'^prospects/$', ProspectListCreate.as_view(), name=ProspectListCreate.name),
-    url(
-        r'^prospects/(?P<uuid>[0-9a-f-]+)$',
-        ProspectDetailUpdate.as_view(),
-        name=ProspectDetailUpdate.name
-    ),
     url(
         r'^training/$',
         ContinuingEducationTrainingList.as_view(),

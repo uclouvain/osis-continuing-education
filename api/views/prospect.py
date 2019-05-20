@@ -50,13 +50,3 @@ class ProspectListCreate(generics.ListCreateAPIView):
         'formation'
     )
     serializer_class = ProspectSerializer
-
-
-class ProspectDetailUpdate(generics.RetrieveUpdateAPIView):
-    """
-        Return the detail of the prospect or update one.
-    """
-    name = 'prospect-detail-update'
-    queryset = Prospect.objects.all()
-    lookup_field = 'uuid'
-    serializer_class = ProspectSerializer

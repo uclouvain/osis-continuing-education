@@ -30,10 +30,6 @@ from continuing_education.models.prospect import Prospect
 
 
 class ProspectSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='continuing_education_api_v1:prospect-detail-update',
-        lookup_field='uuid'
-    )
     formation = serializers.SlugRelatedField(
         queryset=ContinuingEducationTraining.objects.all(),
         slug_field='uuid',
@@ -43,7 +39,6 @@ class ProspectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Prospect
         fields = (
-            'url',
             'uuid',
             'last_name',
             'first_name',
