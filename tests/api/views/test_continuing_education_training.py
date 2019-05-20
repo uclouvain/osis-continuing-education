@@ -30,9 +30,11 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
@@ -48,10 +50,11 @@ class ContinuingEducationTrainingListTestCase(APITestCase):
         cls.url = reverse('continuing_education_api_v1:continuing-education-training-list')
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        EducationGroupYearFactory(
+        edy = EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
+        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         cls.training_manager = PersonFactory()
         PersonTraining(person=cls.training_manager, training=cls.continuing_education_training).save()
@@ -101,15 +104,16 @@ class ContinuingEducationTrainingListTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['managers'], serializer.data[0]['managers'])
 
 
-class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
+class ContinuingEducationTrainingDetailTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        EducationGroupYearFactory(
+        edy = EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
+        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         cls.user = UserFactory()
         cls.url = reverse(
@@ -124,18 +128,6 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
     def setUp(self):
         self.client.force_authenticate(user=self.user)
 
-    def test_delete_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_update_not_authorized(self):
-        self.client.force_authenticate(user=None)
-
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
     def test_get_not_authorized(self):
         self.client.force_authenticate(user=None)
 
@@ -143,40 +135,11 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_method_not_allowed(self):
-        methods_not_allowed = ['post']
+        methods_not_allowed = ['post', 'put', 'patch', 'delete']
 
         for method in methods_not_allowed:
             response = getattr(self.client, method)(self.url)
             self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
-    def test_delete_valid_continuing_education_training(self):
-        self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(0, ContinuingEducationTraining.objects.all().count())
-
-    def test_delete_invalid_continuing_education_training_case_not_found(self):
-        response = self.client.delete(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_update_valid_continuing_education_training(self):
-        self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
-        data = {
-            'education_group': self.continuing_education_training.education_group.uuid,
-            'active': False,
-        }
-        response = self.client.put(self.url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        serializer = ContinuingEducationTrainingPostSerializer(
-            ContinuingEducationTraining.objects.all().first(),
-            context={'request': RequestFactory().get(self.url)},
-        )
-        self.assertEqual(response.data, serializer.data)
-        self.assertEqual(1, ContinuingEducationTraining.objects.all().count())
-
-    def test_update_invalid_continuing_education_training(self):
-        response = self.client.put(self.invalid_url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_valid_continuing_education_training(self):
         response = self.client.get(self.url)
@@ -197,13 +160,14 @@ class FilterContinuingEducationTrainingTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = UserFactory()
-        cls.url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
+        cls.url = reverse('continuing_education_api_v1:continuing-education-training-list')
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         cls.education_group_year = EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
+        EntityVersionFactory(entity=cls.education_group_year.management_entity, entity_type=FACULTY)
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
 
     def setUp(self):
