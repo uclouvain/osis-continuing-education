@@ -48,5 +48,8 @@ class ContinuingEducationPersonSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
+            'birth_date',
+            'birth_location',
+            'birth_country'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
