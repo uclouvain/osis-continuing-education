@@ -156,6 +156,8 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
         instance._original_state = instance.state
         if 'person_information' in validated_data:
             validated_data.pop('person_information')
+        if 'formation' in validated_data:
+            validated_data.pop('formation')
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
             message = get_valid_state_change_message(instance)
