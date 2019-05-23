@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-16 09:55+0200\n"
+"POT-Creation-Date: 2019-05-23 07:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: business/admission.py:294 tests/business/test_admission.py:104
+#: business/admission.py:293 tests/business/test_admission.py:104
 msgid " or "
 msgstr ""
 
@@ -81,7 +81,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: business/admission.py:249 business/xls/xls_common.py:60
+#: business/admission.py:248 business/xls/xls_common.py:60
 #: models/admission.py:172 templates/admission_form.html:149
 #: templates/fragment/tab_admission.html:79 tests/business/test_admission.py:84
 msgid "Activity sector"
@@ -179,6 +179,10 @@ msgstr ""
 
 #: business/xls/xls_archive.py:44 tests/business/xls/test_xls_archive.py:94
 msgid "Archives_list"
+msgstr ""
+
+#: templates/fragment/confirm_delete_document.html:38
+msgid "Are you sure you want to delete this file?"
 msgstr ""
 
 #: business/xls/xls_common.py:128 models/admission.py:375
@@ -306,6 +310,7 @@ msgstr ""
 #: templates/fragment/archives/unarchive_modal.html:42
 #: templates/fragment/cancel_reason_modal.html:46
 #: templates/fragment/condition_acceptance_modal.html:47
+#: templates/fragment/confirm_delete_document.html:43
 #: templates/fragment/managers/person_training_modal.html:48
 #: templates/fragment/rejected_reason_modal.html:49
 #: templates/fragment/send_notification_mail_modal.html:44
@@ -388,6 +393,8 @@ msgstr ""
 
 #: templates/fragment/cancel_reason_modal.html:47
 #: templates/fragment/condition_acceptance_modal.html:48
+#: templates/fragment/confirm_delete_document.html:33
+#: templates/fragment/confirm_delete_document.html:46
 #: templates/fragment/submit_confirm_modal.html:34
 #: templates/fragment/submit_confirm_modal.html:50
 #: templates/fragment/waiting_reason_modal.html:49
@@ -444,13 +451,13 @@ msgstr ""
 msgid "Creation of the admission"
 msgstr ""
 
-#: business/admission.py:248 business/xls/xls_common.py:59
+#: business/admission.py:247 business/xls/xls_common.py:59
 #: models/admission.py:166 templates/admission_form.html:148
 #: templates/fragment/tab_admission.html:78 tests/business/test_admission.py:83
 msgid "Current employer"
 msgstr ""
 
-#: business/admission.py:247 business/xls/xls_common.py:58
+#: business/admission.py:246 business/xls/xls_common.py:58
 #: models/admission.py:161 templates/admission_form.html:145
 #: templates/fragment/tab_admission.html:77 tests/business/test_admission.py:82
 msgid "Current occupation"
@@ -460,7 +467,7 @@ msgstr ""
 msgid "Datetime"
 msgstr ""
 
-#: templates/fragment/tab_documents.html:75
+#: templates/fragment/tab_documents.html:76
 msgid "Delete document"
 msgstr ""
 
@@ -603,7 +610,7 @@ msgstr ""
 msgid "Files cancelled"
 msgstr ""
 
-#: business/admission.py:237 business/xls/xls_archive.py:36
+#: business/admission.py:236 business/xls/xls_archive.py:36
 #: business/xls/xls_common.py:41 models/prospect.py:50
 #: templates/admission_form.html:84 templates/admissions.html:127
 #: templates/archives.html:118 templates/cancellations.html:61
@@ -616,7 +623,7 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: business/admission.py:238 business/xls/xls_archive.py:38
+#: business/admission.py:237 business/xls/xls_archive.py:38
 #: business/xls/xls_common.py:64 forms/search.py:90 forms/search.py:380
 #: models/admission.py:85 models/prospect.py:74
 #: templates/admission_form.html:170 templates/admission_form.html:173
@@ -699,14 +706,14 @@ msgstr ""
 msgid "Health"
 msgstr ""
 
-#: business/admission.py:239 business/xls/xls_common.py:51
+#: business/admission.py:238 business/xls/xls_common.py:51
 #: forms/admission.py:44 models/admission.py:119
 #: templates/admission_form.html:120 templates/fragment/tab_admission.html:57
 #: tests/business/test_admission.py:74
 msgid "High school diploma"
 msgstr ""
 
-#: business/admission.py:240 business/xls/xls_common.py:52
+#: business/admission.py:239 business/xls/xls_common.py:52
 #: models/admission.py:124 templates/admission_form.html:121
 #: templates/fragment/tab_admission.html:58 tests/business/test_admission.py:75
 msgid "High school graduation year"
@@ -753,7 +760,7 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: business/admission.py:213 models/enums/file_category_choices.py:35
+#: business/admission.py:212 models/enums/file_category_choices.py:35
 msgid "Invoice"
 msgstr ""
 
@@ -761,25 +768,25 @@ msgstr ""
 msgid "Job seeker"
 msgstr ""
 
-#: business/admission.py:242 models/admission.py:134
+#: business/admission.py:241 models/admission.py:134
 #: templates/admission_form.html:125 templates/fragment/tab_admission.html:62
 #: tests/business/test_admission.py:77
 msgid "Last degree field"
 msgstr ""
 
-#: business/admission.py:244 business/xls/xls_common.py:55
+#: business/admission.py:243 business/xls/xls_common.py:55
 #: models/admission.py:144 templates/admission_form.html:129
 #: templates/fragment/tab_admission.html:64 tests/business/test_admission.py:79
 msgid "Last degree graduation year"
 msgstr ""
 
-#: business/admission.py:243 business/xls/xls_common.py:54
+#: business/admission.py:242 business/xls/xls_common.py:54
 #: models/admission.py:139 templates/admission_form.html:128
 #: templates/fragment/tab_admission.html:63 tests/business/test_admission.py:78
 msgid "Last degree institution"
 msgstr ""
 
-#: business/admission.py:241 business/xls/xls_common.py:53
+#: business/admission.py:240 business/xls/xls_common.py:53
 #: models/admission.py:129 templates/admission_form.html:124
 #: templates/fragment/tab_admission.html:61 tests/business/test_admission.py:76
 msgid "Last degree level"
@@ -789,7 +796,7 @@ msgstr ""
 msgid "Last modifications"
 msgstr ""
 
-#: business/admission.py:236 templates/admission_form.html:85
+#: business/admission.py:235 templates/admission_form.html:85
 #: templates/fragment/section_identification.html:35
 #: tests/business/test_admission.py:71
 msgid "Last name"
@@ -860,7 +867,7 @@ msgstr ""
 msgid "Mobile phone"
 msgstr ""
 
-#: business/admission.py:251 business/xls/xls_common.py:62
+#: business/admission.py:250 business/xls/xls_common.py:62
 #: models/admission.py:182 templates/admission_form.html:160
 #: templates/admission_form.html:163 templates/fragment/tab_admission.html:87
 #: templates/fragment/tab_admission.html:91 tests/business/test_admission.py:86
@@ -898,7 +905,7 @@ msgstr ""
 msgid "New person"
 msgstr ""
 
-#: business/admission.py:239 business/xls/xls_common.py:85
+#: business/admission.py:238 business/xls/xls_common.py:85
 #: business/xls/xls_common.py:99 business/xls/xls_common.py:151
 #: business/xls/xls_common.py:152 business/xls/xls_common.py:153
 #: business/xls/xls_common.py:154 business/xls/xls_common.py:155
@@ -985,7 +992,7 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: business/admission.py:245 business/xls/xls_common.py:56
+#: business/admission.py:244 business/xls/xls_common.py:56
 #: models/admission.py:148 templates/admission_form.html:132
 #: templates/fragment/tab_admission.html:67 tests/business/test_admission.py:80
 msgid "Other educational background"
@@ -1014,7 +1021,7 @@ msgstr ""
 msgid "Passport number"
 msgstr ""
 
-#: business/admission.py:250 business/xls/xls_common.py:61
+#: business/admission.py:249 business/xls/xls_common.py:61
 #: models/admission.py:176 templates/admission_form.html:152
 #: templates/fragment/tab_admission.html:82 tests/business/test_admission.py:85
 msgid "Past professional activities"
@@ -1123,7 +1130,7 @@ msgstr ""
 msgid "Professional"
 msgstr ""
 
-#: business/admission.py:252 business/xls/xls_common.py:63
+#: business/admission.py:251 business/xls/xls_common.py:63
 #: models/admission.py:186 templates/admission_form.html:164
 #: templates/fragment/tab_admission.html:92 tests/business/test_admission.py:87
 msgid "Professional and personal interests"
@@ -1133,7 +1140,7 @@ msgstr ""
 msgid "Professional background"
 msgstr ""
 
-#: business/admission.py:246 business/xls/xls_common.py:57
+#: business/admission.py:245 business/xls/xls_common.py:57
 #: models/admission.py:156 templates/admission_form.html:142
 #: templates/fragment/tab_admission.html:76 tests/business/test_admission.py:81
 msgid "Professional status"
@@ -1275,7 +1282,7 @@ msgid "Send email"
 msgstr ""
 
 #: templates/fragment/send_notification_mail_modal.html:35
-#: templates/fragment/tab_documents.html:81
+#: templates/fragment/tab_documents.html:82
 msgid "Send notification email"
 msgstr ""
 
@@ -1315,7 +1322,7 @@ msgstr ""
 msgid "Spreading payments"
 msgstr ""
 
-#: business/admission.py:254 business/xls/xls_archive.py:40
+#: business/admission.py:253 business/xls/xls_archive.py:40
 #: business/xls/xls_common.py:43 business/xls/xls_formation.py:80
 #: forms/search.py:291 models/admission.py:245
 #: templates/admission_detail.html:69 templates/admission_detail.html:72
@@ -1645,7 +1652,7 @@ msgstr ""
 msgid "Widowed"
 msgstr ""
 
-#: business/admission.py:239 business/xls/xls_common.py:85
+#: business/admission.py:238 business/xls/xls_common.py:85
 #: business/xls/xls_common.py:99 business/xls/xls_common.py:151
 #: business/xls/xls_common.py:152 business/xls/xls_common.py:153
 #: business/xls/xls_common.py:154 business/xls/xls_common.py:155
@@ -1698,7 +1705,7 @@ msgstr ""
 msgid "You can only notify participant by email when it's an invoice"
 msgstr ""
 
-#: templates/fragment/tab_documents.html:71
+#: templates/fragment/tab_documents.html:72
 msgid "You can't delete a file while in draft state"
 msgstr ""
 
@@ -1710,7 +1717,7 @@ msgstr ""
 msgid "You do not meet the admission requirements"
 msgstr ""
 
-#: templates/fragment/tab_documents.html:73
+#: templates/fragment/tab_documents.html:74
 msgid "You don't have the permission to delete this file"
 msgstr ""
 
