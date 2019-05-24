@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-24 09:29+0200\n"
+"POT-Creation-Date: 2019-05-24 13:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,8 +136,8 @@ msgstr "Liste des admissions"
 
 #: templates/fragment/tasks/admissions_to_accept.html:14
 #: templates/tasks.html:47
-msgid "Admissions to accept"
-msgstr "Admissions à accepter"
+msgid "Admissions to process"
+msgstr "Admissions à traiter"
 
 #: business/xls/xls_admission.py:34 tests/business/xls/test_xls_admission.py:97
 msgid "Admissions_list"
@@ -1504,10 +1504,10 @@ msgstr ""
 #: templates/fragment/tasks/admissions_to_accept.html:6
 msgid ""
 "This page contains the admissions submitted by the participants. These must "
-"be accepted by the manager."
+"be processed by the manager."
 msgstr ""
 "Cette page reprend les admissions soumises par les participants. Celles-ci "
-"doivent être acceptées par le gestionnaire."
+"doivent être traitées par la·e gestionnaire."
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:38
 msgid "This will accept all selected admissions. Are you sure ?"
@@ -1832,6 +1832,3 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 #: views/archive.py:110
 msgid "unarchived"
 msgstr "non-archivé"
-
-#~ msgid "Cancelled files"
-#~ msgstr "Dossier annulés"
