@@ -26,6 +26,8 @@
 
 import factory
 
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+
 
 class ProspectFactory(factory.DjangoModelFactory):
     class Meta:
@@ -37,3 +39,4 @@ class ProspectFactory(factory.DjangoModelFactory):
     city = factory.Faker('city')
     email = factory.Faker('email')
     phone_number = factory.Faker('phone_number')
+    formation = factory.SubFactory(ContinuingEducationTrainingFactory)
