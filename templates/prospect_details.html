@@ -49,7 +49,7 @@
                 <div class="col-md-3">{% bootstrap_label _("Name") %} <br/> {{ prospect.name | default:"" }}, {{ prospect.first_name | default:"" }}  </div>
                 <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ prospect.city | default:"-" }} ({{ prospect.postal_code | default:"-" }})</div>
                 <div class="col-md-3">{% bootstrap_label _("Email") %} <br/> {{ prospect.email | default:"-" }} </div>
-                <div class="col-md-3">{% bootstrap_label _("Phone Number") %} <br/> {{ prospect.phone_number | default:"-" }} </div>
+                <div class="col-md-3">{% bootstrap_label _("Phone number") %} <br/> {{ prospect.phone_number | default:"-" }} </div>
             </div>
             <div>{% bootstrap_label _("Formation") %} <br/> {{ prospect.formation | default:"-" }} </div>
         </div>

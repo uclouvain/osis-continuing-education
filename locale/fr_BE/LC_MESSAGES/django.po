@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-23 07:45+0200\n"
+"POT-Creation-Date: 2019-05-24 09:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -370,6 +370,7 @@ msgstr "Nationalité"
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:54
 #: templates/fragment/tab_registration.html:86
+#: templates/prospect_details.html:50 templates/prospects.html:59
 #: templates/registration_form.html:74 templates/registration_form.html:114
 msgid "City"
 msgstr "Ville"
@@ -423,9 +424,9 @@ msgstr "Adresse de contact"
 #: templates/admission_form.html:36 templates/admissions.html:37
 #: templates/archives.html:36 templates/cancellations.html:36
 #: templates/formation_detail.html:38 templates/formations.html:37
-#: templates/managers.html:36 templates/prospects.html:36
-#: templates/registration_form.html:36 templates/registrations.html:36
-#: templates/tasks.html:36
+#: templates/managers.html:36 templates/prospect_details.html:36
+#: templates/prospects.html:36 templates/registration_form.html:36
+#: templates/registrations.html:36 templates/tasks.html:36
 msgid "Continuing Education"
 msgstr "Formations Continues"
 
@@ -478,7 +479,7 @@ msgstr "Supprimer le document"
 
 #: business/xls/xls_common.py:130 models/admission.py:391
 #: templates/fragment/tab_registration.html:114
-#: templates/registration_form.html:142
+#: templates/registration_form.html:142 templates/registrations.html:123
 msgid "Diploma produced"
 msgstr "Diplôme produit"
 
@@ -545,7 +546,8 @@ msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 #: templates/fragment/tasks/admissions_to_accept.html:33
 #: templates/fragment/tasks/diplomas_to_produce.html:34
 #: templates/fragment/tasks/registrations_to_validate.html:33
-#: templates/prospects.html:60 templates/registrations.html:116
+#: templates/prospect_details.html:51 templates/prospects.html:60
+#: templates/registrations.html:116
 msgid "Email"
 msgstr "Email"
 
@@ -623,8 +625,8 @@ msgstr "Dossiers annulés"
 #: templates/fragment/tasks/admissions_to_accept.html:32
 #: templates/fragment/tasks/diplomas_to_produce.html:33
 #: templates/fragment/tasks/registrations_to_validate.html:32
-#: templates/managers.html:87 templates/prospects.html:59
-#: templates/registrations.html:115 tests/business/test_admission.py:72
+#: templates/managers.html:87 templates/registrations.html:115
+#: tests/business/test_admission.py:72
 msgid "First name"
 msgstr "Prénom"
 
@@ -640,8 +642,9 @@ msgstr "Prénom"
 #: templates/fragment/tasks/admissions_to_accept.html:34
 #: templates/fragment/tasks/diplomas_to_produce.html:35
 #: templates/fragment/tasks/registrations_to_validate.html:34
-#: templates/prospects.html:62 templates/registrations.html:55
-#: templates/registrations.html:117 tests/business/test_admission.py:73
+#: templates/prospect_details.html:54 templates/prospects.html:62
+#: templates/registrations.html:55 templates/registrations.html:117
+#: tests/business/test_admission.py:73
 msgid "Formation"
 msgstr "Formation"
 
@@ -895,8 +898,8 @@ msgstr "NOMA"
 #: templates/fragment/tasks/admissions_to_accept.html:31
 #: templates/fragment/tasks/diplomas_to_produce.html:32
 #: templates/fragment/tasks/registrations_to_validate.html:31
-#: templates/managers.html:86 templates/prospects.html:58
-#: templates/registrations.html:114
+#: templates/managers.html:86 templates/prospect_details.html:49
+#: templates/prospects.html:58 templates/registrations.html:114
 msgid "Name"
 msgstr "Nom"
 
@@ -924,8 +927,9 @@ msgstr "Nouvelle personne"
 #: templates/cancellations.html:99 templates/cancellations.html:106
 #: templates/formations.html:113
 #: templates/fragment/tasks/registrations_to_validate.html:56
-#: templates/registrations.html:162 templates/registrations.html:169
-#: templates/registrations.html:176 tests/business/test_admission.py:74
+#: templates/registrations.html:163 templates/registrations.html:170
+#: templates/registrations.html:177 templates/registrations.html:184
+#: tests/business/test_admission.py:74
 #: tests/business/xls/test_xls_registration.py:90 views/formation.py:150
 msgid "No"
 msgstr "Non"
@@ -939,7 +943,7 @@ msgstr "Aucune formation assignée"
 #: templates/fragment/tasks/admissions_to_accept.html:73
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:81
-#: templates/prospects.html:96 templates/registrations.html:199
+#: templates/prospects.html:100 templates/registrations.html:207
 msgid "No data"
 msgstr "Pas de données"
 
@@ -1058,7 +1062,8 @@ msgstr "Personne"
 msgid "Person information"
 msgstr "Informations personnelles"
 
-#: models/prospect.py:69
+#: models/prospect.py:69 templates/prospect_details.html:52
+#: templates/prospects.html:61
 msgid "Phone number"
 msgstr "Numéro de téléphone"
 
@@ -1101,7 +1106,7 @@ msgstr "Courrier"
 #: models/address.py:24 models/prospect.py:55 templates/admission_form.html:107
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:53
-#: templates/fragment/tab_registration.html:85 templates/prospects.html:61
+#: templates/fragment/tab_registration.html:85
 #: templates/registration_form.html:73 templates/registration_form.html:113
 msgid "Postal code"
 msgstr "Code postal"
@@ -1161,8 +1166,9 @@ msgstr "Parcours professionnel"
 msgid "Professional status"
 msgstr "Statut professionel"
 
-#: templates/admin_home.html:95 templates/prospects.html:37
-#: templates/prospects.html:42 templates/prospects.html:51
+#: templates/admin_home.html:95 templates/prospect_details.html:37
+#: templates/prospects.html:37 templates/prospects.html:42
+#: templates/prospects.html:51
 msgid "Prospects"
 msgstr "Prospects"
 
@@ -1379,9 +1385,9 @@ msgstr "Jobiste"
 #: templates/admission_form.html:35 templates/admissions.html:36
 #: templates/archives.html:35 templates/cancellations.html:35
 #: templates/formation_detail.html:37 templates/formations.html:36
-#: templates/managers.html:35 templates/prospects.html:35
-#: templates/registration_form.html:35 templates/registrations.html:35
-#: templates/tasks.html:35
+#: templates/managers.html:35 templates/prospect_details.html:35
+#: templates/prospects.html:35 templates/registration_form.html:35
+#: templates/registrations.html:35 templates/tasks.html:35
 msgid "Studies"
 msgstr "Etudes"
 
@@ -1707,8 +1713,9 @@ msgstr "Veuf(ve)"
 #: templates/cancellations.html:97 templates/cancellations.html:104
 #: templates/formations.html:108
 #: templates/fragment/tasks/registrations_to_validate.html:54
-#: templates/registrations.html:160 templates/registrations.html:167
-#: templates/registrations.html:174 tests/business/test_admission.py:74
+#: templates/registrations.html:161 templates/registrations.html:168
+#: templates/registrations.html:175 templates/registrations.html:182
+#: tests/business/test_admission.py:74
 #: tests/business/xls/test_xls_registration.py:89
 #: tests/views/test_formation.py:281 views/formation.py:150
 msgid "Yes"
