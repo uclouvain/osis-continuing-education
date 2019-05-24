@@ -68,7 +68,10 @@ urlpatterns = [
         url(r'^(?P<formation_id>[0-9]+)/', formation.formation_detail, name='formation_detail'),
 
     ])),
-    url(r'^prospects$', prospect.list_prospects, name='prospects'),
+    url(r'^prospects/', include([
+        url(r'^$', prospect.list_prospects, name='prospects'),
+        url(r'^(?P<prospect_id>[0-9]+)/', prospect.prospect_details, name='prospect_details'),
+    ])),
     url(r'^tasks/', include([
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
