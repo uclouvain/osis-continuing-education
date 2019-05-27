@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-24 13:30+0200\n"
+"POT-Creation-Date: 2019-05-27 11:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,11 +43,7 @@ msgstr "Un problème est survenu durant la suppression"
 msgid "Accept all selected admissions ?"
 msgstr "Accepter les inscriptions sélectionnées ?"
 
-#: templates/fragment/tasks/admissions_to_accept.html:9
-msgid "Accept selected admissions"
-msgstr "Accepter les inscriptions sélectionnées"
-
-#: forms/admission.py:234
+#: forms/admission.py:248
 msgid "Accept the file"
 msgstr "Accepter le dossier"
 
@@ -360,7 +356,7 @@ msgstr "Tout sélectionner"
 msgid "Children number"
 msgstr "Nombre d'enfants"
 
-#: business/xls/xls_common.py:45 forms/admission.py:36 models/admission.py:94
+#: business/xls/xls_common.py:45 forms/admission.py:50 models/admission.py:94
 #: templates/admission_form.html:103
 #: templates/fragment/section_identification.html:37
 msgid "Citizenship"
@@ -387,13 +383,13 @@ msgstr ""
 msgid "Company number"
 msgstr "Numéro unique d'entreprise"
 
-#: forms/admission.py:239 models/admission.py:413
+#: forms/admission.py:253 models/admission.py:413
 #: templates/admission_detail.html:145
 #: templates/fragment/condition_acceptance_modal.html:33
 msgid "Condition of acceptance"
 msgstr "Condition d'acceptation"
 
-#: forms/admission.py:231
+#: forms/admission.py:245
 msgid "Conditionally"
 msgstr "Sous condition"
 
@@ -715,7 +711,7 @@ msgid "Health"
 msgstr "Santé"
 
 #: business/admission.py:238 business/xls/xls_common.py:51
-#: forms/admission.py:44 models/admission.py:119
+#: forms/admission.py:58 models/admission.py:119
 #: templates/admission_form.html:120 templates/fragment/tab_admission.html:57
 #: tests/business/test_admission.py:74
 msgid "High school diploma"
@@ -913,7 +909,7 @@ msgstr "Numéro de registre national belge"
 msgid "New admission"
 msgstr "Nouvelle admission"
 
-#: forms/admission.py:49
+#: forms/admission.py:63
 msgid "New person"
 msgstr "Nouvelle personne"
 
@@ -1015,11 +1011,11 @@ msgstr "Autre"
 msgid "Other educational background"
 msgstr "Autres formations"
 
-#: forms/admission.py:128
+#: forms/admission.py:142
 msgid "Other rejection reason"
 msgstr "Autre motif de refus"
 
-#: forms/admission.py:182
+#: forms/admission.py:196
 msgid "Other waiting reason"
 msgstr "Autre motif de mise en attente"
 
@@ -1061,6 +1057,10 @@ msgstr "Personne"
 #: models/admission.py:78
 msgid "Person information"
 msgstr "Informations personnelles"
+
+#: forms/admission.py:38
+msgid "Phone mobile"
+msgstr "Numéro de téléphone"
 
 #: models/prospect.py:69 templates/prospect_details.html:52
 #: templates/prospects.html:61
@@ -1111,7 +1111,7 @@ msgstr "Courrier"
 msgid "Postal code"
 msgstr "Code postal"
 
-#: forms/admission.py:123 forms/admission.py:177
+#: forms/admission.py:137 forms/admission.py:191
 msgid "Predefined reason"
 msgstr "Motif prédéfini"
 
@@ -1136,6 +1136,10 @@ msgstr "Valorisation des Acquis d'Expérience"
 #: models/enums/enums.py:9 models/enums/enums.py:36
 msgid "Private"
 msgstr "Privé"
+
+#: templates/fragment/tasks/admissions_to_accept.html:9
+msgid "Process selected admissions"
+msgstr "Traiter les admissions sélectionnées"
 
 #: templates/admissions.html:82 templates/archives.html:79
 #: templates/formations.html:118 templates/registrations.html:93
@@ -1594,7 +1598,7 @@ msgstr "Inscription au rôle"
 msgid "Unarchive"
 msgstr "Désarchiver"
 
-#: forms/admission.py:232 templates/admission_detail.html:148
+#: forms/admission.py:246 templates/admission_detail.html:148
 msgid "Unconditionally"
 msgstr "Sans condition"
 
@@ -1702,6 +1706,10 @@ msgstr "Qui recevra les emails de notification ?"
 #: models/enums/enums.py:16
 msgid "Widowed"
 msgstr "Veuf(ve)"
+
+#: forms/admission.py:29 tests/forms/test_admission_form.py:108
+msgid "Wrong format !"
+msgstr "Mauvais format !"
 
 #: business/admission.py:238 business/xls/xls_common.py:85
 #: business/xls/xls_common.py:99 business/xls/xls_common.py:151

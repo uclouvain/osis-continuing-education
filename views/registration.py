@@ -43,7 +43,7 @@ from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import display_errors, get_object_list, save_and_create_revision, \
+from continuing_education.views.common import get_object_list, save_and_create_revision, \
     get_appropriate_revision_message
 from continuing_education.views.home import is_continuing_education_student_worker
 
@@ -127,7 +127,6 @@ def registration_edit(request, admission_id):
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:
         errors.append(form.errors)
-        display_errors(request, errors)
 
     return render(
         request,
