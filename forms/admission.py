@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
 from django.utils.translation import gettext_lazy as _
 
@@ -22,8 +23,21 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'professional_personal_interests', 'formation',
 ]
 
+phone_regex = RegexValidator(
+    regex=r'^((?:\+|00)\d{1,3}|0)\d{8,15}$',
+    message=_(
+        "Wrong format !"
+    )
+)
+
 
 class AdmissionForm(ModelForm):
+    phone_mobile = forms.CharField(
+        validators=[phone_regex],
+        required=False,
+        label=_("Phone mobile"),
+        widget=forms.TextInput(attrs={'placeholder': '0474123456 - 0032474123456 - +32474123456'})
+    )
     formation = forms.ModelChoiceField(
         queryset=ContinuingEducationTraining.objects.all().select_related('education_group')
     )
