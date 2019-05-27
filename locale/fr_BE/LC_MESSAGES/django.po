@@ -45,7 +45,7 @@ msgstr "Accepter les inscriptions sélectionnées ?"
 
 #: templates/fragment/tasks/admissions_to_accept.html:9
 msgid "Accept selected admissions"
-msgstr "Accepter les inscriptions sélectionnées"
+msgstr "Accepter les admissions sélectionnées"
 
 #: forms/admission.py:248
 msgid "Accept the file"
