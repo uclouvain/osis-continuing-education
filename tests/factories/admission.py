@@ -35,6 +35,14 @@ from continuing_education.tests.utils.utils import get_enum_keys
 from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_TYPE = 8
+factory.Faker._DEFAULT_LOCALE = 'nl_BE'
+
+
+def _get_fake_phone_number():
+    fake = factory.Faker('phone_number').generate(extra_kwargs={})
+    for c in [" ", "(", ")", "-"]:
+        fake = fake.replace(c, "")
+    return fake
 
 
 class AdmissionFactory(factory.DjangoModelFactory):
@@ -47,7 +55,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     citizenship = factory.SubFactory(CountryFactory)
 
     # Contact
-    phone_mobile = '0474123456'
+    phone_mobile = _get_fake_phone_number()
     email = factory.Faker('email')
 
     address = factory.SubFactory(AddressFactory)
@@ -120,7 +128,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     # Post
     use_address_for_post = factory.fuzzy.FuzzyChoice([True, False])
     residence_address = factory.SubFactory(AddressFactory)
-    residence_phone = factory.Faker('phone_number')
+    residence_phone = _get_fake_phone_number(),
 
     # Student Sheet
     ucl_registration_complete = factory.fuzzy.FuzzyChoice([True, False])
