@@ -35,13 +35,14 @@ from continuing_education.tests.utils.utils import get_enum_keys
 from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_TYPE = 8
-factory.Faker._DEFAULT_LOCALE = 'nl_BE'
 
 
 def _get_fake_phone_number():
+    factory.Faker._DEFAULT_LOCALE = 'nl_BE'
     fake = factory.Faker('phone_number').generate(extra_kwargs={})
     for c in [" ", "(", ")", "-"]:
         fake = fake.replace(c, "")
+    factory.Faker._DEFAULT_LOCALE = 'en_US'
     return fake
 
 
