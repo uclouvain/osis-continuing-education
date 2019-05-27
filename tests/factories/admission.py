@@ -47,7 +47,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     citizenship = factory.SubFactory(CountryFactory)
 
     # Contact
-    phone_mobile = factory.Faker('phone_number')
+    phone_mobile = '0474123456'
     email = factory.Faker('email')
 
     address = factory.SubFactory(AddressFactory)
