@@ -1059,8 +1059,6 @@ msgid "Person information"
 msgstr "Informations personnelles"
 
 #: forms/admission.py:38
-#, fuzzy
-#| msgid "Phone number"
 msgid "Phone mobile"
 msgstr "Numéro de téléphone"
 
