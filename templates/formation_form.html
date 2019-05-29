@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+* OSIS stands for Open Student Information System. It's an application
+* designed to manage the core business of higher education institutions,
+* such as universities, faculties, institutes and professional schools.
+* The core business involves the administration of students, teachers,
+* courses, programs and so on.
+*
+* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* A copy of this license - GNU General Public License - is available
+* at the root of the source code of this program.  If not,
+* see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li><a href="{% url 'formation' %}">{% trans 'Continuing education list' context 'continuing_education' %}</a></li>
+    <li class="active">{% trans 'Formation' %}</li>
+{% endblock %}
+
+{% block content %}
+    <form id="form" method="POST" class="post-form">
+    {% csrf_token %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading"><h4>{{ formation.acronym }} - {{ formation.title }}: {{ formation.academic_year }}</h4></div>
+            <div class="panel panel-body">
+                 <div class="row">
+                     <div class="col-md-3">
+                         {% bootstrap_field form.active label=_("Active") %}
+                     </div>
+                     <div class="col-md-9">
+                         {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}
+                     </div>
+                 </div>
+                <div class="row">
+                     <div class="col-md-3">
+                         {% bootstrap_field form.training_aid label=_("Training aid") %}
+                     </div>
+                     <div class="col-md-9">
+                         {% bootstrap_label _("Manager(s) of the training") %}
+                        <br/>
+                        {% if not formation.managers.all %}
+                            {% trans 'None' %}
+                            <br/>
+                        {% else %}
+                            <ul>
+                                {% for manager in formation.managers.all %}
+                                    <li>{{ manager.last_name }}, {{ manager.first_name }} ({{ manager.email }})</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                     </div>
+                 </div>
+                <div class="row">
+                     <div class="col-md-3"></div>
+                     <div class="col-md-9">
+                         {% bootstrap_label _("Who will receive notification emails ?") %}
+                        <br/>
+                        {% if not formation.send_notification_emails %}
+                            {% trans 'Nobody (because "Send notifications emails" setting is set to "No").' %}
+                        {% elif not formation.get_alternative_notification_email_receivers %}
+                            {% trans "The managers (list above) will receive the notification emails." %}
+                        {% else %}
+                            <p>
+                                {% trans "Notification emails will be sent to the following addresse(s) instead of the managers" %} :
+                            </p>
+                            <ul>
+                                {% for receiver in formation.get_alternative_notification_email_receivers %}
+                                    <li>{{ receiver }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                     </div>
+                 </div>
+            </div>
+            <div class="panel-heading"><h4>{% trans 'Address' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    {% bootstrap_field address_form.location form_group_class="form-group col-md-6" label=_("Street Address") %}
+                    {% bootstrap_field address_form.postal_code form_group_class="form-group col-md-6" label=_("Postal code") %}
+                </div>
+                <div class="row">
+                    {% bootstrap_field address_form.city form_group_class="form-group col-md-6" label=_("City") %}
+                    {% bootstrap_field address_form.country form_group_class="form-group col-md-6" %}
+                </div>
+            </div>
+        </div>
+
+        <a class="btn btn-default pull-right" id="cancel_formation_edit_bottom" href="{% url 'formation_detail' formation_id=formation.education_group.id %}">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
+        </a>
+        <button type="button submit" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save_formation">
+            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
+        </button>
+    </form>
+{% endblock %}
