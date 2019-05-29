@@ -23,11 +23,13 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+
 from django import http
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.core.cache import cache
+from django.forms import model_to_dict
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -41,7 +43,9 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 STR_TRUE = "True"
@@ -117,6 +121,48 @@ class ViewFormationTestCase(TestCase):
         }))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTemplateUsed(response, 'page_not_found.html')
+
+    def test_formation_edit_not_found(self):
+        response = self.client.get(reverse('formation_edit', kwargs={
+            'formation_id': 0,
+        }))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_edit_get_formation_found(self):
+        url = reverse('formation_edit', args=[self.continuing_education_training.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'formation_form.html')
+
+    def test_formation_edit_unauthorized(self):
+        unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+        self.client.force_login(unauthorized_user)
+        url = reverse('formation_edit', kwargs={'formation_id': self.continuing_education_training.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_edit_post_admission_found(self):
+        address = AddressFactory()
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(education_group=ed)
+        cet = ContinuingEducationTrainingFactory(postal_address=None, education_group=ed)
+        cet_dict = model_to_dict(cet)
+        cet_dict['training_aid'] = not cet.training_aid
+        cet_dict['active'] = not cet.active
+        cet_dict['postal_address'] = model_to_dict(address)
+
+        form = ContinuingEducationTrainingForm(cet_dict)
+        form.is_valid()
+        url = reverse('formation_edit', args=[cet.pk])
+        response = self.client.post(url, data=form.cleaned_data)
+
+        self.assertRedirects(response, reverse('formation_detail', args=[cet.education_group.id]))
+        cet.refresh_from_db()
+
+        # verifying that fields are correctly updated
+        for key in form.cleaned_data.keys():
+            field_value = cet.__getattribute__(key)
+            self.assertEqual(field_value, cet_dict[key])
 
 
 class FormationActivateTestCase(TestCase):
