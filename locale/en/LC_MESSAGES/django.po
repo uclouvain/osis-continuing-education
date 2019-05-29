@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-27 11:03+0200\n"
+"POT-Creation-Date: 2019-05-29 15:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,6 +40,10 @@ msgstr ""
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:33
 msgid "Accept all selected admissions ?"
+msgstr ""
+
+#: templates/fragment/tasks/admissions_to_accept.html:9
+msgid "Accept selected admissions"
 msgstr ""
 
 #: forms/admission.py:248
@@ -587,7 +591,7 @@ msgstr ""
 msgid "File is now"
 msgstr ""
 
-#: views/registration.py:197
+#: views/registration.py:196
 msgid "File is now mark as "
 msgstr ""
 
@@ -599,7 +603,7 @@ msgstr ""
 msgid "Files are now"
 msgstr ""
 
-#: views/registration.py:197
+#: views/registration.py:196
 msgid "Files are now mark as "
 msgstr ""
 
@@ -722,11 +726,11 @@ msgstr ""
 msgid "History"
 msgstr ""
 
-#: forms/registration.py:19
+#: forms/registration.py:20
 msgid "I would like the billing address to be :"
 msgstr ""
 
-#: forms/registration.py:27
+#: forms/registration.py:28
 msgid "I would like the post address to be :"
 msgstr ""
 
@@ -954,7 +958,7 @@ msgstr ""
 msgid "No history available"
 msgstr ""
 
-#: tests/views/test_registration.py:326 views/registration.py:167
+#: tests/views/test_registration.py:326 views/registration.py:166
 msgid "No registration validated, so no data available to export!"
 msgstr ""
 
@@ -1063,7 +1067,7 @@ msgstr ""
 msgid "Please select at least one file to archive"
 msgstr ""
 
-#: views/registration.py:213
+#: views/registration.py:212
 msgid "Please select at least one file to mark as received"
 msgstr ""
 
@@ -1120,10 +1124,6 @@ msgstr ""
 
 #: models/enums/enums.py:9 models/enums/enums.py:36
 msgid "Private"
-msgstr ""
-
-#: templates/fragment/tasks/admissions_to_accept.html:9
-msgid "Process selected admissions"
 msgstr ""
 
 #: templates/admissions.html:82 templates/archives.html:79
@@ -1269,8 +1269,8 @@ msgstr ""
 msgid "Residence address"
 msgstr ""
 
-#: business/xls/xls_common.py:122 models/admission.py:348
-#: templates/fragment/tab_registration.html:90
+#: business/xls/xls_common.py:122 forms/registration.py:33
+#: models/admission.py:348 templates/fragment/tab_registration.html:90
 #: templates/registration_form.html:118
 msgid "Residence phone"
 msgstr ""
@@ -1754,7 +1754,7 @@ msgstr ""
 msgid "admission"
 msgstr ""
 
-#: forms/registration.py:17 forms/registration.py:25
+#: forms/registration.py:18 forms/registration.py:26
 msgid "an other address"
 msgstr ""
 
@@ -1767,15 +1767,15 @@ msgstr ""
 msgid "managers"
 msgstr ""
 
-#: views/registration.py:198
+#: views/registration.py:197
 msgid "not received"
 msgstr ""
 
-#: views/registration.py:198
+#: views/registration.py:197
 msgid "received"
 msgstr ""
 
-#: forms/registration.py:16 forms/registration.py:24
+#: forms/registration.py:17 forms/registration.py:25
 msgid "residence address mentioned earlier"
 msgstr ""
 

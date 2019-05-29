@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-27 11:03+0200\n"
+"POT-Creation-Date: 2019-05-29 15:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,11 @@ msgstr "Un problème est survenu durant la suppression"
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:33
 msgid "Accept all selected admissions ?"
-msgstr "Accepter les inscriptions sélectionnées ?"
+msgstr "Accepter les admissions sélectionnées ?"
+
+#: templates/fragment/tasks/admissions_to_accept.html:9
+msgid "Accept selected admissions"
+msgstr "Accepter les admissions sélectionnées ?"
 
 #: forms/admission.py:248
 msgid "Accept the file"
@@ -592,7 +596,7 @@ msgstr "Le fichier a bien été supprimé"
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: views/registration.py:197
+#: views/registration.py:196
 msgid "File is now mark as "
 msgstr "Le dossier est maintenant enregistré comme "
 
@@ -604,7 +608,7 @@ msgstr "Dossier désarchivé"
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
-#: views/registration.py:197
+#: views/registration.py:196
 msgid "Files are now mark as "
 msgstr "Les dossiers sont maintenant enregistrés comme "
 
@@ -727,11 +731,11 @@ msgstr "Année d'obtention (secondaire)"
 msgid "History"
 msgstr "Historique"
 
-#: forms/registration.py:19
+#: forms/registration.py:20
 msgid "I would like the billing address to be :"
 msgstr "Je souhaite que l'adresse de facturation soit :"
 
-#: forms/registration.py:27
+#: forms/registration.py:28
 msgid "I would like the post address to be :"
 msgstr "Je souhaite recevoir mon courrier :"
 
@@ -963,7 +967,7 @@ msgstr "Aucune formation inactivée"
 msgid "No history available"
 msgstr "Aucun historique disponible"
 
-#: tests/views/test_registration.py:326 views/registration.py:167
+#: tests/views/test_registration.py:326 views/registration.py:166
 msgid "No registration validated, so no data available to export!"
 msgstr "Aucune inscription validée à exporter"
 
@@ -1076,7 +1080,7 @@ msgstr "Veuillez sélectionner au moins une admission à accepter"
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
 
-#: views/registration.py:213
+#: views/registration.py:212
 msgid "Please select at least one file to mark as received"
 msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
 
@@ -1136,10 +1140,6 @@ msgstr "Valorisation des Acquis d'Expérience"
 #: models/enums/enums.py:9 models/enums/enums.py:36
 msgid "Private"
 msgstr "Privé"
-
-#: templates/fragment/tasks/admissions_to_accept.html:9
-msgid "Process selected admissions"
-msgstr "Traiter les admissions sélectionnées"
 
 #: templates/admissions.html:82 templates/archives.html:79
 #: templates/formations.html:118 templates/registrations.html:93
@@ -1284,8 +1284,8 @@ msgstr "Motif de refus"
 msgid "Residence address"
 msgstr "Adresse"
 
-#: business/xls/xls_common.py:122 models/admission.py:348
-#: templates/fragment/tab_registration.html:90
+#: business/xls/xls_common.py:122 forms/registration.py:33
+#: models/admission.py:348 templates/fragment/tab_registration.html:90
 #: templates/registration_form.html:118
 msgid "Residence phone"
 msgstr "Téléphone fixe"
@@ -1812,7 +1812,7 @@ msgstr "Votre parcours n’est pas adapté au programme de cette formation"
 msgid "admission"
 msgstr "admission"
 
-#: forms/registration.py:17 forms/registration.py:25
+#: forms/registration.py:18 forms/registration.py:26
 msgid "an other address"
 msgstr "une autre adresse"
 
@@ -1825,18 +1825,19 @@ msgstr "archivé"
 msgid "managers"
 msgstr "gestionnaires"
 
-#: views/registration.py:198
+#: views/registration.py:197
 msgid "not received"
 msgstr "non reçu"
 
-#: views/registration.py:198
+#: views/registration.py:197
 msgid "received"
 msgstr "reçu"
 
-#: forms/registration.py:16 forms/registration.py:24
+#: forms/registration.py:17 forms/registration.py:25
 msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
 
 #: views/archive.py:110
 msgid "unarchived"
 msgstr "non-archivé"
+
