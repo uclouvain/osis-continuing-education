@@ -33,6 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
+from continuing_education.models.address import Address
 
 CONTINUING_EDUCATION_TRAINING_TYPES = [
     TrainingType.AGGREGATION.name,
@@ -84,7 +85,10 @@ class ContinuingEducationTraining(Model):
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
 
+    postal_address = models.ForeignKey(Address, default=None, blank=True, null=True)
+
     def clean(self):
+        print("CLEAN", vars(self))
         if not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()

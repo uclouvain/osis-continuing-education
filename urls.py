@@ -66,6 +66,7 @@ urlpatterns = [
         url(r'^$', formation.list_formations, name='formation'),
         url(r'^list/update/', formation.update_formations, name='update_formations'),
         url(r'^(?P<formation_id>[0-9]+)/', formation.formation_detail, name='formation_detail'),
+        url(r'^edit/(?P<formation_id>[0-9]+)/', formation.formation_edit, name='formation_edit'),
 
     ])),
     url(r'^prospects/', include([

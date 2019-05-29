@@ -36,6 +36,8 @@ from base.views.common import display_success_messages, display_error_messages
 from base.views.common import page_not_found
 from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_formation import create_xls
+from continuing_education.forms.address import AddressForm
+from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_object_list
@@ -168,3 +170,27 @@ def formation_detail(request, formation_id):
         )
     else:
         return page_not_found(request)
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def formation_edit(request, formation_id):
+    formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
+    form = ContinuingEducationTrainingForm(request.POST or None, instance=formation)
+    address_form = AddressForm(request.POST or None, instance=formation.postal_address)
+    if all([form.is_valid(), address_form.is_valid()]):
+        address = address_form.save()
+        formation = form.save(commit=False)
+        formation.postal_address = address
+        formation.save()
+        return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
+    return render(
+        request,
+        "formation_form.html",
+        {
+            'formation': formation,
+            'form': form,
+            'address_form': address_form
+        }
+    )
