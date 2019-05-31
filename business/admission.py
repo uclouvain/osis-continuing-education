@@ -160,7 +160,8 @@ def send_submission_email_to_participant(admission, connected_user):
         },
         data={
             'template': {
-                'formation': admission.formation.acronym,
+                'name': admission.person_information.person.last_name,
+                'formation': admission.formation.title,
                 'admission_data': _get_formatted_admission_data(admission),
                 'mails': mails
             },
