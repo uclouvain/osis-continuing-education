@@ -252,8 +252,12 @@ class SendEmailTest(TestCase):
             args.get('data').get('template').get('mails')
         )
         self.assertEqual(
-            self.admission.formation.acronym,
+            self.admission.formation.title,
             args.get('data').get('template').get('formation')
+        )
+        self.assertEqual(
+            self.admission.person_information.person.last_name,
+            args.get('data').get('template').get('name')
         )
         self.assertEqual(
             _get_formatted_admission_data(self.admission),
