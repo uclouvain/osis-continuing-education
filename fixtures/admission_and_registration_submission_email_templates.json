@@ -4,7 +4,7 @@
     "fields": {
         "reference": "iufc_participant_admission_submitted_html",
         "subject": "IUFC - Demande d'admission soumise",
-        "template": "<p>Cher (Chère) Monsieur (Madame) {{name}},</p><p>Nous vous remercions pour votre demande d'admission à la formation {{formation}}.</p><p>{% for data in admission_data %}{{ data }}<br>{% endfor %}</p><p>Le gestionnaire du programme prendra contact avec vous dans les plus brefs délais.</p> \n\n <p> Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+        "template": "<p>Cher (Chère) Monsieur (Madame) {{name}},</p><p>Nous vous remercions pour votre demande d'admission à la formation {{formation}}.</p><p>{% for data in admission_data %}{{ data }}<br>{% endfor %}</p><p>Le gestionnaire du programme prendra contact avec vous dans les plus brefs délais.</p> \n\n <p> Pour toute questioncomplémentaire , veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
         "format": "HTML",
         "language": "fr-be"
     }
