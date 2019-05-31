@@ -88,7 +88,7 @@ class ContinuingEducationTraining(Model):
     postal_address = models.ForeignKey(Address, default=None, blank=True, null=True)
 
     def clean(self):
-        if not self.education_group.educationgroupyear_set.exists():
+        if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()
 
