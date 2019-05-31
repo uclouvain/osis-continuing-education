@@ -26,8 +26,6 @@
 from django.apps import apps
 from django.test import TestCase
 
-from continuing_education import apps
-
 
 class AppsTestCase(TestCase):
     def test_app_name(self):
