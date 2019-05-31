@@ -12,7 +12,6 @@ class ContinuingEducationTrainingForm(ModelForm):
             'training_aid',
             'active',
             'postal_address',
-            'education_group'
         ]
 
         # Automatic translation of field names

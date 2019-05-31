@@ -150,7 +150,7 @@ class ViewFormationTestCase(TestCase):
         cet_dict['training_aid'] = not cet.training_aid
         cet_dict['active'] = not cet.active
         cet_dict['postal_address'] = model_to_dict(address)
-
+        # cet_dict['education_group'] = model_to_dict(ed)
         form = ContinuingEducationTrainingForm(cet_dict)
         form.is_valid()
         url = reverse('formation_edit', args=[cet.pk])
