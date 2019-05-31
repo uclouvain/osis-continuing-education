@@ -112,6 +112,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         data = {
             'education_group': EducationGroupFactory().uuid,
             'active': True,
+            'postal_address': None
         }
         response = self.client.post(self.url, data=data)
         serializer = ContinuingEducationTrainingPostSerializer(
@@ -186,6 +187,7 @@ class ContinuingEducationTrainingDetailUpdateDestroyTestCase(APITestCase):
         data = {
             'education_group': self.continuing_education_training.education_group.uuid,
             'active': False,
+            'postal_address': None
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

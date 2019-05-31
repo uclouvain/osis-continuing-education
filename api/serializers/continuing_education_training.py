@@ -26,6 +26,7 @@
 from rest_framework import serializers
 
 from base.models.education_group import EducationGroup
+from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from education_group.api.serializers.training import TrainingListSerializer
 
@@ -47,6 +48,7 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
         lookup_field='uuid'
     )
     education_group = serializers.SerializerMethodField()
+    postal_address = AddressSerializer(allow_null=True)
 
     managers = PersonTrainingListField(many=True, read_only=True)
 
@@ -58,7 +60,8 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
             'education_group',
             'active',
             'managers',
-            'training_aid'
+            'training_aid',
+            'postal_address'
         )
 
     def get_education_group(self, obj):
