@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
+from continuing_education.models.address import Address
 
 CONTINUING_EDUCATION_TRAINING_TYPES = [
     TrainingType.AGGREGATION.name,
@@ -84,8 +85,10 @@ class ContinuingEducationTraining(Model):
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
 
+    postal_address = models.ForeignKey(Address, default=None, blank=True, null=True)
+
     def clean(self):
-        if not self.education_group.educationgroupyear_set.exists():
+        if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()
 

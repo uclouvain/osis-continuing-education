@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-29 15:26+0200\n"
+"POT-Creation-Date: 2019-05-29 14:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,8 +76,8 @@ msgid "Activate"
 msgstr ""
 
 #: forms/search.py:41 forms/search.py:46
-#: models/continuing_education_training.py:65 templatetags/formation.py:42
-#: tests/business/xls/test_xls_formation.py:76
+#: models/continuing_education_training.py:66 templates/formation_form.html:46
+#: templatetags/formation.py:42 tests/business/xls/test_xls_formation.py:76
 msgid "Active"
 msgstr ""
 
@@ -87,7 +87,8 @@ msgstr ""
 msgid "Activity sector"
 msgstr ""
 
-#: models/admission.py:101
+#: models/admission.py:101 templates/formation_detail.html:93
+#: templates/formation_form.html:93
 msgid "Address"
 msgstr ""
 
@@ -149,7 +150,7 @@ msgctxt "plural"
 msgid "All"
 msgstr ""
 
-#: models/continuing_education_training.py:80
+#: models/continuing_education_training.py:81
 msgid "Alternate notification email addresses"
 msgstr ""
 
@@ -307,6 +308,7 @@ msgstr ""
 
 #: templates/admission_form.html:45 templates/admission_form.html:58
 #: templates/admission_form.html:224 templates/admission_form.html:228
+#: templates/formation_form.html:107
 #: templates/fragment/archives/unarchive_modal.html:42
 #: templates/fragment/cancel_reason_modal.html:46
 #: templates/fragment/condition_acceptance_modal.html:47
@@ -364,6 +366,7 @@ msgid "Citizenship"
 msgstr ""
 
 #: models/address.py:29 models/prospect.py:60 templates/admission_form.html:108
+#: templates/formation_detail.html:105 templates/formation_form.html:100
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:54
 #: templates/fragment/tab_registration.html:86
@@ -372,7 +375,7 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: models/continuing_education_training.py:82
+#: models/continuing_education_training.py:83
 msgid "Comma-separated addresses - Leave empty if no address"
 msgstr ""
 
@@ -418,14 +421,16 @@ msgstr ""
 #: templates/admin_home.html:31 templates/admission_detail.html:37
 #: templates/admission_form.html:36 templates/admissions.html:37
 #: templates/archives.html:36 templates/cancellations.html:36
-#: templates/formation_detail.html:38 templates/formations.html:37
-#: templates/managers.html:36 templates/prospect_details.html:36
-#: templates/prospects.html:36 templates/registration_form.html:36
-#: templates/registrations.html:36 templates/tasks.html:36
+#: templates/formation_detail.html:38 templates/formation_form.html:32
+#: templates/formations.html:37 templates/managers.html:36
+#: templates/prospect_details.html:36 templates/prospects.html:36
+#: templates/registration_form.html:36 templates/registrations.html:36
+#: templates/tasks.html:36
 msgid "Continuing Education"
 msgstr ""
 
 #: templates/admin_home.html:91 templates/formation_detail.html:39
+#: templates/formation_form.html:33
 msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
@@ -436,7 +441,7 @@ msgid ""
 msgstr ""
 
 #: forms/address.py:15 models/address.py:36 templates/admission_form.html:109
-#: templates/fragment/tab_admission.html:48
+#: templates/formation_detail.html:108 templates/fragment/tab_admission.html:48
 #: templates/fragment/tab_registration.html:55
 #: templates/fragment/tab_registration.html:87
 #: templates/registration_form.html:75 templates/registration_form.html:115
@@ -521,6 +526,10 @@ msgstr ""
 msgid "Edit admission data"
 msgstr ""
 
+#: templates/formation_detail.html:48
+msgid "Edit formation data"
+msgstr ""
+
 #: templates/fragment/tab_registration.html:34
 msgid "Edit registration data"
 msgstr ""
@@ -529,7 +538,7 @@ msgstr ""
 msgid "Education"
 msgstr ""
 
-#: models/continuing_education_training.py:89
+#: models/continuing_education_training.py:92
 msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr ""
 
@@ -632,7 +641,7 @@ msgstr ""
 #: templates/admissions.html:57 templates/admissions.html:129
 #: templates/archives.html:55 templates/archives.html:120
 #: templates/cancellations.html:63 templates/formation_detail.html:40
-#: templates/fragment/tab_admission.html:97
+#: templates/formation_form.html:34 templates/fragment/tab_admission.html:97
 #: templates/fragment/tab_admission.html:101
 #: templates/fragment/tasks/admissions_to_accept.html:34
 #: templates/fragment/tasks/diplomas_to_produce.html:35
@@ -648,20 +657,20 @@ msgstr ""
 msgid "Formation administrator(s)"
 msgstr ""
 
-#: tests/views/test_formation.py:185 views/formation.py:128
+#: tests/views/test_formation.py:185 views/formation.py:130
 msgid "Formation are now active"
 msgstr ""
 
-#: tests/views/test_formation.py:214 views/formation.py:130
+#: tests/views/test_formation.py:214 views/formation.py:132
 msgid "Formation are now inactive"
 msgstr ""
 
 #: tests/views/test_formation.py:168 tests/views/test_formation.py:226
-#: views/formation.py:123
+#: views/formation.py:125
 msgid "Formation is now active"
 msgstr ""
 
-#: tests/views/test_formation.py:197 views/formation.py:125
+#: tests/views/test_formation.py:197 views/formation.py:127
 msgid "Formation is now inactive"
 msgstr ""
 
@@ -839,7 +848,7 @@ msgstr ""
 msgid "Manager is already assigned on this training"
 msgstr ""
 
-#: templates/formation_detail.html:58
+#: templates/formation_detail.html:61 templates/formation_form.html:57
 msgid "Manager(s) of the training"
 msgstr ""
 
@@ -921,7 +930,7 @@ msgstr ""
 #: templates/registrations.html:163 templates/registrations.html:170
 #: templates/registrations.html:177 templates/registrations.html:184
 #: tests/business/test_admission.py:74
-#: tests/business/xls/test_xls_registration.py:90 views/formation.py:150
+#: tests/business/xls/test_xls_registration.py:90 views/formation.py:152
 msgid "No"
 msgstr ""
 
@@ -946,11 +955,11 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-#: views/formation.py:136
+#: views/formation.py:138
 msgid "No formation activated"
 msgstr ""
 
-#: views/formation.py:138
+#: views/formation.py:140
 msgid "No formation inactivated"
 msgstr ""
 
@@ -962,12 +971,12 @@ msgstr ""
 msgid "No registration validated, so no data available to export!"
 msgstr ""
 
-#: templates/formation_detail.html:74
+#: templates/formation_detail.html:77 templates/formation_form.html:77
 msgid ""
 "Nobody (because \"Send notifications emails\" setting is set to \"No\")."
 msgstr ""
 
-#: templates/formation_detail.html:61
+#: templates/formation_detail.html:64 templates/formation_form.html:60
 msgid "None"
 msgstr ""
 
@@ -979,7 +988,7 @@ msgstr ""
 msgid "Not updatable because it's in draft state"
 msgstr ""
 
-#: templates/formation_detail.html:79
+#: templates/formation_detail.html:82 templates/formation_form.html:82
 msgid ""
 "Notification emails will be sent to the following addresse(s) instead of the "
 "managers"
@@ -1071,7 +1080,7 @@ msgstr ""
 msgid "Please select at least one file to mark as received"
 msgstr ""
 
-#: tests/views/test_formation.py:155 views/formation.py:73
+#: tests/views/test_formation.py:155 views/formation.py:75
 msgid "Please select at least one formation"
 msgstr ""
 
@@ -1093,6 +1102,7 @@ msgid "Post"
 msgstr ""
 
 #: models/address.py:24 models/prospect.py:55 templates/admission_form.html:107
+#: templates/formation_detail.html:100 templates/formation_form.html:97
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:53
 #: templates/fragment/tab_registration.html:85
@@ -1276,7 +1286,8 @@ msgid "Residence phone"
 msgstr ""
 
 #: templates/admission_form.html:50 templates/admission_form.html:65
-#: templates/admission_form.html:234
+#: templates/admission_form.html:234 templates/formation_form.html:109
+#: templates/formation_form.html:110
 #: templates/fragment/managers/person_training_modal.html:49
 #: templates/registration_form.html:47 templates/registration_form.html:50
 #: templates/registration_form.html:153 templates/registration_form.html:156
@@ -1296,8 +1307,8 @@ msgstr ""
 msgid "Send notification email"
 msgstr ""
 
-#: models/continuing_education_training.py:75
-#: templates/formation_detail.html:56
+#: models/continuing_education_training.py:76
+#: templates/formation_detail.html:59 templates/formation_form.html:49
 msgid "Send notification emails"
 msgstr ""
 
@@ -1338,7 +1349,7 @@ msgstr ""
 #: templates/admission_detail.html:69 templates/admission_detail.html:72
 #: templates/admission_form.html:216 templates/admissions.html:61
 #: templates/admissions.html:131 templates/archives.html:59
-#: templates/archives.html:122 templates/formation_detail.html:51
+#: templates/archives.html:122 templates/formation_detail.html:54
 #: templates/formations.html:72 templates/formations.html:147
 #: templates/registrations.html:59 templates/registrations.html:119
 #: tests/business/test_admission.py:88
@@ -1354,7 +1365,8 @@ msgstr ""
 msgid "State reason"
 msgstr ""
 
-#: templates/admission_form.html:106 templates/fragment/tab_admission.html:45
+#: templates/admission_form.html:106 templates/formation_detail.html:97
+#: templates/formation_form.html:96 templates/fragment/tab_admission.html:45
 #: templates/fragment/tab_registration.html:52
 #: templates/fragment/tab_registration.html:84
 #: templates/registration_form.html:72 templates/registration_form.html:112
@@ -1373,10 +1385,11 @@ msgstr ""
 #: templates/admin_home.html:30 templates/admission_detail.html:36
 #: templates/admission_form.html:35 templates/admissions.html:36
 #: templates/archives.html:35 templates/cancellations.html:35
-#: templates/formation_detail.html:37 templates/formations.html:36
-#: templates/managers.html:35 templates/prospect_details.html:35
-#: templates/prospects.html:35 templates/registration_form.html:35
-#: templates/registrations.html:35 templates/tasks.html:35
+#: templates/formation_detail.html:37 templates/formation_form.html:31
+#: templates/formations.html:36 templates/managers.html:35
+#: templates/prospect_details.html:35 templates/prospects.html:35
+#: templates/registration_form.html:35 templates/registrations.html:35
+#: templates/tasks.html:35
 msgid "Studies"
 msgstr ""
 
@@ -1399,7 +1412,7 @@ msgstr ""
 msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr ""
 
-#: tests/views/test_formation.py:280 views/formation.py:149
+#: tests/views/test_formation.py:280 views/formation.py:151
 #, python-format
 msgid ""
 "Successfully defined training aid to %(new_value)s for %(quantity_updated)s "
@@ -1437,7 +1450,7 @@ msgstr ""
 msgid "The document is uploaded correctly"
 msgstr ""
 
-#: templates/formation_detail.html:76
+#: templates/formation_detail.html:79 templates/formation_form.html:79
 msgid "The managers (list above) will receive the notification emails."
 msgstr ""
 
@@ -1532,14 +1545,15 @@ msgid "Training Managers"
 msgstr ""
 
 #: business/xls/xls_common.py:65 business/xls/xls_formation.py:81
-#: forms/search.py:292 models/continuing_education_training.py:70
-#: templates/formation_detail.html:53 templates/formations.html:76
-#: templates/formations.html:108 templates/formations.html:113
-#: templates/formations.html:148 templates/fragment/tab_admission.html:105
+#: forms/search.py:292 models/continuing_education_training.py:71
+#: templates/formation_detail.html:56 templates/formation_form.html:54
+#: templates/formations.html:76 templates/formations.html:108
+#: templates/formations.html:113 templates/formations.html:148
+#: templates/fragment/tab_admission.html:105
 msgid "Training aid"
 msgstr ""
 
-#: models/continuing_education_training.py:130
+#: models/continuing_education_training.py:133
 msgid "Training aid available"
 msgstr ""
 
@@ -1654,7 +1668,7 @@ msgid ""
 "those fields aren't filled-in yet."
 msgstr ""
 
-#: templates/formation_detail.html:71
+#: templates/formation_detail.html:74 templates/formation_form.html:74
 msgid "Who will receive notification emails ?"
 msgstr ""
 
@@ -1680,7 +1694,7 @@ msgstr ""
 #: templates/registrations.html:175 templates/registrations.html:182
 #: tests/business/test_admission.py:74
 #: tests/business/xls/test_xls_registration.py:89
-#: tests/views/test_formation.py:281 views/formation.py:150
+#: tests/views/test_formation.py:281 views/formation.py:152
 msgid "Yes"
 msgstr ""
 
