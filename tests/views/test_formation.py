@@ -141,7 +141,7 @@ class ViewFormationTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_edit_post_admission_found(self):
+    def test_edit_post_formation_found(self):
         address = AddressFactory()
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
