@@ -41,7 +41,11 @@ msgstr "Un problème est survenu durant la suppression"
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:33
 msgid "Accept all selected admissions ?"
-msgstr "Accepter les inscriptions sélectionnées ?"
+msgstr "Accepter les admissions sélectionnées ?"
+
+#: templates/fragment/tasks/admissions_to_accept.html:9
+msgid "Accept selected admissions"
+msgstr "Accepter les admissions sélectionnées"
 
 #: forms/admission.py:248
 msgid "Accept the file"
@@ -1147,10 +1151,6 @@ msgstr "Valorisation des Acquis d'Expérience"
 msgid "Private"
 msgstr "Privé"
 
-#: templates/fragment/tasks/admissions_to_accept.html:9
-msgid "Process selected admissions"
-msgstr "Traiter les admissions sélectionnées"
-
 #: templates/admissions.html:82 templates/archives.html:79
 #: templates/formations.html:118 templates/registrations.html:93
 msgid "Produce xls"
@@ -1854,3 +1854,4 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 #: views/archive.py:110
 msgid "unarchived"
 msgstr "non-archivé"
+

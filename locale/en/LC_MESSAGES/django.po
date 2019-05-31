@@ -42,6 +42,10 @@ msgstr ""
 msgid "Accept all selected admissions ?"
 msgstr ""
 
+#: templates/fragment/tasks/admissions_to_accept.html:9
+msgid "Accept selected admissions"
+msgstr ""
+
 #: forms/admission.py:248
 msgid "Accept the file"
 msgstr ""
@@ -1130,10 +1134,6 @@ msgstr ""
 
 #: models/enums/enums.py:9 models/enums/enums.py:36
 msgid "Private"
-msgstr ""
-
-#: templates/fragment/tasks/admissions_to_accept.html:9
-msgid "Process selected admissions"
 msgstr ""
 
 #: templates/admissions.html:82 templates/archives.html:79
