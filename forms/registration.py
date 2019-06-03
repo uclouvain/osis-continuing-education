@@ -34,6 +34,9 @@ class RegistrationForm(ModelForm):
         widget=forms.TextInput(attrs={'placeholder': '082123456 - 003282123456 - +3282123456'})
     )
 
+    def clean_residence_phone(self):
+        return self.cleaned_data['residence_phone'].replace(' ', '')
+
     class Meta:
         model = Admission
         fields = [
