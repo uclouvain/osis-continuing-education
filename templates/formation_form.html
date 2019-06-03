@@ -46,7 +46,7 @@
                          {% bootstrap_field form.active label=_("Active") %}
                      </div>
                      <div class="col-md-9">
-                         {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}
+                         {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }} <br/> <br/>
                      </div>
                  </div>
                 <div class="row">
@@ -66,6 +66,7 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
+                        <br/>
                      </div>
                  </div>
                 <div class="row">
