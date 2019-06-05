@@ -94,8 +94,8 @@ class TestAdmissionForm(TestCase):
             '0474.12.34.56',
             '0474 123456'
         ]
-        short_numbers = ['00321234', '+32123456', '01234567']
-        long_numbers = ['003212345678912345678', '+3212345678912345678', '01234567891234567']
+        short_numbers = ['0032123', '+321234', '0123456']
+        long_numbers = ['003212345678912456', '+3212345678912345', '01234567891234567']
         for number in wrong_numbers + short_numbers + long_numbers:
             data['phone_mobile'] = number
             form = AdmissionForm(data=data, user=self.manager.user)
@@ -104,9 +104,8 @@ class TestAdmissionForm(TestCase):
                 form.errors,
                 {
                     'phone_mobile': [
-                        _(
-                            "Wrong format !"
-                        )
+                        _("Phone number must start with 0 or 00 or '+' followed by at least "
+                          "7 digits and up to 15 digits.")
                     ],
                 }
             )

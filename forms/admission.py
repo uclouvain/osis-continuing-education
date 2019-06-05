@@ -24,10 +24,8 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
 ]
 
 phone_regex = RegexValidator(
-    regex=r'^((?:\+|00)\d{1,3}|0)\d{8,15}$',
-    message=_(
-        "Wrong format !"
-    )
+    regex=r'^(?P<prefix_intro>\+|0{1,2})\d{7,15}$',
+    message=_("Phone number must start with 0 or 00 or '+' followed by at least 7 digits and up to 15 digits.")
 )
 
 
