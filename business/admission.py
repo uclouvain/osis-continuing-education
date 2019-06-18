@@ -224,7 +224,10 @@ def send_email(template_references, receivers, data, connected_user=None):
         data['subject'],
         data.get('attachment', None)
     )
-    message_service.send_messages(message_content, connected_user)
+    message_service.send_messages(
+        message_content=message_content,
+        connected_user=connected_user
+    )
 
 
 def _get_continuing_education_managers():
