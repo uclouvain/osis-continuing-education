@@ -78,12 +78,12 @@ urlpatterns = [
     ),
     url(r'^prospects/$', ProspectListCreate.as_view(), name=ProspectListCreate.name),
     url(
-        r'^training/$',
+        r'^trainings/$',
         ContinuingEducationTrainingList.as_view(),
         name=ContinuingEducationTrainingList.name
     ),
     url(
-        r'^training/(?P<uuid>[0-9a-f-]+)$',
+        r'^trainings/(?P<uuid>[0-9a-f-]+)$',
         ContinuingEducationTrainingDetail.as_view(),
         name=ContinuingEducationTrainingDetail.name
     ),
