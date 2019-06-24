@@ -258,9 +258,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AdmissionListSerializer'
+                $ref: '#/components/schemas/PaginatedAdmissions'
 
   /persons/{uuid}/registrations:
     get:
@@ -278,9 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AdmissionListSerializer'
+                $ref: '#/components/schemas/PaginatedAdmissions'
 
   /prospects:
     post:
@@ -313,7 +309,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedSerializer'
+                $ref: '#/components/schemas/PaginatedContinuingEducationTrainings'
 
   /trainings/{uuid}:
     get:
@@ -365,107 +361,108 @@ components:
     AdmissionDetailSerializer:
       allOf:
         - $ref: '#/components/schemas/PersonDetailSerializer'
-        - type: object
-          properties:
-              person_uuid:
-                $ref: '#/components/schemas/Uuid'
-              uuid:
-                $ref: '#/components/schemas/Uuid'
-              address:
-                $ref: '#/components/schemas/AddressSerializer'
-              birth_date:
-                type: string
-                example: "2000-01-01"
-              birth_location:
-                type: string
-                example: Brussels
-              birth_country:
-                $ref: '#/components/schemas/CountryName'
-              citizenship:
-                $ref: '#/components/schemas/CountryName'
-              formation:
-                $ref: '#/components/schemas/ContinuingEducationTrainingSerializer'
-              admission_email:
-                type: string
-                example: "jane_doe@personnalprovider.com"
-              state:
-                $ref: '#/components/schemas/StateEnum'
-              state_text:
-                type: string
-                readOnly: true
-              phone_mobile:
-                type: string
-                example: "0000/00.00.00."
-              residence_phone:
-                type: string
-                example: "000/00.00.00."
-              high_school_diploma:
-                type: boolean
-              high_school_graduation_year:
-                type: integer
-                example: 2009
-              last_degree_level:
-                type: string
-              last_degree_field:
-                type: string
-              last_degree_institution:
-                type: string
-              last_degree_graduation_year:
-                type: integer
-                example: 2019
-              other_educational_background:
-                type: string
-              professional_status:
-                type: string
-              professional_status_text:
-                type: string
-                readOnly: true
-              current_occupation:
-                type: string
-              current_employer:
-                type: string
-              activity_sector:
-                type: string
-              activity_sector_text:
-                type: string
-                readOnly: true
-              past_professional_activities:
-                type: string
-              motivation:
-                type: string
-              professional_personal_interests:
-                type: string
-              awareness_ucl_website:
-                type: boolean
-              awareness_formation_website:
-                type: boolean
-              awareness_press:
-                type: boolean
-              awareness_facebook:
-                type: boolean
-              awareness_linkedin:
-                type: boolean
-              awareness_customized_mail:
-                type: boolean
-              awareness_emailing:
-                type: boolean
-              awareness_word_of_mouth:
-                type: boolean
-              awareness_friends:
-                type: boolean
-              awareness_former_students:
-                type: boolean
-              awareness_moocs:
-                type: boolean
-              awareness_other:
-                type: string
-              condition_of_acceptance:
-                type: string
-              state_reason:
-                type: string
+      type: object
+      properties:
+          person_uuid:
+            $ref: '#/components/schemas/Uuid'
+          uuid:
+            $ref: '#/components/schemas/Uuid'
+          address:
+            $ref: '#/components/schemas/AddressSerializer'
+          birth_date:
+            type: string
+            example: "2000-01-01"
+          birth_location:
+            type: string
+            example: Brussels
+          birth_country:
+            $ref: '#/components/schemas/CountryName'
+          citizenship:
+            $ref: '#/components/schemas/CountryName'
+          formation:
+            $ref: '#/components/schemas/ContinuingEducationTrainingSerializer'
+          admission_email:
+            type: string
+            example: "jane_doe@personnalprovider.com"
+          state:
+            $ref: '#/components/schemas/StateEnum'
+          state_text:
+            type: string
+            readOnly: true
+          phone_mobile:
+            type: string
+            example: "0000/00.00.00."
+          residence_phone:
+            type: string
+            example: "000/00.00.00."
+          high_school_diploma:
+            type: boolean
+          high_school_graduation_year:
+            type: integer
+            example: 2009
+          last_degree_level:
+            type: string
+          last_degree_field:
+            type: string
+          last_degree_institution:
+            type: string
+          last_degree_graduation_year:
+            type: integer
+            example: 2019
+          other_educational_background:
+            type: string
+          professional_status:
+            type: string
+          professional_status_text:
+            type: string
+            readOnly: true
+          current_occupation:
+            type: string
+          current_employer:
+            type: string
+          activity_sector:
+            type: string
+          activity_sector_text:
+            type: string
+            readOnly: true
+          past_professional_activities:
+            type: string
+          motivation:
+            type: string
+          professional_personal_interests:
+            type: string
+          awareness_ucl_website:
+            type: boolean
+          awareness_formation_website:
+            type: boolean
+          awareness_press:
+            type: boolean
+          awareness_facebook:
+            type: boolean
+          awareness_linkedin:
+            type: boolean
+          awareness_customized_mail:
+            type: boolean
+          awareness_emailing:
+            type: boolean
+          awareness_word_of_mouth:
+            type: boolean
+          awareness_friends:
+            type: boolean
+          awareness_former_students:
+            type: boolean
+          awareness_moocs:
+            type: boolean
+          awareness_other:
+            type: string
+          condition_of_acceptance:
+            type: string
+          state_reason:
+            type: string
 
     AdmissionListSerializer:
       allOf:
+        - $ref: '#/components/schemas/FormationBasic'
         - type: object
           properties:
             uuid:
@@ -480,8 +477,6 @@ components:
             academic_year:
               type: string
               example: '2021-22'
-
-        - $ref: '#/components/schemas/FormationBasic'
 
     AdmissionPostSerializer:
       allOf:
@@ -500,84 +495,84 @@ components:
     RegistrationDetailSerializer:
       allOf:
         - $ref: '#/components/schemas/PersonDetailSerializer'
-        - type: object
-          properties:
-            person_uuid:
-              $ref: '#/components/schemas/Uuid'
-            uuid:
-              $ref: '#/components/schemas/Uuid'
-            state:
-              $ref: '#/components/schemas/StateEnum'
-            state_text:
-              type: string
-              readOnly: true
-            citizenship:
-              $ref: '#/components/schemas/CountryName'
-            address:
-              $ref: '#/components/schemas/AddressSerializer'
-            registration_type:
-              $ref: '#/components/schemas/RegistrationTypeEnum'
-            registration_type_text:
-              type: string
-              readOnly: true
-            use_address_for_billing:
-              type: boolean
-            billing_address:
-              $ref: '#/components/schemas/AddressSerializer'
-            head_office_name:
-              type: string
-            company_number:
-              type: string
-            vat_number:
-              type: string
+      type: object
+      properties:
+        person_uuid:
+          $ref: '#/components/schemas/Uuid'
+        uuid:
+          $ref: '#/components/schemas/Uuid'
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        state_text:
+          type: string
+          readOnly: true
+        citizenship:
+          $ref: '#/components/schemas/CountryName'
+        address:
+          $ref: '#/components/schemas/AddressSerializer'
+        registration_type:
+          $ref: '#/components/schemas/RegistrationTypeEnum'
+        registration_type_text:
+          type: string
+          readOnly: true
+        use_address_for_billing:
+          type: boolean
+        billing_address:
+          $ref: '#/components/schemas/AddressSerializer'
+        head_office_name:
+          type: string
+        company_number:
+          type: string
+        vat_number:
+          type: string
 
-            national_registry_number:
-              type: string
-            id_card_number:
-              type: string
-            passport_number:
-              type: string
-            marital_status:
-              $ref: '#/components/schemas/MaritalStatusEnum'
-            marital_status_text:
-              type: string
-              readOnly: true
-            spouse_name:
-              type: string
-            children_number:
-              type: integer
-            previous_ucl_registration:
-              type: boolean
-            previous_noma:
-              type: string
-            use_address_for_post:
-              type: boolean
-            residence_address:
-               $ref: '#/components/schemas/AddressSerializer'
-            residence_phone:
-              type: string
-            ucl_registration_complete:
-              type: boolean
-            noma:
-              type: string
-            payment_complete:
-              type: boolean
-            formation_spreading:
-              type: boolean
-            prior_experience_validation:
-              type: boolean
-            assessment_presented:
-              type: boolean
-            assessment_succeeded:
-              type: boolean
-            sessions:
-              type: boolean
-            reduced_rates:
-              type: boolean
-            spreading_payments:
-              type: boolean
-            condition_of_acceptance:
-              type: string
+        national_registry_number:
+          type: string
+        id_card_number:
+          type: string
+        passport_number:
+          type: string
+        marital_status:
+          $ref: '#/components/schemas/MaritalStatusEnum'
+        marital_status_text:
+          type: string
+          readOnly: true
+        spouse_name:
+          type: string
+        children_number:
+          type: integer
+        previous_ucl_registration:
+          type: boolean
+        previous_noma:
+          type: string
+        use_address_for_post:
+          type: boolean
+        residence_address:
+           $ref: '#/components/schemas/AddressSerializer'
+        residence_phone:
+          type: string
+        ucl_registration_complete:
+          type: boolean
+        noma:
+          type: string
+        payment_complete:
+          type: boolean
+        formation_spreading:
+          type: boolean
+        prior_experience_validation:
+          type: boolean
+        assessment_presented:
+          type: boolean
+        assessment_succeeded:
+          type: boolean
+        sessions:
+          type: boolean
+        reduced_rates:
+          type: boolean
+        spreading_payments:
+          type: boolean
+        condition_of_acceptance:
+          type: string
 
     RegistrationPostSerializer:
       allOf:
@@ -625,11 +620,11 @@ components:
     PersonDetailSerializer:
       allOf:
         - $ref: '#/components/schemas/PersonBasic'
-        - type: object
-          properties:
-            gender:
-              type: string
-              enum: [F, M, U]
+      type: object
+      properties:
+        gender:
+          type: string
+          enum: [F, M, U]
 
     PersonBasic:
       type: object
@@ -663,19 +658,35 @@ components:
     ContinuingEducationTrainingSerializer:
       allOf:
         - $ref: '#/components/schemas/FormationBasic'
-        - type: object
-          properties:
-            active:
-              type: boolean
-            training_aid:
-              type: boolean
-            managers:
-              type: array
-              items:
-                $ref: '#/components/schemas/PersonBasic'
+      properties:
+        active:
+          type: boolean
+        training_aid:
+          type: boolean
+        managers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PersonBasic'
 
-    PaginatedSerializer:
-      type: object
+    PaginatedContinuingEducationTrainings:
+      allOf:
+        - $ref: "#/components/schemas/Paging"
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#components/schemas/ContinuingEducationTrainingSerializer"
+
+    PaginatedAdmissions:
+      allOf:
+        - $ref: "#/components/schemas/Paging"
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#components/schemas/AdmissionListSerializer"
+
+    Paging:
       properties:
         count:
           type: number
@@ -683,9 +694,6 @@ components:
           type: number
         previous:
           type: number
-        results:
-          type: array
-          items: {}
 
     File:
       type: object
