@@ -78,7 +78,7 @@ def save_role_registered_in_admission(data):
         admission.save()
 
 
-def send_admission_to_epc(admission):
+def send_admission_to_queue(admission):
     data = get_json_for_epc(admission)
     credentials = pika.PlainCredentials(settings.QUEUES.get('QUEUE_USER'),
                                         settings.QUEUES.get('QUEUE_PASSWORD'))
