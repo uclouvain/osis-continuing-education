@@ -61,13 +61,21 @@ def get_json_for_epc(admission):
 
 
 def format_address_for_json(address):
+    if address:
+        return {
+            'street_name': address.location,
+            'locality': address.city,
+            'postal_code': address.postal_code,
+            'country_name': address.country.name if address.country else '',
+            'country_iso_code': address.country.iso_code if address.country else ''
+        }
     return {
-        'street_name': address.location,
-        'locality': address.city,
-        'postal_code': address.postal_code,
-        'country_name': address.country.name if address.country else '',
-        'country_iso_code': address.country.iso_code if address.country else ''
-    }
+            'street_name': '',
+            'locality': '',
+            'postal_code': '',
+            'country_name': '',
+            'country_iso_code': ''
+        }
 
 
 def save_role_registered_in_admission(data):
