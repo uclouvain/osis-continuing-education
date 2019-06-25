@@ -137,7 +137,7 @@ class RegistrationQueueTestCase(TestCase):
         self.admission.refresh_from_db()
         self.assertFalse(self.admission.ucl_registration_complete)
 
-    @mock.patch('pika.BlockingConnection')
+    @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
     def test_send_admission_to_queue(self, mock_send, mock_pika):
         send_admission_to_queue(self.admission)
