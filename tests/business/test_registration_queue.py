@@ -137,11 +137,10 @@ class RegistrationQueueTestCase(TestCase):
         self.admission.refresh_from_db()
         self.assertFalse(self.admission.ucl_registration_complete)
 
-    @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
+    @mock.patch('django.conf.settings', return_value='')
     @mock.patch('continuing_education.business.registration_queue.send_message')
-    def test_send_admission_to_queue(self, mock_send, mock_pika):
+    def test_send_admission_to_queue(self, mock_send, mock_setting):
         send_admission_to_queue(self.admission)
-        mock_pika.assert_called()
         mock_send.assert_called()
         self.assertEqual('rabbitIUFCInscrRequest', mock_send.call_args_list[0][0][0])
         self.assertEqual(get_json_for_epc(self.admission), mock_send.call_args_list[0][0][1])
