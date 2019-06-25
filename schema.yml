@@ -20,7 +20,7 @@ servers:
     description: Production server
 
 paths:
-  /admissions:
+  /admissions/:
     post:
       description: Create a new admission
       requestBody:
@@ -88,7 +88,7 @@ paths:
         200:
           description: Successful edit of an admission's data.
 
-  /admissions/{uuid}/files:
+  /admissions/{uuid}/files/:
     get:
       description: Obtain the list of the files linked to an admission
       parameters:
@@ -242,7 +242,7 @@ paths:
                   uuid:
                     $ref: '#/components/schemas/Uuid'
 
-  /persons/{uuid}/admissions:
+  /persons/{uuid}/admissions/:
     get:
       description: Obtain the list of admissions of a participant
       parameters:
@@ -260,7 +260,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAdmissions'
 
-  /persons/{uuid}/registrations:
+  /persons/{uuid}/registrations/:
     get:
       description: Obtain the list of registrations of a participant
       parameters:
@@ -278,7 +278,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedAdmissions'
 
-  /prospects:
+  /prospects/:
     post:
       description: Create a new prospect
       requestBody:
@@ -291,7 +291,7 @@ paths:
         201:
           description: Successful creation of a new prospect
 
-  /trainings:
+  /trainings/:
     get:
       description: Obtain the list of trainings
       parameters:
@@ -301,6 +301,12 @@ paths:
           description: The active field of the trainings to get
           schema:
             type: boolean
+        - in: query
+          name: search
+          required: false
+          description: Search filter applied on acronym
+          schema:
+            type: string
         - $ref: '#/components/parameters/offsetParam'
         - $ref: '#/components/parameters/limitParam'
       responses:
@@ -675,7 +681,7 @@ components:
         results:
           type: array
           items:
-            $ref: "#components/schemas/ContinuingEducationTrainingSerializer"
+            $ref: "#/components/schemas/ContinuingEducationTrainingSerializer"
 
     PaginatedAdmissions:
       allOf:
@@ -684,7 +690,7 @@ components:
         results:
           type: array
           items:
-            $ref: "#components/schemas/AdmissionListSerializer"
+            $ref: "#/components/schemas/AdmissionListSerializer"
 
     Paging:
       properties:
