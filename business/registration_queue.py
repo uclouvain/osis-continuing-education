@@ -46,6 +46,7 @@ def get_json_for_epc(admission):
         'birth_country': admission.person_information.birth_country.iso_code,
         'sex': admission.person_information.person.gender,
         'civil_state': admission.marital_status,
+        'language_iso_code': admission.citizenship.name,
         'mobile_number': admission.phone_mobile,
         'telephone_number': admission.residence_phone,
         'private_email': admission.email,
@@ -63,14 +64,14 @@ def get_json_for_epc(admission):
 def format_address_for_json(address):
     if address:
         return {
-            'street_name': address.location,
+            'street': address.location,
             'locality': address.city,
             'postal_code': address.postal_code,
             'country_name': address.country.name if address.country else '',
             'country_iso_code': address.country.iso_code if address.country else ''
         }
     return {
-            'street_name': '',
+            'street': '',
             'locality': '',
             'postal_code': '',
             'country_name': '',

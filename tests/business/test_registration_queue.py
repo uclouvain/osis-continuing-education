@@ -62,18 +62,19 @@ class RegistrationQueueTestCase(TestCase):
             'birth_country': self.admission.person_information.birth_country.iso_code,
             'sex': self.admission.person_information.person.gender,
             'civil_state': self.admission.marital_status,
+            'language_iso_code': self.admission.citizenship.name,
             'mobile_number': self.admission.phone_mobile,
             'telephone_number': self.admission.residence_phone,
             'private_email': self.admission.email,
             'private_address': {
-                'street_name': self.admission.residence_address.location,
+                'street': self.admission.residence_address.location,
                 'locality': self.admission.residence_address.city,
                 'postal_code': self.admission.residence_address.postal_code,
                 'country_name': self.admission.residence_address.country.name,
                 'country_iso_code': self.admission.residence_address.country.iso_code
             },
             'staying_address': {
-                'street_name': self.admission.address.location,
+                'street': self.admission.address.location,
                 'locality': self.admission.address.city,
                 'postal_code': self.admission.address.postal_code,
                 'country_name': self.admission.address.country.name,
@@ -91,7 +92,7 @@ class RegistrationQueueTestCase(TestCase):
     def test_format_address_for_json(self):
         result = format_address_for_json(self.admission.address)
         expected_result = {
-            'street_name': self.admission.address.location,
+            'street': self.admission.address.location,
             'locality': self.admission.address.city,
             'postal_code': self.admission.address.postal_code,
             'country_name': self.admission.address.country.name,
@@ -102,7 +103,7 @@ class RegistrationQueueTestCase(TestCase):
     def test_format_address_for_json_if_no_address(self):
         result = format_address_for_json(None)
         expected_result = {
-            'street_name': '',
+            'street': '',
             'locality': '',
             'postal_code': '',
             'country_name': '',
@@ -115,7 +116,7 @@ class RegistrationQueueTestCase(TestCase):
         self.admission.address.save()
         result = format_address_for_json(self.admission.address)
         expected_result = {
-            'street_name': self.admission.address.location,
+            'street': self.admission.address.location,
             'locality': self.admission.address.city,
             'postal_code': self.admission.address.postal_code,
             'country_name': '',
