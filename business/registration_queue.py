@@ -95,7 +95,6 @@ def send_admission_to_queue(admission):
                                                 settings.QUEUES.get('QUEUE_PORT'),
                                                 settings.QUEUES.get('QUEUE_CONTEXT_ROOT'),
                                                 credentials)
-
     try:
         connect = pika.BlockingConnection(rabbit_settings)
         channel = connect.channel()
