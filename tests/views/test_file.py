@@ -60,7 +60,7 @@ class UploadFileTestCase(TestCase):
         self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("The document is uploaded correctly")),
             str(messages_list[0])
@@ -83,7 +83,7 @@ class UploadFileTestCase(TestCase):
         self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("The document is uploaded correctly")),
             messages_list
@@ -108,7 +108,7 @@ class UploadFileTestCase(TestCase):
 
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("A problem occured : the document is not uploaded")),
             str(messages_list[0])
@@ -133,7 +133,7 @@ class UploadFileTestCase(TestCase):
 
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             _("The name of the file is too long : maximum %(length)s characters.") % {
                 'length': MAX_ADMISSION_FILE_NAME_LENGTH
@@ -156,7 +156,7 @@ class UploadFileTestCase(TestCase):
 
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("The status of the admission must be Accepted to upload an invoice.")),
             str(messages_list[0])
@@ -194,7 +194,7 @@ class DeleteFileTestCase(TestCase):
         self.assertEqual(AdmissionFile.objects.all().count(), 0)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("File correctly deleted")),
             str(messages_list[0])
@@ -209,7 +209,7 @@ class DeleteFileTestCase(TestCase):
         self.assertEqual(AdmissionFile.objects.all().count(), 1)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("A problem occured during delete")),
             str(messages_list[0])
