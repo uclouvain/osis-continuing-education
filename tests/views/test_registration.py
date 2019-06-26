@@ -27,7 +27,6 @@ from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.http import HttpResponse
@@ -293,43 +292,6 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         self.assertCountEqual(response.context['admissions'], [self.registration])
         self.assertEqual(response.context['admissions_number'], 1)
         self.assertTemplateUsed(response, 'registrations.html')
-
-
-class ViewRegistrationsCreateJsonTestCase(TestCase):
-    def setUp(self):
-        self.group = GroupFactory(name='continuing_education_managers')
-
-    def test_not_logged(self):
-        url = reverse('json_file')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-    def test_no_permission_to_create_json(self):
-
-        self.manager = PersonWithPermissionsFactory('can_access_admission')
-        self.manager.user.groups.add(self.group)
-        self.client.force_login(self.manager.user)
-        url = reverse('json_file')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_no_registration_to_export(self):
-
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'can_create_json')
-        self.manager.user.groups.add(self.group)
-        self.client.force_login(self.manager.user)
-        url = reverse('json_file')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 302)
-
-        msg = [m.message for m in get_messages(response.wsgi_request)]
-        msg_level = [m.level for m in get_messages(response.wsgi_request)]
-
-        self.assertEqual(len(msg), 1)
-        self.assertIn(messages.ERROR, msg_level)
-        self.assertIn(msg[0], _('No registration validated, so no data available to export!'))
 
 
 class ViewRegistrationCacheTestCase(TestCase):

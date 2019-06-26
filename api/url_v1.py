@@ -33,8 +33,7 @@ from continuing_education.api.views.continuing_education_training import Continu
     ContinuingEducationTrainingDetailUpdateDestroy
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
 from continuing_education.api.views.prospect import ProspectListCreate, ProspectDetailUpdate
-from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate, \
-    RegistrationDetailForEpc, RegistrationListForEpc
+from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate
 
 urlpatterns = [
     url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),
@@ -91,9 +90,5 @@ urlpatterns = [
         r'^training/(?P<uuid>[0-9a-f-]+)$',
         ContinuingEducationTrainingDetailUpdateDestroy.as_view(),
         name=ContinuingEducationTrainingDetailUpdateDestroy.name
-    ),
-    url(r'^registration/for_epc/$', RegistrationListForEpc.as_view(),
-        name=RegistrationListForEpc.name),
-    url(r'^registration/for_epc/(?P<id>[0-9]+)/$', RegistrationDetailForEpc.as_view(),
-        name=RegistrationDetailForEpc.name),
+    )
 ]

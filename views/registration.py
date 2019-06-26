@@ -34,7 +34,6 @@ from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business import data_export
 from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
@@ -151,20 +150,6 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
     else:
         specific_address = specific_address_form.save()
         return specific_address
-
-
-@login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
-@permission_required('continuing_education.can_create_json', raise_exception=True)
-@user_passes_test(is_not_student_worker)
-def create_json(request):
-    registrations = Admission.objects.filter(state=admission_state_choices.VALIDATED)
-
-    if registrations:
-        return data_export.create_json(request, registrations)
-    else:
-        display_error_messages(request, _("No registration validated, so no data available to export!"))
-        return redirect('registration')
 
 
 @login_required
