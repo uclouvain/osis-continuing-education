@@ -286,7 +286,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
 
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("A notification email has been sent to the participant")),
             messages_list
@@ -302,7 +302,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
 
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("There is no invoice for this admission, notification email not sent")),
             messages_list

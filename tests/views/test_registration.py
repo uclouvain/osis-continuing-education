@@ -234,7 +234,7 @@ class RegistrationStateChangedTestCase(TestCase):
         # state should not be changed and error message should be presented to user
         self.assertEqual(self.registration_submitted.state, REGISTRATION_SUBMITTED, 'state')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("Continuing education managers only are allowed to validate a registration")),
             str(messages_list[0])
