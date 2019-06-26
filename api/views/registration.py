@@ -32,7 +32,6 @@ from continuing_education.api.serializers.registration import RegistrationListSe
 from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED
 
 
 class RegistrationList(generics.ListAPIView):
@@ -86,25 +85,3 @@ class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
         if self.request.method in ['PATCH', 'PUT']:
             return RegistrationPostSerializer
         return RegistrationDetailSerializer
-
-
-class RegistrationListForEpc(RegistrationList):
-    """
-       Return a list of all the registration with optional filtering or create one.
-    """
-    name = 'registration-list-for-epc'
-
-    def get_queryset(self):
-        return Admission.objects.filter(state=REGISTRATION_SUBMITTED).select_related(
-            'person_information',
-            'address',
-            'billing_address',
-            'residence_address'
-        )
-
-
-class RegistrationDetailForEpc(generics.RetrieveAPIView):
-    name = 'registration-detail-for-epc'
-    queryset = Admission.objects.filter(state=REGISTRATION_SUBMITTED)
-    lookup_field = 'id'
-    serializer_class = RegistrationDetailSerializer
