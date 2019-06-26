@@ -47,7 +47,6 @@ urlpatterns = [
     ])),
     url(r'^registration/', include([
         url(r'^$', registration.list_registrations, name='registration'),
-        url(r'^create_json/', registration.create_json, name='json_file'),
         url(r'^edit/(?P<admission_id>[0-9]+)/', registration.registration_edit, name='registration_edit'),
         url(r'^list/receive_files/', registration.receive_files_procedure, name='receive_files_procedure'),
         url(r'^change_received_file_state/(?P<admission_id>[0-9]+)/', registration.receive_file_procedure,
