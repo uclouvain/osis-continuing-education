@@ -345,7 +345,7 @@ class AdmissionStateChangedTestCase(TestCase):
             state=SUBMITTED
         )
 
-    @patch('continuing_education.business.registration_queue.send_admission_to_queue')
+    @patch('continuing_education.views.admission.send_admission_to_queue')
     @patch('continuing_education.business.admission._get_continuing_education_managers')
     @patch('osis_common.messaging.send_message.send_messages')
     def test_admission_detail_edit_state(self, mock_send, mock_managers, mock_queue):
