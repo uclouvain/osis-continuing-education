@@ -21,7 +21,7 @@ from continuing_education.models.continuing_education_training import CONTINUING
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
     ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
-    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, CANCELLED
+    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT
 from continuing_education.models.person_training import PersonTraining
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT]
@@ -308,7 +308,6 @@ class FormationFilterForm(AdmissionFilterForm):
         )
 
         qs = _build_active_parameter(qs, self.cleaned_data.get('state', None))
-
         if faculty:
             qs = _get_formation_filter_entity_management(
                 qs,

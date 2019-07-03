@@ -65,20 +65,25 @@ class ViewFormationTestCase(TestCase):
 
         self.formation_AAAA = EducationGroupYearFactory(
             acronym="AAAA",
+            partial_acronym="AAAA",
             academic_year=self.next_acad_year,
             education_group_type=continuing_education_group_type
         )
         self.formation_BBBB = EducationGroupYearFactory(
             acronym="BBBB",
+            partial_acronym="BBBB",
             academic_year=self.next_acad_year,
             education_group_type=continuing_education_group_type
         )
         self.formation_ABBB = EducationGroupYearFactory(
             acronym="ABBB",
+            partial_acronym="ABBB",
             academic_year=self.next_acad_year,
             education_group_type=continuing_education_group_type
         )
         self.current_academic_formation = EducationGroupYearFactory(
+            acronym="DDDD",
+            partial_acronym="DDDD",
             academic_year=current_acad_year,
             education_group_type=continuing_education_group_type
         )
