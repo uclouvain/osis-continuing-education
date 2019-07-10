@@ -160,7 +160,8 @@ def send_submission_email_to_participant(admission, connected_user):
         },
         data={
             'template': {
-                'formation': admission.formation.acronym,
+                'name': admission.person_information.person.last_name,
+                'formation': admission.formation.title,
                 'admission_data': _get_formatted_admission_data(admission),
                 'mails': mails
             },
@@ -223,7 +224,10 @@ def send_email(template_references, receivers, data, connected_user=None):
         data['subject'],
         data.get('attachment', None)
     )
-    message_service.send_messages(message_content, connected_user)
+    message_service.send_messages(
+        message_content=message_content,
+        connected_user=connected_user
+    )
 
 
 def _get_continuing_education_managers():
@@ -297,7 +301,6 @@ def check_required_field_for_participant(obj, meta, fields_required, extra=None)
     if obj:
         return _check_fields(fields_required, meta, obj, extra)
     else:
-
         return {response[key]: meta.get_field(key).verbose_name}
 
 

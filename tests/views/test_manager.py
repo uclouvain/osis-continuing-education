@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -75,13 +75,13 @@ class ManagerListTestCase(TestCase):
         self.assertTemplateUsed(response, 'managers.html')
 
     def test_assign_manager_to_training(self):
-        self.assertEquals(PersonTraining.objects.count(), 0)
+        self.assertEqual(PersonTraining.objects.count(), 0)
         data = {
             'training': self.formation.pk,
             'person': self.training_manager.pk
         }
         response = self.client.post(reverse('list_managers'), data=data)
-        self.assertEquals(PersonTraining.objects.count(), 1)
+        self.assertEqual(PersonTraining.objects.count(), 1)
         self.assertEqual(response.status_code, HttpResponse.status_code)
 
         messages_list = list(messages.get_messages(response.wsgi_request))
@@ -104,13 +104,13 @@ class ManagerListTestCase(TestCase):
 
     def test_manager_already_assigned_to_training(self):
         PersonTraining(person=self.training_manager, training=self.formation).save()
-        self.assertEquals(PersonTraining.objects.count(), 1)
+        self.assertEqual(PersonTraining.objects.count(), 1)
         data = {
             'training': self.formation.pk,
             'person': self.training_manager.pk
         }
         response = self.client.post(reverse('list_managers'), data)
-        self.assertEquals(PersonTraining.objects.count(), 1)
+        self.assertEqual(PersonTraining.objects.count(), 1)
         self.assertEqual(response.status_code, HttpResponse.status_code)
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertIn(
@@ -120,13 +120,13 @@ class ManagerListTestCase(TestCase):
 
     def test_desassign_manager_from_training(self):
         PersonTraining(person=self.training_manager, training=self.formation).save()
-        self.assertEquals(PersonTraining.objects.count(), 1)
+        self.assertEqual(PersonTraining.objects.count(), 1)
         args = [
             self.formation.pk,
             self.training_manager.pk
         ]
         response = self.client.get(reverse('delete_person_training', args=args))
-        self.assertEquals(PersonTraining.objects.count(), 0)
+        self.assertEqual(PersonTraining.objects.count(), 0)
         messages_list = list(messages.get_messages(response.wsgi_request))
         success_msg = gettext('Successfully desassigned %(manager)s from the training %(training)s') % {
             "manager": self.training_manager,

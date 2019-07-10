@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -47,7 +47,6 @@ urlpatterns = [
     ])),
     url(r'^registration/', include([
         url(r'^$', registration.list_registrations, name='registration'),
-        url(r'^create_json/', registration.create_json, name='json_file'),
         url(r'^edit/(?P<admission_id>[0-9]+)/', registration.registration_edit, name='registration_edit'),
         url(r'^list/receive_files/', registration.receive_files_procedure, name='receive_files_procedure'),
         url(r'^change_received_file_state/(?P<admission_id>[0-9]+)/', registration.receive_file_procedure,
@@ -66,9 +65,13 @@ urlpatterns = [
         url(r'^$', formation.list_formations, name='formation'),
         url(r'^list/update/', formation.update_formations, name='update_formations'),
         url(r'^(?P<formation_id>[0-9]+)/', formation.formation_detail, name='formation_detail'),
+        url(r'^edit/(?P<formation_id>[0-9]+)/', formation.formation_edit, name='formation_edit'),
 
     ])),
-    url(r'^prospects$', prospect.list_prospects, name='prospects'),
+    url(r'^prospects/', include([
+        url(r'^$', prospect.list_prospects, name='prospects'),
+        url(r'^(?P<prospect_id>[0-9]+)/', prospect.prospect_details, name='prospect_details'),
+    ])),
     url(r'^tasks/', include([
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),

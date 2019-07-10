@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
     check_required_field_for_participant
 from continuing_education.business.perms import is_not_student_worker
+from continuing_education.business.registration_queue import send_admission_to_queue
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
@@ -257,6 +258,7 @@ def _new_state_management(request, adm_form, admission, new_state):
         send_state_changed_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)
+        send_admission_to_queue(admission)
     return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
 
 

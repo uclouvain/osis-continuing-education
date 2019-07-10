@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business import data_export
 from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
@@ -43,7 +42,7 @@ from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import display_errors, get_object_list, save_and_create_revision, \
+from continuing_education.views.common import get_object_list, save_and_create_revision, \
     get_appropriate_revision_message
 from continuing_education.views.home import is_continuing_education_student_worker
 
@@ -54,7 +53,7 @@ from continuing_education.views.home import is_continuing_education_student_work
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET)
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-
+    admission_list = []
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
 
@@ -127,7 +126,6 @@ def registration_edit(request, admission_id):
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:
         errors.append(form.errors)
-        display_errors(request, errors)
 
     return render(
         request,
@@ -152,20 +150,6 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
     else:
         specific_address = specific_address_form.save()
         return specific_address
-
-
-@login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
-@permission_required('continuing_education.can_create_json', raise_exception=True)
-@user_passes_test(is_not_student_worker)
-def create_json(request):
-    registrations = Admission.objects.filter(state=admission_state_choices.VALIDATED)
-
-    if registrations:
-        return data_export.create_json(request, registrations)
-    else:
-        display_error_messages(request, _("No registration validated, so no data available to export!"))
-        return redirect('registration')
 
 
 @login_required

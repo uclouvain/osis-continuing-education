@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-16 09:55+0200\n"
+"POT-Creation-Date: 2019-06-05 08:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,13 +41,13 @@ msgstr "Un problème est survenu durant la suppression"
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:33
 msgid "Accept all selected admissions ?"
-msgstr "Accepter les inscriptions sélectionnées ?"
+msgstr "Accepter les admissions sélectionnées ?"
 
 #: templates/fragment/tasks/admissions_to_accept.html:9
 msgid "Accept selected admissions"
-msgstr "Accepter les inscriptions sélectionnées"
+msgstr "Accepter les admissions sélectionnées"
 
-#: forms/admission.py:234
+#: forms/admission.py:249
 msgid "Accept the file"
 msgstr "Accepter le dossier"
 
@@ -77,8 +77,8 @@ msgid "Activate"
 msgstr "Activer"
 
 #: forms/search.py:41 forms/search.py:46
-#: models/continuing_education_training.py:65 templatetags/formation.py:42
-#: tests/business/xls/test_xls_formation.py:76
+#: models/continuing_education_training.py:66 templates/formation_form.html:46
+#: templatetags/formation.py:42 tests/business/xls/test_xls_formation.py:76
 msgid "Active"
 msgstr "Actif"
 
@@ -88,7 +88,8 @@ msgstr "Actif"
 msgid "Activity sector"
 msgstr "Secteur d'activité"
 
-#: models/admission.py:101
+#: models/admission.py:101 templates/formation_detail.html:93
+#: templates/formation_form.html:94
 msgid "Address"
 msgstr "Adresse"
 
@@ -136,8 +137,8 @@ msgstr "Liste des admissions"
 
 #: templates/fragment/tasks/admissions_to_accept.html:14
 #: templates/tasks.html:47
-msgid "Admissions to accept"
-msgstr "Admissions à accepter"
+msgid "Admissions to process"
+msgstr "Admissions à traiter"
 
 #: business/xls/xls_admission.py:34 tests/business/xls/test_xls_admission.py:97
 msgid "Admissions_list"
@@ -150,7 +151,7 @@ msgctxt "plural"
 msgid "All"
 msgstr "Toutes"
 
-#: models/continuing_education_training.py:80
+#: models/continuing_education_training.py:81
 msgid "Alternate notification email addresses"
 msgstr "Adresses email de notification alternatives"
 
@@ -181,6 +182,10 @@ msgstr "Liste des archives"
 #: business/xls/xls_archive.py:44 tests/business/xls/test_xls_archive.py:94
 msgid "Archives_list"
 msgstr "Liste_archives"
+
+#: templates/fragment/confirm_delete_document.html:38
+msgid "Are you sure you want to delete this file?"
+msgstr "Etes-vous sûr.e de vouloir supprimer ce document?"
 
 #: business/xls/xls_common.py:128 models/admission.py:375
 #: templates/fragment/tab_registration.html:112
@@ -306,9 +311,11 @@ msgstr "Par le bouche à oreille"
 
 #: templates/admission_form.html:45 templates/admission_form.html:58
 #: templates/admission_form.html:224 templates/admission_form.html:228
+#: templates/formation_form.html:108
 #: templates/fragment/archives/unarchive_modal.html:42
 #: templates/fragment/cancel_reason_modal.html:46
 #: templates/fragment/condition_acceptance_modal.html:47
+#: templates/fragment/confirm_delete_document.html:43
 #: templates/fragment/managers/person_training_modal.html:48
 #: templates/fragment/rejected_reason_modal.html:49
 #: templates/fragment/send_notification_mail_modal.html:44
@@ -355,21 +362,23 @@ msgstr "Tout sélectionner"
 msgid "Children number"
 msgstr "Nombre d'enfants"
 
-#: business/xls/xls_common.py:45 forms/admission.py:36 models/admission.py:94
+#: business/xls/xls_common.py:45 forms/admission.py:48 models/admission.py:94
 #: templates/admission_form.html:103
 #: templates/fragment/section_identification.html:37
 msgid "Citizenship"
 msgstr "Nationalité"
 
 #: models/address.py:29 models/prospect.py:60 templates/admission_form.html:108
+#: templates/formation_detail.html:105 templates/formation_form.html:101
 #: templates/fragment/tab_admission.html:47
 #: templates/fragment/tab_registration.html:54
 #: templates/fragment/tab_registration.html:86
+#: templates/prospect_details.html:50 templates/prospects.html:59
 #: templates/registration_form.html:74 templates/registration_form.html:114
 msgid "City"
 msgstr "Ville"
 
-#: models/continuing_education_training.py:82
+#: models/continuing_education_training.py:83
 msgid "Comma-separated addresses - Leave empty if no address"
 msgstr ""
 "Adresses séparées par des virgules - Laisser vide si pas d'adresses "
@@ -381,18 +390,20 @@ msgstr ""
 msgid "Company number"
 msgstr "Numéro unique d'entreprise"
 
-#: forms/admission.py:239 models/admission.py:413
+#: forms/admission.py:254 models/admission.py:413
 #: templates/admission_detail.html:145
 #: templates/fragment/condition_acceptance_modal.html:33
 msgid "Condition of acceptance"
 msgstr "Condition d'acceptation"
 
-#: forms/admission.py:231
+#: forms/admission.py:246
 msgid "Conditionally"
 msgstr "Sous condition"
 
 #: templates/fragment/cancel_reason_modal.html:47
 #: templates/fragment/condition_acceptance_modal.html:48
+#: templates/fragment/confirm_delete_document.html:33
+#: templates/fragment/confirm_delete_document.html:46
 #: templates/fragment/submit_confirm_modal.html:34
 #: templates/fragment/submit_confirm_modal.html:50
 #: templates/fragment/waiting_reason_modal.html:49
@@ -415,14 +426,16 @@ msgstr "Adresse de contact"
 #: templates/admin_home.html:31 templates/admission_detail.html:37
 #: templates/admission_form.html:36 templates/admissions.html:37
 #: templates/archives.html:36 templates/cancellations.html:36
-#: templates/formation_detail.html:38 templates/formations.html:37
-#: templates/managers.html:36 templates/prospects.html:36
+#: templates/formation_detail.html:38 templates/formation_form.html:32
+#: templates/formations.html:37 templates/managers.html:36
+#: templates/prospect_details.html:36 templates/prospects.html:36
 #: templates/registration_form.html:36 templates/registrations.html:36
 #: templates/tasks.html:36
 msgid "Continuing Education"
 msgstr "Formations Continues"
 
 #: templates/admin_home.html:91 templates/formation_detail.html:39
+#: templates/formation_form.html:33
 msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
@@ -433,7 +446,7 @@ msgid ""
 msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
 
 #: forms/address.py:15 models/address.py:36 templates/admission_form.html:109
-#: templates/fragment/tab_admission.html:48
+#: templates/formation_detail.html:108 templates/fragment/tab_admission.html:48
 #: templates/fragment/tab_registration.html:55
 #: templates/fragment/tab_registration.html:87
 #: templates/registration_form.html:75 templates/registration_form.html:115
@@ -465,13 +478,13 @@ msgstr "Fonction actuelle"
 msgid "Datetime"
 msgstr "Date/Heure"
 
-#: templates/fragment/tab_documents.html:75
+#: templates/fragment/tab_documents.html:76
 msgid "Delete document"
 msgstr "Supprimer le document"
 
 #: business/xls/xls_common.py:130 models/admission.py:391
 #: templates/fragment/tab_registration.html:114
-#: templates/registration_form.html:142
+#: templates/registration_form.html:142 templates/registrations.html:123
 msgid "Diploma produced"
 msgstr "Diplôme produit"
 
@@ -518,6 +531,10 @@ msgstr "Brouillon"
 msgid "Edit admission data"
 msgstr "Modifier informations admission"
 
+#: templates/formation_detail.html:48
+msgid "Edit formation data"
+msgstr "Modifier informations formation"
+
 #: templates/fragment/tab_registration.html:34
 msgid "Edit registration data"
 msgstr "Modifier informations inscription"
@@ -526,7 +543,7 @@ msgstr "Modifier informations inscription"
 msgid "Education"
 msgstr "Education"
 
-#: models/continuing_education_training.py:89
+#: models/continuing_education_training.py:92
 msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 
@@ -538,7 +555,8 @@ msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 #: templates/fragment/tasks/admissions_to_accept.html:33
 #: templates/fragment/tasks/diplomas_to_produce.html:34
 #: templates/fragment/tasks/registrations_to_validate.html:33
-#: templates/prospects.html:60 templates/registrations.html:116
+#: templates/prospect_details.html:51 templates/prospects.html:60
+#: templates/registrations.html:116
 msgid "Email"
 msgstr "Email"
 
@@ -587,7 +605,7 @@ msgstr "Le fichier a bien été supprimé"
 msgid "File is now"
 msgstr "Le dossier est maintenant"
 
-#: views/registration.py:197
+#: views/registration.py:196
 msgid "File is now mark as "
 msgstr "Le dossier est maintenant enregistré comme "
 
@@ -599,7 +617,7 @@ msgstr "Dossier désarchivé"
 msgid "Files are now"
 msgstr "Les dossiers sont maintenant"
 
-#: views/registration.py:197
+#: views/registration.py:196
 msgid "Files are now mark as "
 msgstr "Les dossiers sont maintenant enregistrés comme "
 
@@ -616,8 +634,8 @@ msgstr "Dossiers annulés"
 #: templates/fragment/tasks/admissions_to_accept.html:32
 #: templates/fragment/tasks/diplomas_to_produce.html:33
 #: templates/fragment/tasks/registrations_to_validate.html:32
-#: templates/managers.html:87 templates/prospects.html:59
-#: templates/registrations.html:115 tests/business/test_admission.py:72
+#: templates/managers.html:87 templates/registrations.html:115
+#: tests/business/test_admission.py:72
 msgid "First name"
 msgstr "Prénom"
 
@@ -628,13 +646,14 @@ msgstr "Prénom"
 #: templates/admissions.html:57 templates/admissions.html:129
 #: templates/archives.html:55 templates/archives.html:120
 #: templates/cancellations.html:63 templates/formation_detail.html:40
-#: templates/fragment/tab_admission.html:97
+#: templates/formation_form.html:34 templates/fragment/tab_admission.html:97
 #: templates/fragment/tab_admission.html:101
 #: templates/fragment/tasks/admissions_to_accept.html:34
 #: templates/fragment/tasks/diplomas_to_produce.html:35
 #: templates/fragment/tasks/registrations_to_validate.html:34
-#: templates/prospects.html:62 templates/registrations.html:55
-#: templates/registrations.html:117 tests/business/test_admission.py:73
+#: templates/prospect_details.html:54 templates/prospects.html:62
+#: templates/registrations.html:55 templates/registrations.html:117
+#: tests/business/test_admission.py:73
 msgid "Formation"
 msgstr "Formation"
 
@@ -643,20 +662,20 @@ msgstr "Formation"
 msgid "Formation administrator(s)"
 msgstr "Gestionnaire(s) de formation"
 
-#: tests/views/test_formation.py:185 views/formation.py:128
+#: tests/views/test_formation.py:231 views/formation.py:130
 msgid "Formation are now active"
 msgstr "Les formations sont maintenant actives"
 
-#: tests/views/test_formation.py:214 views/formation.py:130
+#: tests/views/test_formation.py:260 views/formation.py:132
 msgid "Formation are now inactive"
 msgstr "Les formations sont maintenant inactives"
 
-#: tests/views/test_formation.py:168 tests/views/test_formation.py:226
-#: views/formation.py:123
+#: tests/views/test_formation.py:214 tests/views/test_formation.py:272
+#: views/formation.py:125
 msgid "Formation is now active"
 msgstr "La formation est maintenant active"
 
-#: tests/views/test_formation.py:197 views/formation.py:125
+#: tests/views/test_formation.py:243 views/formation.py:127
 msgid "Formation is now inactive"
 msgstr "La formation est maintenant inactive"
 
@@ -705,7 +724,7 @@ msgid "Health"
 msgstr "Santé"
 
 #: business/admission.py:239 business/xls/xls_common.py:51
-#: forms/admission.py:44 models/admission.py:119
+#: forms/admission.py:56 models/admission.py:119
 #: templates/admission_form.html:120 templates/fragment/tab_admission.html:57
 #: tests/business/test_admission.py:74
 msgid "High school diploma"
@@ -721,11 +740,11 @@ msgstr "Année d'obtention (secondaire)"
 msgid "History"
 msgstr "Historique"
 
-#: forms/registration.py:19
+#: forms/registration.py:20
 msgid "I would like the billing address to be :"
 msgstr "Je souhaite que l'adresse de facturation soit :"
 
-#: forms/registration.py:27
+#: forms/registration.py:28
 msgid "I would like the post address to be :"
 msgstr "Je souhaite recevoir mon courrier :"
 
@@ -838,7 +857,7 @@ msgstr "Gestionnaire"
 msgid "Manager is already assigned on this training"
 msgstr "Le gestionnaire est déjà assigné à cette formation"
 
-#: templates/formation_detail.html:58
+#: templates/formation_detail.html:61 templates/formation_form.html:57
 msgid "Manager(s) of the training"
 msgstr "Gestionnaire(s) de la formation"
 
@@ -888,8 +907,8 @@ msgstr "NOMA"
 #: templates/fragment/tasks/admissions_to_accept.html:31
 #: templates/fragment/tasks/diplomas_to_produce.html:32
 #: templates/fragment/tasks/registrations_to_validate.html:31
-#: templates/managers.html:86 templates/prospects.html:58
-#: templates/registrations.html:114
+#: templates/managers.html:86 templates/prospect_details.html:49
+#: templates/prospects.html:58 templates/registrations.html:114
 msgid "Name"
 msgstr "Nom"
 
@@ -903,7 +922,7 @@ msgstr "Numéro de registre national belge"
 msgid "New admission"
 msgstr "Nouvelle admission"
 
-#: forms/admission.py:49
+#: forms/admission.py:61
 msgid "New person"
 msgstr "Nouvelle personne"
 
@@ -917,9 +936,10 @@ msgstr "Nouvelle personne"
 #: templates/cancellations.html:99 templates/cancellations.html:106
 #: templates/formations.html:113
 #: templates/fragment/tasks/registrations_to_validate.html:56
-#: templates/registrations.html:162 templates/registrations.html:169
-#: templates/registrations.html:176 tests/business/test_admission.py:74
-#: tests/business/xls/test_xls_registration.py:90 views/formation.py:150
+#: templates/registrations.html:163 templates/registrations.html:170
+#: templates/registrations.html:177 templates/registrations.html:184
+#: tests/business/test_admission.py:74
+#: tests/business/xls/test_xls_registration.py:90 views/formation.py:152
 msgid "No"
 msgstr "Non"
 
@@ -932,7 +952,7 @@ msgstr "Aucune formation assignée"
 #: templates/fragment/tasks/admissions_to_accept.html:73
 #: templates/fragment/tasks/diplomas_to_produce.html:73
 #: templates/fragment/tasks/registrations_to_validate.html:81
-#: templates/prospects.html:96 templates/registrations.html:199
+#: templates/prospects.html:100 templates/registrations.html:207
 msgid "No data"
 msgstr "Pas de données"
 
@@ -944,11 +964,11 @@ msgstr "Aucun document disponible"
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
 
-#: views/formation.py:136
+#: views/formation.py:138
 msgid "No formation activated"
 msgstr "Aucune formation activée"
 
-#: views/formation.py:138
+#: views/formation.py:140
 msgid "No formation inactivated"
 msgstr "Aucune formation inactivée"
 
@@ -956,18 +976,18 @@ msgstr "Aucune formation inactivée"
 msgid "No history available"
 msgstr "Aucun historique disponible"
 
-#: tests/views/test_registration.py:326 views/registration.py:167
+#: tests/views/test_registration.py:326 views/registration.py:166
 msgid "No registration validated, so no data available to export!"
 msgstr "Aucune inscription validée à exporter"
 
-#: templates/formation_detail.html:74
+#: templates/formation_detail.html:77 templates/formation_form.html:78
 msgid ""
 "Nobody (because \"Send notifications emails\" setting is set to \"No\")."
 msgstr ""
 "Personne (car le paramètre \"Envoyer les emails de notification\" est défini "
 "à \"Non\")"
 
-#: templates/formation_detail.html:61
+#: templates/formation_detail.html:64 templates/formation_form.html:60
 msgid "None"
 msgstr "Aucun"
 
@@ -979,7 +999,7 @@ msgstr "Non organisé"
 msgid "Not updatable because it's in draft state"
 msgstr "Non-éditable car l'admission est en état 'Brouillon'"
 
-#: templates/formation_detail.html:79
+#: templates/formation_detail.html:82 templates/formation_form.html:83
 msgid ""
 "Notification emails will be sent to the following addresse(s) instead of the "
 "managers"
@@ -1004,11 +1024,11 @@ msgstr "Autre"
 msgid "Other educational background"
 msgstr "Autres formations"
 
-#: forms/admission.py:128
+#: forms/admission.py:143
 msgid "Other rejection reason"
 msgstr "Autre motif de refus"
 
-#: forms/admission.py:182
+#: forms/admission.py:197
 msgid "Other waiting reason"
 msgstr "Autre motif de mise en attente"
 
@@ -1051,9 +1071,22 @@ msgstr "Personne"
 msgid "Person information"
 msgstr "Informations personnelles"
 
-#: models/prospect.py:69
+#: forms/admission.py:36
+msgid "Phone mobile"
+msgstr "Numéro de téléphone"
+
+#: models/prospect.py:69 templates/prospect_details.html:52
+#: templates/prospects.html:61
 msgid "Phone number"
 msgstr "Numéro de téléphone"
+
+#: forms/admission.py:28 tests/forms/test_admission_form.py:107
+msgid ""
+"Phone number must start with 0 or 00 or '+' followed by at least 7 digits "
+"and up to 15 digits."
+msgstr ""
+"Le numéro de téléphone doit commencer par 0 ou 00 ou '+' suivi de minimum 7 "
+"chiffres et jusqu'à 15 chiffres."
 
 #: views/tasks.py:151
 msgid "Please select at least one admission to accept."
@@ -1064,11 +1097,11 @@ msgstr "Veuillez sélectionner au moins une admission à accepter"
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
 
-#: views/registration.py:213
+#: views/registration.py:212
 msgid "Please select at least one file to mark as received"
 msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
 
-#: tests/views/test_formation.py:155 views/formation.py:73
+#: tests/views/test_formation.py:201 views/formation.py:75
 msgid "Please select at least one formation"
 msgstr "Veuillez sélectionner au moins une formation"
 
@@ -1092,14 +1125,15 @@ msgid "Post"
 msgstr "Courrier"
 
 #: models/address.py:24 models/prospect.py:55 templates/admission_form.html:107
+#: templates/formation_detail.html:100 templates/formation_form.html:98
 #: templates/fragment/tab_admission.html:46
 #: templates/fragment/tab_registration.html:53
-#: templates/fragment/tab_registration.html:85 templates/prospects.html:61
+#: templates/fragment/tab_registration.html:85
 #: templates/registration_form.html:73 templates/registration_form.html:113
 msgid "Postal code"
 msgstr "Code postal"
 
-#: forms/admission.py:123 forms/admission.py:177
+#: forms/admission.py:138 forms/admission.py:192
 msgid "Predefined reason"
 msgstr "Motif prédéfini"
 
@@ -1154,8 +1188,9 @@ msgstr "Parcours professionnel"
 msgid "Professional status"
 msgstr "Statut professionel"
 
-#: templates/admin_home.html:95 templates/prospects.html:37
-#: templates/prospects.html:42 templates/prospects.html:51
+#: templates/admin_home.html:95 templates/prospect_details.html:37
+#: templates/prospects.html:37 templates/prospects.html:42
+#: templates/prospects.html:51
 msgid "Prospects"
 msgstr "Prospects"
 
@@ -1267,14 +1302,15 @@ msgstr "Motif de refus"
 msgid "Residence address"
 msgstr "Adresse"
 
-#: business/xls/xls_common.py:122 models/admission.py:348
-#: templates/fragment/tab_registration.html:90
+#: business/xls/xls_common.py:122 forms/registration.py:33
+#: models/admission.py:348 templates/fragment/tab_registration.html:90
 #: templates/registration_form.html:118
 msgid "Residence phone"
 msgstr "Téléphone fixe"
 
 #: templates/admission_form.html:50 templates/admission_form.html:65
-#: templates/admission_form.html:234
+#: templates/admission_form.html:234 templates/formation_form.html:110
+#: templates/formation_form.html:111
 #: templates/fragment/managers/person_training_modal.html:49
 #: templates/registration_form.html:47 templates/registration_form.html:50
 #: templates/registration_form.html:153 templates/registration_form.html:156
@@ -1290,12 +1326,12 @@ msgid "Send email"
 msgstr "Envoyer email"
 
 #: templates/fragment/send_notification_mail_modal.html:35
-#: templates/fragment/tab_documents.html:81
+#: templates/fragment/tab_documents.html:82
 msgid "Send notification email"
 msgstr "Envoyer un email de notification"
 
-#: models/continuing_education_training.py:75
-#: templates/formation_detail.html:56
+#: models/continuing_education_training.py:76
+#: templates/formation_detail.html:59 templates/formation_form.html:49
 msgid "Send notification emails"
 msgstr "Envoyer les emails de notification"
 
@@ -1336,7 +1372,7 @@ msgstr "Etalement des paiements"
 #: templates/admission_detail.html:69 templates/admission_detail.html:72
 #: templates/admission_form.html:216 templates/admissions.html:61
 #: templates/admissions.html:131 templates/archives.html:59
-#: templates/archives.html:122 templates/formation_detail.html:51
+#: templates/archives.html:122 templates/formation_detail.html:54
 #: templates/formations.html:72 templates/formations.html:147
 #: templates/registrations.html:59 templates/registrations.html:119
 #: tests/business/test_admission.py:88
@@ -1352,7 +1388,8 @@ msgstr "Etat : %(old_state)s ► %(new_state)s"
 msgid "State reason"
 msgstr "Raison du changement d'état"
 
-#: templates/admission_form.html:106 templates/fragment/tab_admission.html:45
+#: templates/admission_form.html:106 templates/formation_detail.html:97
+#: templates/formation_form.html:97 templates/fragment/tab_admission.html:45
 #: templates/fragment/tab_registration.html:52
 #: templates/fragment/tab_registration.html:84
 #: templates/registration_form.html:72 templates/registration_form.html:112
@@ -1371,8 +1408,9 @@ msgstr "Jobiste"
 #: templates/admin_home.html:30 templates/admission_detail.html:36
 #: templates/admission_form.html:35 templates/admissions.html:36
 #: templates/archives.html:35 templates/cancellations.html:35
-#: templates/formation_detail.html:37 templates/formations.html:36
-#: templates/managers.html:35 templates/prospects.html:35
+#: templates/formation_detail.html:37 templates/formation_form.html:31
+#: templates/formations.html:36 templates/managers.html:35
+#: templates/prospect_details.html:35 templates/prospects.html:35
 #: templates/registration_form.html:35 templates/registrations.html:35
 #: templates/tasks.html:35
 msgid "Studies"
@@ -1397,7 +1435,7 @@ msgstr "%s admissions ont été acceptées avec succès."
 msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr "%(manager)s a été assigné·e avec succès à la formation %(training)s"
 
-#: tests/views/test_formation.py:280 views/formation.py:149
+#: tests/views/test_formation.py:326 views/formation.py:151
 #, python-format
 msgid ""
 "Successfully defined training aid to %(new_value)s for %(quantity_updated)s "
@@ -1438,7 +1476,7 @@ msgstr "L'admission doit être soumise pour être acceptée"
 msgid "The document is uploaded correctly"
 msgstr "Le document a bien été uploadé"
 
-#: templates/formation_detail.html:76
+#: templates/formation_detail.html:79 templates/formation_form.html:80
 msgid "The managers (list above) will receive the notification emails."
 msgstr ""
 "Les gestionnaires (liste ci-dessus) recevront les emails de notification."
@@ -1491,10 +1529,10 @@ msgstr ""
 #: templates/fragment/tasks/admissions_to_accept.html:6
 msgid ""
 "This page contains the admissions submitted by the participants. These must "
-"be accepted by the manager."
+"be processed by the manager."
 msgstr ""
 "Cette page reprend les admissions soumises par les participants. Celles-ci "
-"doivent être acceptées par le gestionnaire."
+"doivent être traitées par la·e gestionnaire."
 
 #: templates/fragment/tasks/admissions_to_accept_modal.html:38
 msgid "This will accept all selected admissions. Are you sure ?"
@@ -1554,14 +1592,15 @@ msgid "Training Managers"
 msgstr "Gestionnaires de formation"
 
 #: business/xls/xls_common.py:65 business/xls/xls_formation.py:81
-#: forms/search.py:292 models/continuing_education_training.py:70
-#: templates/formation_detail.html:53 templates/formations.html:76
-#: templates/formations.html:108 templates/formations.html:113
-#: templates/formations.html:148 templates/fragment/tab_admission.html:105
+#: forms/search.py:292 models/continuing_education_training.py:71
+#: templates/formation_detail.html:56 templates/formation_form.html:54
+#: templates/formations.html:76 templates/formations.html:108
+#: templates/formations.html:113 templates/formations.html:148
+#: templates/fragment/tab_admission.html:105
 msgid "Training aid"
 msgstr "Aide à la formation"
 
-#: models/continuing_education_training.py:130
+#: models/continuing_education_training.py:133
 msgid "Training aid available"
 msgstr "Aide à la formation disponible"
 
@@ -1581,7 +1620,7 @@ msgstr "Inscription au rôle"
 msgid "Unarchive"
 msgstr "Désarchiver"
 
-#: forms/admission.py:232 templates/admission_detail.html:148
+#: forms/admission.py:247 templates/admission_detail.html:148
 msgid "Unconditionally"
 msgstr "Sans condition"
 
@@ -1682,7 +1721,7 @@ msgstr ""
 "Quand le participant remplit son dossier certains champs sont obligatoires. "
 "Actuellement certains de ces champs ne sont pas remplis."
 
-#: templates/formation_detail.html:71
+#: templates/formation_detail.html:74 templates/formation_form.html:75
 msgid "Who will receive notification emails ?"
 msgstr "Qui recevra les emails de notification ?"
 
@@ -1700,10 +1739,11 @@ msgstr "Veuf(ve)"
 #: templates/cancellations.html:97 templates/cancellations.html:104
 #: templates/formations.html:108
 #: templates/fragment/tasks/registrations_to_validate.html:54
-#: templates/registrations.html:160 templates/registrations.html:167
-#: templates/registrations.html:174 tests/business/test_admission.py:74
+#: templates/registrations.html:161 templates/registrations.html:168
+#: templates/registrations.html:175 templates/registrations.html:182
+#: tests/business/test_admission.py:74
 #: tests/business/xls/test_xls_registration.py:89
-#: tests/views/test_formation.py:281 views/formation.py:150
+#: tests/views/test_formation.py:327 views/formation.py:152
 msgid "Yes"
 msgstr "Oui"
 
@@ -1750,7 +1790,7 @@ msgstr ""
 "Vous pouvez seulement notifier le participant par email pour un document de "
 "type 'facture'"
 
-#: templates/fragment/tab_documents.html:71
+#: templates/fragment/tab_documents.html:72
 msgid "You can't delete a file while in draft state"
 msgstr ""
 "Vous ne pouvez pas supprimer de fichier quand l'admission est en état "
@@ -1766,7 +1806,7 @@ msgstr ""
 msgid "You do not meet the admission requirements"
 msgstr "Vous ne remplissez pas les conditions d’admission"
 
-#: templates/fragment/tab_documents.html:73
+#: templates/fragment/tab_documents.html:74
 msgid "You don't have the permission to delete this file"
 msgstr "Vous n'avez pas la permission de supprimer ce fichier"
 
@@ -1790,7 +1830,7 @@ msgstr "Votre parcours n’est pas adapté au programme de cette formation"
 msgid "admission"
 msgstr "admission"
 
-#: forms/registration.py:17 forms/registration.py:25
+#: forms/registration.py:18 forms/registration.py:26
 msgid "an other address"
 msgstr "une autre adresse"
 
@@ -1803,15 +1843,15 @@ msgstr "archivé"
 msgid "managers"
 msgstr "gestionnaires"
 
-#: views/registration.py:198
+#: views/registration.py:197
 msgid "not received"
 msgstr "non reçu"
 
-#: views/registration.py:198
+#: views/registration.py:197
 msgid "received"
 msgstr "reçu"
 
-#: forms/registration.py:16 forms/registration.py:24
+#: forms/registration.py:17 forms/registration.py:25
 msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
 
@@ -1819,5 +1859,5 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 msgid "unarchived"
 msgstr "non-archivé"
 
-#~ msgid "Cancelled files"
-#~ msgstr "Dossier annulés"
+#~ msgid "Wrong format !"
+#~ msgstr "Mauvais format !"

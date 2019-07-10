@@ -9,7 +9,7 @@
 * The core business involves the administration of students, teachers,
 * courses, programs and so on.
 *
-* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+* Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@
                             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                         &nbsp;
                         <a class="button  {% if not has_permission_to_delete or admission.is_draft %}disabled{% endif %}"
+                           id="btn_delete_doc_{{ file.id }}"
                            {% if not has_permission_to_delete or admission.is_draft %}disabled{% endif %}
                            {% if admission.is_draft %}
                                 title="{% trans "You can't delete a file while in draft state" %}"
@@ -90,11 +91,27 @@
 
 {% include "fragment/upload_file_modal.html" %}
 {% include "fragment/send_notification_mail_modal.html" %}
+{% include "fragment/confirm_delete_document.html" %}
 
 {% block script %}
     <script>
         $("#upload_file_button").click(function(){
           $('#upload_file_modal').modal('show');
         });
+
+        $("a[id^='btn_delete_doc_']").click(function(e){
+            e.preventDefault();
+            $('#delete_document_modal').modal('show');
+            $('#confirm_delete_document').attr('href',$(this).attr('href'));
+        });
+
+        $("#cancel_delete_document").click(function(e){
+            $('#delete_document_modal').modal('hide');
+        });
+
+        $("#confirm_delete_document").click(function(e){
+            $('#delete_document_modal').modal('hide');
+        });
+
     </script>
 {% endblock %}

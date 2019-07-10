@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
+from continuing_education.forms.admission import phone_regex
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.enums import YES_NO_CHOICES
 
@@ -26,6 +27,15 @@ class RegistrationForm(ModelForm):
                                              ],
                                              label=_('I would like the post address to be :'),
                                              required=False)
+    residence_phone = forms.CharField(
+        validators=[phone_regex],
+        required=False,
+        label=_("Residence phone"),
+        widget=forms.TextInput(attrs={'placeholder': '082123456 - 003282123456 - +3282123456'})
+    )
+
+    def clean_residence_phone(self):
+        return self.cleaned_data['residence_phone'].replace(' ', '')
 
     class Meta:
         model = Admission

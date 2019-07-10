@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
+from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
-from continuing_education.business.perms import is_not_student_worker
 
 
 @login_required
@@ -40,4 +40,14 @@ def list_prospects(request):
     return render(request, "prospects.html", {
         'prospects': get_object_list(request, prospects_list),
         'prospects_count': len(prospects_list)
+    })
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def prospect_details(request, prospect_id):
+    prospect = get_object_or_404(Prospect, pk=prospect_id)
+    return render(request, "prospect_details.html", {
+        'prospect': prospect
     })

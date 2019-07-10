@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -37,6 +37,15 @@ from reference.tests.factories.country import CountryFactory
 CONTINUING_EDUCATION_TYPE = 8
 
 
+def _get_fake_phone_number():
+    factory.Faker._DEFAULT_LOCALE = 'nl_BE'
+    fake = factory.Faker('phone_number').generate(extra_kwargs={})
+    for c in [" ", "(", ")", "-"]:
+        fake = fake.replace(c, "")
+    factory.Faker._DEFAULT_LOCALE = 'en_US'
+    return fake
+
+
 class AdmissionFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.admission'
@@ -47,7 +56,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     citizenship = factory.SubFactory(CountryFactory)
 
     # Contact
-    phone_mobile = factory.Faker('phone_number')
+    phone_mobile = _get_fake_phone_number()
     email = factory.Faker('email')
 
     address = factory.SubFactory(AddressFactory)
@@ -120,7 +129,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     # Post
     use_address_for_post = factory.fuzzy.FuzzyChoice([True, False])
     residence_address = factory.SubFactory(AddressFactory)
-    residence_phone = factory.Faker('phone_number')
+    residence_phone = _get_fake_phone_number(),
 
     # Student Sheet
     ucl_registration_complete = factory.fuzzy.FuzzyChoice([True, False])

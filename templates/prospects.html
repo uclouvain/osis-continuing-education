@@ -10,7 +10,7 @@
 * The core business involves the administration of students, teachers,
 * courses, programs and so on.
 *
-* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+* Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@
         <div class="panel panel-body">
             {% if prospects %}
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <strong style="margin-left:10px;color:grey;"> {{ prospects_count }} {% trans 'Prospects'|lower %} </strong>
                     </div>
                 </div>
@@ -56,9 +56,9 @@
                 <thead>
                     <tr>
                         <th class="searchable">{% trans 'Name' %}</th>
-                        <th class="searchable">{% trans 'First name' %}</th>
+                        <th class="searchable">{% trans 'City' %}</th>
                         <th class="searchable">{% trans 'Email' %}</th>
-                        <th class="searchable">{% trans 'Postal code' %}</th>
+                        <th class="searchable">{% trans 'Phone number' %}</th>
                         <th class="searchable">{% trans 'Formation' %}</th>
                     </tr>
                 </thead>
@@ -71,10 +71,14 @@
                 </tfoot>
                 {% for prospect in prospects %}
                     <tr>
-                        <td>{{ prospect.name }}</td>
-                        <td>{{ prospect.first_name }}</td>
+                        <td>
+                            <a href="{% url 'prospect_details' prospect_id=prospect.pk %}">
+                                {{ prospect.name }}, {{ prospect.first_name }}
+                            </a>
+                        </td>
+                        <td>{{ prospect.city }} ({{ prospect.postal_code }})</td>
                         <td>{{ prospect.email }}</td>
-                        <td>{{ prospect.postal_code }}</td>
+                        <td>{{ prospect.phone_number }}</td>
                         <td>{{ prospect.formation.acronym }} - {{ prospect.formation.academic_year.year }}</td>
                     </tr>
                 {% endfor %}

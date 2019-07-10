@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
 from django.utils.translation import gettext_lazy as _
 
@@ -22,8 +23,19 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'professional_personal_interests', 'formation',
 ]
 
+phone_regex = RegexValidator(
+    regex=r'^(?P<prefix_intro>\+|0{1,2})\d{7,15}$',
+    message=_("Phone number must start with 0 or 00 or '+' followed by at least 7 digits and up to 15 digits.")
+)
+
 
 class AdmissionForm(ModelForm):
+    phone_mobile = forms.CharField(
+        validators=[phone_regex],
+        required=False,
+        label=_("Phone mobile"),
+        widget=forms.TextInput(attrs={'placeholder': '0474123456 - 0032474123456 - +32474123456'})
+    )
     formation = forms.ModelChoiceField(
         queryset=ContinuingEducationTraining.objects.all().select_related('education_group')
     )
@@ -48,6 +60,9 @@ class AdmissionForm(ModelForm):
         required=False,
         empty_label=_("New person")
     )
+
+    def clean_phone_mobile(self):
+        return self.cleaned_data['phone_mobile'].replace(' ', '')
 
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)

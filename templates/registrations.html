@@ -10,7 +10,7 @@
 * The core business involves the administration of students, teachers,
 * courses, programs and so on.
 *
-* Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+* Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -120,11 +120,12 @@
                             <th class="searchable">{% trans 'Received file' %}</th>
                             <th class="searchable">{% trans 'Paid' %}</th>
                             <th class="searchable">{% trans 'UCLouvain registration complete' %}</th>
+                            <th class="searchable">{% trans 'Diploma produced' %}</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="10">
+                            <td colspan="11">
                                 {% bootstrap_pagination admissions extra=request.GET.urlencode %}
                             </td>
                         </tr>
@@ -171,6 +172,13 @@
                             </td>
                             <td style="vertical-align: middle;">
                             {% if admission.ucl_registration_complete %}
+                                    <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
+                            {% else %}
+                                    <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
+                            {% endif %}
+                            </td>
+                            <td style="vertical-align: middle;">
+                            {% if admission.diploma_produced %}
                                     <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
                             {% else %}
                                     <span class="badge fixed_width danger-color">{% trans 'No' %}</span>

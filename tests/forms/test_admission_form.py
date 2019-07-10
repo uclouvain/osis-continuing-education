@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #
 ##############################################################################
 from django.test import TestCase
+from django.utils.translation import gettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -75,6 +76,39 @@ class TestAdmissionForm(TestCase):
         data['formation'] = admission.formation.pk
         form = AdmissionForm(data=data, user=self.manager.user)
         self.assertTrue(form.is_valid(), form.errors)
+
+    def test_not_valid_wrong_phone_format(self):
+        admission = AdmissionFactory(formation=self.formation)
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
+        PersonTraining(person=self.manager, training=self.formation).save()
+        self.client.force_login(self.manager.user)
+        data = admission.__dict__
+        data['formation'] = admission.formation.pk
+        wrong_numbers = [
+            '1234567891',
+            '00+32474945669',
+            '0+32474123456',
+            '(32)1234567891',
+            '0474.12.34.56',
+            '0474 123456'
+        ]
+        short_numbers = ['0032123', '+321234', '0123456']
+        long_numbers = ['003212345678912456', '+3212345678912345', '01234567891234567']
+        for number in wrong_numbers + short_numbers + long_numbers:
+            data['phone_mobile'] = number
+            form = AdmissionForm(data=data, user=self.manager.user)
+            self.assertFalse(form.is_valid(), form.errors)
+            self.assertDictEqual(
+                form.errors,
+                {
+                    'phone_mobile': [
+                        _("Phone number must start with 0 or 00 or '+' followed by at least "
+                          "7 digits and up to 15 digits.")
+                    ],
+                }
+            )
 
 
 class TestRejectedAdmissionForm(TestCase):

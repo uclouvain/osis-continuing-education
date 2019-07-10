@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,9 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest.mock import patch
+
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.http import HttpResponse
@@ -200,7 +201,8 @@ class RegistrationStateChangedTestCase(TestCase):
             state=VALIDATED
         )
 
-    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self):
+    @patch('continuing_education.views.admission.send_admission_to_queue')
+    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self, mock_queue):
         self.client.force_login(self.continuing_education_manager.user)
         registration = {
             'state': VALIDATED,
@@ -210,11 +212,13 @@ class RegistrationStateChangedTestCase(TestCase):
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=data)
+        mock_queue.assert_called_with(self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
 
-    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self):
+    @patch('continuing_education.views.admission.send_admission_to_queue')
+    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self, mock_queues):
         self.client.force_login(self.faculty_manager.user)
         registration = {
             'state': VALIDATED,
@@ -224,12 +228,13 @@ class RegistrationStateChangedTestCase(TestCase):
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=data)
+        mock_queues.assert_called_with(self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         # state should not be changed and error message should be presented to user
         self.assertEqual(self.registration_submitted.state, REGISTRATION_SUBMITTED, 'state')
         messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(_("Continuing education managers only are allowed to validate a registration")),
             str(messages_list[0])
@@ -287,43 +292,6 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         self.assertCountEqual(response.context['admissions'], [self.registration])
         self.assertEqual(response.context['admissions_number'], 1)
         self.assertTemplateUsed(response, 'registrations.html')
-
-
-class ViewRegistrationsCreateJsonTestCase(TestCase):
-    def setUp(self):
-        self.group = GroupFactory(name='continuing_education_managers')
-
-    def test_not_logged(self):
-        url = reverse('json_file')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 302)
-
-    def test_no_permission_to_create_json(self):
-
-        self.manager = PersonWithPermissionsFactory('can_access_admission')
-        self.manager.user.groups.add(self.group)
-        self.client.force_login(self.manager.user)
-        url = reverse('json_file')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_no_registration_to_export(self):
-
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'can_create_json')
-        self.manager.user.groups.add(self.group)
-        self.client.force_login(self.manager.user)
-        url = reverse('json_file')
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 302)
-
-        msg = [m.message for m in get_messages(response.wsgi_request)]
-        msg_level = [m.level for m in get_messages(response.wsgi_request)]
-
-        self.assertEqual(len(msg), 1)
-        self.assertIn(messages.ERROR, msg_level)
-        self.assertIn(msg[0], _('No registration validated, so no data available to export!'))
 
 
 class ViewRegistrationCacheTestCase(TestCase):

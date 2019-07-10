@@ -62,7 +62,8 @@ class ContinuingEducationTrainingSerializerTestCase(TestCase):
             'faculty',
             'active',
             'managers',
-            'training_aid'
+            'training_aid',
+            'postal_address'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
         self.assertEqual(type(self.serializer.data['managers']), list)

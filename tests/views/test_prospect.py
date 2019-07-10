@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -79,3 +79,25 @@ class ProspectListTestCase(TestCase):
         url = reverse('prospects')
         response = self.client.get(url)
         self.assertRedirects(response, "/login/?next={}".format(url))
+
+
+class ProspectDetailsTestCase(TestCase):
+    def setUp(self):
+        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.client.force_login(self.manager.user)
+        self.prospect = ProspectFactory()
+        EducationGroupYearFactory(education_group=self.prospect.formation.education_group)
+
+    def test_prospect_details(self):
+        response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('prospect_details.html')
+        context = response.context[0].dicts[3]
+        self.assertEqual(
+            context.get('prospect'),
+            self.prospect
+        )
+
+    def test_prospect_details_unexisting_prospect(self):
+        response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk + 1}))
+        self.assertEqual(response.status_code, 404)

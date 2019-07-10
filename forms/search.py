@@ -308,7 +308,6 @@ class FormationFilterForm(AdmissionFilterForm):
         )
 
         qs = _build_active_parameter(qs, self.cleaned_data.get('state', None))
-
         if faculty:
             qs = _get_formation_filter_entity_management(
                 qs,

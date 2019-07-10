@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2017 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -33,8 +33,7 @@ from continuing_education.api.views.continuing_education_training import Continu
     ContinuingEducationTrainingDetail
 from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, AdmissionFileListCreate
 from continuing_education.api.views.prospect import ProspectListCreate
-from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate, \
-    RegistrationDetailForEpc, RegistrationListForEpc
+from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate
 
 urlpatterns = [
     url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),
@@ -86,9 +85,5 @@ urlpatterns = [
         r'^trainings/(?P<uuid>[0-9a-f-]+)$',
         ContinuingEducationTrainingDetail.as_view(),
         name=ContinuingEducationTrainingDetail.name
-    ),
-    url(r'^registration/for_epc/$', RegistrationListForEpc.as_view(),
-        name=RegistrationListForEpc.name),
-    url(r'^registration/for_epc/(?P<id>[0-9]+)/$', RegistrationDetailForEpc.as_view(),
-        name=RegistrationDetailForEpc.name),
+    )
 ]
