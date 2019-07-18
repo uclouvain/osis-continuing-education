@@ -43,7 +43,7 @@ def get_json_for_epc(admission):
         'first_name': admission.person_information.person.first_name,
         'birth_date': admission.person_information.birth_date.strftime("%d/%m/%Y"),
         'birth_location': admission.person_information.birth_location,
-        'birth_country': admission.person_information.birth_country.iso_code,
+        'birth_country_iso_code': admission.person_information.birth_country.iso_code,
         'sex': admission.person_information.person.gender,
         'civil_state': admission.marital_status,
         'nationality_iso_code': admission.citizenship.name,
