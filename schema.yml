@@ -677,6 +677,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PersonBasic'
+        postal_address:
+          $ref: '#/components/schemas/AddressSerializer'
 
     PaginatedContinuingEducationTrainings:
       allOf:
