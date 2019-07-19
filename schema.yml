@@ -108,9 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FileListItem'
+                $ref: '#/components/schemas/PaginatedFiles'
 
     post:
       description: Upload a new file linked to an admission
@@ -126,7 +124,15 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/AdmissionFilePostSerializer'
+              properties:
+                file:
+                  description: File information
+                  type: object
+                content:
+                  description: Content of the file to upload
+                  type: string
+                  format: base64
+                  example: "Vml2ZSBsJ8OpcXVpZSBPU0lTICE="
       responses:
         201:
           description: Successful post of a new file linked to an admission
@@ -698,6 +704,15 @@ components:
           items:
             $ref: "#/components/schemas/AdmissionListSerializer"
 
+    PaginatedFiles:
+      allOf:
+        - $ref: "#/components/schemas/Paging"
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/FileListSerializer"
+
     Paging:
       properties:
         count:
@@ -718,7 +733,7 @@ components:
         - $ref: '#/components/schemas/File'
         - $ref: '#/components/schemas/FileContent'
 
-    FileListItem:
+    FileListSerializer:
       allOf:
         - $ref: '#/components/schemas/File'
         - type: object
@@ -744,7 +759,7 @@ components:
 
     AdmissionFileSerializer:
       allOf:
-        - $ref: '#/components/schemas/FileListItem'
+        - $ref: '#/components/schemas/FileListSerializer'
         - $ref: '#/components/schemas/FileContent'
 
     FileContent:
