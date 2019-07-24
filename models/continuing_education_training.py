@@ -85,7 +85,7 @@ class ContinuingEducationTraining(Model):
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
 
-    postal_address = models.ForeignKey(Address, default=None, blank=True, null=True)
+    postal_address = models.ForeignKey(Address, default=None, blank=True, null=True, on_delete=models.CASCADE)
 
     def clean(self):
         if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
