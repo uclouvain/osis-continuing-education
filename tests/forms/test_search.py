@@ -60,7 +60,8 @@ CITY_NAME_WITH_ACCENT = 'Moignelée'
 
 class TestFilterForm(TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         self.current_academic_yr = create_current_academic_year()
         next_academic_yr = AcademicYearFactory(year=self.current_academic_yr.year + 1)
 
@@ -278,18 +279,19 @@ class TestFilterForm(TestCase):
 
     def test_get_admissions_by_free_text_country_city(self):
         admission_accent = self._build_admission_with_accent(SUBMITTED, False)
-        free_text_for_equivalent_results = [COUNTRY_NAME_WITH_ACCENT,
-                                            COUNTRY_NAME_WITH_ACCENT.lower(),
-                                            COUNTRY_NAME_WITH_ACCENT[3:],
-                                            CITY_NAME_WITH_ACCENT,
-                                            CITY_NAME_WITH_ACCENT.lower(),
-                                            CITY_NAME_WITH_ACCENT[3:]
-                                            ]
+        free_text_for_equivalent_results = [
+            COUNTRY_NAME_WITH_ACCENT,
+            COUNTRY_NAME_WITH_ACCENT.lower(),
+            COUNTRY_NAME_WITH_ACCENT[3:],
+            CITY_NAME_WITH_ACCENT,
+            CITY_NAME_WITH_ACCENT.lower(),
+            CITY_NAME_WITH_ACCENT[3:]
+        ]
         for search_term in free_text_for_equivalent_results:
             form = AdmissionFilterForm({"free_text": search_term})
             form.is_valid()
             results = form.get_admissions()
-            self.assertCountEqual(results, [admission_accent])
+            self.assertEqual(results.first(), admission_accent)
 
     def test_get_registrations_no_criteria(self):
         form = RegistrationFilterForm({})
@@ -355,18 +357,19 @@ class TestFilterForm(TestCase):
 
     def test_get_registrations_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, False)
-        free_text_for_equivalent_results = [COUNTRY_NAME_WITH_ACCENT,
-                                            COUNTRY_NAME_WITH_ACCENT.lower(),
-                                            COUNTRY_NAME_WITH_ACCENT[3:],
-                                            CITY_NAME_WITH_ACCENT,
-                                            CITY_NAME_WITH_ACCENT.lower(),
-                                            CITY_NAME_WITH_ACCENT[3:]
-                                            ]
+        free_text_for_equivalent_results = [
+            COUNTRY_NAME_WITH_ACCENT,
+            COUNTRY_NAME_WITH_ACCENT.lower(),
+            COUNTRY_NAME_WITH_ACCENT[3:],
+            CITY_NAME_WITH_ACCENT,
+            CITY_NAME_WITH_ACCENT.lower(),
+            CITY_NAME_WITH_ACCENT[3:]
+        ]
         for search_term in free_text_for_equivalent_results:
             form = RegistrationFilterForm({"free_text": search_term})
             form.is_valid()
             results = form.get_registrations()
-            self.assertCountEqual(results, [admission_accent])
+            self.assertEqual(results.first(), admission_accent)
 
     def test_get_registration_received_file_param(self):
         self.registrations[0].registration_file_received = True
@@ -398,18 +401,19 @@ class TestFilterForm(TestCase):
 
     def test_get_archives_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, True)
-        free_text_for_equivalent_results = [COUNTRY_NAME_WITH_ACCENT,
-                                            COUNTRY_NAME_WITH_ACCENT.lower(),
-                                            COUNTRY_NAME_WITH_ACCENT[3:],
-                                            CITY_NAME_WITH_ACCENT,
-                                            CITY_NAME_WITH_ACCENT.lower(),
-                                            CITY_NAME_WITH_ACCENT[3:]
-                                            ]
+        free_text_for_equivalent_results = [
+            COUNTRY_NAME_WITH_ACCENT,
+            COUNTRY_NAME_WITH_ACCENT.lower(),
+            COUNTRY_NAME_WITH_ACCENT[3:],
+            CITY_NAME_WITH_ACCENT,
+            CITY_NAME_WITH_ACCENT.lower(),
+            CITY_NAME_WITH_ACCENT[3:]
+        ]
         for search_term in free_text_for_equivalent_results:
             form = ArchiveFilterForm({"free_text": search_term})
             form.is_valid()
             results = form.get_archives()
-            self.assertCountEqual(results, [admission_accent])
+            self.assertEqual(results.first(), admission_accent)
 
     def test_get_archives_by_state_criteria(self):
         form = ArchiveFilterForm({"state": SUBMITTED})
@@ -426,6 +430,7 @@ class TestFilterForm(TestCase):
                              [ALL_CHOICE] + sorted(ARCHIVE_STATE_CHOICES, key=itemgetter(1)))
 
     def _create_admissions_for_free_text_search(self):
+        self.admissions_free_text = []
         for person in self.persons:
             self.admissions_free_text.append(
                 AdmissionFactory(
@@ -434,7 +439,7 @@ class TestFilterForm(TestCase):
                         person=person
                     ),
                     address=AddressFactory(country=self.country_without_accent),
-                    state=SUBMITTED
+                    state=SUBMITTED,
                 )
             )
         for ed in self.eds:
@@ -448,13 +453,16 @@ class TestFilterForm(TestCase):
             )
 
     def _build_admission_with_accent(self, a_state, archived):
-        address_with_accent = AddressFactory(country=self.country_accent,
-                                             city=CITY_NAME_WITH_ACCENT)
+        address_with_accent = AddressFactory(
+            country=self.country_accent,
+            city=CITY_NAME_WITH_ACCENT
+        )
         admission_accent = AdmissionFactory(
             address=address_with_accent,
             state=a_state,
             archived=archived
         )
+        EducationGroupYearFactory(education_group=admission_accent.formation.education_group)
         return admission_accent
 
 
