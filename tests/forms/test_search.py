@@ -26,11 +26,13 @@
 import random
 from datetime import date
 from operator import itemgetter
+from unittest import skipUnless
 
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, gettext as _
 
+from backoffice.settings.base import INSTALLED_APPS
 from base.models.enums.entity_type import FACULTY, SCHOOL
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -277,7 +279,8 @@ class TestFilterForm(TestCase):
             results = form.get_admissions()
             self.assertCountEqual(results, self.admissions_free_text)
 
-    def test_get_admissions_by_free_text_country_city(self):
+    @skipUnless('django.contrib.postgres' in INSTALLED_APPS, 'requires django.contrib.postgres')
+    def test_get_admissions_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(SUBMITTED, False)
         country_free_text = "Country - e"
         form = AdmissionFilterForm({"free_text": country_free_text})
@@ -347,6 +350,7 @@ class TestFilterForm(TestCase):
             results = form.get_registrations()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    @skipUnless('django.contrib.postgres' in INSTALLED_APPS, 'requires django.contrib.postgres')
     def test_get_registrations_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, False)
         country_free_text = "Country - e"
@@ -383,6 +387,7 @@ class TestFilterForm(TestCase):
             results = form.get_archives()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    @skipUnless('django.contrib.postgres' in INSTALLED_APPS, 'requires django.contrib.postgres')
     def test_get_archives_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, True)
         country_free_text = "Country - e"
