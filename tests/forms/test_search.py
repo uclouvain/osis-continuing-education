@@ -26,11 +26,13 @@
 import random
 from datetime import date
 from operator import itemgetter
+from unittest import skipUnless
 
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.translation import pgettext_lazy, gettext as _
 
+from backoffice.settings.base import INSTALLED_APPS
 from base.models.enums.entity_type import FACULTY, SCHOOL
 from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
@@ -53,9 +55,9 @@ from continuing_education.tests.factories.continuing_education_training import C
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
-COUNTRY_NAME_WITHOUT_ACCENT = 'Belgique'
-COUNTRY_NAME_WITH_ACCENT = 'Algérie'
-CITY_NAME_WITH_ACCENT = 'Moignelée'
+COUNTRY_NAME_WITHOUT_ACCENT = 'Country - e'
+COUNTRY_NAME_WITH_ACCENT = 'Country - é'
+CITY_NAME_WITH_ACCENT = 'City - é'
 
 
 class TestFilterForm(TestCase):
@@ -277,21 +279,14 @@ class TestFilterForm(TestCase):
             results = form.get_admissions()
             self.assertCountEqual(results, self.admissions_free_text)
 
-    def test_get_admissions_by_free_text_country_city(self):
+    @skipUnless('django.contrib.postgres' in INSTALLED_APPS, 'requires django.contrib.postgres')
+    def test_get_admissions_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(SUBMITTED, False)
-        free_text_for_equivalent_results = [
-            COUNTRY_NAME_WITH_ACCENT,
-            COUNTRY_NAME_WITH_ACCENT.lower(),
-            COUNTRY_NAME_WITH_ACCENT[3:],
-            CITY_NAME_WITH_ACCENT,
-            CITY_NAME_WITH_ACCENT.lower(),
-            CITY_NAME_WITH_ACCENT[3:]
-        ]
-        for search_term in free_text_for_equivalent_results:
-            form = AdmissionFilterForm({"free_text": search_term})
-            form.is_valid()
-            results = form.get_admissions()
-            self.assertEqual(results.first(), admission_accent)
+        country_free_text = "Country - e"
+        form = AdmissionFilterForm({"free_text": country_free_text})
+        form.is_valid()
+        results = form.get_admissions()
+        self.assertEqual(results.first(), admission_accent)
 
     def test_get_registrations_no_criteria(self):
         form = RegistrationFilterForm({})
@@ -355,21 +350,14 @@ class TestFilterForm(TestCase):
             results = form.get_registrations()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    @skipUnless('django.contrib.postgres' in INSTALLED_APPS, 'requires django.contrib.postgres')
     def test_get_registrations_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, False)
-        free_text_for_equivalent_results = [
-            COUNTRY_NAME_WITH_ACCENT,
-            COUNTRY_NAME_WITH_ACCENT.lower(),
-            COUNTRY_NAME_WITH_ACCENT[3:],
-            CITY_NAME_WITH_ACCENT,
-            CITY_NAME_WITH_ACCENT.lower(),
-            CITY_NAME_WITH_ACCENT[3:]
-        ]
-        for search_term in free_text_for_equivalent_results:
-            form = RegistrationFilterForm({"free_text": search_term})
-            form.is_valid()
-            results = form.get_registrations()
-            self.assertEqual(results.first(), admission_accent)
+        country_free_text = "Country - e"
+        form = RegistrationFilterForm({"free_text": country_free_text})
+        form.is_valid()
+        results = form.get_registrations()
+        self.assertEqual(results.first(), admission_accent)
 
     def test_get_registration_received_file_param(self):
         self.registrations[0].registration_file_received = True
@@ -399,21 +387,14 @@ class TestFilterForm(TestCase):
             results = form.get_archives()
             self.assertCountEqual(results, self.admissions_free_text)
 
+    @skipUnless('django.contrib.postgres' in INSTALLED_APPS, 'requires django.contrib.postgres')
     def test_get_archives_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(REGISTRATION_SUBMITTED, True)
-        free_text_for_equivalent_results = [
-            COUNTRY_NAME_WITH_ACCENT,
-            COUNTRY_NAME_WITH_ACCENT.lower(),
-            COUNTRY_NAME_WITH_ACCENT[3:],
-            CITY_NAME_WITH_ACCENT,
-            CITY_NAME_WITH_ACCENT.lower(),
-            CITY_NAME_WITH_ACCENT[3:]
-        ]
-        for search_term in free_text_for_equivalent_results:
-            form = ArchiveFilterForm({"free_text": search_term})
-            form.is_valid()
-            results = form.get_archives()
-            self.assertEqual(results.first(), admission_accent)
+        country_free_text = "Country - e"
+        form = ArchiveFilterForm({"free_text": country_free_text})
+        form.is_valid()
+        results = form.get_archives()
+        self.assertEqual(results.first(), admission_accent)
 
     def test_get_archives_by_state_criteria(self):
         form = ArchiveFilterForm({"state": SUBMITTED})
