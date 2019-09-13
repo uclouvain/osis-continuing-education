@@ -69,7 +69,7 @@ class FacultyModelChoiceField(ModelChoiceField):
 
 class FormationModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.acronym
+        return obj.acronym_and_title
 
 
 class AdmissionFilterForm(BootstrapForm):

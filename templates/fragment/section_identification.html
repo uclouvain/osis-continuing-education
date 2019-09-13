@@ -39,6 +39,6 @@
     <div class="row form-group">
         <div class="col-md-3">{% bootstrap_label _("Birth date") %} <br/> {{ admission.person_information.birth_date | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Birth location") %} <br/> {{ admission.person_information.birth_location|upper | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {{ admission.person_information.birth_country|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {% if admission.person_information.birth_country %}{{ admission.person_information.birth_country|upper }}{% else %}-{% endif %} </div>
     </div>
 </div>

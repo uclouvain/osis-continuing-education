@@ -419,6 +419,7 @@ class Admission(Model):
         return get_formation_display(
             education_group_year.partial_acronym,
             education_group_year.acronym,
+            education_group_year.title,
             education_group_year.academic_year
         )
 
@@ -513,10 +514,11 @@ def search(**kwargs):
     return qs
 
 
-def get_formation_display(partial_acronym, acronym, academic_year):
-    return "{}{} - {}".format(
+def get_formation_display(partial_acronym, acronym, title, academic_year):
+    return "{}{} - {} - {}".format(
         "{} - ".format(partial_acronym) if partial_acronym else "",
         acronym,
+        title,
         academic_year,
     )
 
@@ -539,10 +541,12 @@ def is_continuing_education_manager(user):
 
 
 def _build_address(address):
-    return "{} - {} {} {}".format(address.location if address.location else '',
-                                  address.postal_code if address.postal_code else '',
-                                  address.city.upper() if address.city else '',
-                                  "- {}".format(address.country.name.upper()) if address.country else '')
+    if address:
+        return "{} - {} {} {}".format(address.location if address.location else '',
+                                      address.postal_code if address.postal_code else '',
+                                      address.city.upper() if address.city else '',
+                                      "- {}".format(address.country.name.upper()) if address.country else '')
+    return ''
 
 
 def is_continuing_education_training_manager(user):

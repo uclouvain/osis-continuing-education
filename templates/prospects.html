@@ -97,7 +97,7 @@
                         <td>{{ prospect.city }} {% if prospect.postal_code %}({{ prospect.postal_code }}){% endif %}</td>
                         <td>{{ prospect.email }}</td>
                         <td>{{ prospect.phone_number }}</td>
-                        <td>{{ prospect.formation.acronym }} - {{ prospect.formation.academic_year.year }}</td>
+                        <td>{{ prospect.formation.acronym }} - {{ prospect.formation.title }} - {{ prospect.formation.academic_year.year }}</td>
                     </tr>
                 {% endfor %}
             </table>
