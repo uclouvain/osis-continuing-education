@@ -30,6 +30,7 @@ from django.shortcuts import render, get_object_or_404
 from continuing_education.business.perms import is_not_student_worker
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
+from continuing_education.business.xls.xls_prospect import create_xls
 
 
 @login_required
@@ -51,3 +52,10 @@ def prospect_details(request, prospect_id):
     return render(request, "prospect_details.html", {
         'prospect': prospect
     })
+
+
+@login_required
+@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def prospect_xls(request):
+    return create_xls(request.user)
