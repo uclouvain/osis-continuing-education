@@ -125,6 +125,11 @@ class ContinuingEducationTraining(Model):
     def formation_administrators(self):
         return " - ".join([str(mgr) for mgr in self.managers.all().order_by('last_name', 'first_name')])
 
+    @property
+    def acronym_and_title(self):
+        most_recent_education_group_year = self.get_most_recent_education_group_year()
+        return "{} - {}".format(most_recent_education_group_year.acronym, most_recent_education_group_year.title)
+
     def get_alternative_notification_email_receivers(self):
         return [adr.strip() for adr in self.alternate_notification_email_addresses.split(',') if adr]
 
