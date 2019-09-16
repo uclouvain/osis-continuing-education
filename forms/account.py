@@ -25,7 +25,6 @@ class ContinuingEducationPersonForm(ModelForm):
                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
                                         True)
 
-
     class Meta:
         model = ContinuingEducationPerson
         fields = [
