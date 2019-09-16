@@ -57,6 +57,7 @@ from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
+from reference.tests.factories.country import CountryFactory
 
 FILE_CONTENT = "test-content"
 
@@ -84,7 +85,8 @@ class ViewAdmissionTestCase(TestCase):
         )
         self.admission = AdmissionFactory(
             formation=self.formation,
-            state=SUBMITTED
+            state=SUBMITTED,
+            person_information__person__gender='M',
         )
 
         self.file = SimpleUploadedFile(
@@ -92,6 +94,17 @@ class ViewAdmissionTestCase(TestCase):
             content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
         )
+        self.country = CountryFactory()
+        self.person_data = {
+            'last_name': self.admission.person_information.person.last_name,
+            'first_name': self.admission.person_information.person.first_name,
+            'gender': self.admission.person_information.person.gender,
+        }
+        self.continuing_education_person_data = {
+            'birth_date': self.admission.person_information.birth_date.strftime('%Y-%m-%d'),
+            'birth_location': self.admission.person_information.birth_location,
+            'birth_country': self.admission.person_information.birth_country.id,
+        }
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -150,6 +163,8 @@ class ViewAdmissionTestCase(TestCase):
 
     def test_admission_new_save(self):
         admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
         response = self.client.post(reverse('admission_new'), data=admission)
         created_admission = Admission.objects.exclude(pk=self.admission.pk).get()
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
@@ -175,27 +190,44 @@ class ViewAdmissionTestCase(TestCase):
         self.assertTemplateUsed(response, 'admission_form.html')
 
     def test_edit_post_admission_found(self):
-        person_information = ContinuingEducationPersonFactory()
         admission = {
-            'person_information': person_information.pk,
+            'person_information': self.admission.person_information.pk,
             'motivation': 'abcd',
             'professional_personal_interests': 'abcd',
             'formation': self.formation.pk,
             'awareness_ucl_website': True,
+
         }
+        data = admission.copy()
+        # Data to update
+        data_person_updated = self.person_data.copy()
+        data_person_updated.update({'gender': 'F'})
+        data.update(data_person_updated.copy())
+        # Data to update
+        data_person_information_updateed = self.continuing_education_person_data
+        data_person_information_updateed.update({'birth_location': 'namur'})
+        data.update(data_person_information_updateed.copy())
+
         url = reverse('admission_edit', args=[self.admission.pk])
-        response = self.client.post(url, data=admission)
+        response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
         self.admission.refresh_from_db()
+        self.admission.person_information.refresh_from_db()
+        self.admission.person_information.person.refresh_from_db()
 
         # verifying that fields are correctly updated
-        for key in admission:
-            field_value = self.admission.__getattribute__(key)
+        self._check_update_correct(admission, self.admission)
+        self._check_update_correct(data_person_updated, self.admission.person_information.person)
+        self._check_update_correct(self.continuing_education_person_data, self.admission.person_information)
+
+    def _check_update_correct(self, data, db_obj):
+        for key in data:
+            field_value = db_obj.__getattribute__(key)
             if isinstance(field_value, datetime.date):
                 field_value = field_value.strftime('%Y-%m-%d')
             if isinstance(field_value, models.Model):
                 field_value = field_value.pk
-            self.assertEqual(field_value, admission[key], key)
+            self.assertEqual(field_value, data[key], key)
 
     def test_admission_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
