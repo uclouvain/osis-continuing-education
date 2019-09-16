@@ -9,8 +9,6 @@ class PersonForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
-        if self.instance.pk:
-            disable_existing_fields(self)
 
     class Meta:
         model = Person

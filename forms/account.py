@@ -1,7 +1,6 @@
 from django.forms import ModelForm, ModelChoiceField
 from django.utils.translation import gettext_lazy as _
 
-from continuing_education.business.admission import disable_existing_fields
 from continuing_education.forms.common import CountryChoiceField
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from reference.models.country import Country
@@ -17,9 +16,6 @@ class ContinuingEducationPersonForm(ModelForm):
     def __init__(self, *args, **kwargs):
 
         super(ContinuingEducationPersonForm, self).__init__(*args, **kwargs)
-
-        if self.instance.pk:
-            disable_existing_fields(self)
 
     class Meta:
         model = ContinuingEducationPerson
