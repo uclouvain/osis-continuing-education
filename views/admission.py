@@ -205,7 +205,7 @@ def admission_form(request, admission_id=None):
     person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission.state if admission else None
-    if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid():
+    if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid() and base_person_form.is_valid():
         if address:
             address = address_form.save()
         else:
