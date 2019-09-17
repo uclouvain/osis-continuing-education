@@ -204,9 +204,9 @@ class ViewAdmissionTestCase(TestCase):
         data_person_updated.update({'gender': 'F'})
         data.update(data_person_updated.copy())
         # Data to update
-        data_person_information_updateed = self.continuing_education_person_data
-        data_person_information_updateed.update({'birth_location': 'namur'})
-        data.update(data_person_information_updateed.copy())
+        data_person_information_updated = self.continuing_education_person_data
+        data_person_information_updated.update({'birth_location': 'namur'})
+        data.update(data_person_information_updated.copy())
 
         url = reverse('admission_edit', args=[self.admission.pk])
         response = self.client.post(url, data=data)
