@@ -413,6 +413,11 @@ class Admission(Model):
         verbose_name=_("Condition of acceptance")
     )
 
+    additional_information = models.TextField(
+        blank=True,
+        verbose_name=_("Additional information")
+    )
+
     @property
     def formation_display(self):
         education_group_year = self.formation.get_most_recent_education_group_year()

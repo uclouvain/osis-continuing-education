@@ -105,6 +105,15 @@
         <div class="col-md-6">{% bootstrap_label _("Training aid") %} <br/> {{ admission.formation.training_aid | yesno | title }} </div>
         <div class="col-md-6">{% bootstrap_label _("Faculty") %} <br/> {{ admission.get_faculty | default:"-" }} </div>
     </div>
+    {% if admission.formation.additional_information_label %}
+    <div class="row form-group">
+        <div class="col-md-12">{% bootstrap_label _("Additional information") %}
+            <p class="italic">{{ admission.formation.additional_information_label }}</p>
+            <br/>
+            {{ admission.additional_information | default:"-"}}
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <div class="panel-default panel-border-top">

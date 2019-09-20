@@ -87,6 +87,13 @@ class ContinuingEducationTraining(Model):
 
     postal_address = models.ForeignKey(Address, default=None, blank=True, null=True, on_delete=models.CASCADE)
 
+    additional_information_label = models.TextField(
+        default='',
+        verbose_name=_("Additional information label"),
+        blank=True,
+        help_text=_("Leave empty if training does not require additional information")
+    )
+
     def clean(self):
         if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))

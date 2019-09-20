@@ -40,3 +40,4 @@ class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
     education_group = factory.SubFactory(EducationGroupFactory)
     send_notification_emails = True
     alternate_notification_email_addresses = ''
+    additional_information_label = ''

@@ -90,7 +90,7 @@
                 </div>
             </div>
         </div>
-                <div class="panel-heading"><h4>{% trans 'Address' %}</h4></div>
+        <div class="panel-heading"><h4>{% trans 'Address' %}</h4></div>
             <div class="panel panel-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -109,5 +109,17 @@
                     </div>
                 </div>
             </div>
+        <div class="panel-heading"><h4>{% trans 'Additional Information' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% if formation.additional_information_label %}
+                        <label>{% trans 'Description' %}</label>:
+                        {% endif %}
+                        {{ formation.additional_information_label|default:_('No additional information')}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

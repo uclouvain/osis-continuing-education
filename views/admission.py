@@ -32,6 +32,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_GET
 
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
@@ -49,6 +50,7 @@ from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
@@ -313,3 +315,14 @@ def _get_states_choices(accepted_states, admission, request):
         return []
     else:
         return [] if admission and admission.is_draft() else accepted_states.get('choices', ())
+
+
+@ajax_required
+@login_required
+@permission_required("continuing_education.change_admission", raise_exception=True)
+@user_passes_test(is_not_student_worker)
+@require_GET
+def get_formation_information(request):
+    formation_id = request.GET.get('formation_id', None)
+    training = ContinuingEducationTraining.objects.get(pk=formation_id)
+    return JsonResponse(data={'additional_information_label': training.additional_information_label})
