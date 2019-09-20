@@ -1061,7 +1061,7 @@ msgstr "Oui, accepter les admission sélectionnées."
 
 msgid "Yes, mark diplomas produced for selected registrations"
 msgstr ""
-"Oui, marquer le diplôme comme \"poduit\" pour les inscriptions sélectionnées."
+"Oui, marquer le diplôme comme \"produit\" pour les inscriptions sélectionnées."
 
 msgid "Yes, unarchive all selected archives"
 msgstr "Oui, désarchiver les archives sélectionnées."
