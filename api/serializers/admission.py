@@ -63,7 +63,7 @@ class AdmissionListSerializer(serializers.HyperlinkedModelSerializer):
             'email',
             'formation',
             'state',
-            'state_text',
+            'state_text'
         )
 
 
@@ -122,7 +122,9 @@ class AdmissionDetailSerializer(AdmissionListSerializer):
             'awareness_other',
 
             'state_reason',
-            'condition_of_acceptance'
+            'condition_of_acceptance',
+
+            'additional_information'
         )
 
 
