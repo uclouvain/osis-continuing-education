@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-21 15:31+0200\n"
+"POT-Creation-Date: 2019-09-23 15:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,15 @@ msgstr "Actif"
 
 msgid "Activity sector"
 msgstr "Secteur d'activité"
+
+msgid "Additional Information"
+msgstr "Information Complémentaire"
+
+msgid "Additional information"
+msgstr "Information complémentaire"
+
+msgid "Additional information label"
+msgstr "Description des informations complémentaires"
 
 msgid "Address"
 msgstr "Adresse"
@@ -279,6 +288,9 @@ msgstr "Date/Heure"
 msgid "Delete document"
 msgstr "Supprimer le document"
 
+msgid "Description"
+msgstr "Description"
+
 msgid "Diploma produced"
 msgstr "Diplôme produit"
 
@@ -482,6 +494,10 @@ msgstr "Nom"
 msgid "Last update"
 msgstr "Dernière modification"
 
+msgid "Leave empty if training does not require additional information"
+msgstr ""
+"Laisser vide si la formation ne nécessite pas d'informations complémentaires"
+
 msgid "Legal cohabitant"
 msgstr "Cohabitant légal"
 
@@ -545,6 +561,9 @@ msgstr "Nouvelle personne"
 
 msgid "No"
 msgstr "Non"
+
+msgid "No additional information"
+msgstr "Pas d'informations complémentaires"
 
 msgid "No assigned training"
 msgstr "Aucune formation assignée"
@@ -705,6 +724,12 @@ msgstr "Statut professionel"
 
 msgid "Prospects"
 msgstr "Prospects"
+
+msgid "Prospects list"
+msgstr "Liste des prospects"
+
+msgid "Prospects_list"
+msgstr "Liste_des_prospects"
 
 msgid "Public"
 msgstr "Public"
@@ -1053,6 +1078,13 @@ msgstr "Qui recevra les emails de notification ?"
 msgid "Widowed"
 msgstr "Veuf(ve)"
 
+msgid ""
+"Write down here a description of any additional information required by the "
+"participant"
+msgstr ""
+"Indiquez ici une description des informations complémentaires requises par "
+"le participant"
+
 msgid "Yes"
 msgstr "Oui"
 
@@ -1061,13 +1093,17 @@ msgstr "Oui, accepter les admission sélectionnées."
 
 msgid "Yes, mark diplomas produced for selected registrations"
 msgstr ""
-"Oui, marquer le diplôme comme \"produit\" pour les inscriptions sélectionnées."
+"Oui, marquer le diplôme comme \"produit\" pour les inscriptions "
+"sélectionnées."
 
 msgid "Yes, unarchive all selected archives"
 msgstr "Oui, désarchiver les archives sélectionnées."
 
 msgid "Yes, validate all selected registrations"
 msgstr "Oui, valider les inscriptions sélectionnées."
+
+msgid "You are not authorized to edit this training"
+msgstr "Vous n'êtes pas autorisé à modifier cette formation"
 
 msgid "You can enter a condition of acceptance"
 msgstr "Condition d'acceptation"

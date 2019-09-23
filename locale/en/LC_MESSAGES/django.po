@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-21 15:31+0200\n"
+"POT-Creation-Date: 2019-09-23 15:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,6 +57,15 @@ msgid "Active"
 msgstr ""
 
 msgid "Activity sector"
+msgstr ""
+
+msgid "Additional Information"
+msgstr ""
+
+msgid "Additional information"
+msgstr ""
+
+msgid "Additional information label"
 msgstr ""
 
 msgid "Address"
@@ -274,6 +283,9 @@ msgstr ""
 msgid "Delete document"
 msgstr ""
 
+msgid "Description"
+msgstr ""
+
 msgid "Diploma produced"
 msgstr ""
 
@@ -473,6 +485,9 @@ msgstr ""
 msgid "Last update"
 msgstr ""
 
+msgid "Leave empty if training does not require additional information"
+msgstr ""
+
 msgid "Legal cohabitant"
 msgstr ""
 
@@ -535,6 +550,9 @@ msgid "New person"
 msgstr ""
 
 msgid "No"
+msgstr ""
+
+msgid "No additional information"
 msgstr ""
 
 msgid "No assigned training"
@@ -687,6 +705,12 @@ msgid "Professional status"
 msgstr ""
 
 msgid "Prospects"
+msgstr ""
+
+msgid "Prospects list"
+msgstr ""
+
+msgid "Prospects_list"
 msgstr ""
 
 msgid "Public"
@@ -1006,6 +1030,11 @@ msgstr ""
 msgid "Widowed"
 msgstr ""
 
+msgid ""
+"Write down here a description of any additional information required by the "
+"participant"
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -1019,6 +1048,9 @@ msgid "Yes, unarchive all selected archives"
 msgstr ""
 
 msgid "Yes, validate all selected registrations"
+msgstr ""
+
+msgid "You are not authorized to edit this training"
 msgstr ""
 
 msgid "You can enter a condition of acceptance"

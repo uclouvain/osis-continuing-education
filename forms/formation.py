@@ -17,3 +17,9 @@ class ContinuingEducationTrainingForm(ModelForm):
 
         # Automatic translation of field names
         labels = {field: _(field) for field in fields}
+
+    def __init__(self, data, user=None, **kwargs):
+        super().__init__(data=data, **kwargs)
+        if user and not user.groups.filter(name='continuing_education_managers').exists():
+            self.fields['training_aid'].disabled = True
+            self.fields['active'].disabled = True

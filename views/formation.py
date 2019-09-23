@@ -31,15 +31,17 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from base.models.education_group import EducationGroup
+from base.models.person import Person
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from base.views.common import page_not_found
-from continuing_education.business.perms import is_not_student_worker
+from continuing_education.business.perms import is_not_student_worker, is_continuing_education_manager
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list
 
 
@@ -161,15 +163,25 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
 def formation_detail(request, formation_id):
     formation = ContinuingEducationTraining.objects.filter(
         education_group__id=formation_id).first()
+    can_edit_formation = _can_edit_formation(request, formation)
     if formation:
         return render(
             request, "formation_detail.html",
             {
                 'formation': formation,
+                'can_edit_formation': can_edit_formation,
             }
         )
     else:
         return page_not_found(request)
+
+
+def _can_edit_formation(request, formation):
+    try:
+        person_trainings = PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True)
+        return formation.id in person_trainings or is_continuing_education_manager(request.user)
+    except Exception:
+        return False
 
 
 @login_required
@@ -177,20 +189,24 @@ def formation_detail(request, formation_id):
 @user_passes_test(is_not_student_worker)
 def formation_edit(request, formation_id):
     formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
-    form = ContinuingEducationTrainingForm(request.POST or None, instance=formation)
-    address_form = AddressForm(request.POST or None, instance=formation.postal_address)
-    if all([form.is_valid(), address_form.is_valid()]):
-        address = address_form.save()
-        formation = form.save(commit=False)
-        formation.postal_address = address
-        formation.save()
+    if _can_edit_formation(request, formation):
+        form = ContinuingEducationTrainingForm(request.POST or None, user=request.user, instance=formation)
+        address_form = AddressForm(request.POST or None, instance=formation.postal_address)
+        if all([form.is_valid(), address_form.is_valid()]):
+            address = address_form.save()
+            formation = form.save(commit=False)
+            formation.postal_address = address
+            formation.save()
+            return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
+        return render(
+            request,
+            "formation_form.html",
+            {
+                'formation': formation,
+                'form': form,
+                'address_form': address_form
+            }
+        )
+    else:
+        display_error_messages(request, _("You are not authorized to edit this training"))
         return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
-    return render(
-        request,
-        "formation_form.html",
-        {
-            'formation': formation,
-            'form': form,
-            'address_form': address_form
-        }
-    )
