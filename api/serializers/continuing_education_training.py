@@ -61,7 +61,8 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
             'active',
             'managers',
             'training_aid',
-            'postal_address'
+            'postal_address',
+            'additional_information_label'
         )
 
     def get_education_group(self, obj):

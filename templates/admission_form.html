@@ -175,6 +175,16 @@
             </div>
         </div>
 
+        <div id="additional_information_block" class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Additional information' %}</h4></div>
+
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field admission_form.additional_information form_group_class="form-group col-md-12" label_class="additional_information_label" %}
+                    </div>
+            </div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Awareness' %}</h4></div>
                 <div class="panel panel-body">
@@ -212,6 +222,7 @@
                     </div>
             </div>
         </div>
+
 
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
@@ -278,6 +289,33 @@
     $("#btn_confirm_fields").click(function(){
         $('#form').submit();
     });
+
+    $("#id_formation").on('change', function(){
+        let pk = $(this).find(":selected").val();
+        if(pk){
+            $.ajax({
+                url: '{% url 'get_formation_information' %}',
+                method: "GET",
+                data: {
+                    'formation_id': pk,
+                },
+                success: (data) => {
+                    if(data.additional_information_label) {
+                        $("#additional_information_block").show();
+                        $(".additional_information_label").text(data.additional_information_label);
+                    } else {
+                        $("#additional_information_block").hide();
+                    }
+                }
+            });
+        } else {
+            $("#additional_information_block").hide();
+        }
+    });
+
+    //trigger change on page load
+    $("#id_formation").trigger("change");
+
 
 
     </script>

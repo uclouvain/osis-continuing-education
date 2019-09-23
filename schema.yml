@@ -434,6 +434,8 @@ components:
                 type: string
               condition_of_acceptance:
                 type: string
+              additional_information:
+                type: string
 
     AdmissionBasicGet:
       allOf:
@@ -623,6 +625,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PersonBasic'
+            additional_information:
+              type: string
 
 
     File:

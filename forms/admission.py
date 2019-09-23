@@ -126,7 +126,10 @@ class AdmissionForm(ModelForm):
 
             # State
             'state',
-            'state_reason'
+            'state_reason',
+
+            # Additional Information
+            'additional_information'
         ]
 
 

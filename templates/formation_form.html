@@ -102,6 +102,15 @@
                     {% bootstrap_field address_form.country form_group_class="form-group col-md-6" %}
                 </div>
             </div>
+                <div class="panel-heading"><h4>{% trans 'Additional Information' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% bootstrap_field form.additional_information_label form_group_class="form-group col-md-12" label=_("Write down here a description of any additional information required by the participant") %}
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
 
         <a class="btn btn-default pull-right" id="cancel_formation_edit_bottom" href="{% url 'formation_detail' formation_id=formation.education_group.id %}">

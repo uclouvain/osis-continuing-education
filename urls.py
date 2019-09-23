@@ -44,6 +44,7 @@ urlpatterns = [
             url(r'file/(?P<file_id>[0-9]+)/delete$', continuing_education.views.file.delete_file, name='delete_file'),
         ])),
         url(r'^validate_field/(?P<admission_id>[0-9]+)/$', admission.validate_field, name='validate_field'),
+        url(r'^ajax/formation/', admission.get_formation_information, name='get_formation_information')
     ])),
     url(r'^registration/', include([
         url(r'^$', registration.list_registrations, name='registration'),

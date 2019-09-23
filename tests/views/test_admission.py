@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import datetime
+import json
 import random
 from unittest import mock
 from unittest.mock import patch
@@ -63,48 +64,52 @@ FILE_CONTENT = "test-content"
 
 
 class ViewAdmissionTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
+            additional_information_label='additional_information'
         )
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
         group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
         EntityVersionFactory(
-            entity=self.formation.management_entity
+            entity=cls.formation.management_entity
         )
-        self.admission = AdmissionFactory(
-            formation=self.formation,
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
             state=SUBMITTED,
             person_information__person__gender='M',
         )
 
-        self.file = SimpleUploadedFile(
+        cls.file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
         )
-        self.country = CountryFactory()
-        self.person_data = {
-            'last_name': self.admission.person_information.person.last_name,
-            'first_name': self.admission.person_information.person.first_name,
-            'gender': self.admission.person_information.person.gender,
+        cls.country = CountryFactory()
+        cls.person_data = {
+            'last_name': cls.admission.person_information.person.last_name,
+            'first_name': cls.admission.person_information.person.first_name,
+            'gender': cls.admission.person_information.person.gender,
         }
-        self.continuing_education_person_data = {
-            'birth_date': self.admission.person_information.birth_date.strftime('%Y-%m-%d'),
-            'birth_location': self.admission.person_information.birth_location,
-            'birth_country': self.admission.person_information.birth_country.id,
+        cls.continuing_education_person_data = {
+            'birth_date': cls.admission.person_information.birth_date.strftime('%Y-%m-%d'),
+            'birth_location': cls.admission.person_information.birth_location,
+            'birth_country': cls.admission.person_information.birth_country.id,
         }
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -281,6 +286,13 @@ class ViewAdmissionTestCase(TestCase):
             version_list = get_versions(self.admission)
             self.assertEqual(len(version_list), i)
             i += 1
+
+    def test_ajax_get_formation_information(self):
+        response = self.client.get(reverse('get_formation_information'), data={
+            'formation_id': self.formation.pk
+        }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode('utf-8')), {'additional_information_label': 'additional_information'})
 
 
 class InvoiceNotificationEmailTestCase(TestCase):
