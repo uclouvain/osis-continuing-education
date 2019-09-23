@@ -101,7 +101,6 @@ def send_submission_email_to_admission_managers(admission, connected_user):
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
 
-    managers = _get_continuing_education_managers()
     attachments = _get_attachments(admission.id, MAX_DOCUMENTS_SIZE)
     receivers = _get_admission_managers_email_receivers(admission)
     send_email(
@@ -127,9 +126,11 @@ def send_submission_email_to_admission_managers(admission, connected_user):
         receivers=receivers,
         connected_user=connected_user
     )
+
     MAIL['text'] = MAIL_MESSAGE % {
-        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]),
+        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]) if receivers else '',
     }
+
     save_and_create_revision(connected_user, get_revision_messages(MAIL) if receivers else '', admission)
 
 
