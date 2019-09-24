@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='admission',
             name='comment',
-            field=models.TextField(blank=True, max_length=500, verbose_name='Comment'),
+            field=models.TextField(blank=True, null=True, max_length=500, verbose_name='Comment'),
         ),
     ]

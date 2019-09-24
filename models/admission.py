@@ -421,6 +421,7 @@ class Admission(Model):
     comment = models.TextField(
         max_length=500,
         blank=True,
+        null=True,
         verbose_name=_("Comment"),
     )
 
