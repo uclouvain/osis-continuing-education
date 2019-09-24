@@ -147,6 +147,12 @@
             </div>
         </div>
 
+        <div class="panel panel-default">
+            <div class="panel panel-body">
+                {% bootstrap_field form.comment label=_("Comment") %}
+            </div>
+        </div>
+
         <a class="btn btn-default pull-right" id="cancel_registration_edit_bottom" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
         </a>
