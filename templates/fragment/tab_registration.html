@@ -116,6 +116,13 @@
     </div>
 </div>
 
+<div class="panel ">
+    <div class="panel-body">
+        {% bootstrap_label _("Comment") %} <br/> {{ admission.comment | default:"-" }}
+    </div>
+</div>
+
+
 {% block script %}
     <script>
         $('.high_school_graduation_year').hide();

@@ -128,6 +128,7 @@ def get_titles_registration():
         str(_('Assessment presented')),
         str(_('Assessment succeeded')),
         str(_('Diploma produced')),
+        str(_('Comment')),
     ]
 
 
@@ -156,4 +157,5 @@ def extract_xls_data_from_registration(registration):
         _('Yes') if registration.assessment_presented else _('No'),
         _('Yes') if registration.assessment_succeeded else _('No'),
         _('Yes') if registration.diploma_produced else _('No'),
+        registration.comment if registration.comment else '',
     ]

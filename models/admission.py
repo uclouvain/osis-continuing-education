@@ -418,6 +418,13 @@ class Admission(Model):
         verbose_name=_("Additional information")
     )
 
+    comment = models.TextField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name=_("Comment"),
+    )
+
     @property
     def formation_display(self):
         education_group_year = self.formation.get_most_recent_education_group_year()
