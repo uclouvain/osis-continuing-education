@@ -1,6 +1,7 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, CharField, Textarea
 from django.utils.translation import gettext_lazy as _
 
+from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
@@ -20,6 +21,9 @@ class ContinuingEducationTrainingForm(ModelForm):
 
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data=data, **kwargs)
-        if user and not user.groups.filter(name='continuing_education_managers').exists():
+        self.fields['additional_information_label'].widget.attrs['placeholder'] = _(
+            "Please answer the following questions in sequence: \n 1)... \n 2)... \n 3)..."
+        )
+        if user and not is_continuing_education_manager(user):
             self.fields['training_aid'].disabled = True
             self.fields['active'].disabled = True

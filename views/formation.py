@@ -177,11 +177,8 @@ def formation_detail(request, formation_id):
 
 
 def _can_edit_formation(request, formation):
-    try:
-        person_trainings = PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True)
-        return formation.id in person_trainings or is_continuing_education_manager(request.user)
-    except Exception:
-        return False
+    person_trainings = PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True)
+    return formation.id in person_trainings or is_continuing_education_manager(request.user)
 
 
 @login_required

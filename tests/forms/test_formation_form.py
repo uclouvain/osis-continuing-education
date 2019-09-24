@@ -24,21 +24,13 @@
 #
 ##############################################################################
 from django.test import TestCase
-from django.utils.translation import gettext_lazy as _
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
-from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED
-from continuing_education.models.person_training import PersonTraining
-from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from reference.models import country
 
 
 class TestContinuingEducationTrainingFormForm(TestCase):
@@ -54,9 +46,7 @@ class TestContinuingEducationTrainingFormForm(TestCase):
         )
 
     def test_valid_form_for_continuing_education_managers(self):
-        group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        self.manager = PersonWithPermissionsFactory(groups='continuing_education_managers')
         self.client.force_login(self.manager.user)
         data = self.formation.__dict__
         data['formation'] = self.formation.pk
@@ -64,9 +54,7 @@ class TestContinuingEducationTrainingFormForm(TestCase):
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_disabled_fields_for_training_managers(self):
-        group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
+        self.training_manager = PersonWithPermissionsFactory(groups='continuing_education_training_managers')
         self.client.force_login(self.training_manager.user)
         form = ContinuingEducationTrainingForm(data=None, user=self.training_manager.user)
         self.assertTrue(form['training_aid'].field.disabled)
