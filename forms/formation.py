@@ -22,7 +22,13 @@ class ContinuingEducationTrainingForm(ModelForm):
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data=data, **kwargs)
         self.fields['additional_information_label'].widget.attrs['placeholder'] = _(
-            "Please answer the following questions in sequence: \n 1)... \n 2)... \n 3)..."
+            "Describe here additional information that will be asked to the participant:\n"
+            "- as a list of question(s) - maximum 1 sentence by question \n"
+            "- numbered 1., 2., 3.,... if multiple questions \n\n"
+            "This text will appear the same on the participant's admission form\n\n"
+            "Example: \n"
+            "1. What is your pedagogical title ? \n"
+            "2. ..."
         )
         if user and not is_continuing_education_manager(user):
             self.fields['training_aid'].disabled = True
