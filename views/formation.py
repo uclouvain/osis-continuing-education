@@ -163,8 +163,8 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
 def formation_detail(request, formation_id):
     formation = ContinuingEducationTraining.objects.filter(
         education_group__id=formation_id).first()
-    can_edit_formation = _can_edit_formation(request, formation)
     if formation:
+        can_edit_formation = _can_edit_formation(request, formation)
         return render(
             request, "formation_detail.html",
             {
