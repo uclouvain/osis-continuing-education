@@ -118,7 +118,7 @@
                         {% if formation.additional_information_label %}
                         <label>{% trans 'Description' %}</label>:
                         {% endif %}
-                        {{ formation.additional_information_label|default:_('No additional information')}}
+                        {{ formation.additional_information_label|linebreaks|default:_('No additional information')}}
                     </div>
                 </div>
             </div>
