@@ -33,6 +33,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
+from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices, enums, groups
 from continuing_education.models.person_training import PersonTraining
 
@@ -546,10 +547,6 @@ def can_access_admission(user, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     if admission not in filter_authorized_admissions(user, Admission.objects.all()):
         raise PermissionDenied
-
-
-def is_continuing_education_manager(user):
-    return user.groups.filter(name=groups.MANAGERS_GROUP).exists()
 
 
 def _build_address(address):

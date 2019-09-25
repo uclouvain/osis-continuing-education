@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-21 15:31+0200\n"
+"POT-Creation-Date: 2019-09-24 16:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,15 @@ msgstr "Actif"
 
 msgid "Activity sector"
 msgstr "Secteur d'activité"
+
+msgid "Additional Information"
+msgstr "Information Complémentaire"
+
+msgid "Additional information"
+msgstr "Information complémentaire"
+
+msgid "Additional information label"
+msgstr "Description des informations complémentaires"
 
 msgid "Address"
 msgstr "Adresse"
@@ -279,6 +288,28 @@ msgstr "Date/Heure"
 msgid "Delete document"
 msgstr "Supprimer le document"
 
+msgid ""
+"Describe here additional information that will be asked to the participant:\n"
+"- as a list of question(s) - maximum 1 sentence by question \n"
+"- numbered 1., 2., 3.,... if multiple questions \n"
+"\n"
+"This text will appear the same on the participant's admission form\n"
+"\n"
+"Example: \n"
+"1. What is your pedagogical title ? \n"
+"2. ..."
+msgstr ""
+"Décrivez ici les informations complémentaires que vous voulez demander au participant:\n"
+"- sous forme de question(s) en maximum une phrase \n"
+"- numérotées 1., 2., 3.,... si plusieurs questions \n\n"
+"Le texte apparaîtra à l'identique dans le formulaire d'admission du participant\n\n"
+"Exemple: \n"
+"1. Quel est votre titre pédagogique ? \n"
+"2. ..."
+
+msgid "Description"
+msgstr "Description"
+
 msgid "Diploma produced"
 msgstr "Diplôme produit"
 
@@ -482,6 +513,10 @@ msgstr "Nom"
 msgid "Last update"
 msgstr "Dernière modification"
 
+msgid "Leave empty if training does not require additional information"
+msgstr ""
+"Laisser vide si la formation ne nécessite pas d'informations complémentaires"
+
 msgid "Legal cohabitant"
 msgstr "Cohabitant légal"
 
@@ -545,6 +580,9 @@ msgstr "Nouvelle personne"
 
 msgid "No"
 msgstr "Non"
+
+msgid "No additional information"
+msgstr "Pas d'informations complémentaires"
 
 msgid "No assigned training"
 msgstr "Aucune formation assignée"
@@ -705,6 +743,12 @@ msgstr "Statut professionel"
 
 msgid "Prospects"
 msgstr "Prospects"
+
+msgid "Prospects list"
+msgstr "Liste des prospects"
+
+msgid "Prospects_list"
+msgstr "Liste_des_prospects"
 
 msgid "Public"
 msgstr "Public"
@@ -1061,13 +1105,17 @@ msgstr "Oui, accepter les admission sélectionnées."
 
 msgid "Yes, mark diplomas produced for selected registrations"
 msgstr ""
-"Oui, marquer le diplôme comme \"produit\" pour les inscriptions sélectionnées."
+"Oui, marquer le diplôme comme \"produit\" pour les inscriptions "
+"sélectionnées."
 
 msgid "Yes, unarchive all selected archives"
 msgstr "Oui, désarchiver les archives sélectionnées."
 
 msgid "Yes, validate all selected registrations"
 msgstr "Oui, valider les inscriptions sélectionnées."
+
+msgid "You are not authorized to edit this training"
+msgstr "Vous n'êtes pas autorisé à modifier cette formation"
 
 msgid "You can enter a condition of acceptance"
 msgstr "Condition d'acceptation"

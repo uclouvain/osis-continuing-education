@@ -26,7 +26,11 @@
 
 from django.core.exceptions import PermissionDenied
 
-from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP, MANAGERS_GROUP
+
+
+def is_continuing_education_manager(user):
+    return user.groups.filter(name=MANAGERS_GROUP).exists()
 
 
 def is_not_student_worker(user):
