@@ -147,7 +147,7 @@ def _get_admission_managers_email_receivers(admission):
     else:
         return [
             message_config.create_receiver(manager.id, manager.email, manager.language)
-            for manager in admission.formation.managers.all()
+            for manager in admission.formation.managers.all() if manager.email
         ]
 
 

@@ -358,3 +358,26 @@ class SendEmailSettingsTest(TestCase):
                 }
             ]
         )
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_email_missing(self, mock_send_mail):
+        self.manager_without_email = PersonFactory(last_name="AAA", email=None)
+        self.manager_without_email.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+        PersonTrainingFactory(person=self.manager_without_email, training=self.cet)
+
+        self.cet.send_notification_emails = True
+        self.cet.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+
+        self.assertCountEqual(
+            receivers,
+            [
+                {
+                    'receiver_person_id': self.manager.id,
+                    'receiver_email': self.manager.email,
+                    'receiver_lang': self.manager.language
+                },
+            ]
+        )
