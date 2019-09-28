@@ -173,7 +173,7 @@ def formation_detail(request, formation_id):
             }
         )
     else:
-        return page_not_found(request)
+        return page_not_found(request, ContinuingEducationTraining.DoesNotExist)
 
 
 def _can_edit_formation(request, formation):
