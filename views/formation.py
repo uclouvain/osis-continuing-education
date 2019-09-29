@@ -26,6 +26,7 @@
 import ast
 
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -173,7 +174,7 @@ def formation_detail(request, formation_id):
             }
         )
     else:
-        return page_not_found(request)
+        raise Http404()
 
 
 def _can_edit_formation(request, formation):
