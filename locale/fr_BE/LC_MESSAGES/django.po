@@ -912,7 +912,7 @@ msgstr ""
 msgid "Successfully marked diploma as produced for %s registrations."
 msgstr "Le diplôme a été marqué \"produit\" pour %s inscriptions."
 
-msgid "Successfully treated %s registrations."
+msgid "Successfully processed %s registrations."
 msgstr "%s inscriptions ont été traitées avec succès."
 
 msgid "Sure you want to unarchive the file(s) ?"

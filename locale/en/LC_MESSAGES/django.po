@@ -881,7 +881,7 @@ msgid "Successfully marked diploma as produced for %s registrations."
 msgstr ""
 
 #, python-format
-msgid "Successfully treated %s registrations."
+msgid "Successfully processed %s registrations."
 msgstr ""
 
 msgid "Sure you want to unarchive the file(s) ?"
