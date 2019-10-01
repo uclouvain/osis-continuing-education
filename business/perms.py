@@ -38,3 +38,15 @@ def is_not_student_worker(user):
         raise PermissionDenied
     else:
         return True
+
+
+def is_student_worker(user):
+    return user.groups.filter(name=STUDENT_WORKERS_GROUP).exists()
+
+
+def registration_process(user):
+    if (is_continuing_education_manager(user) and user.has_perm("continuing_education.change_admission")) \
+            or is_student_worker(user):
+        return True
+    else:
+        raise PermissionDenied

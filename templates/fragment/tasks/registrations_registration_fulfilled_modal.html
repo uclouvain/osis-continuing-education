@@ -25,7 +25,7 @@
     * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-<div class="modal fade" id="registrations_to_validate_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="registrations_registration_fulfilled_modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -35,12 +35,12 @@
         </div>
         <div class="panel-default">
             <div class="panel-body">
-                {% trans 'This will mark that the paper admission file has been received for all selected registrations. Are you sure ?' %}
+                {% trans 'This will mark all selected registrations with UCLouvain registration completed. Are you sure ?' %}
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" id="btn_cancel_validate_registration" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
-            <button type="button" id="btn_confirm_validate_registration" class="btn btn-primary">{% trans 'Yes, update all selected registrations' %}</button>
+            <button type="button" id="btn_cancel_registration_fulfilled" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
+            <button type="button" id="btn_confirm_registration_fulfilled" class="btn btn-primary">{% trans 'Yes, update all selected registrations' %}</button>
         </div>
     </div>
   </div>
@@ -48,11 +48,11 @@
 
 {% block script %}
     <script>
-        $("#btn_confirm_validate_registration").click(function(){
+        $("#btn_confirm_registration_fulfilled").click(function(){
             $("#registrations_to_validate_form").submit();
         });
-        $("#btn_paper_registrations_file_received").click(function(){
-            $("#registrations_to_validate_form").attr("action", "{% url 'paper_registrations_file_received' %}");
+        $("#btn_UCLOUVAIN_registrations_fulfilled").click(function(){
+            $("#registrations_to_validate_form").attr("action", "{% url 'registrations_fulfilled' %}");
         });
     </script>
 {% endblock %}

@@ -76,7 +76,6 @@ class ViewsLimitedForStudentWorker(TestCase):
                 reverse('delete_person_training', args=[self.formation.id, self.training_manager.id]),
                 reverse('prospects'),
                 reverse('registration_edit', args=[self.admission.id]),
-                reverse('list_tasks'),
                 reverse('formation_detail', args=[1]),
                 reverse('cancelled_files'),
                 ]
@@ -87,8 +86,7 @@ class ViewsLimitedForStudentWorker(TestCase):
 
     def test_post_access(self):
         urls = [
-            reverse('validate_registrations'),
-            reverse('mark_diplomas_produced')
+            reverse('mark_diplomas_produced'),
         ]
         for url in urls:
             response = self.client.post(url)

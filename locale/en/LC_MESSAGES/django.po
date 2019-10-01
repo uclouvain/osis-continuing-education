@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-24 16:52+0200\n"
+"POT-Creation-Date: 2019-09-30 14:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,6 +231,9 @@ msgid "City"
 msgstr ""
 
 msgid "Comma-separated addresses - Leave empty if no address"
+msgstr ""
+
+msgid "Comment"
 msgstr ""
 
 msgid "Company number"
@@ -624,6 +627,9 @@ msgstr ""
 msgid "Paid"
 msgstr ""
 
+msgid "Paper registration file received"
+msgstr ""
+
 msgid "Participant"
 msgstr ""
 
@@ -758,6 +764,9 @@ msgstr ""
 msgid "Registration submitted"
 msgstr ""
 
+msgid "Registration to process"
+msgstr ""
+
 msgid "Registration type"
 msgstr ""
 
@@ -770,7 +779,7 @@ msgstr ""
 msgid "Registrations list"
 msgstr ""
 
-msgid "Registrations to validate"
+msgid "Registrations to process"
 msgstr ""
 
 msgid "Registrations_list"
@@ -872,7 +881,7 @@ msgid "Successfully marked diploma as produced for %s registrations."
 msgstr ""
 
 #, python-format
-msgid "Successfully validated %s registrations."
+msgid "Successfully processed %s registrations."
 msgstr ""
 
 msgid "Sure you want to unarchive the file(s) ?"
@@ -915,13 +924,14 @@ msgid ""
 msgstr ""
 
 msgid ""
-"This page contains the Registrations submitted by the participants. These "
-"must be validated by IUFC."
+"This page contains the admissions submitted by the participants. These must "
+"be processed by the manager."
 msgstr ""
 
 msgid ""
-"This page contains the admissions submitted by the participants. These must "
-"be processed by the manager."
+"This page contains the registrations submitted by the participants and which "
+"don't have the fields 'UCLouvain registration complete' and 'Registration "
+"file received' with 'True' value."
 msgstr ""
 
 msgid "This will accept all selected admissions. Are you sure ?"
@@ -933,14 +943,21 @@ msgid ""
 msgstr ""
 
 msgid ""
+"This will mark all selected registrations with UCLouvain registration "
+"completed. Are you sure ?"
+msgstr ""
+
+msgid ""
+"This will mark that the paper admission file has been received for all "
+"selected registrations. Are you sure ?"
+msgstr ""
+
+msgid ""
 "This will send an notification email to the participant, saying that there "
 "is an invoice available."
 msgstr ""
 
 msgid "This will unarchive all selected archives. Are you sure ?"
-msgstr ""
-
-msgid "This will validate all selected registrations. Are you sure ?"
 msgstr ""
 
 msgid "Title"
@@ -970,6 +987,9 @@ msgstr ""
 msgid "UCLouvain registration complete"
 msgstr ""
 
+msgid "UCLouvain registration fulfilled"
+msgstr ""
+
 msgid "Unarchive"
 msgstr ""
 
@@ -980,6 +1000,9 @@ msgid "Unknown birth place"
 msgstr ""
 
 msgid "Unreceived file"
+msgstr ""
+
+msgid "Update all selected registrations ?"
 msgstr ""
 
 msgid "Upload"
@@ -1005,12 +1028,6 @@ msgid "User"
 msgstr ""
 
 msgid "VAT number"
-msgstr ""
-
-msgid "Validate all selected registrations ?"
-msgstr ""
-
-msgid "Validate selected registrations"
 msgstr ""
 
 msgid "Validated"
@@ -1054,7 +1071,7 @@ msgstr ""
 msgid "Yes, unarchive all selected archives"
 msgstr ""
 
-msgid "Yes, validate all selected registrations"
+msgid "Yes, update all selected registrations"
 msgstr ""
 
 msgid "You are not authorized to edit this training"
