@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.core.validators import FileExtensionValidator
 
 
 class TooLongFilenameException(Exception):
@@ -34,4 +35,14 @@ class TooLongFilenameException(Exception):
 class InvalidFileCategoryException(Exception):
     def __init__(self, message=None, errors=None):
         super(InvalidFileCategoryException, self).__init__(message)
+        self.errors = errors
+
+
+class UnallowedFileExtensionException(Exception):
+    def __init__(self, message=None, errors=None, extension=None, allowed_extensions=None):
+        message = FileExtensionValidator.message % {
+            'extension': extension,
+            'allowed_extensions': ', '.join(allowed_extensions)
+        }
+        super(UnallowedFileExtensionException, self).__init__(message)
         self.errors = errors
