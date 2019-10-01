@@ -76,7 +76,12 @@ urlpatterns = [
     ])),
     url(r'^tasks/', include([
         url(r'^$', tasks.list_tasks, name='list_tasks'),
-        url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
+        url(r'^paper_registrations_file_received', tasks.paper_registrations_file_received,
+            name='paper_registrations_file_received'),
+        url(r'^registrations_fulfilled', tasks.registrations_fulfilled, name='registrations_fulfilled'),
+
+
+
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
         url(r'^accept_admissions', tasks.accept_admissions, name='accept_admissions'),
     ])),
