@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from pathlib import Path
 
 import uuid
 from django.contrib.admin import ModelAdmin
@@ -108,9 +109,10 @@ class AdmissionFile(Model):
             raise InvalidFileCategoryException(
                 _("The status of the admission must be Accepted to upload an invoice.")
             )
-        if self.path.name[-3:] not in ALLOWED_EXTENSIONS:
+        file_extension = Path(self.path.name).suffix[1:].lower()
+        if file_extension not in ALLOWED_EXTENSIONS:
             raise UnallowedFileExtensionException(
-                extension=self.path.name[-3:],
+                extension=file_extension,
                 allowed_extensions=ALLOWED_EXTENSIONS
             )
         super(AdmissionFile, self).save(*args, **kwargs)
