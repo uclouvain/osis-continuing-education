@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-03 10:32+0200\n"
+"POT-Creation-Date: 2019-10-03 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,9 +54,6 @@ msgid "Active"
 msgstr ""
 
 msgid "Activity sector"
-msgstr ""
-
-msgid "Additional Information"
 msgstr ""
 
 msgid "Additional information"
@@ -383,6 +380,12 @@ msgid "File category"
 msgstr ""
 
 msgid "File correctly deleted"
+msgstr ""
+
+#, python-format
+msgid ""
+"File extension '%(extension)s' is not allowed. Allowed extensions are: "
+"'%(allowed_extensions)s'."
 msgstr ""
 
 msgid "File is now"
@@ -1165,6 +1168,9 @@ msgid "an other address"
 msgstr ""
 
 msgid "archived"
+msgstr ""
+
+msgid "extension"
 msgstr ""
 
 msgid "managers"
