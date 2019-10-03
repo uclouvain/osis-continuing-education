@@ -556,5 +556,3 @@ def _build_address(address):
                                       address.city.upper() if address.city else '',
                                       "- {}".format(address.country.name.upper()) if address.country else '')
     return ''
-
-
