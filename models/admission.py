@@ -34,7 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
 from continuing_education.business.perms import is_continuing_education_manager
-from continuing_education.models.enums import admission_state_choices, enums, groups
+from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.person_training import PersonTraining
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -558,5 +558,3 @@ def _build_address(address):
     return ''
 
 
-def is_continuing_education_training_manager(user):
-    return user.groups.filter(name=groups.TRAINING_MANAGERS_GROUP).exists()

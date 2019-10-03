@@ -2,23 +2,59 @@
 {% load i18n %}
 {% load bootstrap3 %}
 <div style="padding: 0.5em;">
-    <div class="alert alert-info" style="display:inline-block;">
-        <i class="fa fa-info-circle"></i> {% trans 'This page contains the admissions submitted by the participants. These must be processed by the manager.' %}
+    <div class="row">
+        <div class="col-md-9">
+            <div class="alert alert-info" style="display:inline-block;">
+                <i class="fa fa-info-circle"></i> {% trans 'This page contains the admissions submitted by the participants. These must be processed by the manager.' %}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="dropdown  text-right" style="margin-right: 10px;">
+                <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Change state on selected admissions to ...' %}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                    <li>
+                        <a id="btn_registrations_accept" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                            {% trans 'Accepted' %}
+                        </a>
+                        <a id="btn_registrations_reject" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                            {% trans 'Rejected' %}
+                        </a>
+                        <a id="btn_registrations_wait" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                            {% trans 'Waiting' %}
+                        </a>
+                        <a id="btn_registrations_draft" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                            {% trans 'Draft' %}
+                        </a>
+                        <a id="btn_registrations_cancel" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                            {% trans 'Cancelled' %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <a class="btn btn-primary pull-right" id="btn_validate_admissions" data-toggle="modal" data-target="#admissions_to_accept_modal">
-        <i class="fa fa-check-circle"></i> {% trans 'Accept selected admissions' %}
-    </a>
+
     {% if admissions_to_accept %}
         <div class="row">
             <div class="col-md-6">
-                <strong style="margin-left:10px;color:grey;"> {{ admissions_to_accept|length }} {% trans 'Admissions to process'|lower %} </strong>
+                <strong style="margin-left:10px;color:grey;"> {{ admissions_to_accept|length }} {% if admissions_to_accept.count > 1 %}{% trans 'Admissions to process'|lower %}{% else %}{% trans 'Admission to process'|lower %}{% endif %}</strong>
             </div>
         </div>
     {% endif %}
 </div>
 
-<form id="admissions_to_accept_form" method="post" action="{% url 'accept_admissions' %}">
+<form id="admissions_to_process_form" method="post" action="{% url 'process_admissions' %}">
     {% csrf_token %}
+    <input type="hidden" id="hdn_new_state" name="new_state"/>
     <table class="table table-striped table-hover" id="tab_admissions_to_accept" style="width: 100%;">
         <thead>
         <tr>
@@ -78,6 +114,57 @@
                 'aTargets' : [ 0 ]
             } ]
         } );
+
+        const lbTitle = "#spn_admissions_to_process_title";
+        const lbBody = "#spn_admissions_to_process_body";
+        const lbButton = "#spn_admissions_to_process_btn";
+
+        $("#btn_registrations_accept").click(function(){
+            $('#hdn_new_state').val('Accepted');
+            empty_labels();
+            $(lbTitle).append("{%  trans 'Accept all selected admissions ?' %}");
+            $(lbBody).append("{% trans 'This will accept all selected admissions. Are you sure ?' %}");
+            $(lbButton).append("{% trans 'Yes, accept all selected admissions' %}");
+        });
+
+        $("#btn_registrations_reject").click(function(){
+            $('#hdn_new_state').val('Rejected');
+            empty_labels();
+            $(lbTitle).append("{%  trans 'Reject all selected admissions ?' %}");
+            $(lbBody).append("{% trans 'This will reject all selected admissions. Are you sure ?' %}");
+            $(lbButton).append("{% trans 'Yes, reject all selected admissions' %}");
+        });
+
+        $("#btn_registrations_wait").click(function(){
+            $('#hdn_new_state').val('Waiting');
+            empty_labels();
+            $(lbTitle).append("{%  trans 'Change state to WAITING for all selected admissions ?'%}");
+            $(lbBody).append("{% trans 'This will change the state to WAITING for all selected admissions. Are you sure ?' %}");
+            $(lbButton).append("{% trans 'Yes, change state to WAITING for all selected admissions' %}");
+        });
+
+
+        $("#btn_registrations_draft").click(function(){
+            $('#hdn_new_state').val('Draft');
+            empty_labels();
+            $(lbTitle).append("{%  trans 'Change state to DRAFT for all selected admissions ?'%}");
+            $(lbBody).append("{% trans 'This will change the state to DRAFT for all selected admissions. Are you sure ?' %}");
+            $(lbButton).append("{% trans 'Yes, change state to DRAFT for all selected admissions' %}");
+        });
+
+        $("#btn_registrations_cancel").click(function(){
+            $('#hdn_new_state').val('Cancelled');
+            empty_labels();
+            $(lbTitle).append("{%  trans 'Cancel all selected admissions ?'%}");
+            $(lbBody).append("{% trans 'This will cancel all selected admissions. Are you sure ?' %}");
+            $(lbButton).append("{% trans 'Yes, cancel all selected admissions' %}");
+        });
+        function empty_labels(){
+            $(lbTitle).empty();
+            $(lbBody).empty();
+            $(lbButton).empty();
+        }
+
     </script>
 {% endblock %}
 

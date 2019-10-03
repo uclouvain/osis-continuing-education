@@ -32,9 +32,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business.perms import is_not_student_worker, is_student_worker, registration_process
+from continuing_education.business.perms import is_not_student_worker, is_student_worker, registration_process, \
+    is_continuing_education_training_manager, is_iufc_manager
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
-    is_continuing_education_manager, is_continuing_education_training_manager
+    is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import save_and_create_revision, ADMISSION_ACCEPTED, get_revision_messages
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -65,8 +66,11 @@ def list_tasks(request):
     )
 
     admissions_diploma_to_produce = all_admissions.filter(
-        state=admission_state_choices.VALIDATED,
-        diploma_produced=False
+        diploma_produced=False,
+        ucl_registration_complete=True,
+        payment_complete=True,
+        assessment_succeeded=True,
+        state=admission_state_choices.VALIDATED
     )
     return render(request, "tasks.html", {
         'registrations_to_validate': registrations_to_validate,
@@ -85,7 +89,7 @@ def list_tasks(request):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def mark_diplomas_produced(request):
-    if not is_continuing_education_manager(request.user):
+    if not is_iufc_manager(request.user):
         raise PermissionDenied
     selected_registration_ids = request.POST.getlist("selected_diplomas_to_produce", default=[])
     if selected_registration_ids:
@@ -111,30 +115,32 @@ def _mark_diplomas_produced_list(registrations_ids_list):
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
-def accept_admissions(request):
+def process_admissions(request):
     if not is_continuing_education_training_manager(request.user):
         raise PermissionDenied
     selected_admission_ids = request.POST.getlist("selected_admissions_to_accept", default=[])
+    new_state = request.POST.get('new_state')
     if selected_admission_ids:
-        _accept_admissions_list(request, selected_admission_ids)
-        msg = _('Successfully accept %s admissions.') % len(selected_admission_ids)
+        _process_admissions_list(request, selected_admission_ids, new_state)
+        msg = _('Successfully change of state %s admissions.') % len(selected_admission_ids)
         display_success_messages(request, msg)
     else:
-        display_error_messages(request, _('Please select at least one admission to accept.'))
+        display_error_messages(request, _('Please select at least one admission to process.'))
 
     return redirect(reverse("list_tasks"))
 
 
-def _accept_admissions_list(request, registrations_ids_list):
+def _process_admissions_list(request, registrations_ids_list, new_status):
     admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
 
     admissions_list_states = admissions_list.values_list('state', flat=True)
     if not all(state == admission_state_choices.SUBMITTED for state in admissions_list_states):
         raise PermissionDenied(_('The admission must be submitted to be accepted.'))
 
-    admissions_list.update(state=admission_state_choices.ACCEPTED, condition_of_acceptance='')
+    admissions_list.update(state=new_status, condition_of_acceptance='')
     for admission in admissions_list:
-        save_and_create_revision(request.user, get_revision_messages(ADMISSION_ACCEPTED), admission)
+        if new_status == admission_state_choices.ACCEPTED:
+            save_and_create_revision(request.user, get_revision_messages(ADMISSION_ACCEPTED), admission)
 
 
 @require_http_methods(['POST'])
