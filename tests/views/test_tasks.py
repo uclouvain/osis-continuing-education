@@ -32,10 +32,10 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
+from base.tests.factories.person import PersonWithPermissionsFactory, PersonFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
-from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
@@ -71,7 +71,10 @@ class ViewUpdateTasksTestCase(TestCase):
             AdmissionFactory(
                 state=admission_state_choices.VALIDATED,
                 diploma_produced=False,
-                formation=self.formation
+                formation=self.formation,
+                ucl_registration_complete=True,
+                payment_complete=True,
+                assessment_succeeded=True,
             ) for _ in range(2)
         ]
         self.no_diploma_to_produce = AdmissionFactory(
@@ -212,29 +215,30 @@ class ViewUpdateTasksTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_accept_admissions_denied(self):
-        response = self.client.post(reverse('accept_admissions'), data={})
+    def test_process_admissions_denied(self):
+        response = self.client.post(reverse('process_admissions'), data={})
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_accept_admissions(self):
+    def test_process_admissions(self):
         post_data = {
             "selected_admissions_to_accept":
-                [str(registration.pk) for registration in self.admissions_to_accept]
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": "Accepted"
         }
         self.client.force_login(self.training_manager.user)
-        response = self.client.post(reverse('accept_admissions'), data=post_data)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
         for registration in self.admissions_to_accept:
             registration.refresh_from_db()
             self.assertEqual(registration.state, admission_state_choices.ACCEPTED)
 
         self.assertRedirects(response, reverse('list_tasks'))
 
-    def test_accept_admissions_incorrect_state(self):
+    def test_process_admissions_incorrect_state(self):
         post_data = {
             "selected_admissions_to_accept":
                 [str(self.admission_not_to_accept.pk)]
         }
-        response = self.client.post(reverse('accept_admissions'), data=post_data)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
 
         self.admission_not_to_accept.refresh_from_db()
         self.assertEqual(self.admission_not_to_accept.state, admission_state_choices.DRAFT)
@@ -299,12 +303,12 @@ class UpdateTasksPermissionsTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_accept_admissions_without_permission(self):
+    def test_process_admissions_without_permission(self):
         post_data = {
             "selected_admissions_to_accept":
                 [str(admission.pk) for admission in self.admissions_to_validate]
         }
-        response = self.client.post(reverse('accept_admissions'), data=post_data)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
 
         for admission in self.admissions_to_validate:
             admission.refresh_from_db()
@@ -362,6 +366,28 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             data=post_data
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+
+class ViewTasksStudentWorkerTestCase(TestCase):
+    def setUp(self):
+        self.academic_year = AcademicYearFactory(year=2018)
+        self.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=self.education_group,
+            academic_year=self.academic_year
+        )
+        self.formation = ContinuingEducationTrainingFactory(
+            education_group=self.education_group
+        )
+        group = GroupFactory(name=STUDENT_WORKERS_GROUP)
+        self.student_worker = PersonFactory()
+        self.student_worker.user.groups.add(group)
+        self.client.force_login(self.student_worker.user)
+
+        self.admission_diploma_to_produce = AdmissionFactory(
+            formation=self.formation,
+            state=VALIDATED,
+        )
 
     def test_produce_diploma_denied(self):
         post_data = {

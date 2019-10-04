@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-02 17:59+0200\n"
+"POT-Creation-Date: 2019-10-04 10:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,9 +33,6 @@ msgid "A problem occured during delete"
 msgstr ""
 
 msgid "Accept all selected admissions ?"
-msgstr ""
-
-msgid "Accept selected admissions"
 msgstr ""
 
 msgid "Accept the file"
@@ -85,6 +82,9 @@ msgid "Admission is not archived"
 msgstr ""
 
 msgid "Admission submitted"
+msgstr ""
+
+msgid "Admission to process"
 msgstr ""
 
 msgid "Admissions"
@@ -206,6 +206,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel all selected admissions ?"
+msgstr ""
+
 msgid "Cancel state reason"
 msgstr ""
 
@@ -213,6 +216,15 @@ msgid "Cancelled"
 msgstr ""
 
 msgid "Change made"
+msgstr ""
+
+msgid "Change state on selected admissions to ..."
+msgstr ""
+
+msgid "Change state to DRAFT for all selected admissions ?"
+msgstr ""
+
+msgid "Change state to WAITING for all selected admissions ?"
 msgstr ""
 
 msgid "Check All"
@@ -671,7 +683,7 @@ msgid ""
 "and up to 15 digits."
 msgstr ""
 
-msgid "Please select at least one admission to accept."
+msgid "Please select at least one admission to process."
 msgstr ""
 
 msgid "Please select at least one file to archive"
@@ -794,6 +806,9 @@ msgstr ""
 msgid "Registrations_list"
 msgstr ""
 
+msgid "Reject all selected admissions ?"
+msgstr ""
+
 msgid "Rejected"
 msgstr ""
 
@@ -868,11 +883,11 @@ msgid "Submitted"
 msgstr ""
 
 #, python-format
-msgid "Successfully accept %s admissions."
+msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr ""
 
 #, python-format
-msgid "Successfully assigned %(manager)s to the training %(training)s"
+msgid "Successfully change of state %s admissions."
 msgstr ""
 
 #, python-format
@@ -946,6 +961,19 @@ msgstr ""
 msgid "This will accept all selected admissions. Are you sure ?"
 msgstr ""
 
+msgid "This will cancel all selected admissions. Are you sure ?"
+msgstr ""
+
+msgid ""
+"This will change the state to DRAFT for all selected admissions. Are you "
+"sure ?"
+msgstr ""
+
+msgid ""
+"This will change the state to WAITING for all selected admissions. Are you "
+"sure ?"
+msgstr ""
+
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
 "Are you sure ?"
@@ -959,6 +987,9 @@ msgstr ""
 msgid ""
 "This will mark that the paper admission file has been received for all "
 "selected registrations. Are you sure ?"
+msgstr ""
+
+msgid "This will reject all selected admissions. Are you sure ?"
 msgstr ""
 
 msgid ""
@@ -1074,7 +1105,19 @@ msgstr ""
 msgid "Yes, accept all selected admissions"
 msgstr ""
 
+msgid "Yes, cancel all selected admissions"
+msgstr ""
+
+msgid "Yes, change state to DRAFT for all selected admissions"
+msgstr ""
+
+msgid "Yes, change state to WAITING for all selected admissions"
+msgstr ""
+
 msgid "Yes, mark diplomas produced for selected registrations"
+msgstr ""
+
+msgid "Yes, reject all selected admissions"
 msgstr ""
 
 msgid "Yes, unarchive all selected archives"

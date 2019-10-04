@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-02 17:59+0200\n"
+"POT-Creation-Date: 2019-10-04 10:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,9 +35,6 @@ msgstr "Un problème est survenu durant la suppression"
 
 msgid "Accept all selected admissions ?"
 msgstr "Accepter les admissions sélectionnées ?"
-
-msgid "Accept selected admissions"
-msgstr "Accepter les admissions sélectionnées"
 
 msgid "Accept the file"
 msgstr "Accepter le dossier"
@@ -87,6 +84,9 @@ msgstr "Dossier non-archivé"
 
 msgid "Admission submitted"
 msgstr "Admission soumise"
+
+msgid "Admission to process"
+msgstr "Admission à traiter"
 
 msgid "Admissions"
 msgstr "Admissions"
@@ -209,6 +209,9 @@ msgstr "Par le bouche à oreille"
 msgid "Cancel"
 msgstr "Annuler"
 
+msgid "Cancel all selected admissions ?"
+msgstr "Annuler les admissions sélectionnées ?"
+
 msgid "Cancel state reason"
 msgstr "Motif d'état d'annulation"
 
@@ -217,6 +220,15 @@ msgstr "Annulé"
 
 msgid "Change made"
 msgstr "Changement effectué"
+
+msgid "Change state on selected admissions to ..."
+msgstr "Changer l'état des admissions sélectionnées par ..."
+
+msgid "Change state to DRAFT for all selected admissions ?"
+msgstr "Changer l'état par 'brouillon' pour les admissions sélectionnées ?"
+
+msgid "Change state to WAITING for all selected admissions ?"
+msgstr "Changer l'état par 'en attente' pour les admissions sélectionnées?"
 
 msgid "Check All"
 msgstr "Tout sélectionner"
@@ -402,7 +414,9 @@ msgstr "Le dossier est maintenant enregistré comme "
 msgid ""
 "File is too large (%(file_size)s) : maximum upload size allowed is "
 "%(max_size)s."
-msgstr "Le fichier est trop volumineux (%(file_size)s) : la taille maximum autorisée est %(max_size)s."
+msgstr ""
+"Le fichier est trop volumineux (%(file_size)s) : la taille maximum autorisée "
+"est %(max_size)s."
 
 msgid "File unarchived"
 msgstr "Dossier désarchivé"
@@ -698,8 +712,8 @@ msgstr ""
 "Le numéro de téléphone doit commencer par 0 ou 00 ou '+' suivi de minimum 7 "
 "chiffres et jusqu'à 15 chiffres."
 
-msgid "Please select at least one admission to accept."
-msgstr "Veuillez sélectionner au moins une admission à accepter"
+msgid "Please select at least one admission to process."
+msgstr "Veuillez sélectionner au moins une admission à traiter"
 
 msgid "Please select at least one file to archive"
 msgstr "Veuillez sélectionner au moins un dossier à archiver"
@@ -823,6 +837,9 @@ msgstr "Inscriptions à traiter"
 msgid "Registrations_list"
 msgstr "Liste_inscriptions"
 
+msgid "Reject all selected admissions ?"
+msgstr "Refuser les admissions sélectionnées ?"
+
 msgid "Rejected"
 msgstr "Refusé"
 
@@ -897,12 +914,12 @@ msgid "Submitted"
 msgstr "Soumis"
 
 #, python-format
-msgid "Successfully accept %s admissions."
-msgstr "%s admissions ont été acceptées avec succès."
-
-#, python-format
 msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr "%(manager)s a été assigné·e avec succès à la formation %(training)s"
+
+#, python-format
+msgid "Successfully change of state %s admissions."
+msgstr "%s admissions ont été modifiées avec succès."
 
 #, python-format
 msgid ""
@@ -983,14 +1000,33 @@ msgid ""
 "don't have the fields 'UCLouvain registration complete' and 'Registration "
 "file received' with 'True' value."
 msgstr ""
-"Cette page reprend les admissions soumises par les participants.  Ce sont "
-"des admissions pour lesquelles les champs 'dossier reçu' et/ou 'inscription "
-"au rôle' ne sont pas à la valeur 'oui'"
+"Cette page reprend les inscriptions soumises par les participants.  Ce sont "
+"des inscriptions pour lesquelles les champs 'dossier reçu' et/ou "
+"'inscription au rôle' ne sont pas à la valeur 'oui'"
 
 msgid "This will accept all selected admissions. Are you sure ?"
 msgstr ""
 "Les admissions sélectionnées vont être acceptées. Êtes-vous certain·e de "
 "vouloir continuer ?"
+
+msgid "This will cancel all selected admissions. Are you sure ?"
+msgstr ""
+"Les admissions sélectionnées vont être annulées. Êtes-vous certain·e de "
+"vouloir continuer ?"
+
+msgid ""
+"This will change the state to DRAFT for all selected admissions. Are you "
+"sure ?"
+msgstr ""
+"Les admissions sélectionnées vont être mises en état 'brouillon'. Êtes-vous "
+"certain·e de vouloir continuer ?"
+
+msgid ""
+"This will change the state to WAITING for all selected admissions. Are you "
+"sure ?"
+msgstr ""
+"Les admissions sélectionnées vont être mises en état 'en attente'. Êtes-vous "
+"certain·e de vouloir continuer ?"
 
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
@@ -1012,6 +1048,11 @@ msgid ""
 msgstr ""
 "Les inscriptions sélectionnées vont être traitées. Le champ 'dossier reçu' "
 "va être modifié comme 'oui'. Êtes-vous certain·e de vouloir continuer ?"
+
+msgid "This will reject all selected admissions. Are you sure ?"
+msgstr ""
+"Les admissions sélectionnées vont être refusées. Êtes-vous certain·e de "
+"vouloir continuer ?"
 
 msgid ""
 "This will send an notification email to the participant, saying that there "
@@ -1134,12 +1175,24 @@ msgid "Yes"
 msgstr "Oui"
 
 msgid "Yes, accept all selected admissions"
-msgstr "Oui, accepter les admission sélectionnées."
+msgstr "Oui, accepter les admissions sélectionnées."
+
+msgid "Yes, cancel all selected admissions"
+msgstr "Oui, annuler les admissions sélectionnées."
+
+msgid "Yes, change state to DRAFT for all selected admissions"
+msgstr "Oui, changer l'état en 'brouillon' pour les admissions sélectionnées."
+
+msgid "Yes, change state to WAITING for all selected admissions"
+msgstr "Oui, changer l'état en 'en attente' pour les admissions sélectionnées."
 
 msgid "Yes, mark diplomas produced for selected registrations"
 msgstr ""
 "Oui, marquer le diplôme comme \"produit\" pour les inscriptions "
 "sélectionnées."
+
+msgid "Yes, reject all selected admissions"
+msgstr "Oui, refuser les admissions sélectionnées."
 
 msgid "Yes, unarchive all selected archives"
 msgstr "Oui, désarchiver les archives sélectionnées."

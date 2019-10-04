@@ -83,7 +83,7 @@ urlpatterns = [
 
 
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
-        url(r'^accept_admissions', tasks.accept_admissions, name='accept_admissions'),
+        url(r'^process_admissions', tasks.process_admissions, name='process_admissions'),
     ])),
     url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
     url(r'^managers/', include([
