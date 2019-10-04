@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-04 10:34+0200\n"
+"POT-Creation-Date: 2019-10-03 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -918,8 +918,8 @@ msgid "Successfully assigned %(manager)s to the training %(training)s"
 msgstr "%(manager)s a été assigné·e avec succès à la formation %(training)s"
 
 #, python-format
-msgid "Successfully change of state %s admissions."
-msgstr "%s admissions ont été modifiées avec succès."
+msgid "Successfully change of state %s admission(s)."
+msgstr "%s admission(s) modifiée(s) avec succès."
 
 #, python-format
 msgid ""
