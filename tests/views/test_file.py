@@ -1,8 +1,12 @@
+import os
+from io import BytesIO
 from unittest.mock import patch
 
 import factory.fuzzy
+import mock
 from django.contrib import messages
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files import File
+from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
@@ -14,6 +18,7 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
+from continuing_education.models.exceptions import TooLargeFileSizeException
 from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, ALLOWED_EXTENSIONS
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory

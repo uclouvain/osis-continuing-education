@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-04 14:30+0200\n"
+"POT-Creation-Date: 2019-10-03 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -409,6 +409,14 @@ msgstr "Le dossier est maintenant"
 
 msgid "File is now mark as "
 msgstr "Le dossier est maintenant enregistré comme "
+
+#, python-format
+msgid ""
+"File is too large (%(file_size)s) : maximum upload size allowed is "
+"%(max_size)s."
+msgstr ""
+"Le fichier est trop volumineux (%(file_size)s) : la taille maximum autorisée "
+"est %(max_size)s."
 
 msgid "File unarchived"
 msgstr "Dossier désarchivé"

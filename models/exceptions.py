@@ -24,22 +24,36 @@
 #
 ##############################################################################
 from django.core.validators import FileExtensionValidator
+from django.template.defaultfilters import filesizeformat
+from django.utils.translation import gettext as _
 
 
 class TooLongFilenameException(Exception):
-    def __init__(self, message=None, errors=None):
+    def __init__(self, max_length=None, errors=None):
+        message = _("The name of the file is too long : maximum %(length)s characters.") % {'length': max_length}
         super(TooLongFilenameException, self).__init__(message)
         self.errors = errors
 
 
+class TooLargeFileSizeException(Exception):
+    def __init__(self, size=None, max_size=None, errors=None):
+        message = _("File is too large (%(file_size)s) : maximum upload size allowed is %(max_size)s.") % {
+            'file_size': filesizeformat(size),
+            'max_size': filesizeformat(max_size)
+        }
+        super(TooLargeFileSizeException, self).__init__(message)
+        self.errors = errors
+
+
 class InvalidFileCategoryException(Exception):
-    def __init__(self, message=None, errors=None):
+    def __init__(self, errors=None):
+        message = _("The status of the admission must be Accepted to upload an invoice.")
         super(InvalidFileCategoryException, self).__init__(message)
         self.errors = errors
 
 
 class UnallowedFileExtensionException(Exception):
-    def __init__(self, message=None, errors=None, extension=None, allowed_extensions=None):
+    def __init__(self, errors=None, extension=None, allowed_extensions=None):
         message = FileExtensionValidator.message % {
             'extension': extension,
             'allowed_extensions': ', '.join(allowed_extensions)

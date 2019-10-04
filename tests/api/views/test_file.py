@@ -36,7 +36,7 @@ from rest_framework.test import APITestCase
 
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
-from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, MAX_UPLOAD_SIZE
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -140,6 +140,23 @@ class AdmissionFileListCreateTestCase(APITestCase):
         data = {
             'name': admission_file.name,
             'size': admission_file.size,
+            'uploaded_by': self.admission.person_information.person.uuid,
+            'created_date': datetime.datetime.today(),
+            'path': admission_file
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+
+    def test_create_file_with_size_too_large(self):
+        large_file_size = MAX_UPLOAD_SIZE + 1
+        admission_file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode("test_content"),
+            content_type="application/pdf"
+        )
+        data = {
+            'name': admission_file.name,
+            'size': large_file_size,
             'uploaded_by': self.admission.person_information.person.uuid,
             'created_date': datetime.datetime.today(),
             'path': admission_file
