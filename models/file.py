@@ -29,13 +29,15 @@ import uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
+from django.template.defaultfilters import filesizeformat
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _, pgettext
 
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException, \
-    UnallowedFileExtensionException
+    UnallowedFileExtensionException, TooLargeFileSizeException
 
+MAX_UPLOAD_SIZE = 52428800
 MAX_ADMISSION_FILE_NAME_LENGTH = 100
 ALLOWED_EXTENSIONS = [
     'bmp', 'gif', 'jpeg', 'jpg', 'tex', 'xls', 'xlsx', 'doc', 'docx', 'odt', 'txt', 'pdf', 'png', 'pptx', 'ppt', 'rtf'
@@ -98,21 +100,40 @@ class AdmissionFile(Model):
         if not (self.size and self.name):
             self.size = self.path.size
             self.name = get_valid_filename(self.path.name)
-        if len(self.name) > MAX_ADMISSION_FILE_NAME_LENGTH:
-            raise TooLongFilenameException(
-                _("The name of the file is too long : maximum %(length)s characters.") % {
-                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
+        self._validate_file_name_length()
+        self._validate_invoice_status()
+        self._validate_extension()
+        self._validate_file_size()
+        super(AdmissionFile, self).save(*args, **kwargs)
+
+    def _validate_file_size(self):
+        if self.size > MAX_UPLOAD_SIZE:
+            raise TooLargeFileSizeException(
+                _("File is too large (%(file_size)s) : maximum upload size allowed is %(max_size)s.") % {
+                    'file_size': filesizeformat(self.size),
+                    'max_size': filesizeformat(MAX_UPLOAD_SIZE)
                 }
             )
-        if self.admission.state != admission_state_choices.ACCEPTED \
-                and self.file_category == file_category_choices.INVOICE:
-            raise InvalidFileCategoryException(
-                _("The status of the admission must be Accepted to upload an invoice.")
-            )
+
+    def _validate_extension(self):
         file_extension = Path(self.path.name).suffix[1:].lower()
         if file_extension not in ALLOWED_EXTENSIONS:
             raise UnallowedFileExtensionException(
                 extension=file_extension,
                 allowed_extensions=ALLOWED_EXTENSIONS
             )
-        super(AdmissionFile, self).save(*args, **kwargs)
+
+    def _validate_invoice_status(self):
+        if self.admission.state != admission_state_choices.ACCEPTED \
+                and self.file_category == file_category_choices.INVOICE:
+            raise InvalidFileCategoryException(
+                _("The status of the admission must be Accepted to upload an invoice.")
+            )
+
+    def _validate_file_name_length(self):
+        if len(self.name) > MAX_ADMISSION_FILE_NAME_LENGTH:
+            raise TooLongFilenameException(
+                _("The name of the file is too long : maximum %(length)s characters.") % {
+                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
+                }
+            )

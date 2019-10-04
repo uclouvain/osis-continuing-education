@@ -33,7 +33,7 @@ from rest_framework.response import Response
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.api.views.perms.perms import CanSendFiles
 from continuing_education.models.admission import Admission
-from continuing_education.models.exceptions import UnallowedFileExtensionException, TooLongFilenameException
+from continuing_education.models.enums.exceptions import APIFileUploadExceptions
 from continuing_education.models.file import AdmissionFile
 
 
@@ -60,7 +60,7 @@ class AdmissionFileListCreate(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             return super().create(request, *args, **kwargs)
-        except UnallowedFileExtensionException as e:
+        except APIFileUploadExceptions as e:
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
                 data=str(e)

@@ -23,32 +23,18 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.core.validators import FileExtensionValidator
+from continuing_education.models.exceptions import TooLongFilenameException, TooLargeFileSizeException, \
+    InvalidFileCategoryException, UnallowedFileExtensionException
 
+ManagerFileUploadExceptions = (
+    TooLongFilenameException,
+    TooLargeFileSizeException,
+    InvalidFileCategoryException,
+    UnallowedFileExtensionException,
+)
 
-class TooLongFilenameException(Exception):
-    def __init__(self, message=None, errors=None):
-        super(TooLongFilenameException, self).__init__(message)
-        self.errors = errors
-
-
-class TooLargeFileSizeException(Exception):
-    def __init__(self, message=None, errors=None):
-        super(TooLargeFileSizeException, self).__init__(message)
-        self.errors = errors
-
-
-class InvalidFileCategoryException(Exception):
-    def __init__(self, message=None, errors=None):
-        super(InvalidFileCategoryException, self).__init__(message)
-        self.errors = errors
-
-
-class UnallowedFileExtensionException(Exception):
-    def __init__(self, message=None, errors=None, extension=None, allowed_extensions=None):
-        message = FileExtensionValidator.message % {
-            'extension': extension,
-            'allowed_extensions': ', '.join(allowed_extensions)
-        }
-        super(UnallowedFileExtensionException, self).__init__(message)
-        self.errors = errors
+APIFileUploadExceptions = (
+    TooLongFilenameException,
+    TooLargeFileSizeException,
+    UnallowedFileExtensionException,
+)
