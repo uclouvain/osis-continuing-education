@@ -122,7 +122,7 @@ def process_admissions(request):
     new_state = request.POST.get('new_state')
     if selected_admission_ids:
         _process_admissions_list(request, selected_admission_ids, new_state)
-        msg = _('Successfully change of state %s admissions.') % len(selected_admission_ids)
+        msg = _('Successfully change of state %s admission(s).') % len(selected_admission_ids)
         display_success_messages(request, msg)
     else:
         display_error_messages(request, _('Please select at least one admission to process.'))
