@@ -26,7 +26,7 @@
 
 from django.core.exceptions import PermissionDenied
 
-from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP, MANAGERS_GROUP
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP, MANAGERS_GROUP, TRAINING_MANAGERS_GROUP
 
 
 def is_continuing_education_manager(user):
@@ -50,3 +50,12 @@ def registration_process(user):
         return True
     else:
         raise PermissionDenied
+
+
+def is_continuing_education_training_manager(user):
+    return user.groups.filter(name=TRAINING_MANAGERS_GROUP).exists()
+
+
+def is_iufc_manager(user):
+    return user.groups.filter(name=TRAINING_MANAGERS_GROUP).exists() or user.groups.filter(
+        name=MANAGERS_GROUP).exists()
