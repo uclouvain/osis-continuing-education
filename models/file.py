@@ -29,11 +29,10 @@ import uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
-from django.template.defaultfilters import filesizeformat
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _, pgettext
 
-from continuing_education.models.enums import file_category_choices, admission_state_choices
+from continuing_education.models.enums import file_category_choices
 from continuing_education.models.enums.admission_state_choices import ACCEPTED
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException, \
     UnallowedFileExtensionException, TooLargeFileSizeException
@@ -101,11 +100,14 @@ class AdmissionFile(Model):
         if not (self.size and self.name):
             self.size = self.path.size
             self.name = get_valid_filename(self.path.name)
+        self._validate_file()
+        super(AdmissionFile, self).save(*args, **kwargs)
+
+    def _validate_file(self):
         self._validate_file_name_length()
         self._validate_invoice_status()
         self._validate_extension()
         self._validate_file_size()
-        super(AdmissionFile, self).save(*args, **kwargs)
 
     def _validate_file_size(self):
         if self.size > MAX_UPLOAD_SIZE:
