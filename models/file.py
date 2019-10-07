@@ -35,8 +35,9 @@ from django.utils.translation import gettext_lazy as _, pgettext
 from continuing_education.models.enums import file_category_choices
 from continuing_education.models.enums.admission_state_choices import ACCEPTED
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException, \
-    UnallowedFileExtensionException, TooLargeFileSizeException
+    UnallowedFileExtensionException, TooLargeFileSizeException, TooManyFilesException
 
+MAX_ADMISSION_FILES_COUNT = 10
 MAX_UPLOAD_SIZE = 52428800
 MAX_ADMISSION_FILE_NAME_LENGTH = 100
 ALLOWED_EXTENSIONS = [
@@ -104,10 +105,15 @@ class AdmissionFile(Model):
         super(AdmissionFile, self).save(*args, **kwargs)
 
     def _validate_file(self):
+        self._validate_admission_files_count()
         self._validate_file_name_length()
         self._validate_invoice_status()
         self._validate_extension()
         self._validate_file_size()
+
+    def _validate_admission_files_count(self):
+        if AdmissionFile.objects.filter(admission=self.admission).count() >= MAX_ADMISSION_FILES_COUNT:
+            raise TooManyFilesException(max_count=MAX_ADMISSION_FILES_COUNT)
 
     def _validate_file_size(self):
         if self.size > MAX_UPLOAD_SIZE:

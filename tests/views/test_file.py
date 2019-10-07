@@ -1,12 +1,8 @@
-import os
-from io import BytesIO
 from unittest.mock import patch
 
 import factory.fuzzy
-import mock
 from django.contrib import messages
-from django.core.files import File
-from django.core.files.uploadedfile import SimpleUploadedFile, UploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
@@ -18,8 +14,8 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
-from continuing_education.models.exceptions import TooLargeFileSizeException
-from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, ALLOWED_EXTENSIONS
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, ALLOWED_EXTENSIONS, \
+    MAX_ADMISSION_FILES_COUNT
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
@@ -193,6 +189,31 @@ class UploadFileTestCase(TestCase):
                     }
                 ),
             str(messages_list[0])
+        )
+
+    def test_upload_too_many_files(self):
+        admission_files = [
+            SimpleUploadedFile(name='file_{}.pdf'.format(i), content=b'test')
+            for i in range(0, MAX_ADMISSION_FILES_COUNT+1)
+        ]
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = {}
+        for file in admission_files:
+            response = self.client.post(
+                url,
+                data={
+                    'myfile': file,
+                    'file_category': file_category_choices.DOCUMENT,
+                },
+                format='multipart'
+            )
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            _("The maximum number of files has been reached : maximum %(max)s files allowed.") % {
+                'max': MAX_ADMISSION_FILES_COUNT
+            }, str(messages_list[-1])
         )
 
 

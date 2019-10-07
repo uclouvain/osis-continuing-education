@@ -24,9 +24,10 @@
 #
 ##############################################################################
 from continuing_education.models.exceptions import TooLongFilenameException, TooLargeFileSizeException, \
-    InvalidFileCategoryException, UnallowedFileExtensionException
+    InvalidFileCategoryException, UnallowedFileExtensionException, TooManyFilesException
 
 ManagerFileUploadExceptions = (
+    TooManyFilesException,
     TooLongFilenameException,
     TooLargeFileSizeException,
     InvalidFileCategoryException,
@@ -34,6 +35,7 @@ ManagerFileUploadExceptions = (
 )
 
 APIFileUploadExceptions = (
+    TooManyFilesException,
     TooLongFilenameException,
     TooLargeFileSizeException,
     UnallowedFileExtensionException,
