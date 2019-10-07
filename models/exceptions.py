@@ -28,6 +28,15 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
 
 
+class TooManyFilesException(Exception):
+    def __init__(self, max_count=None, errors=None):
+        message = _("The maximum number of files has been reached : maximum %(max)s files allowed.") % {
+            'max': max_count
+        }
+        super(TooManyFilesException, self).__init__(message)
+        self.errors = errors
+
+
 class TooLongFilenameException(Exception):
     def __init__(self, max_length=None, errors=None):
         message = _("The name of the file is too long : maximum %(length)s characters.") % {'length': max_length}
