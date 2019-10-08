@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 16:51+0200\n"
+"POT-Creation-Date: 2019-10-03 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -963,6 +963,13 @@ msgstr "Le document a bien été uploadé"
 msgid "The managers (list above) will receive the notification emails."
 msgstr ""
 "Les gestionnaires (liste ci-dessus) recevront les emails de notification."
+
+#, python-format
+msgid ""
+"The maximum number of files has been reached : maximum %(max)s files allowed."
+msgstr ""
+"Le nombre maximum de fichiers a été atteint : maximum %(max)s fichiers "
+"autorisés."
 
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."

@@ -80,6 +80,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             # CONTACTS
             'address',
             'citizenship',
+            'phone_mobile',
 
             # REGISTRATION
             # BILLING
@@ -101,6 +102,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'children_number',
             'previous_ucl_registration',
             'previous_noma',
+            'professional_status',
 
             # POST
             'use_address_for_post',
