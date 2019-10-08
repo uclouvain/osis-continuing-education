@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-08 16:42+0200\n"
+"POT-Creation-Date: 2019-10-08 16:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,14 +16,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, python-format
-msgid " \"File is too large: maximum upload size allowed is %(max_size)s.\" "
-msgstr ""
-" \"Fichier trop volumineux: la taille maximale autorisée est de %(max_size)s."
-"\" "
-
 msgid " or "
 msgstr " ou "
+
+#, python-format
+msgid "\"File is too large: maximum upload size allowed is %(max_size)s.\""
+msgstr ""
+"\"Fichier trop volumineux: la taille maximale autorisée est de %(max_size)s."
+"\""
 
 msgid "'Invoice' file category unavailable when file isn't 'Accepted'"
 msgstr ""
@@ -1285,13 +1285,3 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 
 msgid "unarchived"
 msgstr "non-archivé"
-
-# python-format
-#~ msgid ""
-#~ "\n"
-#~ "                    \"File is too large: maximum upload size allowed is "
-#~ "%(max_size)s.\"\n"
-#~ "                    "
-#~ msgstr ""
-#~ "Le fichier est trop volumineux : la taille maximum autorisée est "
-#~ "%(max_size)s."

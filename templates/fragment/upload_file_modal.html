@@ -101,14 +101,16 @@
         $('#customFile').change(function(e) {
             $('#custom-file-label').text(this.files[0].name);
             if(this.files[0].size <= {{MAX_UPLOAD_SIZE}}){
-                $('#btn-upload').removeAttr("disabled");
+                $('#btn-upload').prop("disabled", false);
                 $('#max-size-msg').remove();
             } else {
-                errorMsg = $("<div/>").attr('id','max-size-msg').attr('class','col-md-12 text-danger').text(
-                    {% blocktrans with max_size=MAX_UPLOAD_SIZE|filesizeformat %} "File is too large: maximum upload size allowed is {{max_size}}." {% endblocktrans %}
-                );
-                $("#file-info").append(errorMsg);
-                $('#btn-upload').attr("disabled");
+                $('#btn-upload').prop("disabled", true);
+                if(!$("#max-size-msg").length) {
+                    errorMsg = $("<div/>").attr('id', 'max-size-msg').attr('class', 'col-md-12 text-danger').text(
+                        {% blocktrans with max_size=MAX_UPLOAD_SIZE|filesizeformat %}"File is too large: maximum upload size allowed is {{max_size}}."{% endblocktrans %}
+                    );
+                    $("#file-info").append(errorMsg);
+                }
             }
         });
 
