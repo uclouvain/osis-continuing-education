@@ -34,9 +34,10 @@ from factory.fuzzy import FuzzyText
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
-from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, MAX_UPLOAD_SIZE
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
