@@ -34,6 +34,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
 
+from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
@@ -54,7 +55,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
-from continuing_education.models.file import AdmissionFile, MAX_UPLOAD_SIZE
+from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
     ADMISSION_CREATION, get_revision_messages
 from continuing_education.views.common import get_object_list

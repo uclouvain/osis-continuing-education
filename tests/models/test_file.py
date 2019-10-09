@@ -27,8 +27,9 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
+from backoffice.settings.base import MAX_UPLOAD_SIZE
 from continuing_education.models.exceptions import TooLargeFileSizeException
-from continuing_education.models.file import AdmissionFile, MAX_UPLOAD_SIZE
+from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 

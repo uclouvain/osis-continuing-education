@@ -32,13 +32,13 @@ from django.db.models import Model
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _, pgettext
 
+from backoffice.settings.base import MAX_UPLOAD_SIZE
 from continuing_education.models.enums import file_category_choices
 from continuing_education.models.enums.admission_state_choices import ACCEPTED
 from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException, \
     UnallowedFileExtensionException, TooLargeFileSizeException, TooManyFilesException
 
 MAX_ADMISSION_FILES_COUNT = 10
-MAX_UPLOAD_SIZE = 52428800
 MAX_ADMISSION_FILE_NAME_LENGTH = 100
 ALLOWED_EXTENSIONS = [
     'bmp', 'gif', 'jpeg', 'jpg', 'tex', 'xls', 'xlsx', 'doc', 'docx', 'odt', 'txt', 'pdf', 'png', 'pptx', 'ppt', 'rtf'
