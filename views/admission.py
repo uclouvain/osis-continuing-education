@@ -54,7 +54,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
-from continuing_education.models.file import AdmissionFile
+from continuing_education.models.file import AdmissionFile, MAX_UPLOAD_SIZE
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
     ADMISSION_CREATION, get_revision_messages
 from continuing_education.views.common import get_object_list
@@ -148,7 +148,8 @@ def admission_detail(request, admission_id):
             'invoice': file_category_choices.INVOICE,
             'condition_acceptance_adm_form': condition_acceptance_adm_form,
             'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
-            'version': version_list
+            'version': version_list,
+            'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE
         }
     )
 
