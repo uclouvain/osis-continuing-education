@@ -32,10 +32,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from base.models.education_group import EducationGroup
-from base.models.person import Person
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
-from base.views.common import page_not_found
 from continuing_education.business.perms import is_not_student_worker, is_continuing_education_manager
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.address import AddressForm

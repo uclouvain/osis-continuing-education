@@ -4,7 +4,8 @@ from django.urls import reverse
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from continuing_education.api.serializers.registration import RegistrationDetailSerializer, RegistrationListSerializer, \
+from continuing_education.api.serializers.registration import RegistrationDetailSerializer, \
+    RegistrationListSerializer, \
     RegistrationPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -43,7 +44,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
         EducationGroupYearFactory(education_group=ed)
         cls.person_information = ContinuingEducationPersonFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
-        new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        AcademicYearFactory(year=cls.academic_year.year+1)
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
             formation=ContinuingEducationTrainingFactory(education_group=ed)

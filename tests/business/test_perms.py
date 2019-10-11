@@ -26,9 +26,9 @@
 
 from django.test import TestCase
 
-from continuing_education.business import perms
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
+from continuing_education.business import perms
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 
 

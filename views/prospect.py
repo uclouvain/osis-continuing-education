@@ -28,9 +28,9 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.shortcuts import render, get_object_or_404
 
 from continuing_education.business.perms import is_not_student_worker
+from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
-from continuing_education.business.xls.xls_prospect import create_xls
 
 
 @login_required

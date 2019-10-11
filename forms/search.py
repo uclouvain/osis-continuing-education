@@ -1,4 +1,3 @@
-import unicodedata
 from datetime import datetime
 from operator import itemgetter
 

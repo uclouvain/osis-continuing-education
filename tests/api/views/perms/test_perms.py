@@ -30,7 +30,8 @@ from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration, CanSendFiles, \
     CanSubmitAdmission
-from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED, DRAFT, REJECTED, \
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED, DRAFT, \
+    REJECTED, \
     WAITING, SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory

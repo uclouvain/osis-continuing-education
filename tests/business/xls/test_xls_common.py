@@ -28,14 +28,14 @@ from django.test import TestCase
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from continuing_education.models.enums.admission_state_choices import ACCEPTED
-from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from reference.tests.factories.country import CountryFactory
-from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.business.xls.xls_common import extract_xls_data_from_admission, \
     extract_xls_data_from_registration
+from continuing_education.models.enums.admission_state_choices import ACCEPTED
 from continuing_education.tests.factories.address import AddressFactory
+from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from reference.tests.factories.country import CountryFactory
 
 CITY_NAME = 'Moignelée'
 COUNTRY_NAME = 'Algérie'

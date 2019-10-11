@@ -33,10 +33,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.urls import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
@@ -55,7 +55,6 @@ from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
-from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
 from reference.tests.factories.country import CountryFactory
