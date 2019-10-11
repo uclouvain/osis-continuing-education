@@ -437,10 +437,6 @@ class Admission(Model):
         )
 
     @property
-    def file_reference(self):
-        return "IUFC-%06d" % self.id
-
-    @property
     def complete_contact_address(self):
         return _build_address(self.address)
 
