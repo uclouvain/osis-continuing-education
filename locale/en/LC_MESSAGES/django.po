@@ -786,6 +786,9 @@ msgstr ""
 msgid "Registration file received"
 msgstr ""
 
+msgid "Registration required"
+msgstr ""
+
 msgid "Registration submitted"
 msgstr ""
 

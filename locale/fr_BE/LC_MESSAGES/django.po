@@ -819,6 +819,9 @@ msgstr "Inscription"
 msgid "Registration file received"
 msgstr "Dossier d'inscription reçu"
 
+msgid "Registration required"
+msgstr "Inscription requise"
+
 msgid "Registration submitted"
 msgstr "Inscription soumise"
 
