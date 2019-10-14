@@ -263,16 +263,6 @@ def _value_or_empty(value):
     return value or ''
 
 
-def disable_existing_fields(form):
-    fields_to_disable = ["birth_country", "birth_date", "gender"]
-
-    for field in form.fields.keys():
-        form.fields[field].initial = getattr(form.instance, field)
-        form.fields[field].widget.attrs['readonly'] = True
-        if field in fields_to_disable:
-            form.fields[field].widget.attrs['disabled'] = True
-
-
 def get_management_faculty(education_group_yr):
     if education_group_yr:
         management_entity = education_group_yr.management_entity
