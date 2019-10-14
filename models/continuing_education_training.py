@@ -94,6 +94,11 @@ class ContinuingEducationTraining(Model):
         help_text=_("Leave empty if training does not require additional information")
     )
 
+    registration_required = models.BooleanField(
+        default=True,
+        verbose_name=_("Registration required")
+    )
+
     def clean(self):
         if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
