@@ -41,3 +41,5 @@ class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
     send_notification_emails = True
     alternate_notification_email_addresses = ''
     additional_information_label = ''
+    registration_required = True
+
