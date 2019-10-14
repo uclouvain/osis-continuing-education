@@ -30,8 +30,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from base.models.education_group_year import EducationGroupYear
-from base.models.entity_version import EntityVersion
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business.perms import is_not_student_worker
@@ -69,20 +67,6 @@ def list_registrations(request):
         'search_form': search_form,
         'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker
     })
-
-
-def _get_formations_by_faculty(faculty):
-    entity = EntityVersion.objects.filter(id=faculty).first().entity
-    entities_child = EntityVersion.objects.filter(parent=entity)
-    formations = EducationGroupYear.objects.filter(
-        management_entity=entity
-    )
-    for child in entities_child:
-        formations |= EducationGroupYear.objects.filter(
-            management_entity=child.entity
-        )
-    formations = [formation.acronym for formation in formations]
-    return formations
 
 
 @login_required

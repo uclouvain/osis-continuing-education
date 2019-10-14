@@ -1,4 +1,3 @@
-import unicodedata
 from datetime import datetime
 from operator import itemgetter
 
@@ -11,7 +10,6 @@ from django.utils.translation import pgettext_lazy
 from base.business.entity import get_entities_ids
 from base.models import entity_version
 from base.models.education_group import EducationGroup
-from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from base.models.person import Person
@@ -250,20 +248,6 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
         qs = qs.filter(registration_file_received=received_file)
 
     return qs.order_by('person_information')
-
-
-def _get_formations_by_faculty(faculty):
-    entity = EntityVersion.objects.filter(id=faculty.id).first().entity
-    entities_child = EntityVersion.objects.filter(parent=entity)
-    formations = EducationGroupYear.objects.filter(
-        management_entity=entity
-    )
-    for child in entities_child:
-        formations |= EducationGroupYear.objects.filter(
-            management_entity=child.entity
-        )
-    formations = [formation.acronym for formation in formations]
-    return formations
 
 
 def _build_formation_choices(field, states, archived_status=False):
