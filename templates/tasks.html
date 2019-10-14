@@ -50,7 +50,8 @@
              <li role="presentation" class="{% if not continuing_education_training_manager %}active{% endif %}"><a href="#registration_to_validate" role="tab" data-toggle="tab">{% trans 'Registrations to process' %}</a></li>
         {% endif %}
         {% if continuing_education_manager or continuing_education_training_manager%}
-             <li role="presentation"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
+            <!-- Hidden before being sure it won't be used anymore -->
+             <li role="presentation" style="visibility: hidden; display: none;"><a href="#diploma_to_produce" role="tab" data-toggle="tab">{% trans 'Diplomas to produce' %}</a></li>
         {% endif %}
         </ul>
         <div class="tab-content">
@@ -60,7 +61,8 @@
                 </div>
             {% endif %}
             {% if continuing_education_manager or continuing_education_training_manager %}
-                <div role="tabpanel" class="tab-pane" id="diploma_to_produce">
+                <!-- Hidden before being sure it won't be used anymore -->
+                <div role="tabpanel" class="tab-pane" id="diploma_to_produce" style="visibility: hidden; display: none;">
                     {% include "fragment/tasks/diplomas_to_produce.html" %}
                 </div>
             {% endif %}

@@ -18,4 +18,9 @@ class Migration(migrations.Migration):
             name='registration_required',
             field=models.BooleanField(default=True, verbose_name='Registration required'),
         ),
+        migrations.AlterField(
+            model_name='admissionfile',
+            name='path',
+            field=models.FileField(upload_to=continuing_education.models.file.admission_directory_path, verbose_name='Path'),
+        ),
     ]
