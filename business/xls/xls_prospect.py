@@ -26,9 +26,8 @@
 from django.utils.translation import gettext_lazy as _
 
 from base.business.xls import get_name_or_username
-from osis_common.document import xls_build
 from continuing_education.models.prospect import Prospect
-
+from osis_common.document import xls_build
 
 XLS_DESCRIPTION = _('Prospects list')
 XLS_FILENAME = _('Prospects_list')

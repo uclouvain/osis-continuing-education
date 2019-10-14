@@ -1,4 +1,4 @@
-from django.forms import ModelForm, CharField, Textarea
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
 from continuing_education.business.perms import is_continuing_education_manager

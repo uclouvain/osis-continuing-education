@@ -24,9 +24,9 @@
 #
 ##############################################################################
 
-from django.urls import reverse
 from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
+from django.urls import reverse
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory

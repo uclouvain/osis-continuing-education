@@ -35,7 +35,6 @@ from continuing_education.api.views.file import AdmissionFileRetrieveDestroy, Ad
 from continuing_education.api.views.prospect import ProspectListCreate, ProspectDetailUpdate
 from continuing_education.api.views.registration import RegistrationList, RegistrationDetailUpdate
 
-
 app_name = "continuing_education"
 urlpatterns = [
     url(r'^addresses/$', AddressListCreate.as_view(), name=AddressListCreate.name),

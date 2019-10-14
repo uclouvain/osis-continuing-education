@@ -40,7 +40,8 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
+from continuing_education.api.serializers.registration import RegistrationListSerializer, \
+    RegistrationDetailSerializer, \
     RegistrationPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, DRAFT, \
@@ -57,7 +58,7 @@ class RegistrationListTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
 
-        new_country = CountryFactory(iso_code='NL')
+        CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
 
@@ -81,7 +82,7 @@ class RegistrationListTestCase(APITestCase):
 
         for state in [VALIDATED, ACCEPTED, REGISTRATION_SUBMITTED]:
             cls.education_group = EducationGroupFactory()
-            education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
+            EducationGroupYearFactory(education_group=cls.education_group)
             AdmissionFactory(
                 person_information=cls.person,
                 state=state,

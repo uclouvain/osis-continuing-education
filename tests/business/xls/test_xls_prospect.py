@@ -25,14 +25,14 @@
 ##############################################################################
 
 from django.test import TestCase
+from django.test.utils import override_settings
 
-from continuing_education.business.xls.xls_prospect import _prepare_xls_content, _get_titles
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from continuing_education.business.xls.xls_prospect import _prepare_xls_content, _get_titles
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
-from django.test.utils import override_settings
 
 
 class TestProspectXls(TestCase):

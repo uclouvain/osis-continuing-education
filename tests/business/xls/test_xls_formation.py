@@ -32,7 +32,8 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.business.xls.xls_formation import _get_titles, XLS_DESCRIPTION, XLS_FILENAME, WORKSHEET_TITLE, \
+from continuing_education.business.xls.xls_formation import _get_titles, XLS_DESCRIPTION, XLS_FILENAME, \
+    WORKSHEET_TITLE, \
     create_xls, prepare_xls_content
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory

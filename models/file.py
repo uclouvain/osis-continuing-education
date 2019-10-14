@@ -23,9 +23,9 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import uuid
 from pathlib import Path
 
-import uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
