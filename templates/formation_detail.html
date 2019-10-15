@@ -56,6 +56,8 @@
                     {% bootstrap_label _("State") %} <br/> {{ formation.education_group|get_active_continuing_education_formation }}
                     <br/><br/>
                     {% bootstrap_label _("Training aid") %} <br/> {{ formation.training_aid|yesno|title }}
+                    <br/><br/>
+                    {% bootstrap_label _("Registration required") %} <br/> {{ formation.registration_required|yesno|title }}
                 </div>
                 <div class="col-md-6">
                     {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}
