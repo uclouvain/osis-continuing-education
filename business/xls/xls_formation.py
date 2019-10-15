@@ -68,6 +68,7 @@ def extract_xls_data_from_formation(formation):
         most_recent_education_grp.title,
         get_active_continuing_education_formation(formation),
         _('Yes') if continuing_education_training and continuing_education_training.training_aid else _('No'),
+        _('Yes') if continuing_education_training and continuing_education_training.registration_required else _('No'),
         continuing_education_training.formation_administrators if continuing_education_training else '',
     ]
 
@@ -79,5 +80,6 @@ def _get_titles():
         str(_('Title')),
         str(_('State')),
         str(_('Training aid')),
+        str(_('Registration required')),
         str(_('Formation administrator(s)')),
     ]

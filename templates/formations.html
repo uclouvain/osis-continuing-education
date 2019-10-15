@@ -146,11 +146,12 @@
                         <th class="searchable">{% trans 'Title' %}</th>
                         <th class="searchable">{% trans 'State' %}</th>
                         <th class="searchable">{% trans 'Training aid' %}</th>
+                        <th class="searchable">{% trans 'Registration required' %}</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             {% bootstrap_pagination formations extra=request.GET.urlencode %}
                         </td>
                     </tr>
@@ -182,6 +183,7 @@
                                     -
                                 {% endif %}
                             </td>
+                            <td>{{ formation.continuingeducationtraining.registration_required|yesno|title }}</td>
                         </tr>
                         {% endwith %}
 
