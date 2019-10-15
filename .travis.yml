@@ -32,7 +32,8 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - python3 manage.py compilemessages && coverage run manage.py test continuing_education --exclude-tag=selenium
+  - cd continuing_education
+  - python3 ../manage.py compilemessages && coverage run ../manage.py test continuing_education --exclude-tag=selenium --no-logs
 
 after_script:
   - coverage xml
