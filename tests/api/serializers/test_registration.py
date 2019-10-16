@@ -33,6 +33,7 @@ class RegistrationListSerializerTestCase(TestCase):
             'formation',
             'state',
             'state_text',
+            'email',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -63,6 +64,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
             'formation',
             'state',
             'state_text',
+            'email',
             'address',
             'citizenship',
             'phone_mobile',
@@ -126,6 +128,7 @@ class RegistrationPostSerializerTestCase(TestCase):
             'formation',
             'state',
             'state_text',
+            'email',
             'address',
             'citizenship',
             'phone_mobile',

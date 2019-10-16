@@ -59,6 +59,7 @@ class RegistrationListSerializer(serializers.HyperlinkedModelSerializer):
             'formation',
             'state',
             'state_text',
+            'email',
         )
 
 
