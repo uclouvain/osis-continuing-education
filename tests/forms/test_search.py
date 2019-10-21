@@ -56,7 +56,6 @@ from continuing_education.tests.factories.continuing_education_training import C
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 from continuing_education.forms.search import ADMISSION_STATE_CHOICES
-import random
 from continuing_education.models.admission import Admission
 
 COUNTRY_NAME_WITHOUT_ACCENT = 'Country - e'
