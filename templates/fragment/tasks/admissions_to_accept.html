@@ -9,9 +9,9 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="dropdown  text-right" style="margin-right: 10px;">
+            <div class="dropdown  text-right" style="margin-right: 10px;" id="div_admission_actions_btn">
                 <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                        aria-expanded="false" id="btn_tasks_admissions_actions">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Change state on selected admissions to ...' %}
                     <span class="caret"></span>
                 </button>
@@ -174,5 +174,6 @@
         }
 
     </script>
+    <script src="{% static 'js/task_admission_menu.js' %}"></script>
 {% endblock %}
 

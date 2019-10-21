@@ -9,9 +9,9 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="dropdown  text-right" style="margin-right: 10px;">
+            <div class="dropdown  text-right" style="margin-right: 10px;" id="div_registration_actions_btn">
                 <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                    aria-expanded="false" id="btn_tasks_registrations_actions">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
                     <span class="caret"></span>
                 </button>
@@ -121,5 +121,6 @@
             } ]
         } );
     </script>
+    <script src="{% static 'js/task_registration_menu.js' %}"></script>
 {% endblock %}
 
