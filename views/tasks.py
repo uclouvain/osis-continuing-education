@@ -62,7 +62,7 @@ def list_tasks(request):
     ).filter(Q(registration_file_received=False) | Q(ucl_registration_complete=False))
 
     admissions_to_accept = all_admissions.filter(
-        state=admission_state_choices.SUBMITTED
+        Q(state=admission_state_choices.SUBMITTED) | Q(state=admission_state_choices.WAITING)
     )
 
     admissions_diploma_to_produce = all_admissions.filter(
@@ -134,8 +134,9 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
     admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
 
     admissions_list_states = admissions_list.values_list('state', flat=True)
-    if not all(state == admission_state_choices.SUBMITTED for state in admissions_list_states):
-        raise PermissionDenied(_('The admission must be submitted to be accepted.'))
+    if not all(state == admission_state_choices.SUBMITTED or admission_state_choices.WAITING
+               for state in admissions_list_states):
+        raise PermissionDenied(_('The admission must be submitted or waiting to be accepted.'))
 
     admissions_list.update(state=new_status, condition_of_acceptance='')
     for admission in admissions_list:
