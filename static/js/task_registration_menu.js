@@ -13,7 +13,6 @@ $(".selected_registrations_to_validate").change(function(){
 });
 
 function menu_action_registration_status(){
-    alert($(".selected_registrations_to_validate:checked").length);
     if($(".selected_registrations_to_validate:checked").length<=0){
         btn_actions_registrations_disabled();
     }else{
