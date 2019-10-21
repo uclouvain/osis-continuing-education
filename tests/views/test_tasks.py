@@ -38,6 +38,7 @@ from continuing_education.models.enums.admission_state_choices import REGISTRATI
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+import random
 
 
 class ViewUpdateTasksTestCase(TestCase):
@@ -77,7 +78,7 @@ class ViewUpdateTasksTestCase(TestCase):
                 assessment_succeeded=True,
             ) for _ in range(2)
         ]
-        self.no_diploma_to_produce = AdmissionFactory(
+        self.no_diploma_to_produce_because_waiting = AdmissionFactory(
             state=admission_state_choices.WAITING,
             diploma_produced=True,
             formation=self.formation
@@ -85,7 +86,7 @@ class ViewUpdateTasksTestCase(TestCase):
 
         self.admissions_to_accept = [
             AdmissionFactory(
-                state=admission_state_choices.SUBMITTED,
+                state=random.choice([admission_state_choices.SUBMITTED, admission_state_choices.WAITING]),
                 formation=self.formation
             ) for _ in range(2)
             ]
@@ -135,13 +136,16 @@ class ViewUpdateTasksTestCase(TestCase):
         )
         self.assertEqual(response.context['diplomas_count'], len(self.diplomas_to_produce))
         self.assertNotIn(
-            self.no_diploma_to_produce,
+            self.no_diploma_to_produce_because_waiting,
             response.context['admissions_diploma_to_produce']
         )
 
+        list_expected_waiting_and_submitted = self.admissions_to_accept
+        list_expected_waiting_and_submitted.append(self.no_diploma_to_produce_because_waiting)
+
         self.assertCountEqual(
             response.context['admissions_to_accept'],
-            self.admissions_to_accept
+            list_expected_waiting_and_submitted
         )
 
         self.assertNotIn(
@@ -206,12 +210,12 @@ class ViewUpdateTasksTestCase(TestCase):
     def test_mark_diplomas_produced_incorrect_state(self):
         post_data = {
             "selected_diplomas_to_produce":
-                [str(self.no_diploma_to_produce.pk)]
+                [str(self.no_diploma_to_produce_because_waiting.pk)]
         }
         response = self.client.post(reverse('mark_diplomas_produced'), data=post_data)
 
-        self.no_diploma_to_produce.refresh_from_db()
-        self.assertEqual(self.no_diploma_to_produce.state, admission_state_choices.WAITING)
+        self.no_diploma_to_produce_because_waiting.refresh_from_db()
+        self.assertEqual(self.no_diploma_to_produce_because_waiting.state, admission_state_choices.WAITING)
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
