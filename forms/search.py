@@ -94,6 +94,12 @@ class AdmissionFilterForm(BootstrapForm):
 
     free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
 
+    registration_required = forms.ChoiceField(
+        choices=BOOLEAN_CHOICES,
+        required=False,
+        label=_('Registration required')
+    )
+
     def __init__(self, *args, **kwargs):
         super(AdmissionFilterForm, self).__init__(*args, **kwargs)
         self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
@@ -102,6 +108,7 @@ class AdmissionFilterForm(BootstrapForm):
     def get_admissions(self):
         a_state = self.cleaned_data.get('state')
         free_text = self.cleaned_data.get('free_text')
+        registration_required = self.cleaned_data.get('registration_required')
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],
@@ -115,6 +122,9 @@ class AdmissionFilterForm(BootstrapForm):
 
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
+
+        if registration_required:
+            qs = qs.filter(formation__registration_required=registration_required)
 
         return qs.distinct()
 
