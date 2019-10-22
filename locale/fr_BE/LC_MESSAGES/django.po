@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-21 09:20+0200\n"
+"POT-Creation-Date: 2019-10-22 09:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -947,9 +947,10 @@ msgstr ""
 msgid "Successfully marked diploma as produced for %s registrations."
 msgstr "Le diplôme a été marqué \"produit\" pour %s inscriptions."
 
-#, python-format
+#, fuzzy, python-format
+#| msgid "Successfully processed %s registration(s)."
 msgid "Successfully processed %s registrations."
-msgstr "%s inscriptions ont été traitées avec succès."
+msgstr "%s inscription(s) traitée(s) avec succès."
 
 msgid "Sure you want to unarchive the file(s) ?"
 msgstr "Etes-vous sûr.e de vouloir désarchiver les archives?"
