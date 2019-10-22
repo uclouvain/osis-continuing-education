@@ -48,7 +48,7 @@ from continuing_education.models.continuing_education_training import CONTINUING
     ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
-    REGISTRATION_SUBMITTED
+    REGISTRATION_SUBMITTED, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -209,6 +209,7 @@ class TestFilterForm(TestCase):
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
                 ('Draft', _('Draft')),
+                ('Accepted (no registration required)', _('Accepted')),
             ])
 
     def test_queryset_registration_state_init(self):
@@ -305,7 +306,7 @@ class TestFilterForm(TestCase):
 
     def test_get_admission_by_no_registration_required(self):
         admission = AdmissionFactory(formation=self.formation_no_registration_required,
-                                     state=random.choice([ele for key in ADMISSION_STATE_CHOICES for ele in key]))
+                                     state=ACCEPTED_NO_REGISTRATION_REQUIRED)
         form = AdmissionFilterForm({"registration_required": False})
         if form.is_valid():
             results = form.get_admissions()

@@ -167,6 +167,8 @@
                                     <span class="label label-success show">{% trans archive.state %}</span>
                                 {% elif archive.is_registration_submitted %}
                                     <span class="label label-info show">{% trans archive.state %}</span>
+                                {% elif archive.is_accepted_no_registration_required %}
+                                    <span class="label label-default show">{% trans 'Accepted' %}</span>
                                 {% else %}
                                     {% if archive.state %}
                                     {%  trans archive.state %}
