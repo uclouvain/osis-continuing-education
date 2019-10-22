@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 09:31+0200\n"
+"POT-Creation-Date: 2019-10-22 11:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -977,6 +977,9 @@ msgstr ""
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
+
+msgid "The participant does not have a first name"
+msgstr "Le participant n'a pas de prénom"
 
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"

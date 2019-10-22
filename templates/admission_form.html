@@ -81,7 +81,13 @@
                 {% endif %}
                 <div id="person_details">
                     <div class="row">
-                        {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("First name") %}
+                        <div class="form-group col-md-4">
+                            {% bootstrap_field base_person_form.first_name label=_("First name") %}
+                            <div style="margin-bottom: 15px;">
+                                <input id="no-firstname-checkbox" type="checkbox"/>
+                                <span>{% trans 'The participant does not have a first name' %}</span>
+                            </div>
+                        </div>
                         {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("Last name") %}
                         {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-4" label=_("Gender") %}
                     </div>
@@ -316,7 +322,25 @@
     //trigger change on page load
     $("#id_formation").trigger("change");
 
+    $("#no-firstname-checkbox").change(function(){
+        const input = $("#id_first_name");
+        const label = $("label[for='id_first_name']");
+        if(this.checked){
+            label.removeClass('required');
+            input.val('');
+            input.prop('disabled', true);
+            $("#form").append("<input id='no-first-name-input' type='hidden' name='no_first_name' value='1'/>");
+        } else {
+            label.addClass('required');
+            input.prop('disabled', false);
+            $("#form").remove('#no-first-name-input');
+        }
+    });
 
+    if($("#id_last_name").val() && !$("#id_first_name").val()){
+        $("#no-firstname-checkbox").prop('checked', true);
+        $("#no-firstname-checkbox").trigger('change');
+    }
 
     </script>
     <script src="{% static 'js/participant_required_fields.js' %}"></script>
