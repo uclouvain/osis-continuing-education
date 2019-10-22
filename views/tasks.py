@@ -162,7 +162,7 @@ def _update_registrations(field_to_update, request):
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
         _update_registration_field_for_list(selected_registration_ids, field_to_update)
-        msg = _('Successfully processed %s registrations.') % len(selected_registration_ids)
+        msg = _('Successfully processed %s registration(s).') % len(selected_registration_ids)
         display_success_messages(request, msg)
     else:
         display_error_messages(request, _('Please select at least one registration to validate.'))
