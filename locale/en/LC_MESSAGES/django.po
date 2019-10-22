@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 11:31+0200\n"
+"POT-Creation-Date: 2019-10-22 16:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,9 @@ msgstr ""
 
 msgid "Accepted"
 msgstr ""
+
+msgid "Accepted (no registration required)"
+msgstr "Accepted"
 
 msgid "Acronym"
 msgstr ""

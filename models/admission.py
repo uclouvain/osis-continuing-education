@@ -476,6 +476,9 @@ class Admission(Model):
     def is_accepted(self):
         return self.state == admission_state_choices.ACCEPTED
 
+    def is_accepted_no_registration_required(self):
+        return self.state == admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED
+
     def is_rejected(self):
         return self.state == admission_state_choices.REJECTED
 
