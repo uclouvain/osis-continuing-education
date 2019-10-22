@@ -50,7 +50,7 @@ from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
-    ACCEPTED
+    ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -58,6 +58,7 @@ from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
 from reference.tests.factories.country import CountryFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 FILE_CONTENT = "test-content"
 
@@ -73,7 +74,17 @@ class ViewAdmissionTestCase(TestCase):
         )
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group,
-            additional_information_label='additional_information'
+            additional_information_label='additional_information',
+            registration_required=True
+        )
+        cls.education_group_no_registration_required = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group_no_registration_required,
+            academic_year=cls.academic_year
+        )
+        cls.formation_no_registration_required = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group_no_registration_required,
+            registration_required=False
         )
         group = GroupFactory(name='continuing_education_managers')
         cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
@@ -88,6 +99,12 @@ class ViewAdmissionTestCase(TestCase):
             formation=cls.formation,
             state=SUBMITTED,
             person_information__person__gender='M',
+        )
+        a_person_information = ContinuingEducationPersonFactory(person__gender='M')
+        cls.admission_no_admission_required = AdmissionFactory(
+            formation=cls.formation_no_registration_required,
+            state=ACCEPTED_NO_REGISTRATION_REQUIRED,
+            person_information=a_person_information,
         )
 
         cls.file = SimpleUploadedFile(
@@ -115,7 +132,7 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admissions.html')
-        self.assertEqual(len(response.context['admissions'].object_list), 1)
+        self.assertEqual(len(response.context['admissions'].object_list), 2)
 
     def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
         self.client.force_login(self.training_manager.user)
@@ -169,8 +186,12 @@ class ViewAdmissionTestCase(TestCase):
         admission = model_to_dict(self.admission)
         admission.update(self.person_data)
         admission.update(self.continuing_education_person_data)
+        admissions = Admission.objects.all()
+        qs_to_find_new_admissions = Admission.objects.all()
+        for a in admissions:
+            qs_to_find_new_admissions = qs_to_find_new_admissions.exclude(pk=a.id)
         response = self.client.post(reverse('admission_new'), data=admission)
-        created_admission = Admission.objects.exclude(pk=self.admission.pk).get()
+        created_admission = qs_to_find_new_admissions.first()
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
 
@@ -272,7 +293,8 @@ class ViewAdmissionTestCase(TestCase):
     def test_list(self):
         response = self.client.post(reverse('admission'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['admissions'].object_list[0], self.admission)
+        self.assertCountEqual(response.context['admissions'].object_list,
+                              [self.admission, self.admission_no_admission_required])
 
     def test_get_versions(self):
         version_list = get_versions(self.admission)
@@ -291,7 +313,9 @@ class ViewAdmissionTestCase(TestCase):
             'formation_id': self.formation.pk
         }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content.decode('utf-8')), {'additional_information_label': 'additional_information'})
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {'additional_information_label': 'additional_information'}
+                         )
 
 
 class InvoiceNotificationEmailTestCase(TestCase):

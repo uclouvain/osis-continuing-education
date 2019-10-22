@@ -39,7 +39,8 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING, SUBMITTED
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING, SUBMITTED, \
+    ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -76,6 +77,11 @@ class ViewArchiveTestCase(TestCase):
         self.admission_archived = AdmissionFactory(
             formation=self.formation_1,
             state=WAITING,
+            archived=True
+        )
+        self.admission_no_registration_required_archived = AdmissionFactory(
+            formation=self.formation_1,
+            state=ACCEPTED_NO_REGISTRATION_REQUIRED,
             archived=True
         )
         self.registration_1_unarchived = AdmissionFactory(
@@ -183,14 +189,15 @@ class ViewArchiveTestCase(TestCase):
         self.assertEqual(len(msg), 1)
         self.assertIn(messages.SUCCESS, msg_level)
         self.assertEqual(msg[0], "{} {}".format(_('File is now'),
-                                                   _('archived')))
+                                                _('archived')))
 
     def test_list(self):
         response = self.client.post(reverse('archive'))
         self.assertEqual(response.status_code, 200)
         self.assertCountEqual(response.context['archives'].object_list,
                               [self.admission_archived,
-                               self.registration_2_archived]
+                               self.registration_2_archived,
+                               self.admission_no_registration_required_archived]
                               )
 
 
