@@ -80,7 +80,7 @@ class TestXlsCommon(TestCase):
         result = extract_xls_data_from_registration(self.registration)
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
-        self.assertEqual(result[34], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
+        self.assertEqual(result[35], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))

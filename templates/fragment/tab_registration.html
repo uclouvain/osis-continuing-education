@@ -43,7 +43,7 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Registration type") %} <br/> {{ admission.registration_type | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Registration type") %} <br/> {{ admission.get_registration_type_display | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Head office name") %} <br/> {{ admission.head_office_name | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Company number") %} <br/> {{ admission.company_number | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("VAT number") %} <br/> {{ admission.vat_number | default:"-" }} </div>
@@ -66,7 +66,7 @@
         <div class="col-md-3">{% bootstrap_label _("Passport number") %} <br/> {{ admission.passport_number | default:"-" }} </div>
     </div>
     <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Marital status") %} <br/> {{ admission.marital_status | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Marital status") %} <br/>{{ admission.get_marital_status_display | default:"-"  }}</div>
         <div class="col-md-3">{% bootstrap_label _("Spouse name") %} <br/> {{ admission.spouse_name | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Children number") %} <br/> {{ admission.children_number | default:"-" }} </div>
     </div>

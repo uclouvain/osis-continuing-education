@@ -19,13 +19,14 @@ from continuing_education.models.continuing_education_training import CONTINUING
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
     ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
-    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT
+    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 
-STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT]
+STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
 STATES_FOR_ARCHIVE = [
-    ACCEPTED, REJECTED, REGISTRATION_STATE_CHOICES, WAITING, SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED
+    ACCEPTED, REJECTED, REGISTRATION_STATE_CHOICES, WAITING, SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED,
+    ACCEPTED_NO_REGISTRATION_REQUIRED
 ]
 
 ALL_CHOICE = ("", pgettext_lazy("plural", "All"))
@@ -94,6 +95,12 @@ class AdmissionFilterForm(BootstrapForm):
 
     free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
 
+    registration_required = forms.ChoiceField(
+        choices=BOOLEAN_CHOICES,
+        required=False,
+        label=_('Registration required')
+    )
+
     def __init__(self, *args, **kwargs):
         super(AdmissionFilterForm, self).__init__(*args, **kwargs)
         self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
@@ -102,6 +109,7 @@ class AdmissionFilterForm(BootstrapForm):
     def get_admissions(self):
         a_state = self.cleaned_data.get('state')
         free_text = self.cleaned_data.get('free_text')
+        registration_required = self.cleaned_data.get('registration_required')
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],
@@ -115,6 +123,9 @@ class AdmissionFilterForm(BootstrapForm):
 
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
+
+        if registration_required:
+            qs = qs.filter(formation__registration_required=registration_required)
 
         return qs.distinct()
 
@@ -205,6 +216,9 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
         if a_state is None or a_state == '':
             a_state = STATES_FOR_ARCHIVE
+        else:
+            if a_state == ACCEPTED:
+                a_state = [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],

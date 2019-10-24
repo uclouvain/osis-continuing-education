@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 14:53+0200\n"
+"POT-Creation-Date: 2019-10-24 07:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,9 @@ msgid "Accept the file"
 msgstr "Accepter le dossier"
 
 msgid "Accepted"
+msgstr "Accepté"
+
+msgid "Accepted (no registration required)"
 msgstr "Accepté"
 
 msgid "Acronym"
@@ -982,6 +985,9 @@ msgstr ""
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
+
+msgid "The participant does not have a first name"
+msgstr "Le participant n'a pas de prénom"
 
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"
