@@ -378,7 +378,7 @@ components:
                 $ref: '#/components/schemas/CountryName'
               formation:
                 $ref: '#/components/schemas/FormationBasicGet'
-              admission_email:
+              email:
                 type: string
                 example: "jane_doe@personnalprovider.com"
               state:
