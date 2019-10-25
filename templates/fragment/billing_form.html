@@ -1,0 +1,48 @@
+{% load i18n %}
+
+{% comment "License" %}
+    * OSIS stands for Open Student Information System. It's an application
+    * designed to manage the core business of higher education institutions,
+    * such as universities, faculties, institutes and professional schools.
+    * The core business involves the administration of students, teachers,
+    * courses, programs and so on.
+    *
+    * Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+    *
+    * This program is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * This program is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    * GNU General Public License for more details.
+    *
+    * A copy of this license - GNU General Public License - is available
+    * at the root of the source code of this program.  If not,
+    * see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+<div class="panel panel-default">
+    <div class="panel-heading"><h4>{% trans 'Billing' %}</h4></div>
+    <div class="panel panel-body">
+
+        <div class="row">
+            {% bootstrap_field form.registration_type form_group_class="form-group col-md-3" label=_("Registration type") %}
+            {% bootstrap_field form.head_office_name form_group_class="form-group col-md-3" label=_("Head office name") %}
+            {% bootstrap_field form.company_number form_group_class="form-group col-md-3" label=_("Company number") %}
+            {% bootstrap_field form.vat_number form_group_class="form-group col-md-3" label=_("VAT number") %}
+        </div>
+        <div class="row">
+            {% bootstrap_field form.use_address_for_billing form_group_class="form-group col-md-12"%}
+        </div>
+        <div id="billing_address" class="row" name="{% trans 'Billing' %}">
+            {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-3" class="participant_required" label=_("Street Address") %}
+            {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-3" class="participant_required" label=_("Postal code") %}
+            {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" class="participant_required" label=_("City") %}
+            {% bootstrap_field billing_address_form.country form_group_class="form-group col-md-3" class="participant_required" label=_("Country") %}
+        </div>
+    </div>
+</div>
+

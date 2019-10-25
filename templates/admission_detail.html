@@ -157,7 +157,11 @@
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
           <li role="presentation" class="active"><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
-          <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
+          {% if admission.formation.registration_required %}
+            <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
+          {% else %}
+              <li role="presentation"><a href="#billing" role="tab" data-toggle="tab">{% trans 'Billing' %}</a></li>
+          {% endif %}
           {% if not user_is_continuing_education_student_worker%}
               <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
           {% endif %}
@@ -168,9 +172,15 @@
             <div role="tabpanel" class="tab-pane active" id="admission">
                 {% include "fragment/tab_admission.html" %}
             </div>
-            <div role="tabpanel" class="tab-pane" id="registration">
-                {% include "fragment/tab_registration.html" %}
-            </div>
+            {% if admission.formation.registration_required %}
+                <div role="tabpanel" class="tab-pane" id="registration">
+                    {% include "fragment/tab_registration.html" %}
+                </div>
+            {% else %}
+                <div role="tabpanel" class="tab-pane" id="billing">
+                    {% include "fragment/section_billing.html" %}
+                </div>
+            {% endif %}
             {% if not user_is_continuing_education_student_worker%}
                 <div role="tabpanel" class="tab-pane" id="documents">
                     {% include "fragment/tab_documents.html" %}

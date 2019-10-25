@@ -47,6 +47,7 @@ from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
     ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
 from continuing_education.forms.person import PersonForm
+from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
@@ -135,6 +136,11 @@ def admission_detail(request, admission_id):
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
 
+    billing_address = admission.billing_address
+
+    form = RegistrationForm(request.POST or None, instance=admission)
+    billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
+
     return render(
         request, "admission_detail.html",
         {
@@ -150,7 +156,9 @@ def admission_detail(request, admission_id):
             'condition_acceptance_adm_form': condition_acceptance_adm_form,
             'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
             'version': version_list,
-            'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE
+            'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
+            'form': form,
+            'billing_address_form': billing_address_form
         }
     )
 
@@ -328,3 +336,55 @@ def get_formation_information(request):
     formation_id = request.GET.get('formation_id', None)
     training = ContinuingEducationTraining.objects.get(pk=formation_id)
     return JsonResponse(data={'additional_information_label': training.additional_information_label})
+
+
+@login_required
+@permission_required('continuing_education.change_admission', raise_exception=True)
+@user_passes_test(is_not_student_worker)
+def billing_edit(request, admission_id):
+    print('billing_edit')
+    can_access_admission(request.user, admission_id)
+    admission = get_object_or_404(Admission, pk=admission_id)
+
+    if admission.is_draft():
+        raise PermissionDenied
+
+    form = RegistrationForm(request.POST or None, instance=admission)
+    address = admission.address
+    billing_address = admission.billing_address
+    billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
+
+    errors = []
+    print('avant vlid')
+    if form.is_valid() and billing_address_form.is_valid():
+        print('if')
+        billing_address = _update_or_create_specific_address(
+            admission.address,
+            billing_address,
+            billing_address_form,
+            not form.cleaned_data['use_address_for_billing']
+        )
+
+        admission = form.save(commit=False)
+        admission.address = address
+        admission.billing_address = billing_address
+
+        return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#billing")
+    else:
+        print('erreo')
+        print(billing_address_form.errors)
+        errors.append(billing_address_form.errors)
+    print(form)
+    print('render')
+    print(errors)
+    return render(
+        request,
+        'admission_billing_form.html',
+        {
+            'admission': admission,
+            'form': form,
+            'billing_address_form': billing_address_form,
+            'errors': errors,
+        }
+    )
+
