@@ -337,7 +337,7 @@
         }
     });
 
-    if($("#id_last_name").val() && !$("#id_first_name").val()){
+    if($("#id_last_name").val() && !$("#id_first_name").val() && !$("#id_first_name").parent().hasClass("has-error")){
         $("#no-firstname-checkbox").prop('checked', true);
         $("#no-firstname-checkbox").trigger('change');
     }
