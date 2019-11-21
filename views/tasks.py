@@ -38,7 +38,7 @@ from continuing_education.business.perms import is_not_student_worker, is_studen
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import save_and_create_revision, ADMISSION_ACCEPTED, get_revision_messages, \
+from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
     UCL_REGISTRATION_COMPLETE, REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
 
