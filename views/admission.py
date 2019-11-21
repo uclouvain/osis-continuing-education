@@ -150,7 +150,8 @@ def admission_detail(request, admission_id):
             'condition_acceptance_adm_form': condition_acceptance_adm_form,
             'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
             'version': version_list,
-            'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE
+            'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
+            'opened_tab': request.GET.get('opened_tab')
         }
     )
 
@@ -264,7 +265,9 @@ def _new_state_management(request, adm_form, admission, new_state):
     else:
         _validate_admission(request, adm_form)
         send_admission_to_queue(admission)
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+    return redirect(
+        reverse('admission_detail', kwargs={'admission_id': admission.pk})+'?opened_tab='+request.POST.get('opened_tab')
+    )
 
 
 def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,

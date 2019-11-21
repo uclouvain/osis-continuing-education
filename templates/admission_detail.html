@@ -2,7 +2,6 @@
 {% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
-{% load static %}
 
 {% comment "License" %}
 * OSIS stands for Open Student Information System. It's an application
@@ -45,66 +44,77 @@
 {% block content %}
     <div class="page-header">
         <form id="form" method="POST" class="post-form">
-        {% csrf_token %}
-        <div class="btn-group pull-right">
-            {% if user_is_continuing_education_student_worker %}
-                <button id="button-state" type="button" class="btn btn-default"
-                        style="margin-right: 10px;">
-                    {% if admission.state %}{% trans admission.state %}{% endif %}
-                </button>
-                {% if admission.registration_file_received %}
-                    <a href="{% url 'receive_file_procedure' admission.id %}"
-                       title="{% trans 'Registration file received' %}"
-                       class="btn btn-default" >
-                        <i class="fa fa-folder-plus" style="font-size: larger"></i>&nbsp;{% trans 'Mark as not received' %}
-                    </a>
-                {% else %}
-                    <a href="{% url 'receive_file_procedure' admission.id %}"
-                       title="{% trans 'Unreceived file' %}"
-                       class="btn btn-default">
-                        <i class="fa fa-folder-minus"v style="font-size: larger"></i>&nbsp;{% trans 'Mark as received file' %}
-                    </a>
-                {% endif %}
-            {% else %}
-                <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
-                <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {% if not states %} disabled {% endif %}>
-                <span class="caret"></span>
-                <span class="sr-only">{% trans 'State' %}</span>
-                </button>
-                {% if not admission.is_draft %}
-                    <ul class="dropdown-menu">
-                      {% for state in states %}
-                          {% with state.0 as state_value and state.1 as state_trans %}
-                             <li>{% if state_value == 'Registration submitted' %}
-                                     <a value="{{state_value}}" href="#" class="state-admission"
-                                        data-modal_class="modal-lg"
-                                        data-url="{% url 'validate_field' admission.id %}">{{state_trans}}</a>
-                                 {% else %}
-                                     <a value="{{state_value}}" href="#" class="state-admission" id="lnk_state_admission_{{ state_value }}">{{state_trans}}</a>
-                                 {% endif %}
-                             </li>
-                          {% endwith %}
-                      {% endfor %}
-                    <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
-                    </ul>
-                {% endif %}
-
-                <div class="pull-right">
-                    {% if admission.archived %}
-                        <a href="{% url 'archive_procedure' admission.id %}"
-                           title="{% trans 'Admission archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state"%}{% endif %}"
-                           class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
-                           {% if admission.is_draft %}disabled{% endif %}>
-                            <i class="fa fa-folder"></i>&nbsp;{% trans 'Unarchive' %}
+            {% csrf_token %}
+        <input type="hidden" name="opened_tab" id="opened_tab">
+            <div class="btn-group pull-right">
+                {% if user_is_continuing_education_student_worker %}
+                    <button id="button-state" type="button" class="btn btn-default"
+                            style="margin-right: 10px;">
+                        {% if admission.state %}{% trans admission.state %}{% endif %}
+                    </button>
+                    {% if admission.registration_file_received %}
+                        <a href="{% url 'receive_file_procedure' admission.id %}"
+                           title="{% trans 'Registration file received' %}"
+                           class="btn btn-default">
+                            <i class="fa fa-folder-plus"
+                               style="font-size: larger"></i>&nbsp;{% trans 'Mark as not received' %}
                         </a>
                     {% else %}
-                        <a href="{% url 'archive_procedure' admission.id %}"
-                           title="{% trans 'Admission is not archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state"%}{% endif %}"
-                           class="btn btn-default {% if admission.is_draft %}disabled{% endif %}" {% if admission.is_draft %}disabled{% endif %}>
-                            <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
+                        <a href="{% url 'receive_file_procedure' admission.id %}"
+                           title="{% trans 'Unreceived file' %}"
+                           class="btn btn-default">
+                            <i class="fa fa-folder-minus" v
+                               style="font-size: larger"></i>&nbsp;{% trans 'Mark as received file' %}
                         </a>
                     {% endif %}
-                </div>
+                {% else %}
+                    <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
+                    <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button"
+                            class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false" {% if not states %} disabled {% endif %}>
+                        <span class="caret"></span>
+                        <span class="sr-only">{% trans 'State' %}</span>
+                    </button>
+                    {% if not admission.is_draft %}
+                        <ul class="dropdown-menu">
+                            {% for state in states %}
+                                {% with state.0 as state_value and state.1 as state_trans %}
+                                    <li>{% if state_value == 'Registration submitted' %}
+                                        <a value="{{ state_value }}" href="#" class="state-admission"
+                                           data-modal_class="modal-lg"
+                                           data-url="{% url 'validate_field' admission.id %}">{{ state_trans }}</a>
+                                    {% else %}
+                                        <a value="{{ state_value }}" href="#" class="state-admission"
+                                           id="lnk_state_admission_{{ state_value }}">{{ state_trans }}</a>
+                                    {% endif %}
+                                    </li>
+                                {% endwith %}
+                            {% endfor %}
+                            <li><a value="Submitted" href="#" class="hidden">{% trans 'Submitted' %}</a></li>
+                        </ul>
+                    {% endif %}
+
+                    <div class="pull-right">
+                        {% if admission.archived %}
+                            <a href="{% url 'archive_procedure' admission.id %}"
+                               title="
+
+                                       {% trans 'Admission archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
+                               class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
+                               {% if admission.is_draft %}disabled{% endif %}>
+                                <i class="fa fa-folder"></i>&nbsp;{% trans 'Unarchive' %}
+                            </a>
+                        {% else %}
+                            <a href="{% url 'archive_procedure' admission.id %}"
+                               title="
+
+                                       {% trans 'Admission is not archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
+                               class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
+                               {% if admission.is_draft %}disabled{% endif %}>
+                                <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
+                            </a>
+                        {% endif %}
+                    </div>
 
                 {% endif %}
             </div>
@@ -114,7 +124,7 @@
             {% include "fragment/warning_modal.html" %}
             {% include "fragment/rejected_reason_modal.html" %}
             {% include "fragment/cancel_reason_modal.html" %}
-            {%  trans 'Do you confirm you want to submit?' as confirm_msg_extra %}
+            {% trans 'Do you confirm you want to submit?' as confirm_msg_extra %}
             {% include "fragment/submit_confirm_modal.html" with confirm_msg=confirm_msg_extra %}
             {% include "fragment/condition_acceptance_modal.html" %}
         </form>
@@ -129,54 +139,62 @@
     <div class="panel panel-default">
         {% if admission.state_reason and admission.is_waiting %}
             <div class="alert alert-info" role="alert">
-                <b>{% trans 'Waiting state reason' %}: </b>
+                <strong>{% trans 'Waiting state reason' %}: </strong>
                 {{ admission.state_reason }}
             </div>
         {% endif %}
         {% if admission.state_reason and admission.is_rejected %}
             <div class="alert alert-danger" role="alert">
-                <b>{% trans 'Refusal state reason' %}: </b>
+                <strong>{% trans 'Refusal state reason' %}: </strong>
                 {{ admission.state_reason }}
             </div>
         {% endif %}
         {% if admission.is_accepted %}
             <div class="alert alert-info" role="alert">
                 {% if admission.condition_of_acceptance %}
-                    <b>{% trans 'Condition of acceptance' %} : </b>
+                    <strong>{% trans 'Condition of acceptance' %} : </strong>
                     {{ admission.condition_of_acceptance }}
                 {% else %}
-                    <b>{% trans 'Accepted' %} : {% trans 'Unconditionally' %}</b>
+                    <strong>{% trans 'Accepted' %} : {% trans 'Unconditionally' %}</strong>
                 {% endif %}
             </div>
         {% endif %}
         {% if admission.state_reason and admission.is_cancelled %}
             <div class="alert alert-info" role="alert">
-                <b>{% trans 'Cancel state reason' %}: </b>
+                <strong>{% trans 'Cancel state reason' %}: </strong>
                 {{ admission.state_reason }}
             </div>
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
-          <li role="presentation" class="active"><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
-          <li role="presentation"><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
-          {% if not user_is_continuing_education_student_worker%}
-              <li role="presentation"><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
-          {% endif %}
-        <li role="presentation"><a href="#history" role="tab" data-toggle="tab">{% trans 'History' %}</a></li>
+            <li role="presentation" {% if opened_tab == 'tab_admission' or not opened_tab %}class="active"{% endif %} id="tab_admission">
+                <a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education' %}</a>
+            </li>
+            <li role="presentation" {% if opened_tab == 'tab_registration' %}class="active"{% endif %} id="tab_registration">
+                <a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a>
+            </li>
+            {% if not user_is_continuing_education_student_worker %}
+                <li role="presentation" {% if opened_tab == 'tab_documents' %}class="active"{% endif %} id="tab_documents">
+                    <a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a>
+                </li>
+            {% endif %}
+            <li role="presentation" {% if opened_tab == 'tab_history' %}class="active"{% endif %} id="tab_history">
+                <a href="#history" role="tab" data-toggle="tab">{% trans 'History' %}</a>
+            </li>
         </ul>
         <div class="tab-content">
             {% csrf_token %}
-            <div role="tabpanel" class="tab-pane active" id="admission">
+            <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_admission' or not opened_tab %}active{% endif %}" id="admission">
                 {% include "fragment/tab_admission.html" %}
             </div>
-            <div role="tabpanel" class="tab-pane" id="registration">
+            <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_registration' or not opened_tab %}active{% endif %}" id="registration">
                 {% include "fragment/tab_registration.html" %}
             </div>
-            {% if not user_is_continuing_education_student_worker%}
-                <div role="tabpanel" class="tab-pane" id="documents">
+            {% if not user_is_continuing_education_student_worker %}
+                <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_documents' or not opened_tab %}active{% endif %}" id="documents">
                     {% include "fragment/tab_documents.html" %}
                 </div>
             {% endif %}
-            <div role="tabpanel" class="tab-pane" id="history">
+            <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_history' or not opened_tab %}active{% endif %}" id="history">
                 {% include "fragment/tab_history.html" %}
             </div>
         </div>
@@ -187,7 +205,7 @@
 {% block script %}
     <script>
         $('.high_school_graduation_year').hide();
-        $('#id_high_school_diploma').on('change', function() {
+        $('#id_high_school_diploma').on('change', function () {
             $('.high_school_graduation_year').toggle($(this).find(":selected").val());
         });
 
@@ -205,90 +223,86 @@
         let state_initial = "{{ admission.state }}";
         setStateActive(state_initial);
 
-        $(".dropdown-menu li a").click(function(){
-          let newState= $(this).attr("value");
-          if(newState === "Registration submitted") {
-          }else{
-              change_button_state(newState);
-          }
-          if(newState === "Waiting"){
-              let waiting_reason = {New: 'id_waiting_reason', Old: 'old_predefined_waiting_reason'};
-              let other_reason = {New: 'id_other_reason', Old: 'old_other_reason'};
-              openModal(
-                  'waiting_reason_modal',
-                  waiting_reason,
-                  other_reason
-              );
-          }
-          else if(newState === "Draft"){
-              openWarningModal(state_initial);
-          }
-          else if(newState === "Rejected"){
-              let refused_reason = {New: 'id_rejected-rejected_reason', Old: 'old_predefined_rejected_reason'};
-              let other_reason = {New: 'id_rejected-other_reason', Old: 'old_rejected_other_reason'};
-              openModal(
-                  'rejected_reason_modal',
-                  refused_reason,
-                  other_reason
-            );
-          }
-          else if(newState === "Registration submitted"){
-              check_mandatory_fields.call(this, newState);
-          }
-          else if(newState === "Accepted"){
-              let condition_acceptance = {New: 'id_condition_of_acceptance', Old: 'old_condition_of_acceptance'};
-              openModalAcceptance(
-                      'condition_acceptance_modal',
-                      condition_acceptance
-              );
-          }
-          else if(newState === "Cancelled"){
-              let cancelled_reason = {New: 'id_state_reason', Old: 'old_cancel_reason'};
-              openModal(
-                      'cancel_reason_modal',
-                      cancelled_reason
-              );
-          }
-          else{
-              $('#form').submit();
-          }
+        $(".dropdown-menu li a").click(function () {
+            console.log("YOLO");
+            document.getElementById('opened_tab').value = $('li.active')[0].id;
+            let newState = $(this).attr("value");
+            if (newState === "Registration submitted") {
+            } else {
+                change_button_state(newState);
+            }
+            if (newState === "Waiting") {
+                let waiting_reason = {New: 'id_waiting_reason', Old: 'old_predefined_waiting_reason'};
+                let other_reason = {New: 'id_other_reason', Old: 'old_other_reason'};
+                openModal(
+                    'waiting_reason_modal',
+                    waiting_reason,
+                    other_reason
+                );
+            } else if (newState === "Draft") {
+                openWarningModal(state_initial);
+            } else if (newState === "Rejected") {
+                let refused_reason = {New: 'id_rejected-rejected_reason', Old: 'old_predefined_rejected_reason'};
+                let other_reason = {New: 'id_rejected-other_reason', Old: 'old_rejected_other_reason'};
+                openModal(
+                    'rejected_reason_modal',
+                    refused_reason,
+                    other_reason
+                );
+            } else if (newState === "Registration submitted") {
+                check_mandatory_fields.call(this, newState);
+            } else if (newState === "Accepted") {
+                let condition_acceptance = {New: 'id_condition_of_acceptance', Old: 'old_condition_of_acceptance'};
+                openModalAcceptance(
+                    'condition_acceptance_modal',
+                    condition_acceptance
+                );
+            } else if (newState === "Cancelled") {
+                let cancelled_reason = {New: 'id_state_reason', Old: 'old_cancel_reason'};
+                openModal(
+                    'cancel_reason_modal',
+                    cancelled_reason
+                );
+            } else {
+                $('#form').submit();
+            }
         });
 
-        function setStateActive(newState){
+        function setStateActive(newState) {
             let newClass = states[newState];
             let text = "";
-            if(newState !== "None") {
+            if (newState !== "None") {
                 text = $("[value='" + newState + "']")[0].text;
-            }
-            else {
+            } else {
                 text = $("#button-state").text();
             }
             let oldClass = states[$('#button-state').attr("value")];
-            $('#button-state').html(text).attr("value",newState).removeClass(oldClass).addClass(newClass);
+            $('#button-state').html(text).attr("value", newState).removeClass(oldClass).addClass(newClass);
             $('#button-state-caret').removeClass(oldClass).addClass(newClass);
         }
 
-        function openWarningModal(){
+        function openWarningModal() {
             $('#modalWarningDraft').modal('show');
         }
 
         $('#cancel_warning').click(function () {
+            console.log("CANCEL");
             setStateActive(state_initial)
         });
 
-        $(".send_notification_mail_button").click(function(){
-          $('#send_notification_mail_modal').modal('show');
+        $(".send_notification_mail_button").click(function () {
+            $('#send_notification_mail_modal').modal('show');
         });
 
         var anchor = location.hash;
         $('#tabs a[href="' + anchor + '"]').tab('show');
-        if(anchor){
-            setTimeout(function() {
+        if (anchor) {
+            setTimeout(function () {
                 window.scrollTo(0, 0);
-              }, 1);
+            }, 1);
         }
 
-        function change_button_state(newState){
+        function change_button_state(newState) {
             let oldClass = states[$('#button-state').attr("value")];
             $('#button-state').removeClass(oldClass);
             $('#button-state-caret').removeClass(oldClass);
@@ -296,12 +310,14 @@
             $('#id_state').val(newState);
         }
 
-        $("#btn_confirm_fields").click(function(){
+        $("#btn_confirm_fields").click(function () {
+            console.log("CONFIRM");
             change_button_state("Registration submitted");
             $('#form').submit();
         });
 
-        $('.disabled').click(function(e){
+        $('.disabled').click(function (e) {
+            console.log("DISABLED");
             e.preventDefault();
         })
     </script>
