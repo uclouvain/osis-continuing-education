@@ -49,11 +49,8 @@ class PersonForm(ModelForm):
                                         True)
 
         self.fields['gender'].initial = Person.GENDER_CHOICES[2]
-        if no_first_name_checked or self._has_no_first_name():
+        if no_first_name_checked:
             self.fields['first_name'].required = False
-
-    def _has_no_first_name(self):
-        return getattr(self.instance, 'last_name') and not getattr(self.instance, 'first_name')
 
     class Meta:
         model = Person
