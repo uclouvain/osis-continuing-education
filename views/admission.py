@@ -265,8 +265,9 @@ def _new_state_management(request, adm_form, admission, new_state):
     else:
         _validate_admission(request, adm_form)
         send_admission_to_queue(admission)
+    query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
     return redirect(
-        reverse('admission_detail', kwargs={'admission_id': admission.pk})+'?opened_tab='+request.POST.get('opened_tab')
+        reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param
     )
 
 
