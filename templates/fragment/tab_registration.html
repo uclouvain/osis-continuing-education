@@ -127,7 +127,6 @@
     <script>
         $('.high_school_graduation_year').hide();
         $('#id_high_school_diploma').on('change', function() {
-            console.log($(this).find(":selected").val());
             $('.high_school_graduation_year').toggle($(this).find(":selected").val());
         });
     </script>
