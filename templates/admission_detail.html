@@ -195,19 +195,19 @@
                 {% include "fragment/tab_admission.html" %}
             </div>
             <div role="tabpanel"
-                 class="tab-pane {% if opened_tab == 'tab_registration' or not opened_tab %}active{% endif %}"
+                 class="tab-pane {% if opened_tab == 'tab_registration' %}active{% endif %}"
                  id="registration">
                 {% include "fragment/tab_registration.html" %}
             </div>
             {% if not user_is_continuing_education_student_worker %}
                 <div role="tabpanel"
-                     class="tab-pane {% if opened_tab == 'tab_documents' or not opened_tab %}active{% endif %}"
+                     class="tab-pane {% if opened_tab == 'tab_documents' %}active{% endif %}"
                      id="documents">
                     {% include "fragment/tab_documents.html" %}
                 </div>
             {% endif %}
             <div role="tabpanel"
-                 class="tab-pane {% if opened_tab == 'tab_history' or not opened_tab %}active{% endif %}" id="history">
+                 class="tab-pane {% if opened_tab == 'tab_history' %}active{% endif %}" id="history">
                 {% include "fragment/tab_history.html" %}
             </div>
         </div>
@@ -237,8 +237,7 @@
         setStateActive(state_initial);
 
         $(".dropdown-menu li a").click(function () {
-            console.log("YOLO");
-            document.getElementById('opened_tab').value = $('li.active')[0].id;
+            document.getElementById('opened_tab').value = $('#tabs li.active')[0].id;
             let newState = $(this).attr("value");
             if (newState === "Registration submitted") {
             } else {
@@ -299,7 +298,6 @@
         }
 
         $('#cancel_warning').click(function () {
-            console.log("CANCEL");
             setStateActive(state_initial)
         });
 
@@ -324,13 +322,11 @@
         }
 
         $("#btn_confirm_fields").click(function () {
-            console.log("CONFIRM");
             change_button_state("Registration submitted");
             $('#form').submit();
         });
 
         $('.disabled').click(function (e) {
-            console.log("DISABLED");
             e.preventDefault();
         })
     </script>
