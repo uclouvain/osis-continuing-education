@@ -60,11 +60,7 @@ class ManagerListTestCase(TestCase):
             education_group=self.education_group,
             active=True
         )
-        self.training_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
-            'change_admission',
-            employee=True
-        )
+        self.training_manager = PersonWithPermissionsFactory(employee=True)
         self.training_manager_group = GroupFactory(name='continuing_education_training_managers')
         self.training_manager.user.groups.add(self.training_manager_group)
 
@@ -75,10 +71,11 @@ class ManagerListTestCase(TestCase):
         self.assertTemplateUsed(response, 'managers.html')
 
     def test_assign_manager_to_training(self):
+        employee = PersonFactory(employee=True)
         self.assertEqual(PersonTraining.objects.count(), 0)
         data = {
             'training': self.formation.pk,
-            'person': self.training_manager.pk
+            'person': employee.pk
         }
         response = self.client.post(reverse('list_managers'), data=data)
         self.assertEqual(PersonTraining.objects.count(), 1)
@@ -86,10 +83,11 @@ class ManagerListTestCase(TestCase):
 
         messages_list = list(messages.get_messages(response.wsgi_request))
         success_msg = gettext('Successfully assigned %(manager)s to the training %(training)s') % {
-            "manager": self.training_manager,
+            "manager": employee,
             "training": self.formation.acronym
         }
         self.assertIn(success_msg, str(messages_list[0]))
+        self.assertEqual(list(employee.user.groups.all()), [self.training_manager_group])
 
     def test_add_employee_to_training_managers_group(self):
         employee = PersonFactory(employee=True)
@@ -99,7 +97,7 @@ class ManagerListTestCase(TestCase):
             'person': employee.pk
         }
         response = self.client.post(reverse('list_managers'), data=data)
-        self.assertEqual(list(self.training_manager.user.groups.all()), [self.training_manager_group])
+        self.assertEqual(list(employee.user.groups.all()), [self.training_manager_group])
         self.assertEqual(response.status_code, HttpResponse.status_code)
 
     def test_manager_already_assigned_to_training(self):
@@ -115,6 +113,22 @@ class ManagerListTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertIn(
             gettext("Manager is already assigned on this training"),
+            str(messages_list[0])
+        )
+
+    def test_manager_person_with_no_user(self):
+        employee = PersonFactory(employee=True, user=None)
+        self.assertEqual(PersonTraining.objects.count(), 0)
+        data = {
+            'training': self.formation.pk,
+            'person': employee.pk
+        }
+        response = self.client.post(reverse('list_managers'), data)
+        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertEqual(PersonTraining.objects.count(), 0)
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertIn(
+            gettext("Manager person has no user"),
             str(messages_list[0])
         )
 
