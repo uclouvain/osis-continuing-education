@@ -56,11 +56,7 @@ def send_state_changed_email(admission, connected_user=None):
                              admission_state_choices.REJECTED,
                              admission_state_choices.WAITING,
                              admission_state_choices.VALIDATED):
-        lower_state = admission.state.lower()
-        if admission.state == admission_state_choices.ACCEPTED:
-            registration_required = admission.formation.registration_required
-            if admission.condition_of_acceptance != '':
-                condition_of_acceptance = admission.condition_of_acceptance
+        condition_of_acceptance, lower_state, registration_required = _get_datas_from_admission(admission)
     else:
         lower_state = 'other'
 
@@ -97,6 +93,16 @@ def send_state_changed_email(admission, connected_user=None):
 
     MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
     save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
+
+
+def _get_datas_from_admission(admission):
+    condition_of_acceptance, registration_required = None, None
+    lower_state = admission.state.lower()
+    if admission.state == admission_state_choices.ACCEPTED:
+        registration_required = admission.formation.registration_required
+        if admission.condition_of_acceptance != '':
+            condition_of_acceptance = admission.condition_of_acceptance
+    return condition_of_acceptance, lower_state, registration_required
 
 
 def send_submission_email_to_admission_managers(admission, connected_user):
