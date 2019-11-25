@@ -740,7 +740,7 @@ components:
         - ASSOCIATIVE
         - HEALTH
         - OTHER
-        -
+
     ProfessionalStatusEnum:
       type: string
       enum:
