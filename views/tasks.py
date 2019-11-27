@@ -32,7 +32,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business.admission import send_state_changed_email
+from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.business.perms import is_not_student_worker, is_student_worker, registration_process, \
     is_continuing_education_training_manager, is_iufc_manager
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
@@ -144,7 +144,7 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
         admission.state = new_status
         admission.condition_of_acceptance = ''
         admission.save()
-        send_state_changed_email(admission, request.user)
+        save_state_changed_and_send_email(admission, request.user)
 
 
 @require_http_methods(['POST'])

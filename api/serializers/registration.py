@@ -29,7 +29,7 @@ from continuing_education.api.serializers.address import AddressSerializer, Addr
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
-from continuing_education.business.admission import send_state_changed_email
+from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
@@ -161,7 +161,7 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
         instance._original_state = instance.state
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
-            send_state_changed_email(instance, connected_user=self.context.get('request').user)
+            save_state_changed_and_send_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
     def update_addresses(self, field, validated_data, instance, to_update):

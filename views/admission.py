@@ -37,7 +37,7 @@ from django.views.decorators.http import require_GET
 from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
+from continuing_education.business.admission import send_invoice_uploaded_email, save_state_changed_and_send_email, \
     check_required_field_for_participant
 from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.registration_queue import send_admission_to_queue
@@ -265,7 +265,7 @@ def admission_form(request, admission_id=None):
 
 def _new_state_management(request, adm_form, admission, new_state):
     if new_state != VALIDATED:
-        send_state_changed_email(adm_form.instance, request.user)
+        save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)
         send_admission_to_queue(admission)
@@ -289,7 +289,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 
 def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
-        send_state_changed_email(adm_form.instance, request.user)
+        save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         display_error_messages(
             request,

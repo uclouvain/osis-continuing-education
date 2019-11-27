@@ -180,7 +180,7 @@ class SendEmailTest(TestCase):
         self.admission.state = admission_state_choices.ACCEPTED
         self.admission._original_state = self.admission.state
         self.admission.save()
-        admission.send_state_changed_email(self.admission)
+        admission.save_state_changed_and_send_email(self.admission)
         args = mock_send.call_args[1]
 
         self.assertEqual(_(self.admission.state), args.get('data').get('subject').get('state'))
