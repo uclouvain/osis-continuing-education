@@ -297,7 +297,7 @@ class SendEmailTest(TestCase):
         self.admission._original_state = self.admission.state
         self.admission.condition_of_acceptance = 'CONDITION'
         self.admission.save()
-        admission.send_state_changed_email(self.admission)
+        admission.save_state_changed_and_send_email(self.admission)
         args = mock_send.call_args[1]
 
         self.assertEqual(
@@ -313,7 +313,7 @@ class SendEmailTest(TestCase):
         self.admission.formation.registration_required = False
         self.admission.formation.save()
         self.admission.save()
-        admission.send_state_changed_email(self.admission)
+        admission.save_state_changed_and_send_email(self.admission)
         args = mock_send.call_args[1]
 
         self.assertEqual(
