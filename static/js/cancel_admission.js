@@ -1,5 +1,4 @@
 $('#add_cancel_reason').click(function(){
-    console.log('ici')
 
     if(!$('#id_state_reason').val() ){
         $('#id_state_reason').parent().addClass("has-error");

@@ -48,6 +48,9 @@ msgstr "Accepter le dossier"
 msgid "Accepted"
 msgstr "Accepté"
 
+msgid "Accepted (no registration required)"
+msgstr "Accepté"
+
 msgid "Acronym"
 msgstr "Acronyme"
 
@@ -75,9 +78,6 @@ msgstr "Adresse"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
-#, fuzzy
-#| msgctxt "continuing_education"
-#| msgid "Admission"
 msgid "Admission"
 msgstr "Admission"
 
@@ -447,6 +447,11 @@ msgstr "Dossiers annulés"
 
 msgid "First name"
 msgstr "Prénom"
+
+msgid ""
+"For that formation a list of participants has to be sent to the UCLouvain "
+"insurance department"
+msgstr "Cette formation nécessite l'envoi de la liste des participants au service des assurances de l'UCLouvain"
 
 msgid "Formation"
 msgstr "Formation"
@@ -986,6 +991,9 @@ msgstr ""
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
 msgstr "Le nom du fichier est trop long : maximum %(length)s caractères."
+
+msgid "The participant does not have a first name"
+msgstr "Le participant n'a pas de prénom"
 
 msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"

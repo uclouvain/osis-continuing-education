@@ -38,8 +38,6 @@ function add_reason(otherReasonId, elementIdReason, idReasonModal, idForm){
 
 function cancel_reason(otherReasonId, oldOtherReasonId,elementIdReason, elementIdOldReason){
     clearOtherReasonError(otherReasonId);
-    console.log($('#'+elementIdOldReason).val());
-    console.log($('#'+oldOtherReasonId).val());
 
     $('#'+elementIdReason).val($('#'+elementIdOldReason).val());
     $('#'+otherReasonId).val($('#'+oldOtherReasonId).val());

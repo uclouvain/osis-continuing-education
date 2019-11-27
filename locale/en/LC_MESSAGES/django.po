@@ -45,6 +45,9 @@ msgstr ""
 msgid "Accepted"
 msgstr ""
 
+msgid "Accepted (no registration required)"
+msgstr "Accepted"
+
 msgid "Acronym"
 msgstr ""
 
@@ -423,6 +426,11 @@ msgid "Files cancelled"
 msgstr ""
 
 msgid "First name"
+msgstr ""
+
+msgid ""
+"For that formation a list of participants has to be sent to the UCLouvain "
+"insurance department"
 msgstr ""
 
 msgid "Formation"
@@ -943,6 +951,9 @@ msgstr ""
 
 #, python-format
 msgid "The name of the file is too long : maximum %(length)s characters."
+msgstr ""
+
+msgid "The participant does not have a first name"
 msgstr ""
 
 msgid "The programme is already complete"

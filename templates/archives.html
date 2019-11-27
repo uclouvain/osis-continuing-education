@@ -151,7 +151,7 @@
                                 {% endif %}
                             </td>
                             <td>{{ archive.person_information.person.first_name }}</td>
-                            <td>{{ archive.email }}</td>
+                            <td>{{ archive.email | default_if_none:'' }}</td>
                             <td title="{{archive.formation.title}}">{{ archive.formation_display }}</td>
                             <td title="{{archive.faculty.title}}">{{ archive.get_faculty | default_if_none:''}}</td>
                             <td style="vertical-align: middle;" class="admission-state">
@@ -161,12 +161,14 @@
                                     <span class="label label-danger show">{% trans archive.state %}</span>
                                 {% elif archive.is_submitted %}
                                     <span class="label label-info show">{% trans archive.state %}</span>
-                                {% elif admission.is_accepted %}
+                                {% elif archive.is_accepted %}
                                     <span class="label label-default show">{% trans archive.state %}</span>
                                 {% elif archive.is_validated %}
                                     <span class="label label-success show">{% trans archive.state %}</span>
                                 {% elif archive.is_registration_submitted %}
                                     <span class="label label-info show">{% trans archive.state %}</span>
+                                {% elif archive.is_accepted_no_registration_required %}
+                                    <span class="label label-default show">{% trans 'Accepted' %}</span>
                                 {% else %}
                                     {% if archive.state %}
                                     {%  trans archive.state %}
@@ -203,7 +205,6 @@
 
     </script>
 
-    <script src="{% static 'js/continuing_xls.js' %}"></script>
     <script src="{% static 'js/archive.js' %}"></script>
 
 {% endblock %}

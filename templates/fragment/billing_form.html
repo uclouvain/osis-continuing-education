@@ -25,23 +25,28 @@
     * at the root of the source code of this program.  If not,
     * see http://www.gnu.org/licenses/.
 {% endcomment %}
-<div class="panel panel-default">
+<div class="panel-default panel-border-top">
     <div class="panel-heading"><h4>{% trans 'Billing' %}</h4></div>
-    <div class="panel panel-body">
-        <div class="row">
-            {% bootstrap_field form.registration_type form_group_class="form-group col-md-3" label=_("Registration type") %}
-            {% bootstrap_field form.head_office_name form_group_class="form-group col-md-3" label=_("Head office name") %}
-            {% bootstrap_field form.company_number form_group_class="form-group col-md-3" label=_("Company number") %}
-            {% bootstrap_field form.vat_number form_group_class="form-group col-md-3" label=_("VAT number") %}
+</div>
+<div class="panel-body">
+    <div class="row form-group">
+        <div class="col-md-3">{% bootstrap_label _("Registration type") %}
+            <br/> {{ admission.get_registration_type_display | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Head office name") %}
+            <br/> {{ admission.head_office_name | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Company number") %}
+            <br/> {{ admission.company_number | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("VAT number") %} <br/> {{ admission.vat_number | default:"-" }}
         </div>
-        <div class="row">
-            {% bootstrap_field form.use_address_for_billing form_group_class="form-group col-md-12"%}
-        </div>
-        <div id="billing_address" class="row" name="{% trans 'Billing' %}">
-            {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-3" class="participant_required" label=_("Street Address") %}
-            {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-3" class="participant_required" label=_("Postal code") %}
-            {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" class="participant_required" label=_("City") %}
-            {% bootstrap_field billing_address_form.country form_group_class="form-group col-md-3" class="participant_required" label=_("Country") %}
-        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-3">{% bootstrap_label _("Street Address") %}
+            <br/> {{ admission.billing_address.location | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Postal code") %}
+            <br/> {{ admission.billing_address.postal_code | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("City") %}
+            <br/> {{ admission.billing_address.city|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Country") %}
+            <br/> {{ admission.billing_address.country|upper | default:"-" }} </div>
     </div>
 </div>

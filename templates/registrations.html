@@ -63,7 +63,7 @@
                         <label for="registration_file_received_id">{% trans 'Received file' %}</label>
                         {{ search_form.registration_file_received }}
                     </div>
-                    <div class="col-md-2" >
+                    <div class="col-md-2">
                         <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                         </button>
@@ -99,36 +99,39 @@
                     </div>
                 </div>
             {% endif %}
-            <form id="admissions_form" method="post" action="{% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
+            <form id="admissions_form" method="post" action="
+                    {% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
                 {% csrf_token %}
 
                 <table class="table table-striped table-hover" id="order_student">
                     <thead>
-                        <tr>
-                            <th>
-                                {% if admissions %}
-                                    <input id="id_check_all" type="checkbox" name="check_all"
-                                           title="{% trans 'Check All' %}"/>
-                                {% endif %}
-                            </th>
-                            <th class="searchable">{% trans 'Name' %}</th>
-                            <th class="searchable">{% trans 'First name' %}</th>
-                            <th class="searchable">{% trans 'Email' %}</th>
-                            <th class="searchable">{% trans 'Formation' %}</th>
-                            <th class="searchable">{% trans 'Faculty' %}</th>
-                            <th class="searchable">{% trans 'State' %}</th>
-                            <th class="searchable">{% trans 'Received file' %}</th>
-                            <th class="searchable">{% trans 'Paid' %}</th>
-                            <th class="searchable">{% trans 'UCLouvain registration complete' %}</th>
-                            <th class="searchable">{% trans 'Diploma produced' %}</th>
-                        </tr>
+                    <tr>
+                        <th>
+                            {% if admissions %}
+                                <input id="id_check_all" type="checkbox" name="check_all"
+                                       title="{% trans 'Check All' %}"/>
+                            {% endif %}
+                        </th>
+                        <th class="searchable">{% trans 'Name' %}</th>
+                        <th class="searchable">{% trans 'First name' %}</th>
+                        <th class="searchable">{% trans 'Email' %}</th>
+                        <th class="searchable">{% trans 'Formation' %}</th>
+                        <th class="searchable">{% trans 'Faculty' %}</th>
+                        <th class="searchable">{% trans 'State' %}</th>
+                        <th class="searchable">{% trans 'Received file' %}</th>
+                        <th class="searchable">{% trans 'Paid' %}</th>
+                        <th class="searchable">{% trans 'UCLouvain registration complete' %}</th>
+                        <!-- Hidden before being sure it won't be used anymore -->
+                        <th class="searchable"
+                            style="visibility: hidden; display: none;">{% trans 'Diploma produced' %}</th>
+                    </tr>
                     </thead>
                     <tfoot>
-                        <tr>
-                            <td colspan="11">
-                                {% bootstrap_pagination admissions extra=request.GET.urlencode %}
-                            </td>
-                        </tr>
+                    <tr>
+                        <td colspan="11">
+                            {% bootstrap_pagination admissions extra=request.GET.urlencode %}
+                        </td>
+                    </tr>
                     </tfoot>
                     {% for admission in admissions %}
                         <tr>
@@ -138,13 +141,13 @@
                             </td>
                             <td>
                                 <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
-                                    {{ admission.person_information.person.last_name | default_if_none:'-'}}
+                                    {{ admission.person_information.person.last_name | default_if_none:'-' }}
                                 </a>
                             </td>
-                            <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
-                            <td>{{ admission.person_information.person.email | default_if_none:'-'}}</td>
+                            <td>{{ admission.person_information.person.first_name | default_if_none:'-' }}</td>
+                            <td>{{ admission.person_information.person.email | default_if_none:'-' }}</td>
                             <td>{{ admission.formation }}</td>
-                            <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
+                            <td title="{{ admission.faculty.title }}">{{ admission.get_faculty | default_if_none:'' }}</td>
                             <td style="vertical-align: middle;" class="admission-state">
                                 {% if admission.is_accepted %}
                                     <span class="label label-default show">{% trans admission.state %}</span>
@@ -164,25 +167,26 @@
                                 {% endif %}
                             </td>
                             <td style="vertical-align: middle;">
-                            {% if admission.payment_complete %}
+                                {% if admission.payment_complete %}
                                     <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
-                            {% else %}
+                                {% else %}
                                     <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
-                            {% endif %}
+                                {% endif %}
                             </td>
                             <td style="vertical-align: middle;">
-                            {% if admission.ucl_registration_complete %}
+                                {% if admission.ucl_registration_complete %}
                                     <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
-                            {% else %}
+                                {% else %}
                                     <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
-                            {% endif %}
+                                {% endif %}
                             </td>
-                            <td style="vertical-align: middle;">
-                            {% if admission.diploma_produced %}
+                            <!-- Hidden before being sure it won't be used anymore -->
+                            <td style="vertical-align: middle; visibility: hidden; display: none;">
+                                {% if admission.diploma_produced %}
                                     <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
-                            {% else %}
+                                {% else %}
                                     <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
-                            {% endif %}
+                                {% endif %}
                             </td>
 
 
@@ -196,34 +200,33 @@
 
 {% block script %}
     <script>
-        $(document).ready(function() {
-            $('#order_student').DataTable( {
-                "order": [[ 3, "asc" ]],
+        $(document).ready(function () {
+            $('#order_student').DataTable({
+                "order": [[3, "asc"]],
                 "paging": false,
                 "info": false,
                 "bFilter": false,
                 "language":
-                {
-                    "sEmptyTable": "{% trans 'No data' %}",
-                },
+                    {
+                        "sEmptyTable": "{% trans 'No data' %}",
+                    },
                 // Disable sorting on the first column
-                "aoColumnDefs" : [ {
-                    'bSortable' : false,
-                    'aTargets' : [ 0 ]
-                } ]
+                "aoColumnDefs": [{
+                    'bSortable': false,
+                    'aTargets': [0]
+                }]
 
-            } );
-        } );
+            });
+        });
 
-        $("#btn_produce_xls").click(function(e) {
+        $("#btn_produce_xls").click(function (e) {
             prepare_xls(e, 'xls_registrations');
         });
-        $("#btn_received_file").click(function(e) {
+        $("#btn_received_file").click(function (e) {
             $("#admissions_form").submit();
         });
     </script>
 
-    <script src="{% static 'js/continuing_xls.js' %}"></script>
     <script src="{% static 'js/archive.js' %}"></script>
 
 {% endblock %}

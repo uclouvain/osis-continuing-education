@@ -37,7 +37,7 @@ from django.views.decorators.http import require_GET
 from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.admission import send_invoice_uploaded_email, send_state_changed_email, \
+from continuing_education.business.admission import send_invoice_uploaded_email, save_state_changed_and_send_email, \
     check_required_field_for_participant
 from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.registration_queue import send_admission_to_queue
@@ -55,7 +55,7 @@ from continuing_education.models.admission import Admission, filter_authorized_a
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED
+    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
     ADMISSION_CREATION, get_revision_messages
@@ -166,6 +166,7 @@ def admission_detail(request, admission_id):
             'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
             'version': version_list,
             'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
+            'opened_tab': request.GET.get('opened_tab'),
             'form': form,
             'billing_address_form': billing_address_form
         }
@@ -174,10 +175,14 @@ def admission_detail(request, admission_id):
 
 def _change_state(request, forms, accepted_states, admission):
     adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form = forms
-    new_state = adm_form.cleaned_data['state']
+    new_state = adm_form.instance.state
+    if new_state == ACCEPTED and not admission.formation.registration_required:
+        new_state = ACCEPTED_NO_REGISTRATION_REQUIRED
     if new_state in accepted_states.get('states', []):
-        _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
-                                        cancel_adm_form)
+        _save_form_with_provided_reason(
+            waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form, cancel_adm_form
+        )
+        adm_form.instance.state = new_state
         return _new_state_management(request, adm_form, admission, new_state)
 
 
@@ -210,7 +215,11 @@ def admission_form(request, admission_id=None):
             raise PermissionDenied
     states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
     base_person = admission.person_information.person if admission else None
-    base_person_form = PersonForm(request.POST or None, instance=base_person)
+    base_person_form = PersonForm(
+        data=request.POST or None,
+        instance=base_person,
+        no_first_name_checked=request.POST.get('no_first_name', False)
+    )
     person_information = continuing_education_person.find_by_person(person=base_person)
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
@@ -273,11 +282,14 @@ def admission_form(request, admission_id=None):
 
 def _new_state_management(request, adm_form, admission, new_state):
     if new_state != VALIDATED:
-        send_state_changed_email(adm_form.instance, request.user)
+        save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)
         send_admission_to_queue(admission)
-    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
+    query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
+    return redirect(
+        reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param
+    )
 
 
 def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
@@ -286,7 +298,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
         rejected_adm_form.save()
     elif new_state == WAITING and waiting_adm_form.is_valid():
         waiting_adm_form.save()
-    elif new_state == ACCEPTED and condition_acceptance_adm_form.is_valid():
+    elif new_state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED] and condition_acceptance_adm_form.is_valid():
         condition_acceptance_adm_form.save()
     elif new_state == CANCELLED and cancel_adm_form.is_valid():
         cancel_adm_form.save()
@@ -294,7 +306,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 
 def _validate_admission(request, adm_form):
     if request.user.has_perm("continuing_education.can_validate_registration"):
-        send_state_changed_email(adm_form.instance, request.user)
+        save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         display_error_messages(
             request,

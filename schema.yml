@@ -378,7 +378,7 @@ components:
                 $ref: '#/components/schemas/CountryName'
               formation:
                 $ref: '#/components/schemas/FormationBasicGet'
-              admission_email:
+              email:
                 type: string
                 example: "jane_doe@personnalprovider.com"
               state:
@@ -403,12 +403,16 @@ components:
               other_educational_background:
                 type: string
               professional_status:
+                $ref: '#/components/schemas/ProfessionalStatusEnum'
+              professional_status_text:
                 type: string
               current_occupation:
                 type: string
               current_employer:
                 type: string
               activity_sector:
+                $ref: '#/components/schemas/ActivitySectorEnum'
+              activity_sector_text:
                 type: string
               past_professional_activities:
                 type: string
@@ -656,6 +660,10 @@ components:
               example: "2020-01-01"
             uploaded_by:
               type: string
+            file_category:
+              $ref: '#/components/FileCategoryEnum'
+            file_category_text:
+              type: string
 
     FileDetails:
       allOf:
@@ -698,29 +706,56 @@ components:
     StateEnum:
       type: string
       enum:
-        - Accepted
-        - Rejected
-        - Waiting
-        - Draft
-        - Submitted
-        - Registration submitted
-        - Validated
+        - ACCEPTED
+        - ACCEPTED_NO_REGISTRATION_REQUIRED
+        - REJECTED
+        - WAITING
+        - DRAFT
+        - SUBMITTED
+        - REGISTRATION_SUBMITTED
+        - VALIDATED
+        - CANCELLED
 
     RegistrationTypeEnum:
       type: string
       enum:
-        - Private
-        - Professional
+        - PRIVATE
+        - PROFESSIONAL
 
     MaritalStatusEnum:
       type: string
       enum:
-        - Single
-        - Married
-        - Widowed
-        - Divorced
-        - Separated
-        - Legal cohabitant
+        - SINGLE
+        - MARRIED
+        - WIDOWED
+        - DIVORCED
+        - SEPARATED
+        - LEGAL_COHABITANT
+
+    ActivitySectorEnum:
+      type: string
+      enum:
+        - PRIVATE
+        - PUBLIC
+        - ASSOCIATIVE
+        - HEALTH
+        - OTHER
+
+    ProfessionalStatusEnum:
+      type: string
+      enum:
+        - EMPLOYEE
+        - SELF_EMPLOYED
+        - JOB_SEEKER
+        - PUBLIC_SERVANT
+        - OTHER
+
+    FileCategoryEnum:
+      type: string
+      enum:
+        - DOCUMENT
+        - INVOICE
+        - PARTICIPANT
 
 security:
   - Token: []

@@ -26,12 +26,14 @@
 
 from dal import autocomplete
 from django import forms
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
 from base.models.person import Person
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 
 
@@ -67,4 +69,15 @@ class PersonTrainingForm(ModelForm):
             pass
         else:
             raise ValidationError({'person': [_('Manager is already assigned on this training')]})
+        if not self.cleaned_data['person'].user:
+            raise ValidationError({'person': [_('Manager person has no user')]})
         return self.cleaned_data
+
+    def save(self, commit=True):
+        instance = super(PersonTrainingForm, self).save(commit=False)
+        if commit:
+            instance.save()
+        instance.person.user.groups.add(
+            Group.objects.get(name=TRAINING_MANAGERS_GROUP)
+        )
+        return instance

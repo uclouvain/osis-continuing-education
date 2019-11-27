@@ -32,12 +32,14 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
+from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.business.perms import is_not_student_worker, is_student_worker, registration_process, \
     is_continuing_education_training_manager, is_iufc_manager
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.views.common import save_and_create_revision, ADMISSION_ACCEPTED, get_revision_messages
+from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
+    UCL_REGISTRATION_COMPLETE, REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
 
 
@@ -132,16 +134,17 @@ def process_admissions(request):
 
 def _process_admissions_list(request, registrations_ids_list, new_status):
     admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
-
     admissions_list_states = admissions_list.values_list('state', flat=True)
     if not all(state == admission_state_choices.SUBMITTED or admission_state_choices.WAITING
                for state in admissions_list_states):
         raise PermissionDenied(_('The admission must be submitted or waiting to be accepted.'))
 
-    admissions_list.update(state=new_status, condition_of_acceptance='')
     for admission in admissions_list:
-        if new_status == admission_state_choices.ACCEPTED:
-            save_and_create_revision(request.user, get_revision_messages(ADMISSION_ACCEPTED), admission)
+        admission._original_state = admission.state
+        admission.state = new_status
+        admission.condition_of_acceptance = ''
+        admission.save()
+        save_state_changed_and_send_email(admission, request.user)
 
 
 @require_http_methods(['POST'])
@@ -161,7 +164,7 @@ def registrations_fulfilled(request):
 def _update_registrations(field_to_update, request):
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
-        _update_registration_field_for_list(selected_registration_ids, field_to_update)
+        _update_registration_field_for_list(selected_registration_ids, field_to_update, request.user)
         msg = _('Successfully processed %s registration(s).') % len(selected_registration_ids)
         display_success_messages(request, msg)
     else:
@@ -169,13 +172,16 @@ def _update_registrations(field_to_update, request):
     return redirect(reverse("list_tasks"))
 
 
-def _update_registration_field_for_list(registrations_ids_list, field_to_update):
+def _update_registration_field_for_list(registrations_ids_list, field_to_update, user):
     registrations_list = Admission.objects.filter(id__in=registrations_ids_list)
     registrations_list_states = registrations_list.values_list('state', flat=True)
     if not all(state == admission_state_choices.REGISTRATION_SUBMITTED for state in registrations_list_states):
         raise PermissionDenied(_('The registration must be submitted to be validated.'))
 
-    if field_to_update == 'registration_file_received':
-        registrations_list.update(registration_file_received=True)
-    if field_to_update == 'ucl_registration_complete':
-        registrations_list.update(ucl_registration_complete=True)
+    for registration in registrations_list:
+        if field_to_update == 'registration_file_received':
+            registration.registration_file_received = True
+            save_and_create_revision(user, get_revision_messages(REGISTRATION_FILE_RECEIVED), registration)
+        if field_to_update == 'ucl_registration_complete':
+            registration.ucl_registration_complete = True
+            save_and_create_revision(user, get_revision_messages(UCL_REGISTRATION_COMPLETE), registration)

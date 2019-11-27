@@ -42,12 +42,15 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.forms.search import ADMISSION_STATE_CHOICES
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm
-from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES
+from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
+    ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
-    REGISTRATION_SUBMITTED
+    REGISTRATION_SUBMITTED, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -171,8 +174,9 @@ class TestFilterForm(TestCase):
             academic_year=next_academic_yr,
             education_group=ed
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=ed
+        self.formation_no_registration_required = ContinuingEducationTrainingFactory(
+            education_group=ed,
+            registration_required=False,
         )
         self.persons = [
             PersonFactory(first_name="TestText"),
@@ -205,6 +209,7 @@ class TestFilterForm(TestCase):
                 ('Rejected', _('Rejected')),
                 ('Submitted', _('Submitted')),
                 ('Draft', _('Draft')),
+                ('Accepted (no registration required)', _('Accepted')),
             ])
 
     def test_queryset_registration_state_init(self):
@@ -287,6 +292,25 @@ class TestFilterForm(TestCase):
         form.is_valid()
         results = form.get_admissions()
         self.assertEqual(results.first(), admission_accent)
+
+    def test_get_admission_by_registration_required(self):
+        formations_registration_required = ContinuingEducationTraining.objects.filter(registration_required=True)
+        admissions_expected = Admission.objects.filter(
+            archived=False,
+            formation__in=formations_registration_required,
+            state__in=[ele for key in ADMISSION_STATE_CHOICES for ele in key])
+        form = AdmissionFilterForm({"registration_required": True})
+        if form.is_valid():
+            results = form.get_admissions()
+            self.assertCountEqual(results, admissions_expected)
+
+    def test_get_admission_by_no_registration_required(self):
+        admission = AdmissionFactory(formation=self.formation_no_registration_required,
+                                     state=ACCEPTED_NO_REGISTRATION_REQUIRED)
+        form = AdmissionFilterForm({"registration_required": False})
+        if form.is_valid():
+            results = form.get_admissions()
+            self.assertCountEqual(results, [admission])
 
     def test_get_registrations_no_criteria(self):
         form = RegistrationFilterForm({})
@@ -415,7 +439,7 @@ class TestFilterForm(TestCase):
         for person in self.persons:
             self.admissions_free_text.append(
                 AdmissionFactory(
-                    formation=self.formation,
+                    formation=self.formation_no_registration_required,
                     person_information=ContinuingEducationPersonFactory(
                         person=person
                     ),

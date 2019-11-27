@@ -37,18 +37,26 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("National registry number") %} <br/> {{ admission.national_registry_number | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("ID card number") %} <br/> {{ admission.id_card_number | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Passport number") %} <br/> {{ admission.passport_number | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("National registry number") %}
+            <br/> {{ admission.national_registry_number | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("ID card number") %}
+            <br/> {{ admission.id_card_number | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Passport number") %}
+            <br/> {{ admission.passport_number | default:"-" }} </div>
     </div>
     <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Marital status") %} <br/> {{ admission.marital_status | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Spouse name") %} <br/> {{ admission.spouse_name | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Children number") %} <br/> {{ admission.children_number | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Marital status") %}
+            <br/>{{ admission.get_marital_status_display | default:"-" }}</div>
+        <div class="col-md-3">{% bootstrap_label _("Spouse name") %} <br/> {{ admission.spouse_name | default:"-" }}
+        </div>
+        <div class="col-md-3">{% bootstrap_label _("Children number") %}
+            <br/> {{ admission.children_number | default:"-" }} </div>
     </div>
     <div class="row form-group">
-        <div class="col-md-6">{% bootstrap_label _("Previous uclouvain registration") %} <br/> {{ admission.previous_ucl_registration | yesno }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Previous NOMA") %} <br/> {{ admission.previous_noma | default:"-" }} </div>
+        <div class="col-md-6">{% bootstrap_label _("Previous uclouvain registration") %}
+            <br/> {{ admission.previous_ucl_registration | yesno }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Previous NOMA") %} <br/> {{ admission.previous_noma | default:"-" }}
+        </div>
     </div>
 </div>
 
@@ -57,13 +65,18 @@
 </div>
 <div class="panel-body">
     <div class="row form-group">
-        <div class="col-md-3">{% bootstrap_label _("Street Address") %} <br/> {{ admission.residence_address.location | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Postal code") %} <br/> {{ admission.residence_address.postal_code | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("City") %} <br/> {{ admission.residence_address.city|upper | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Country") %} <br/> {{ admission.residence_address.country|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Street Address") %}
+            <br/> {{ admission.residence_address.location | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Postal code") %}
+            <br/> {{ admission.residence_address.postal_code | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("City") %}
+            <br/> {{ admission.residence_address.city|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Country") %}
+            <br/> {{ admission.residence_address.country|upper | default:"-" }} </div>
     </div>
     <div class="row form-group">
-        <div class="col-md-4">{% bootstrap_label _("Residence phone") %} <br/> {{ admission.residence_phone | default:"-" }} </div>
+        <div class="col-md-4">{% bootstrap_label _("Residence phone") %}
+            <br/> {{ admission.residence_phone | default:"-" }} </div>
     </div>
 </div>
 
@@ -73,21 +86,27 @@
 <div class="panel-body">
     <div class="row form-group">
         <div class="col-md-4">
-            {% bootstrap_label _("UCLouvain registration complete") %} : {{ admission.ucl_registration_complete | yesno }}
+            {% bootstrap_label _("UCLouvain registration complete") %}
+            : {{ admission.ucl_registration_complete | yesno }}
             <br/> {% bootstrap_label _("Payment complete") %} : {{ admission.payment_complete | yesno }}
-            <br/> {% bootstrap_label _("Registration file received") %} : {{ admission.registration_file_received | yesno }}
-            <br/> {% bootstrap_label _("NOMA") %} : {{ admission.noma | default:"-"}}
+            <br/> {% bootstrap_label _("Registration file received") %}
+            : {{ admission.registration_file_received | yesno }}
+            <br/> {% bootstrap_label _("NOMA") %} : {{ admission.noma | default:"-" }}
             <br/>{% bootstrap_label _("Reduced rates") %} : {{ admission.reduced_rates | yesno }}
             <br/>{% bootstrap_label _("Spreading payments") %} : {{ admission.spreading_payments | yesno }}
         </div>
         <div class="col-md-4">
             {% bootstrap_label _("Formation spreading") %} : {{ admission.formation_spreading | yesno }}
-            <br/> {% bootstrap_label _("Prior experience validation") %} : {{ admission.prior_experience_validation | yesno }}
+            <br/> {% bootstrap_label _("Prior experience validation") %}
+            : {{ admission.prior_experience_validation | yesno }}
         </div>
         <div class="col-md-4">
             {% bootstrap_label _("Assessment presented") %} : {{ admission.assessment_presented | yesno }}
             <br/> {% bootstrap_label _("Assessment succeeded") %} : {{ admission.assessment_succeeded | yesno }}
-            <br/> {% bootstrap_label _("Diploma produced") %} : {{ admission.diploma_produced | yesno }}
+            <!-- Hidden before being sure it won't be used anymore -->
+            <div style="visibility: hidden; display: none;">
+                <br/> {% bootstrap_label _("Diploma produced") %} : {{ admission.diploma_produced | yesno }}
+            </div>
         </div>
     </div>
 </div>
@@ -102,8 +121,7 @@
 {% block script %}
     <script>
         $('.high_school_graduation_year').hide();
-        $('#id_high_school_diploma').on('change', function() {
-            console.log($(this).find(":selected").val());
+        $('#id_high_school_diploma').on('change', function () {
             $('.high_school_graduation_year').toggle($(this).find(":selected").val());
         });
     </script>

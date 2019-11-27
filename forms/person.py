@@ -40,14 +40,17 @@ class PersonForm(ModelForm):
         choices=Person.GENDER_CHOICES,
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, no_first_name_checked, *args, **kwargs):
 
         super(PersonForm, self).__init__(*args, **kwargs)
 
         set_participant_required_fields(self.fields,
                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
                                         True)
+
         self.fields['gender'].initial = Person.GENDER_CHOICES[2]
+        if no_first_name_checked:
+            self.fields['first_name'].required = False
 
     class Meta:
         model = Person
