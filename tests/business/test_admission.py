@@ -291,6 +291,37 @@ class SendEmailTest(TestCase):
         max_size_to_check = self.admission_file.size + 1
         self.assertEqual(len(_get_attachments(self.admission.id, max_size_to_check)), 1)
 
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_admission_accepted_with_condition(self, mock_send):
+        self.admission.state = admission_state_choices.ACCEPTED
+        self.admission._original_state = self.admission.state
+        self.admission.condition_of_acceptance = 'CONDITION'
+        self.admission.save()
+        admission.send_state_changed_email(self.admission)
+        args = mock_send.call_args[1]
+
+        self.assertEqual(
+            self.admission.condition_of_acceptance,
+            args.get('data').get('template').get('condition_of_acceptance')
+        )
+        self.assertEqual(len(args.get('receivers')), 1)
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_admission_with_no_registration_required(self, mock_send):
+        self.admission.state = admission_state_choices.ACCEPTED
+        self.admission._original_state = self.admission.state
+        self.admission.formation.registration_required = False
+        self.admission.formation.save()
+        self.admission.save()
+        admission.send_state_changed_email(self.admission)
+        args = mock_send.call_args[1]
+
+        self.assertEqual(
+            self.admission.formation.registration_required,
+            args.get('data').get('template').get('registration_required')
+        )
+        self.assertEqual(len(args.get('receivers')), 1)
+
 
 class SendEmailSettingsTest(TestCase):
     def setUp(self):
