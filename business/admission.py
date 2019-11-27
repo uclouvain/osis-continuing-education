@@ -41,7 +41,7 @@ from osis_common.messaging import send_message as message_service
 MAX_DOCUMENTS_SIZE = 20000000
 
 
-def send_state_changed_email(admission, connected_user=None):
+def save_state_changed_and_send_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     condition_of_acceptance, registration_required = None, None
