@@ -1,4 +1,6 @@
+{% load static %}
 {% load i18n %}
+{% load bootstrap3 %}
 
 {% comment "License" %}
     * OSIS stands for Open Student Information System. It's an application
@@ -23,11 +25,9 @@
     * at the root of the source code of this program.  If not,
     * see http://www.gnu.org/licenses/.
 {% endcomment %}
-
 <div class="panel panel-default">
     <div class="panel-heading"><h4>{% trans 'Billing' %}</h4></div>
     <div class="panel panel-body">
-
         <div class="row">
             {% bootstrap_field form.registration_type form_group_class="form-group col-md-3" label=_("Registration type") %}
             {% bootstrap_field form.head_office_name form_group_class="form-group col-md-3" label=_("Head office name") %}
@@ -45,4 +45,3 @@
         </div>
     </div>
 </div>
-

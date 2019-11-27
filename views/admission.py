@@ -62,6 +62,7 @@ from continuing_education.views.common import display_errors, save_and_create_re
 from continuing_education.views.common import get_object_list
 from continuing_education.views.file import _get_file_category_choices_with_disabled_parameter, _upload_file
 from continuing_education.views.home import is_continuing_education_student_worker
+from continuing_education.views.registration import _update_or_create_specific_address
 from osis_common.decorators.ajax import ajax_required
 
 
@@ -92,10 +93,20 @@ def list_admissions(request):
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
+    admission = get_object_or_404(
+        Admission.objects.select_related(
+            'billing_address__country',
+            'address__country',
+            'person_information__person',
+            'person_information__birth_country',
+            'citizenship',
+            'formation__education_group',
+        ).prefetch_related('formation__managers'),
+        pk=admission_id
+    )
     if not user_is_continuing_education_student_worker:
-        can_access_admission(request.user, admission_id)
+        can_access_admission(request.user, admission)
 
-    admission = get_object_or_404(Admission, pk=admission_id)
     files = AdmissionFile.objects.all().filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     states = _get_states_choices(accepted_states, admission, request)
@@ -135,8 +146,6 @@ def admission_detail(request, admission_id):
     if adm_form.is_valid():
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
-
-    billing_address = admission.billing_address
 
     form = RegistrationForm(request.POST or None, instance=admission)
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
@@ -196,7 +205,7 @@ def _invoice_file_exists_for_admission(admission):
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     if admission:
-        can_access_admission(request.user, admission_id)
+        can_access_admission(request.user, admission)
         if admission.is_draft():
             raise PermissionDenied
     states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
@@ -342,9 +351,8 @@ def get_formation_information(request):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def billing_edit(request, admission_id):
-    print('billing_edit')
-    can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
+    can_access_admission(request.user, admission)
 
     if admission.is_draft():
         raise PermissionDenied
@@ -355,9 +363,7 @@ def billing_edit(request, admission_id):
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
 
     errors = []
-    print('avant vlid')
     if form.is_valid() and billing_address_form.is_valid():
-        print('if')
         billing_address = _update_or_create_specific_address(
             admission.address,
             billing_address,
@@ -371,12 +377,8 @@ def billing_edit(request, admission_id):
 
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#billing")
     else:
-        print('erreo')
-        print(billing_address_form.errors)
         errors.append(billing_address_form.errors)
-    print(form)
-    print('render')
-    print(errors)
+
     return render(
         request,
         'admission_billing_form.html',

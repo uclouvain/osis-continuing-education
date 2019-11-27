@@ -56,7 +56,9 @@ class AdmissionForm(ModelForm):
         label=_("High school diploma")
     )
     person_information = ContinuingEducationPersonChoiceField(
-        queryset=ContinuingEducationPerson.objects.all().order_by('person__last_name', 'person__first_name'),
+        queryset=ContinuingEducationPerson.objects.all().order_by(
+            'person__last_name', 'person__first_name'
+        ).select_related('person'),
         required=False,
         empty_label=_("New person")
     )

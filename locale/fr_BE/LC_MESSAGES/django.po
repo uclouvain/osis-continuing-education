@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 09:31+0200\n"
+"POT-Creation-Date: 2019-11-27 10:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,6 +74,12 @@ msgstr "Adresse"
 
 msgid "Administrator"
 msgstr "Gestionnaire"
+
+#, fuzzy
+#| msgctxt "continuing_education"
+#| msgid "Admission"
+msgid "Admission"
+msgstr "Admission"
 
 msgctxt "continuing_education"
 msgid "Admission"
@@ -364,6 +370,9 @@ msgstr "Brouillon"
 
 msgid "Edit admission data"
 msgstr "Modifier informations admission"
+
+msgid "Edit billing data"
+msgstr "Modifier informations facturation"
 
 msgid "Edit formation data"
 msgstr "Modifier informations formation"

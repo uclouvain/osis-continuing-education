@@ -73,8 +73,8 @@ def list_registrations(request):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def registration_edit(request, admission_id):
-    can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
+    can_access_admission(request.user, admission)
 
     if admission.is_draft():
         raise PermissionDenied
@@ -192,8 +192,6 @@ def _switch_received_file_state(admission_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def list_cancelled(request):
-    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-
     admission_list = Admission.objects.filter(state=admission_state_choices.CANCELLED)
     admission_list = filter_authorized_admissions(request.user, admission_list)
 
