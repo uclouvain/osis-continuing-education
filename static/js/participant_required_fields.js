@@ -43,11 +43,9 @@ function check_mandatory_fields_in_screen() {
     $('ul#list_fields_missing').empty();
     $('.participant_required').each(function () {
         if ($(this).attr("id") && !$(this).val()) {
-            let extra='';
-            let div =$(this).closest('div[id]');
-            if ($(this).attr("id").includes("_residence-") || $(this).attr("id").includes("_billing-")){
-                extra = div.attr('name') + " : ";
-            }
+            let extra = '';
+            let div = $(this).closest('div[id]');
+            if ($(this).attr("id").includes("_residence-") || $(this).attr("id").includes("_billing-")) extra = div.attr('name') + " : ";
             $('ul#list_fields_missing').append($("<li></li>").text(extra + $('label[for="' + $(this).attr('id') + '"]').text()));
         }
     });
