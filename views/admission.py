@@ -147,9 +147,6 @@ def admission_detail(request, admission_id):
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
 
-    form = RegistrationForm(request.POST or None, instance=admission)
-    billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
-
     return render(
         request, "admission_detail.html",
         {
@@ -167,8 +164,6 @@ def admission_detail(request, admission_id):
             'version': version_list,
             'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
             'opened_tab': request.GET.get('opened_tab'),
-            'form': form,
-            'billing_address_form': billing_address_form
         }
     )
 
@@ -369,34 +364,34 @@ def billing_edit(request, admission_id):
     if admission.is_draft():
         raise PermissionDenied
 
-    form = RegistrationForm(request.POST or None, instance=admission)
+    registration_form = RegistrationForm(request.POST or None, instance=admission, only_billing=True)
     address = admission.address
     billing_address = admission.billing_address
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
 
     errors = []
-    if form.is_valid() and billing_address_form.is_valid():
+    if registration_form.is_valid() and billing_address_form.is_valid():
         billing_address = _update_or_create_specific_address(
-            admission.address,
+            address,
             billing_address,
             billing_address_form,
-            not form.cleaned_data['use_address_for_billing']
+            not registration_form.cleaned_data['use_address_for_billing']
         )
 
-        admission = form.save(commit=False)
-        admission.address = address
+        admission = registration_form.save(commit=False)
         admission.billing_address = billing_address
+        admission.save()
 
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#billing")
     else:
-        errors.append(billing_address_form.errors)
+        errors.append(billing_address_form.errors + registration_form.errors)
 
     return render(
         request,
         'admission_billing_form.html',
         {
             'admission': admission,
-            'form': form,
+            'registration_form': registration_form,
             'billing_address_form': billing_address_form,
             'errors': errors,
         }

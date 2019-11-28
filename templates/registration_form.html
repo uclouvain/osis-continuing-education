@@ -41,7 +41,7 @@
     <form id="form" method="POST" class="post-form">
         {% csrf_token %}
 
-        {% include "fragment/registration_form_header.html" %}
+        {% include "fragment/registration_form_header.html" with anchor='registration' %}
         {% include "registration_billing_form.html" %}
 
         <div class="panel panel-default">

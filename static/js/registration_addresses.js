@@ -51,7 +51,6 @@ $("#btn_confirm_fields").click(function () {
 
 function enableFields(fields) {
     for (var field of fields) {
-        console.log(field)
         $("#id_" + field).prop("disabled", false);
     }
 }

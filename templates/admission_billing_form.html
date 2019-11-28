@@ -39,7 +39,7 @@
 
 {% block content %}
 
-    {% include "fragment/registration_form_header.html" %}
+    {% include "fragment/registration_form_header.html" with anchor='billing' %}
     <form id="form" method="POST" class="post-form">
         {% csrf_token %}
         {% include 'fragment/billing_form.html' %}
