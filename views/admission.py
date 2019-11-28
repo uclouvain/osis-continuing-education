@@ -396,4 +396,3 @@ def billing_edit(request, admission_id):
             'errors': errors,
         }
     )
-
