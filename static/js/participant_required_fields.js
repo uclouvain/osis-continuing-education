@@ -39,30 +39,23 @@ $('button[name="btn_save"]').click(function(){
     $('#form').submit();
 });
 
-function form_submit() {
-    $('#form').submit();
-}
-
 function check_mandatory_fields_in_screen() {
     $('ul#list_fields_missing').empty();
-
     $('.participant_required').each(function () {
         if ($(this).attr("id") && !$(this).val()) {
             let extra='';
             let div =$(this).closest('div[id]');
-
             if ($(this).attr("id").includes("_residence-") || $(this).attr("id").includes("_billing-")){
                 extra =div.attr('name');
                 extra = extra + " : " ;
             }
-
             $('ul#list_fields_missing').append($("<li></li>").text(extra + $('label[for="' + $(this).attr('id') + '"]').text()));
         }
     });
     const mandatory_fields = ['national_registry_number', 'id_card_number', 'passport_number'];
     const is_define = (field) => $('#id_' + field).val() !== undefined;
     if(mandatory_fields.every(is_define)) {
-        const is_empty = (field) => $('#id_' + field).val().trim()
+        const is_empty = (field) => $('#id_' + field).val().trim();
         if (mandatory_fields.every(is_empty)) {
             let msg = $('#msg_required').html();
             $('ul#list_fields_missing').append($("<li></li>").text(msg + $('label[for="required_identification"]').text()));
