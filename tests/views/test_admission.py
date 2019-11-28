@@ -493,15 +493,6 @@ class BillingEditTestCase(TestCase):
             education_group=cls.education_group,
             registration_required=False
         )
-        # cls.education_group_no_registration_required = EducationGroupFactory()
-        # EducationGroupYearFactory(
-        #     education_group=cls.education_group_no_registration_required,
-        #     academic_year=cls.academic_year
-        # )
-        # cls.formation_no_registration_required = ContinuingEducationTrainingFactory(
-        #     education_group=cls.education_group_no_registration_required,
-        #     registration_required=False
-        # )
         group = GroupFactory(name=MANAGERS_GROUP)
         cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         cls.manager.user.groups.add(group)
@@ -517,11 +508,6 @@ class BillingEditTestCase(TestCase):
             state=SUBMITTED,
             person_information=a_person_information,
         )
-        # cls.admission_no_admission_required = AdmissionFactory(
-        #     formation=cls.formation_no_registration_required,
-        #     state=ACCEPTED_NO_REGISTRATION_REQUIRED,
-        #     person_information=a_person_information,
-        # )
 
     def setUp(self):
         self.client.force_login(self.manager.user)

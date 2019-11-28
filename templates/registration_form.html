@@ -42,7 +42,7 @@
         {% csrf_token %}
 
         {% include "fragment/registration_form_header.html" with anchor='registration' %}
-        {% include "registration_billing_form.html" %}
+        {% include "fragment/billing_form.html" %}
 
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Registration' %}</h4></div>
