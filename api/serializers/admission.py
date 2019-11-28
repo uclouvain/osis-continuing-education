@@ -36,7 +36,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.views.common import save_and_create_revision, ADMISSION_CREATION, \
-    get_revision_messages, get_valid_state_change_message
+    get_revision_messages
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 

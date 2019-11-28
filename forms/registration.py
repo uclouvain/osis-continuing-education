@@ -34,8 +34,10 @@ class RegistrationForm(ModelForm):
         widget=forms.TextInput(attrs={'placeholder': '082123456 - 003282123456 - +3282123456'})
     )
 
-    def clean_residence_phone(self):
-        return self.cleaned_data['residence_phone'].replace(' ', '')
+    def __init__(self, data, only_billing=False, **kwargs):
+        super().__init__(data, **kwargs)
+        if only_billing:
+            self.fields['previous_ucl_registration'].required = False
 
     class Meta:
         model = Admission

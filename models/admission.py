@@ -29,7 +29,6 @@ from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.db.models import Manager, Model
-from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
@@ -542,8 +541,7 @@ def filter_authorized_admissions(user, admission_list):
     return admission_list
 
 
-def can_access_admission(user, admission_id):
-    admission = get_object_or_404(Admission, pk=admission_id)
+def can_access_admission(user, admission):
     if admission not in filter_authorized_admissions(user, Admission.objects.all()):
         raise PermissionDenied
 

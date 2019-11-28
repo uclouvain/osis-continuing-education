@@ -41,17 +41,20 @@
     <div class="page-header">
 
         {% if admission %}
-            <a class="btn btn-default pull-right" id="cancel" href="{% url 'admission_detail' admission_id=admission.id %}">
+            <a class="btn btn-default pull-right" id="cancel"
+               href="{% url 'admission_detail' admission_id=admission.id %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
-            <button type="button" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;" name="btn_save"
+            <button type="button" form="form" class="btn btn-primary pull-right" style="margin-right: 10px;"
+                    name="btn_save"
                     data-modal_class="modal-lg"
                     {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
             <h3>
                 {% if admission.person_information.person.first_name %}
-                    {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name}}
+                    {{ admission.person_information.person.last_name }},
+                    {{ admission.person_information.person.first_name }}
                 {% else %}
                     {{ admission.person_information.person.last_name }}
                 {% endif %}
@@ -65,7 +68,7 @@
                     name="btn_save"
                     data-modal_class="modal-lg"
                     {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}
-                    >
+            >
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
             <h3>{% trans 'New admission' %}</h3>
@@ -79,9 +82,9 @@
             <div class="panel-heading"><h4>{% trans 'Identification' %}</h4></div>
             <div class="panel panel-body">
                 {% if admission is None %}
-                <div class="row">
-                    {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("Person") %}
-                </div>
+                    <div class="row">
+                        {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("Person") %}
+                    </div>
                 {% endif %}
                 <div id="person_details">
                     <div class="row">
@@ -178,58 +181,59 @@
 
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Formation' %}</h4></div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field admission_form.formation form_group_class="form-group col-md-4" label=_("Formation") %}
-                    </div>
+            <div class="panel panel-body">
+                <div class="row">
+                    {% bootstrap_field admission_form.formation form_group_class="form-group col-md-4" label=_("Formation") %}
+                </div>
             </div>
         </div>
 
         <div id="additional_information_block" class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Additional information' %}</h4></div>
 
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field admission_form.additional_information form_group_class="form-group col-md-12" label_class="additional_information_label" %}
-                    </div>
+            <div class="panel panel-body">
+                <div class="row">
+                    {% bootstrap_field admission_form.additional_information form_group_class="form-group col-md-12" label_class="additional_information_label" %}
+                </div>
             </div>
         </div>
 
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Awareness' %}</h4></div>
-                <div class="panel panel-body">
-                    <div class="row">
-                        {% bootstrap_field admission_form.awareness_ucl_website form_group_class="col-md-12" label=_("By UCLouvain website") %}
-                        {% bootstrap_field admission_form.awareness_formation_website form_group_class="col-md-12" label=_("By formation website") %}
-                        {% bootstrap_field admission_form.awareness_press form_group_class="col-md-12" label=_("By press") %}
-                        {% bootstrap_field admission_form.awareness_facebook form_group_class="col-md-12" label=_("By Facebook") %}
-                        {% bootstrap_field admission_form.awareness_linkedin form_group_class="col-md-12" label=_("By LinkedIn") %}
-                        {% bootstrap_field admission_form.awareness_customized_mail form_group_class="col-md-12" label=_("By customized mail") %}
-                        {% bootstrap_field admission_form.awareness_emailing form_group_class="col-md-12" label=_("By emailing") %}
-                        {% bootstrap_field admission_form.awareness_word_of_mouth form_group_class="col-md-12" label=_("By word of mouth") %}
-                        {% bootstrap_field admission_form.awareness_friends form_group_class="col-md-12" label=_("By friends") %}
-                        {% bootstrap_field admission_form.awareness_former_students form_group_class="col-md-12" label=_("By former students") %}
-                        {% bootstrap_field admission_form.awareness_moocs form_group_class="col-md-12" label=_("By Moocs") %}
-                        {% with admission_form.awareness_other.value as other_value %}
-                            <div class="col-md-12">
-                                <div class="checkbox">
-                                    <label for="id_awareness_other">
-                                        <input type="checkbox" name="awareness_other" class="" id="id_awareness_other_checkbox"
+            <div class="panel panel-body">
+                <div class="row">
+                    {% bootstrap_field admission_form.awareness_ucl_website form_group_class="col-md-12" label=_("By UCLouvain website") %}
+                    {% bootstrap_field admission_form.awareness_formation_website form_group_class="col-md-12" label=_("By formation website") %}
+                    {% bootstrap_field admission_form.awareness_press form_group_class="col-md-12" label=_("By press") %}
+                    {% bootstrap_field admission_form.awareness_facebook form_group_class="col-md-12" label=_("By Facebook") %}
+                    {% bootstrap_field admission_form.awareness_linkedin form_group_class="col-md-12" label=_("By LinkedIn") %}
+                    {% bootstrap_field admission_form.awareness_customized_mail form_group_class="col-md-12" label=_("By customized mail") %}
+                    {% bootstrap_field admission_form.awareness_emailing form_group_class="col-md-12" label=_("By emailing") %}
+                    {% bootstrap_field admission_form.awareness_word_of_mouth form_group_class="col-md-12" label=_("By word of mouth") %}
+                    {% bootstrap_field admission_form.awareness_friends form_group_class="col-md-12" label=_("By friends") %}
+                    {% bootstrap_field admission_form.awareness_former_students form_group_class="col-md-12" label=_("By former students") %}
+                    {% bootstrap_field admission_form.awareness_moocs form_group_class="col-md-12" label=_("By Moocs") %}
+                    {% with admission_form.awareness_other.value as other_value %}
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                <label for="id_awareness_other">
+                                    <input type="checkbox" name="awareness_other" class=""
+                                           id="id_awareness_other_checkbox"
                                             {% if other_value != None and other_value != '' %}
-                                                   checked
+                                           checked
                                             {% endif %}>
-                                            {% trans 'Other' %}
-                                    </label>
-                                </div>
-                                <div id="other-text-field" class="col-md-4"
-                                        {% if other_value == None or other_value == '' %}
-                                            hidden
-                                        {% endif %}>
-                                    {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group'  field_class="other_required" %}
-                                </div>
+                                    {% trans 'Other' %}
+                                </label>
                             </div>
-                        {% endwith %}
-                    </div>
+                            <div id="other-text-field" class="col-md-4"
+                                    {% if not other_value %}
+                                 hidden
+                                    {% endif %}>
+                                {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group' field_class="other_required" %}
+                            </div>
+                        </div>
+                    {% endwith %}
+                </div>
             </div>
         </div>
 
@@ -237,11 +241,11 @@
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
         {% if admission %}
-            <a class="btn btn-default pull-right" id="cancel_bottom" href="{% url 'admission_detail' admission_id=admission.id %}"
-               name="btn_save"
+            <a class="btn btn-default pull-right" id="cancel_bottom"
+               href="{% url 'admission_detail' admission_id=admission.id %}"
                data-modal_class="modal-lg"
                {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}
-                    >
+            >
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
             </a>
         {% else %}
@@ -254,100 +258,91 @@
                 {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
         </button>
-        {%  trans 'Do you confirm you want to save?' as confirm_msg_extra %}
+        {% trans 'Do you confirm you want to save?' as confirm_msg_extra %}
         {% include "fragment/submit_confirm_modal.html" with confirm_msg=confirm_msg_extra %}
     </form>
 {% endblock %}
 
 
 {% block script %}
+    <script src="{% static 'js/registration_addresses.js' %}"></script>
     <script>
         // toggle field when diploma_obtained yes is selected
         let diploma_obtained = $('#id_high_school_diploma').find(":selected").val();
         $('.high_school_graduation_year').toggle(diploma_obtained == "True");
-        $('#id_high_school_diploma').on('change', function() {
+        $('#id_high_school_diploma').on('change', function () {
             $('.high_school_graduation_year').toggle($(this).find(":selected").val());
         });
 
         // toggle person fields when new person is selected
-        $('#id_person_information').on('change', function() {
+        $('#id_person_information').on('change', function () {
             $('#person_details').toggle($('#id_person_information').find(":selected").val() === '');
         });
 
         // show other text field when other is checked
-        $('#id_awareness_other_checkbox').change(function(){
+        $('#id_awareness_other_checkbox').change(function () {
             $('#other-text-field').toggle(this.checked);
-            if(!this.checked){
+            if (!this.checked) {
                 $('#other-text-field input').val('');
             }
         });
 
-    //re-enable disabled field on form submit
-    let fields_to_enable = ["birth_country", "gender"];
+        $("#form").submit(function (event) {
+            enableFields(["birth_country", "gender"]);
+        });
 
-    function enableFields(fields) {
-        for (var field of fields) {
-            $("#id_" + field).prop( "disabled", false );
-        }
-    }
-    $( "#form" ).submit(function( event ) {
-        enableFields(fields_to_enable);
-    });
+        $(".other_required").after(" *").css('display', 'inline-block');
 
-    $(".other_required").after(" *").css('display', 'inline-block');
+        $("#btn_confirm_fields").click(function () {
+            $('#form').submit();
+        });
 
-    $("#btn_confirm_fields").click(function(){
-        $('#form').submit();
-    });
-
-    $("#id_formation").on('change', function(){
-        let pk = $(this).find(":selected").val();
-        if(pk){
-            $.ajax({
-                url: '{% url 'get_formation_information' %}',
-                method: "GET",
-                data: {
-                    'formation_id': pk,
-                },
-                success: (data) => {
-                    if(data.additional_information_label) {
-                        $("#additional_information_block").show();
-                        $(".additional_information_label").text(data.additional_information_label);
-                    } else {
-                        $("#additional_information_block").hide();
+        $("#id_formation").on('change', function () {
+            let pk = $(this).find(":selected").val();
+            if (pk) {
+                $.ajax({
+                    url: '{% url 'get_formation_information' %}',
+                    method: "GET",
+                    data: {
+                        'formation_id': pk,
+                    },
+                    success: (data) => {
+                        if (data.additional_information_label) {
+                            $("#additional_information_block").show();
+                            $(".additional_information_label").text(data.additional_information_label);
+                        } else {
+                            $("#additional_information_block").hide();
+                        }
                     }
-                }
-            });
-        } else {
-            $("#additional_information_block").hide();
+                });
+            } else {
+                $("#additional_information_block").hide();
+            }
+        });
+        //trigger change on page load
+        $("#id_formation").trigger("change");
+
+        $("#no-firstname-checkbox").change(function () {
+            const input = $("#id_first_name");
+            const label = $("label[for='id_first_name']");
+            if (this.checked) {
+                label.parent().removeClass('required_field');
+                input.val('');
+                input.prop('disabled', true);
+                input.prop('required', false);
+                $("#form").append("<input id='no-first-name-input' type='hidden' name='no_first_name' value='1'/>");
+            } else {
+                label.parent().addClass('required_field');
+                input.prop('disabled', false);
+                input.prop('required', true);
+                $("#no-first-name-input").remove();
+            }
+        });
+
+        if ($("#id_last_name").val() && !$("#id_first_name").val() && !$("#id_first_name").parent().hasClass("has-error")) {
+            $("#no-firstname-checkbox").prop('checked', true);
+            $("#no-firstname-checkbox").trigger('change');
         }
-    });
-
-    //trigger change on page load
-    $("#id_formation").trigger("change");
-
-    $("#no-firstname-checkbox").change(function(){
-        const input = $("#id_first_name");
-        const label = $("label[for='id_first_name']");
-        if(this.checked){
-            label.parent().removeClass('required_field');
-            input.val('');
-            input.prop('disabled', true);
-            input.prop('required', false);
-            $("#form").append("<input id='no-first-name-input' type='hidden' name='no_first_name' value='1'/>");
-        } else {
-            label.parent().addClass('required_field');
-            input.prop('disabled', false);
-            input.prop('required', true);
-            $("#no-first-name-input").remove();
-        }
-    });
-
-    if($("#id_last_name").val() && !$("#id_first_name").val() && !$("#id_first_name").parent().hasClass("has-error")){
-        $("#no-firstname-checkbox").prop('checked', true);
-        $("#no-firstname-checkbox").trigger('change');
-    }
-
     </script>
     <script src="{% static 'js/participant_required_fields.js' %}"></script>
 
