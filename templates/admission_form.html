@@ -226,7 +226,7 @@
                                 </label>
                             </div>
                             <div id="other-text-field" class="col-md-4"
-                                    {% if other_value == None or other_value == '' %}
+                                    {% if not other_value %}
                                  hidden
                                     {% endif %}>
                                 {% bootstrap_field admission_form.awareness_other show_label=False form_group_class='other-form-group' field_class="other_required" %}
@@ -243,7 +243,6 @@
         {% if admission %}
             <a class="btn btn-default pull-right" id="cancel_bottom"
                href="{% url 'admission_detail' admission_id=admission.id %}"
-               name="btn_save"
                data-modal_class="modal-lg"
                {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}
             >

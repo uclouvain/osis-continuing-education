@@ -1,26 +1,21 @@
-$("[name='use_address_for_billing']:radio").change(function () {
-    if (this.value == "True") {
-        copy_address("billing");
-    } else {
-        empty_address("billing", billing_address);
+const addresses_variables = [
+    {using: 'use_address_for_billing', address_type: 'billing', address_instance: billing_address},
+    {using: 'use_address_for_post', address_type: 'residence', address_instance: residence_address}
+];
+
+for(let {using, address_type, address_instance} of addresses_variables) {
+    $("[name=" + using + "]:radio").change(function () {
+        if (this.value === "True") {
+            copy_address(address_type);
+        } else {
+            empty_address(address_type, address_instance)
+        }
+    });
+    if (typeof(address_instance) !== 'undefined') {
+        $("[name=using]:radio").prop('checked') ? copy_address(address_type) : empty_address(address_type, address_instance);
     }
-});
-// check when page is loaded
-if (typeof(billing_address) !== 'undefined') {
-    $("[name='use_address_for_billing']:radio").prop('checked') ? copy_address("billing") : empty_address(("billing"), billing_address);
 }
 
-$("[name='use_address_for_post']:radio").change(function () {
-    if (this.value == "True") {
-        copy_address("residence");
-    } else {
-        empty_address("residence", residence_address);
-    }
-});
-//check when page is loaded
-if (typeof(residence_address) !== 'undefined') {
-    $("[name='use_address_for_post']:radio").prop('checked') ? copy_address("residence") : empty_address(("residence"), residence_address);
-}
 let fields_to_enable = ["birth_country", "billing-country", "residence-country", "gender"];
 //re-enable disabled field on form submit
 $("#form").submit(function (event) {

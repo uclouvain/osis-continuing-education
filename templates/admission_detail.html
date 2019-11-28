@@ -98,8 +98,6 @@
                         {% if admission.archived %}
                             <a href="{% url 'archive_procedure' admission.id %}"
                                title="
-
-
                                        {% trans 'Admission archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
                                class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
                                {% if admission.is_draft %}disabled{% endif %}>
@@ -108,8 +106,6 @@
                         {% else %}
                             <a href="{% url 'archive_procedure' admission.id %}"
                                title="
-
-
                                        {% trans 'Admission is not archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
                                class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
                                {% if admission.is_draft %}disabled{% endif %}>

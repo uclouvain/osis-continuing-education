@@ -53,20 +53,20 @@
                     </label>
                 </div>
                 <div class="row participant_required">
-                    {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4" label=_("National registry number") %}
-                    {% bootstrap_field form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
-                    {% bootstrap_field form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
+                    {% bootstrap_field registration_form.national_registry_number form_group_class="form-group col-md-4" label=_("National registry number") %}
+                    {% bootstrap_field registration_form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
+                    {% bootstrap_field registration_form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
                 </div>
                 <div class="row participant_required" style="margin-top: -15px;">&nbsp;
                 </div>
                 <div class="row">
-                    {% bootstrap_field form.marital_status form_group_class="form-group col-md-4" label=_("Marital status") %}
-                    {% bootstrap_field form.spouse_name form_group_class="form-group col-md-4" label=_("Spouse name") %}
-                    {% bootstrap_field form.children_number form_group_class="form-group col-md-4" label=_("Children number") %}
+                    {% bootstrap_field registration_form.marital_status form_group_class="form-group col-md-4" label=_("Marital status") %}
+                    {% bootstrap_field registration_form.spouse_name form_group_class="form-group col-md-4" label=_("Spouse name") %}
+                    {% bootstrap_field registration_form.children_number form_group_class="form-group col-md-4" label=_("Children number") %}
                 </div>
                 <div class="row">
-                    {% bootstrap_field form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("Previous uclouvain registration") %}
-                    {% bootstrap_field form.previous_noma form_group_class="form-group col-md-4" label=_("Previous NOMA") %}
+                    {% bootstrap_field registration_form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("Previous uclouvain registration") %}
+                    {% bootstrap_field registration_form.previous_noma form_group_class="form-group col-md-4" label=_("Previous NOMA") %}
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
             <div class="panel-heading"><h4>{% trans 'Post' %}</h4></div>
             <div class="panel panel-body">
                 <div class="row">
-                    {% bootstrap_field form.use_address_for_post form_group_class="form-group col-md-12" %}
+                    {% bootstrap_field registration_form.use_address_for_post form_group_class="form-group col-md-12" %}
                 </div>
                 <div id="residence_address" class="row" name="{% trans 'Post' %}">
                     {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-3" class="participant_required" label=_("Street Address") %}
@@ -83,7 +83,7 @@
                     {% bootstrap_field residence_address_form.country form_group_class="form-group col-md-3" class="participant_required" label=_("Country") %}
                 </div>
                 <div class="row">
-                    {% bootstrap_field form.residence_phone form_group_class="form-group col-md-3" label=_("Residence phone") %}
+                    {% bootstrap_field registration_form.residence_phone form_group_class="form-group col-md-3" label=_("Residence phone") %}
                 </div>
             </div>
         </div>
@@ -93,21 +93,21 @@
             <div class="panel panel-body">
                 <div class="row">
                     <div class="col-md-4">
-                        {% bootstrap_field form.ucl_registration_complete label=_("UCLouvain registration complete") %}
-                        {% bootstrap_field form.payment_complete label=_("Payment complete") %}
-                        {% bootstrap_field form.registration_file_received label=_("Registration file received") %}
-                        {% bootstrap_field form.noma label=_("NOMA") %}
-                        {% bootstrap_field form.reduced_rates label=_("Reduced rates") %}
-                        {% bootstrap_field form.spreading_payments label=_("Spreading payments") %}
+                        {% bootstrap_field registration_form.ucl_registration_complete label=_("UCLouvain registration complete") %}
+                        {% bootstrap_field registration_form.payment_complete label=_("Payment complete") %}
+                        {% bootstrap_field registration_form.registration_file_received label=_("Registration file received") %}
+                        {% bootstrap_field registration_form.noma label=_("NOMA") %}
+                        {% bootstrap_field registration_form.reduced_rates label=_("Reduced rates") %}
+                        {% bootstrap_field registration_form.spreading_payments label=_("Spreading payments") %}
                     </div>
                     <div class="col-md-4">
-                        {% bootstrap_field form.formation_spreading label=_("Formation spreading") %}
-                        {% bootstrap_field form.prior_experience_validation label=_("Prior experience validation") %}
+                        {% bootstrap_field registration_form.formation_spreading label=_("Formation spreading") %}
+                        {% bootstrap_field registration_form.prior_experience_validation label=_("Prior experience validation") %}
                     </div>
                     <div class="col-md-4">
-                        {% bootstrap_field form.assessment_presented label=_("Assessment presented") %}
-                        {% bootstrap_field form.assessment_succeeded label=_("Assessment succeeded") %}
-                        {% bootstrap_field form.diploma_produced label=_("Diploma produced") %}
+                        {% bootstrap_field registration_form.assessment_presented label=_("Assessment presented") %}
+                        {% bootstrap_field registration_form.assessment_succeeded label=_("Assessment succeeded") %}
+                        {% bootstrap_field registration_form.diploma_produced label=_("Diploma produced") %}
                     </div>
                 </div>
             </div>
@@ -115,7 +115,7 @@
 
         <div class="panel panel-default">
             <div class="panel panel-body">
-                {% bootstrap_field form.comment label=_("Comment") %}
+                {% bootstrap_field registration_form.comment label=_("Comment") %}
             </div>
         </div>
 
