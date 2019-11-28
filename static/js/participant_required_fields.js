@@ -46,8 +46,7 @@ function check_mandatory_fields_in_screen() {
             let extra='';
             let div =$(this).closest('div[id]');
             if ($(this).attr("id").includes("_residence-") || $(this).attr("id").includes("_billing-")){
-                extra =div.attr('name');
-                extra = extra + " : " ;
+                extra = div.attr('name') + " : ";
             }
             $('ul#list_fields_missing').append($("<li></li>").text(extra + $('label[for="' + $(this).attr('id') + '"]').text()));
         }
@@ -65,9 +64,8 @@ function check_mandatory_fields_in_screen() {
         sortUL("ul#list_fields_missing");
         $('#modal_confirm').modal('show');
         return false;
-    }else{
-        return true;
     }
+    return true;
 }
 
 function sortUL(selector) {
