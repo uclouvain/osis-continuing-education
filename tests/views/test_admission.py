@@ -51,6 +51,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -86,10 +87,10 @@ class ViewAdmissionTestCase(TestCase):
             education_group=cls.education_group_no_registration_required,
             registration_required=False
         )
-        group = GroupFactory(name='continuing_education_managers')
+        group = GroupFactory(name=MANAGERS_GROUP)
         cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         cls.manager.user.groups.add(group)
-        group = GroupFactory(name='continuing_education_training_managers')
+        group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
         cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         EntityVersionFactory(
@@ -477,3 +478,107 @@ class ViewAdmissionCacheTestCase(TestCase):
         })
         cached_response = self.client.get(reverse('admission'))
         self.assertEqual(response.wsgi_request.GET['free_text'], cached_response.wsgi_request.GET['free_text'])
+
+
+class BillingEditTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
+        )
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
+            registration_required=False
+        )
+        # cls.education_group_no_registration_required = EducationGroupFactory()
+        # EducationGroupYearFactory(
+        #     education_group=cls.education_group_no_registration_required,
+        #     academic_year=cls.academic_year
+        # )
+        # cls.formation_no_registration_required = ContinuingEducationTrainingFactory(
+        #     education_group=cls.education_group_no_registration_required,
+        #     registration_required=False
+        # )
+        group = GroupFactory(name=MANAGERS_GROUP)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        group = GroupFactory(name=STUDENT_WORKERS_GROUP)
+        cls.student_worker = PersonWithPermissionsFactory('can_access_admission')
+        cls.student_worker.user.groups.add(group)
+        EntityVersionFactory(
+            entity=cls.formation.management_entity
+        )
+        a_person_information = ContinuingEducationPersonFactory(person__gender='M')
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
+            state=SUBMITTED,
+            person_information=a_person_information,
+        )
+        # cls.admission_no_admission_required = AdmissionFactory(
+        #     formation=cls.formation_no_registration_required,
+        #     state=ACCEPTED_NO_REGISTRATION_REQUIRED,
+        #     person_information=a_person_information,
+        # )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
+
+    def test_billing_edit(self):
+        url = reverse('billing_edit', args=[self.admission.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'admission_billing_form.html')
+
+    def test_billing_edit_not_found(self):
+        response = self.client.get(reverse('billing_edit', kwargs={
+            'admission_id': 0,
+        }))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_billing_edit_access_denied_for_student_worker(self):
+        self.client.force_login(self.student_worker.user)
+        url = reverse('billing_edit', args=[self.admission.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTemplateUsed(response, 'access_denied.html')
+
+    def test_billing_edit_access_denied_if_draft(self):
+        self.admission.state = DRAFT
+        self.admission.save()
+        url = reverse('billing_edit', args=[self.admission.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTemplateUsed(response, 'access_denied.html')
+
+    def test_billing_edit_access_denied_if_registration_required(self):
+        self.admission.formation.registration_required = True
+        self.admission.formation.save()
+        url = reverse('billing_edit', args=[self.admission.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTemplateUsed(response, 'access_denied.html')
+
+    def test_billing_edit_post_admission_found(self):
+        billing_info = {
+            'billing_address': self.admission.address.pk,
+            'registration_type': 'PRIVATE',
+            'head_office_name': 'HEAD_OFF_NAME',
+            'company_number': 'COMP_NUM',
+            'vat_number': 'VAT_NUM',
+            'use_address_for_billing': True
+        }
+        data = billing_info.copy()
+        # Data to update
+
+        url = reverse('billing_edit', args=[self.admission.pk])
+        response = self.client.post(url, data=data)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#billing')
+        self.admission.refresh_from_db()
+        self.assertEquals(self.admission.registration_type, billing_info['registration_type'])
+        self.assertEquals(self.admission.head_office_name, billing_info['head_office_name'])
+        self.assertEquals(self.admission.company_number, billing_info['company_number'])
+        self.assertEquals(self.admission.vat_number, billing_info['vat_number'])
+        self.assertEquals(self.admission.use_address_for_billing, billing_info['use_address_for_billing'])

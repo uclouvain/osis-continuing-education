@@ -39,9 +39,6 @@ class RegistrationForm(ModelForm):
         if only_billing:
             self.fields['previous_ucl_registration'].required = False
 
-    def clean_residence_phone(self):
-        return self.cleaned_data['residence_phone'].replace(' ', '')
-
     class Meta:
         model = Admission
         fields = [

@@ -361,7 +361,7 @@ def billing_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     can_access_admission(request.user, admission)
 
-    if admission.is_draft():
+    if admission.is_draft() or admission.formation.registration_required:
         raise PermissionDenied
 
     registration_form = RegistrationForm(request.POST or None, instance=admission, only_billing=True)
@@ -384,7 +384,7 @@ def billing_edit(request, admission_id):
 
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#billing")
     else:
-        errors.append(billing_address_form.errors + registration_form.errors)
+        errors.append(billing_address_form.errors.update(registration_form.errors))
 
     return render(
         request,

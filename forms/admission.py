@@ -63,9 +63,6 @@ class AdmissionForm(ModelForm):
         empty_label=_("New person")
     )
 
-    def clean_phone_mobile(self):
-        return self.cleaned_data['phone_mobile'].replace(' ', '')
-
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
         qs = self.fields['formation'].queryset

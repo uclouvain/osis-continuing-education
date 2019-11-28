@@ -112,7 +112,6 @@ class TestAdmissionForm(TestCase):
 
 
 class TestRejectedAdmissionForm(TestCase):
-
     def setUp(self):
         self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
@@ -172,7 +171,6 @@ class TestRejectedAdmissionForm(TestCase):
 
 
 def convert_countries(person):
-    # person['address']['country'] = country.find_by_id(person["country_id"])
     person['birth_country'] = country.find_by_id(person["birth_country_id"])
     person['citizenship'] = country.find_by_id(person["citizenship_id"])
 
@@ -184,7 +182,6 @@ def convert_dates(person):
 
 
 class TestAcceptedAdmissionForm(TestCase):
-
     def setUp(self):
         self.academic_year = AcademicYearFactory(year=2018)
         self.education_group = EducationGroupFactory()
