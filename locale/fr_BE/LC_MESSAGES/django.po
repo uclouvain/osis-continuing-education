@@ -595,7 +595,7 @@ msgid "Manager is already assigned on this training"
 msgstr "Le gestionnaire est déjà assigné à cette formation"
 
 msgid "Manager person has no user"
-msgstr "Le gestionnaire choisi n'a pas d'utilisateur"
+msgstr "Le gestionnaire sélectionné n'a pas d'utilisateur"
 
 msgid "Manager(s) of the training"
 msgstr "Gestionnaire(s) de la formation"
