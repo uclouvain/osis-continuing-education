@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
 
@@ -51,7 +51,7 @@
             </button>
             <h3>
                 {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
-                &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
+                &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.title }} &mdash;{{ admission.formation.academic_year }}
             </h3>
         </div>
 
@@ -144,6 +144,12 @@
                 </div>
 
 
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel panel-body">
+                {% bootstrap_field form.comment label=_("Comment") %}
             </div>
         </div>
 

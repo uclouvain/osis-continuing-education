@@ -126,7 +126,10 @@ class AdmissionForm(ModelForm):
 
             # State
             'state',
-            'state_reason'
+            'state_reason',
+
+            # Additional Information
+            'additional_information'
         ]
 
 
@@ -286,7 +289,6 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
 
     def save(self):
         instance = super().save(commit=False)
-
         if eval(self.cleaned_data["condition_of_acceptance_existing"]):
             instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
         else:

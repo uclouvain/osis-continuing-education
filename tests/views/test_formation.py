@@ -30,6 +30,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.forms import model_to_dict
+from django.http.response import HttpResponseBase
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -47,6 +48,7 @@ from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.person_training import PersonTrainingFactory
 
 STR_TRUE = "True"
 STR_FALSE = "False"
@@ -87,9 +89,13 @@ class ViewFormationTestCase(TestCase):
             academic_year=current_acad_year,
             education_group_type=continuing_education_group_type
         )
-
+        group = GroupFactory(name='continuing_education_managers')
         self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
+        group = GroupFactory(name='continuing_education_training_managers')
+        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.training_manager.user.groups.add(group)
         self.entity_version = EntityVersionFactory(
             entity=self.formation_AAAA.management_entity,
         )
@@ -168,6 +174,28 @@ class ViewFormationTestCase(TestCase):
         for key in form.cleaned_data.keys():
             field_value = cet.__getattribute__(key)
             self.assertEqual(field_value, cet_dict[key])
+
+    def test_training_manager_can_edit_training(self):
+        self.client.force_login(self.training_manager.user)
+        PersonTrainingFactory(person=self.training_manager, training=self.continuing_education_training)
+        url = reverse('formation_edit', args=[self.continuing_education_training.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HttpResponseBase.status_code)
+        self.assertTemplateUsed(response, 'formation_form.html')
+
+    def test_training_manager_cannot_edit_training(self):
+        self.client.force_login(self.training_manager.user)
+        url = reverse('formation_edit', args=[self.continuing_education_training.id])
+        response = self.client.get(url)
+        self.assertRedirects(
+            response,
+            reverse('formation_detail', args=[self.continuing_education_training.education_group.id])
+        )
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        self.assertEqual(len(msg), 1)
+        self.assertIn(messages.ERROR, msg_level)
+        self.assertEqual(msg[0], _('You are not authorized to edit this training'))
 
 
 class FormationActivateTestCase(TestCase):

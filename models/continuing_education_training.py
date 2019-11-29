@@ -85,7 +85,19 @@ class ContinuingEducationTraining(Model):
 
     managers = models.ManyToManyField(Person, through='PersonTraining')
 
-    postal_address = models.ForeignKey(Address, default=None, blank=True, null=True)
+    postal_address = models.ForeignKey(Address, default=None, blank=True, null=True, on_delete=models.CASCADE)
+
+    additional_information_label = models.TextField(
+        default='',
+        verbose_name=_("Additional information label"),
+        blank=True,
+        help_text=_("Leave empty if training does not require additional information")
+    )
+
+    registration_required = models.BooleanField(
+        default=True,
+        verbose_name=_("Registration required")
+    )
 
     def clean(self):
         if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
@@ -124,6 +136,11 @@ class ContinuingEducationTraining(Model):
     @property
     def formation_administrators(self):
         return " - ".join([str(mgr) for mgr in self.managers.all().order_by('last_name', 'first_name')])
+
+    @property
+    def acronym_and_title(self):
+        most_recent_education_group_year = self.get_most_recent_education_group_year()
+        return "{} - {}".format(most_recent_education_group_year.acronym, most_recent_education_group_year.title)
 
     def get_alternative_notification_email_receivers(self):
         return [adr.strip() for adr in self.alternate_notification_email_addresses.split(',') if adr]

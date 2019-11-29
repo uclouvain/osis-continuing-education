@@ -1,6 +1,7 @@
 from django.utils.translation import gettext_lazy as _
 
 ACCEPTED = 'Accepted'
+ACCEPTED_NO_REGISTRATION_REQUIRED = 'Accepted (no registration required)'
 REJECTED = 'Rejected'
 WAITING = 'Waiting'
 
@@ -13,6 +14,7 @@ CANCELLED = 'Cancelled'
 
 STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),
+    (ACCEPTED_NO_REGISTRATION_REQUIRED, _('Accepted (no registration required)')),
     (REJECTED, _('Rejected')),
     (WAITING, _('Waiting')),
     (DRAFT, _('Draft')),
@@ -36,7 +38,7 @@ STATES_SUBMITTED = {
         (DRAFT, _('Draft')),
         (CANCELLED, _('Cancelled')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING, DRAFT, CANCELLED]
+    'states': [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED, REJECTED, WAITING, DRAFT, CANCELLED]
 }
 
 STATES_ACCEPTED_VALIDATED = {
@@ -45,6 +47,13 @@ STATES_ACCEPTED_VALIDATED = {
         (CANCELLED, _('Cancelled')),
     ),
     'states': [REGISTRATION_SUBMITTED, CANCELLED]
+}
+
+STATES_ACCEPTED_NO_REGISTRATION_REQUIRED = {
+    'choices': (
+        (CANCELLED, _('Cancelled')),
+    ),
+    'states': [CANCELLED]
 }
 
 STATES_REGISTRATION_SUBMITTED = {
@@ -86,7 +95,8 @@ NEW_ADMIN_STATE = {
     REJECTED: STATES_REJECTED_WAITING,
     VALIDATED: STATES_ACCEPTED_VALIDATED,
     REGISTRATION_SUBMITTED: STATES_REGISTRATION_SUBMITTED,
-    CANCELLED: STATES_CANCELLED
+    CANCELLED: STATES_CANCELLED,
+    ACCEPTED_NO_REGISTRATION_REQUIRED: STATES_ACCEPTED_NO_REGISTRATION_REQUIRED,
 }
 
 ADMISSION_STATE_CHOICES = (
@@ -94,6 +104,7 @@ ADMISSION_STATE_CHOICES = (
     (REJECTED, _('Rejected')),
     (WAITING, _('Waiting')),
     (DRAFT, _('Draft')),
+    (ACCEPTED_NO_REGISTRATION_REQUIRED, _('Accepted'))
 )
 REGISTRATION_STATE_CHOICES = (
     (ACCEPTED, _('Accepted')),

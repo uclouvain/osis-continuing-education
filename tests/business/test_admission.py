@@ -180,7 +180,7 @@ class SendEmailTest(TestCase):
         self.admission.state = admission_state_choices.ACCEPTED
         self.admission._original_state = self.admission.state
         self.admission.save()
-        admission.send_state_changed_email(self.admission)
+        admission.save_state_changed_and_send_email(self.admission)
         args = mock_send.call_args[1]
 
         self.assertEqual(_(self.admission.state), args.get('data').get('subject').get('state'))
@@ -291,6 +291,37 @@ class SendEmailTest(TestCase):
         max_size_to_check = self.admission_file.size + 1
         self.assertEqual(len(_get_attachments(self.admission.id, max_size_to_check)), 1)
 
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_admission_accepted_with_condition(self, mock_send):
+        self.admission.state = admission_state_choices.ACCEPTED
+        self.admission._original_state = self.admission.state
+        self.admission.condition_of_acceptance = 'CONDITION'
+        self.admission.save()
+        admission.save_state_changed_and_send_email(self.admission)
+        args = mock_send.call_args[1]
+
+        self.assertEqual(
+            self.admission.condition_of_acceptance,
+            args.get('data').get('template').get('condition_of_acceptance')
+        )
+        self.assertEqual(len(args.get('receivers')), 1)
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_admission_with_no_registration_required(self, mock_send):
+        self.admission.state = admission_state_choices.ACCEPTED
+        self.admission._original_state = self.admission.state
+        self.admission.formation.registration_required = False
+        self.admission.formation.save()
+        self.admission.save()
+        admission.save_state_changed_and_send_email(self.admission)
+        args = mock_send.call_args[1]
+
+        self.assertEqual(
+            self.admission.formation.registration_required,
+            args.get('data').get('template').get('registration_required')
+        )
+        self.assertEqual(len(args.get('receivers')), 1)
+
 
 class SendEmailSettingsTest(TestCase):
     def setUp(self):
@@ -356,5 +387,28 @@ class SendEmailSettingsTest(TestCase):
                     'receiver_email': "test2@domain.com",
                     'receiver_lang': None
                 }
+            ]
+        )
+
+    @patch('continuing_education.business.admission.send_email')
+    def test_send_email_email_missing(self, mock_send_mail):
+        self.manager_without_email = PersonFactory(last_name="AAA", email=None)
+        self.manager_without_email.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+        PersonTrainingFactory(person=self.manager_without_email, training=self.cet)
+
+        self.cet.send_notification_emails = True
+        self.cet.save()
+
+        admission.send_submission_email_to_admission_managers(self.admission, None)
+        receivers = mock_send_mail.call_args[1].get('receivers')
+
+        self.assertCountEqual(
+            receivers,
+            [
+                {
+                    'receiver_person_id': self.manager.id,
+                    'receiver_email': self.manager.email,
+                    'receiver_lang': self.manager.language
+                },
             ]
         )

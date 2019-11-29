@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
 
@@ -43,7 +43,25 @@
     </div>
 
     <div class="panel panel-default">
+    <br>
+        {% if prospects %}
+            <div class="dropdown  text-right" style="margin-right: 10px;">
+                <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                    <li>
+                        <a id="btn_produce_xls" style="margin-right:10px;" href="{% url 'prospects_xls'  %}"
+                           title="Produce xls">
+                            &nbsp;{%  trans 'Produce xls' %}
+                        </a>
 
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
         <div class="panel panel-body">
             {% if prospects %}
                 <div class="row">
@@ -76,10 +94,10 @@
                                 {{ prospect.name }}, {{ prospect.first_name }}
                             </a>
                         </td>
-                        <td>{{ prospect.city }} ({{ prospect.postal_code }})</td>
+                        <td>{{ prospect.city }} {% if prospect.postal_code %}({{ prospect.postal_code }}){% endif %}</td>
                         <td>{{ prospect.email }}</td>
                         <td>{{ prospect.phone_number }}</td>
-                        <td>{{ prospect.formation.acronym }} - {{ prospect.formation.academic_year.year }}</td>
+                        <td>{{ prospect.formation.acronym }} - {{ prospect.formation.title }} - {{ prospect.formation.academic_year.year }}</td>
                     </tr>
                 {% endfor %}
             </table>

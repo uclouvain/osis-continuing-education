@@ -1,7 +1,8 @@
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
-
+<!-- Hidden before being sure it won't be used anymore -->
+<div style="visibility: hidden; display: none;">
 <div style="padding: 0.5em;">
     <div class="alert alert-info" style="display:inline-block;">
         <i class="fa fa-info-circle"></i> {% trans 'This page contains the Registrations for which the diploma must be produced by IUFC.' %}
@@ -54,8 +55,8 @@
         </tbody>
     </table>
 </form>
-
-{% include "fragment/tasks/diplomas_to_produce_modal.html" %}
+    {% include "fragment/tasks/diplomas_to_produce_modal.html" %}
+</div>
 
 {% block script %}
     <script>

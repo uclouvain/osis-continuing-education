@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
 
@@ -50,7 +50,11 @@
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
             <h3>
-                {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
+                {% if admission.person_information.person.first_name %}
+                    {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name}}
+                {% else %}
+                    {{ admission.person_information.person.last_name }}
+                {% endif %}
                 &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
             </h3>
         {% else %}
@@ -81,7 +85,13 @@
                 {% endif %}
                 <div id="person_details">
                     <div class="row">
-                        {% bootstrap_field base_person_form.first_name form_group_class="form-group col-md-4" label=_("First name") %}
+                        <div class="form-group col-md-4">
+                            {% bootstrap_field base_person_form.first_name label=_("First name") %}
+                            <div style="margin-bottom: 15px;">
+                                <input id="no-firstname-checkbox" type="checkbox"/>
+                                <span>{% trans 'The participant does not have a first name' %}</span>
+                            </div>
+                        </div>
                         {% bootstrap_field base_person_form.last_name form_group_class="form-group col-md-4" label=_("Last name") %}
                         {% bootstrap_field base_person_form.gender form_group_class="form-group col-md-4" label=_("Gender") %}
                     </div>
@@ -175,6 +185,16 @@
             </div>
         </div>
 
+        <div id="additional_information_block" class="panel panel-default">
+            <div class="panel-heading"><h4>{% trans 'Additional information' %}</h4></div>
+
+                <div class="panel panel-body">
+                    <div class="row">
+                        {% bootstrap_field admission_form.additional_information form_group_class="form-group col-md-12" label_class="additional_information_label" %}
+                    </div>
+            </div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Awareness' %}</h4></div>
                 <div class="panel panel-body">
@@ -212,6 +232,7 @@
                     </div>
             </div>
         </div>
+
 
         {% bootstrap_field admission_form.state form_group_class="form-group hidden col-md-12" label=_("State") %}
 
@@ -279,6 +300,53 @@
         $('#form').submit();
     });
 
+    $("#id_formation").on('change', function(){
+        let pk = $(this).find(":selected").val();
+        if(pk){
+            $.ajax({
+                url: '{% url 'get_formation_information' %}',
+                method: "GET",
+                data: {
+                    'formation_id': pk,
+                },
+                success: (data) => {
+                    if(data.additional_information_label) {
+                        $("#additional_information_block").show();
+                        $(".additional_information_label").text(data.additional_information_label);
+                    } else {
+                        $("#additional_information_block").hide();
+                    }
+                }
+            });
+        } else {
+            $("#additional_information_block").hide();
+        }
+    });
+
+    //trigger change on page load
+    $("#id_formation").trigger("change");
+
+    $("#no-firstname-checkbox").change(function(){
+        const input = $("#id_first_name");
+        const label = $("label[for='id_first_name']");
+        if(this.checked){
+            label.parent().removeClass('required_field');
+            input.val('');
+            input.prop('disabled', true);
+            input.prop('required', false);
+            $("#form").append("<input id='no-first-name-input' type='hidden' name='no_first_name' value='1'/>");
+        } else {
+            label.parent().addClass('required_field');
+            input.prop('disabled', false);
+            input.prop('required', true);
+            $("#no-first-name-input").remove();
+        }
+    });
+
+    if($("#id_last_name").val() && !$("#id_first_name").val() && !$("#id_first_name").parent().hasClass("has-error")){
+        $("#no-firstname-checkbox").prop('checked', true);
+        $("#no-firstname-checkbox").trigger('change');
+    }
 
     </script>
     <script src="{% static 'js/participant_required_fields.js' %}"></script>

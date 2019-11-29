@@ -1,4 +1,3 @@
-import unicodedata
 from datetime import datetime
 from operator import itemgetter
 
@@ -11,7 +10,6 @@ from django.utils.translation import pgettext_lazy
 from base.business.entity import get_entities_ids
 from base.models import entity_version
 from base.models.education_group import EducationGroup
-from base.models.education_group_year import EducationGroupYear
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
 from base.models.person import Person
@@ -21,13 +19,14 @@ from continuing_education.models.continuing_education_training import CONTINUING
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
     ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
-    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT
+    REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 
-STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT]
+STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
 STATES_FOR_ARCHIVE = [
-    ACCEPTED, REJECTED, REGISTRATION_STATE_CHOICES, WAITING, SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED
+    ACCEPTED, REJECTED, REGISTRATION_STATE_CHOICES, WAITING, SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED,
+    ACCEPTED_NO_REGISTRATION_REQUIRED
 ]
 
 ALL_CHOICE = ("", pgettext_lazy("plural", "All"))
@@ -69,7 +68,7 @@ class FacultyModelChoiceField(ModelChoiceField):
 
 class FormationModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
-        return obj.acronym
+        return obj.acronym_and_title
 
 
 class AdmissionFilterForm(BootstrapForm):
@@ -96,6 +95,12 @@ class AdmissionFilterForm(BootstrapForm):
 
     free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
 
+    registration_required = forms.ChoiceField(
+        choices=BOOLEAN_CHOICES,
+        required=False,
+        label=_('Registration required')
+    )
+
     def __init__(self, *args, **kwargs):
         super(AdmissionFilterForm, self).__init__(*args, **kwargs)
         self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
@@ -104,6 +109,7 @@ class AdmissionFilterForm(BootstrapForm):
     def get_admissions(self):
         a_state = self.cleaned_data.get('state')
         free_text = self.cleaned_data.get('free_text')
+        registration_required = self.cleaned_data.get('registration_required')
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],
@@ -118,22 +124,22 @@ class AdmissionFilterForm(BootstrapForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
+        if registration_required:
+            qs = qs.filter(formation__registration_required=registration_required)
+
         return qs.distinct()
 
 
 def search_admissions_with_free_text(free_text, qs):
-    free_text_unaccent = strip_accents(free_text)
     qs = qs.filter(
-        Q(person_information__person__first_name__icontains=free_text) |
-        Q(person_information__person__last_name__icontains=free_text) |
+        Q(person_information__person__first_name__unaccent__icontains=free_text) |
+        Q(person_information__person__last_name__unaccent__icontains=free_text) |
         Q(person_information__person__email__icontains=free_text) |
         Q(email__icontains=free_text) |
         Q(formation__education_group__educationgroupyear__acronym__icontains=free_text) |
-        Q(formation__education_group__educationgroupyear__title__icontains=free_text) |
-        Q(address__country__name__icontains=free_text_unaccent) |
-        Q(address__country__name__icontains=free_text) |
-        Q(address__city__icontains=free_text_unaccent) |
-        Q(address__city__icontains=free_text)
+        Q(formation__education_group__educationgroupyear__title__unaccent__icontains=free_text) |
+        Q(address__country__name__unaccent__icontains=free_text) |
+        Q(address__city__unaccent__icontains=free_text)
     )
     return qs
 
@@ -210,6 +216,9 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
         if a_state is None or a_state == '':
             a_state = STATES_FOR_ARCHIVE
+        else:
+            if a_state == ACCEPTED:
+                a_state = [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],
@@ -253,20 +262,6 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
         qs = qs.filter(registration_file_received=received_file)
 
     return qs.order_by('person_information')
-
-
-def _get_formations_by_faculty(faculty):
-    entity = EntityVersion.objects.filter(id=faculty.id).first().entity
-    entities_child = EntityVersion.objects.filter(parent=entity)
-    formations = EducationGroupYear.objects.filter(
-        management_entity=entity
-    )
-    for child in entities_child:
-        formations |= EducationGroupYear.objects.filter(
-            management_entity=child.entity
-        )
-    formations = [formation.acronym for formation in formations]
-    return formations
 
 
 def _build_formation_choices(field, states, archived_status=False):
@@ -410,7 +405,3 @@ class ManagerFilterForm(BootstrapForm):
                 ).values_list('person__id')
             )
         return qs
-
-
-def strip_accents(value):
-    return ''.join((c for c in unicodedata.normalize('NFD', value) if unicodedata.category(c) != 'Mn'))

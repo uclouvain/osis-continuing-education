@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
 
@@ -70,7 +70,7 @@
                      </div>
                  </div>
                 <div class="row">
-                     <div class="col-md-3"></div>
+                     <div class="col-md-3">{% bootstrap_field form.registration_required label=_("Registration required") %}</div>
                      <div class="col-md-9">
                          {% bootstrap_label _("Who will receive notification emails ?") %}
                         <br/>
@@ -102,8 +102,15 @@
                     {% bootstrap_field address_form.country form_group_class="form-group col-md-6" %}
                 </div>
             </div>
+                <div class="panel-heading"><h4>{% trans 'Additional information' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% bootstrap_field form.additional_information_label form_group_class="form-group col-md-12" show_label=False%}
+                    </div>
+                </div>
+            </div>
         </div>
-
         <a class="btn btn-default pull-right" id="cancel_formation_edit_bottom" href="{% url 'formation_detail' formation_id=formation.education_group.id %}">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
         </a>

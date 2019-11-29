@@ -41,10 +41,10 @@ from osis_common.messaging import send_message as message_service
 MAX_DOCUMENTS_SIZE = 20000000
 
 
-def send_state_changed_email(admission, connected_user=None):
+def save_state_changed_and_send_email(admission, connected_user=None):
     person = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
-    condition_of_acceptance = None
+    condition_of_acceptance, registration_required = None, None
     state_message = get_valid_state_change_message(admission)
     save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
 
@@ -56,9 +56,7 @@ def send_state_changed_email(admission, connected_user=None):
                              admission_state_choices.REJECTED,
                              admission_state_choices.WAITING,
                              admission_state_choices.VALIDATED):
-        lower_state = admission.state.lower()
-        if admission.state == admission_state_choices.ACCEPTED and admission.condition_of_acceptance != '':
-            condition_of_acceptance = admission.condition_of_acceptance
+        condition_of_acceptance, lower_state, registration_required = _get_datas_from_admission(admission)
     else:
         lower_state = 'other'
 
@@ -76,7 +74,8 @@ def send_state_changed_email(admission, connected_user=None):
                 'reason': admission.state_reason if admission.state_reason else '-',
                 'mails': mails,
                 'original_state': _(admission._original_state),
-                'condition_of_acceptance': condition_of_acceptance
+                'condition_of_acceptance': condition_of_acceptance,
+                'registration_required': registration_required
             },
             'subject': {
                 'state': _(admission.state)
@@ -96,12 +95,21 @@ def send_state_changed_email(admission, connected_user=None):
     save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
 
 
+def _get_datas_from_admission(admission):
+    condition_of_acceptance, registration_required = None, None
+    lower_state = admission.state.lower()
+    if admission.state == admission_state_choices.ACCEPTED:
+        registration_required = admission.formation.registration_required
+        if admission.condition_of_acceptance != '':
+            condition_of_acceptance = admission.condition_of_acceptance
+    return condition_of_acceptance, lower_state, registration_required
+
+
 def send_submission_email_to_admission_managers(admission, connected_user):
     relative_path = reverse('admission_detail', kwargs={'admission_id': admission.id})
     # No request here because we are in a post_save
     formation_url = 'https://{}{}'.format(Site.objects.get_current().domain, relative_path)
 
-    managers = _get_continuing_education_managers()
     attachments = _get_attachments(admission.id, MAX_DOCUMENTS_SIZE)
     receivers = _get_admission_managers_email_receivers(admission)
     send_email(
@@ -127,9 +135,11 @@ def send_submission_email_to_admission_managers(admission, connected_user):
         receivers=receivers,
         connected_user=connected_user
     )
+
     MAIL['text'] = MAIL_MESSAGE % {
-        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]),
+        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]) if receivers else '',
     }
+
     save_and_create_revision(connected_user, get_revision_messages(MAIL) if receivers else '', admission)
 
 
@@ -146,7 +156,7 @@ def _get_admission_managers_email_receivers(admission):
     else:
         return [
             message_config.create_receiver(manager.id, manager.email, manager.language)
-            for manager in admission.formation.managers.all()
+            for manager in admission.formation.managers.all() if manager.email
         ]
 
 
@@ -260,16 +270,6 @@ def _get_formatted_admission_data(admission):
 
 def _value_or_empty(value):
     return value or ''
-
-
-def disable_existing_fields(form):
-    fields_to_disable = ["birth_country", "birth_date", "gender"]
-
-    for field in form.fields.keys():
-        form.fields[field].initial = getattr(form.instance, field)
-        form.fields[field].widget.attrs['readonly'] = True
-        if field in fields_to_disable:
-            form.fields[field].widget.attrs['disabled'] = True
 
 
 def get_management_faculty(education_group_yr):

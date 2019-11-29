@@ -14,7 +14,8 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
-from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, ALLOWED_EXTENSIONS, \
+    MAX_ADMISSION_FILES_COUNT
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
@@ -160,6 +161,59 @@ class UploadFileTestCase(TestCase):
         self.assertIn(
             gettext(_("The status of the admission must be Accepted to upload an invoice.")),
             str(messages_list[0])
+        )
+
+    def test_upload_file_unallowed_extension(self):
+        file_extension = "xyz"
+        self.admission_file.name = "{}.{}".format(self.admission_file.name, file_extension)
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = self.client.post(
+            url,
+            data={
+                'myfile': self.admission_file,
+                'file_category': file_category_choices.DOCUMENT,
+            },
+            format='multipart'
+        )
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(
+            gettext(
+                _(
+                    "File extension '%(extension)s' is not allowed. "
+                    "Allowed extensions are: '%(allowed_extensions)s'."
+                ) % {
+                    "extension": file_extension,
+                    "allowed_extensions": ", ".join(ALLOWED_EXTENSIONS)
+                    }
+                ),
+            str(messages_list[0])
+        )
+
+    def test_upload_too_many_files(self):
+        admission_files = [
+            SimpleUploadedFile(name='file_{}.pdf'.format(i), content=b'test')
+            for i in range(0, MAX_ADMISSION_FILES_COUNT+1)
+        ]
+        url = reverse('admission_detail', args=[self.admission.pk])
+        response = {}
+        for file in admission_files:
+            response = self.client.post(
+                url,
+                data={
+                    'myfile': file,
+                    'file_category': file_category_choices.DOCUMENT,
+                },
+                format='multipart'
+            )
+        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            _("The maximum number of files has been reached : maximum %(max)s files allowed.") % {
+                'max': MAX_ADMISSION_FILES_COUNT
+            }, str(messages_list[-1])
         )
 
 

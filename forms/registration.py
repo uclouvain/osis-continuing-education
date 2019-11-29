@@ -69,4 +69,5 @@ class RegistrationForm(ModelForm):
             'sessions',
             'reduced_rates',
             'spreading_payments',
+            'comment'
         ]

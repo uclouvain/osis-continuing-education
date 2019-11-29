@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# OSIS stands for Open Student Information System. It's an application
+#    OSIS stands for Open Student Information System. It's an application
 #    designed to manage the core business of higher education institutions,
 #    such as universities, faculties, institutes and professional schools.
 #    The core business involves the administration of students, teachers,
@@ -80,7 +80,7 @@ class TestXlsCommon(TestCase):
         result = extract_xls_data_from_registration(self.registration)
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
-        self.assertEqual(result[33], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
+        self.assertEqual(result[35], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))

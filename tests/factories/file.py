@@ -37,7 +37,7 @@ class AdmissionFileFactory(factory.DjangoModelFactory):
 
     admission = factory.SubFactory(AdmissionFactory)
     name = 'test'
-    path = 'path'
+    path = 'test.pdf'
     size = 1000
     created_date = datetime.now()
     uploaded_by = factory.SubFactory(PersonFactory)

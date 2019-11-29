@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 
 {% comment "License" %}
@@ -49,6 +49,10 @@
                     <div class="col-md-1"><i class="fa fa-file-alt" style="font-size: 400%; color: #6699FF;"></i></div>
                     <div class="col-md-5">
                         <h4 class="media-heading"><a href="{% url 'registration' %}">{% trans 'Registrations' %}</a></h4>
+                    </div>
+                    <div class="col-md-1"><i class="fa fa-tasks" style="font-size: 400%; color: #6699FF;"></i></div>
+                    <div class="col-md-5">
+                        <h4 class="media-heading"><a href="{% url 'list_tasks' %}">{% trans 'Tasks' %}</a></h4>
                     </div>
                 </div>
             </div>

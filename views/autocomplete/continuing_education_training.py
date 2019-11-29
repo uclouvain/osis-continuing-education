@@ -30,7 +30,7 @@ from continuing_education.models.continuing_education_training import Continuing
 
 class ContinuingEducationTrainingAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
-        if not self.request.user.is_authenticated():
+        if not self.request.user.is_authenticated:
             return ContinuingEducationTraining.objects.none()
 
         qs = ContinuingEducationTraining.objects.all().order_by(

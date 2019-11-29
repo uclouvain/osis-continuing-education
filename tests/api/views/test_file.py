@@ -30,12 +30,14 @@ from unittest.mock import patch
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory
 from django.urls import reverse
+from factory.fuzzy import FuzzyText
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
-from continuing_education.models.file import AdmissionFile
+from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -114,6 +116,54 @@ class AdmissionFileListCreateTestCase(APITestCase):
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(5, AdmissionFile.objects.all().count())
+
+    def test_create_file_with_name_too_long(self):
+        long_name = '{}.pdf'.format(FuzzyText(length=MAX_ADMISSION_FILE_NAME_LENGTH + 10).fuzz())
+        admission_file = SimpleUploadedFile(
+            name=long_name,
+            content=str.encode("test_content"),
+        )
+        data = {
+            'name': admission_file.name,
+            'size': admission_file.size,
+            'uploaded_by': self.admission.person_information.person.uuid,
+            'created_date': datetime.datetime.today(),
+            'path': admission_file
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+
+    def test_create_file_with_unallowed_extension(self):
+        admission_file = SimpleUploadedFile(
+            name='upload_test.xyz',
+            content=str.encode("test_content"),
+        )
+        data = {
+            'name': admission_file.name,
+            'size': admission_file.size,
+            'uploaded_by': self.admission.person_information.person.uuid,
+            'created_date': datetime.datetime.today(),
+            'path': admission_file
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+
+    def test_create_file_with_size_too_large(self):
+        large_file_size = MAX_UPLOAD_SIZE + 1
+        admission_file = SimpleUploadedFile(
+            name='upload_test.pdf',
+            content=str.encode("test_content"),
+            content_type="application/pdf"
+        )
+        data = {
+            'name': admission_file.name,
+            'size': large_file_size,
+            'uploaded_by': self.admission.person_information.person.uuid,
+            'created_date': datetime.datetime.today(),
+            'path': admission_file
+        }
+        response = self.client.post(self.url, data=data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
 
     def test_create_invalid_file(self):
         invalid_url = reverse(

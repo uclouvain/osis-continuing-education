@@ -28,10 +28,11 @@ from rest_framework import serializers
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.admission import AdmissionListSerializer
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
-from continuing_education.business.admission import send_state_changed_email
+from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.models.admission import Admission
 from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
     save_and_create_revision
+from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
 
@@ -46,43 +47,25 @@ class RegistrationListSerializer(AdmissionListSerializer):
         fields = AdmissionListSerializer.Meta.fields
 
 
-class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
-    person_uuid = serializers.UUIDField(source='person_information.person.uuid', required=False)
-    first_name = serializers.CharField(source='person_information.person.first_name', required=False)
-    last_name = serializers.CharField(source='person_information.person.last_name', required=False)
-    email = serializers.CharField(source='person_information.person.email', required=False)
-    gender = serializers.CharField(source='person_information.person.gender', required=False)
+class RegistrationDetailSerializer(RegistrationListSerializer):
 
-    citizenship = serializers.CharField(source='citizenship.name')
+    citizenship = CountrySerializer()
 
     address = AddressSerializer()
     billing_address = AddressSerializer()
     residence_address = AddressSerializer()
-    birth_date = serializers.DateField(source='person_information.birth_date', required=False)
-    birth_location = serializers.CharField(source='person_information.birth_location', required=False)
-    birth_country = serializers.CharField(source='person_information.birth_country.name', required=False)
+
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
-    state_text = serializers.CharField(source='get_state_display', read_only=True)
-
-    formation = ContinuingEducationTrainingSerializer(required=False)
 
     class Meta:
         model = Admission
-        fields = (
-            'uuid',
-            'first_name',
-            'last_name',
-            'email',
-            'gender',
-            'person_uuid',
+        fields = RegistrationListSerializer.Meta.fields + (
             # CONTACTS
-            'birth_date',
-            'birth_country',
-            'birth_location',
             'address',
             'citizenship',
+            'phone_mobile',
 
             # REGISTRATION
             # BILLING
@@ -104,6 +87,7 @@ class RegistrationDetailSerializer(serializers.HyperlinkedModelSerializer):
             'children_number',
             'previous_ucl_registration',
             'previous_noma',
+            'professional_status',
 
             # POST
             'use_address_for_post',
@@ -160,9 +144,7 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             validated_data.pop('formation')
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
-            message = get_valid_state_change_message(instance)
-            save_and_create_revision(self.context.get('request').user, get_revision_messages(message))
-            send_state_changed_email(instance, connected_user=self.context.get('request').user)
+            save_state_changed_and_send_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
     def update_addresses(self, field, validated_data, instance, to_update):

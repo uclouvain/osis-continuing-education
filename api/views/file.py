@@ -33,7 +33,8 @@ from rest_framework.response import Response
 from continuing_education.api.serializers.file import AdmissionFileSerializer, AdmissionFilePostSerializer
 from continuing_education.api.views.perms.perms import CanSendFiles
 from continuing_education.models.admission import Admission
-from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH
+from continuing_education.models.enums.exceptions import APIFileUploadExceptions
+from continuing_education.models.file import AdmissionFile
 
 
 class AdmissionFileListCreate(generics.ListCreateAPIView):
@@ -59,14 +60,17 @@ class AdmissionFileListCreate(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             return super().create(request, *args, **kwargs)
+        except APIFileUploadExceptions as e:
+            return Response(
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+                data=str(e)
+            )
         except ValidationError as e:
             return Response(
                 status=status.HTTP_406_NOT_ACCEPTABLE,
-                data=_("The name of the file is too long : maximum %(length)s characters.") % {
-                    'length': MAX_ADMISSION_FILE_NAME_LENGTH
-                }
+                data=next(iter(e.detail.values()))
             )
-        except Exception:
+        except Exception as e:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data=_("A problem occured : the document is not uploaded")

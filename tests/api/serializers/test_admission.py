@@ -1,11 +1,9 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -19,8 +17,8 @@ class AdmissionListSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         ed = EducationGroupFactory()
-        edy = EducationGroupYearFactory(education_group=ed, )
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
+        EducationGroupYearFactory(education_group=ed)
+
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
             formation=ContinuingEducationTrainingFactory(education_group=ed)
@@ -32,13 +30,11 @@ class AdmissionListSerializerTestCase(TestCase):
         expected_fields = [
             'uuid',
             'url',
-            'acronym',
+            'person_information',
+            'email',
+            'formation',
             'state',
             'state_text',
-            'title',
-            'faculty',
-            'code',
-            'academic_year'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -51,8 +47,7 @@ class AdmissionDetailSerializerTestCase(TestCase):
         cls.academic_year = AcademicYearFactory(year=2018)
         new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
         ed = EducationGroupFactory()
-        edy = EducationGroupYearFactory(education_group=ed)
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
+        EducationGroupYearFactory(education_group=ed)
         cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
@@ -68,22 +63,16 @@ class AdmissionDetailSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
+            'url',
+            'person_information',
+            'email',
+            'formation',
             'state',
             'state_text',
-            'first_name',
-            'last_name',
-            'email',
-            'gender',
-            'person_uuid',
             'address',
-            'birth_date',
-            'birth_location',
-            'birth_country',
             'citizenship',
-            'formation',
             'phone_mobile',
             'residence_phone',
-            'admission_email',
             'high_school_diploma',
             'high_school_graduation_year',
             'last_degree_level',
@@ -113,7 +102,8 @@ class AdmissionDetailSerializerTestCase(TestCase):
             'awareness_moocs',
             'awareness_other',
             'state_reason',
-            'condition_of_acceptance'
+            'condition_of_acceptance',
+            'additional_information'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -140,22 +130,16 @@ class AdmissionPostSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
+            'url',
+            'person_information',
+            'email',
+            'formation',
             'state',
             'state_text',
-            'first_name',
-            'last_name',
-            'email',
-            'gender',
-            'person_uuid',
             'address',
-            'birth_date',
-            'birth_location',
-            'birth_country',
             'citizenship',
-            'formation',
             'phone_mobile',
             'residence_phone',
-            'admission_email',
             'high_school_diploma',
             'high_school_graduation_year',
             'last_degree_level',
@@ -185,7 +169,8 @@ class AdmissionPostSerializerTestCase(TestCase):
             'awareness_moocs',
             'awareness_other',
             'state_reason',
-            'condition_of_acceptance'
+            'condition_of_acceptance',
+            'additional_information'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 

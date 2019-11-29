@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import datetime
+import json
 import random
 from unittest import mock
 from unittest.mock import patch
@@ -32,10 +33,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.forms import model_to_dict
 from django.test import TestCase
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
@@ -49,56 +50,89 @@ from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISS
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
-    ACCEPTED
+    ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
-from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
+from reference.tests.factories.country import CountryFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 FILE_CONTENT = "test-content"
 
 
 class ViewAdmissionTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
+            additional_information_label='additional_information',
+            registration_required=True
+        )
+        cls.education_group_no_registration_required = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=cls.education_group_no_registration_required,
+            academic_year=cls.academic_year
+        )
+        cls.formation_no_registration_required = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group_no_registration_required,
+            registration_required=False
         )
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
         group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
         EntityVersionFactory(
-            entity=self.formation.management_entity
+            entity=cls.formation.management_entity
         )
-        self.admission = AdmissionFactory(
-            formation=self.formation,
-            state=SUBMITTED
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
+            state=SUBMITTED,
+            person_information__person__gender='M',
+        )
+        a_person_information = ContinuingEducationPersonFactory(person__gender='M')
+        cls.admission_no_admission_required = AdmissionFactory(
+            formation=cls.formation_no_registration_required,
+            state=ACCEPTED_NO_REGISTRATION_REQUIRED,
+            person_information=a_person_information,
         )
 
-        self.file = SimpleUploadedFile(
+        cls.file = SimpleUploadedFile(
             name='upload_test.pdf',
             content=str.encode(FILE_CONTENT),
             content_type="application/pdf"
         )
+        cls.country = CountryFactory()
+        cls.person_data = {
+            'last_name': cls.admission.person_information.person.last_name,
+            'first_name': cls.admission.person_information.person.first_name,
+            'gender': cls.admission.person_information.person.gender,
+        }
+        cls.continuing_education_person_data = {
+            'birth_date': cls.admission.person_information.birth_date.strftime('%Y-%m-%d'),
+            'birth_location': cls.admission.person_information.birth_location,
+            'birth_country': cls.admission.person_information.birth_country.id,
+        }
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_list_admissions(self):
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admissions.html')
-        self.assertEqual(len(response.context['admissions'].object_list), 1)
+        self.assertEqual(len(response.context['admissions'].object_list), 2)
 
     def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
         self.client.force_login(self.training_manager.user)
@@ -150,8 +184,14 @@ class ViewAdmissionTestCase(TestCase):
 
     def test_admission_new_save(self):
         admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
+        admissions = Admission.objects.all()
+        qs_to_find_new_admissions = Admission.objects.all()
+        for a in admissions:
+            qs_to_find_new_admissions = qs_to_find_new_admissions.exclude(pk=a.id)
         response = self.client.post(reverse('admission_new'), data=admission)
-        created_admission = Admission.objects.exclude(pk=self.admission.pk).get()
+        created_admission = qs_to_find_new_admissions.first()
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
 
@@ -175,27 +215,44 @@ class ViewAdmissionTestCase(TestCase):
         self.assertTemplateUsed(response, 'admission_form.html')
 
     def test_edit_post_admission_found(self):
-        person_information = ContinuingEducationPersonFactory()
         admission = {
-            'person_information': person_information.pk,
+            'person_information': self.admission.person_information.pk,
             'motivation': 'abcd',
             'professional_personal_interests': 'abcd',
             'formation': self.formation.pk,
             'awareness_ucl_website': True,
+
         }
+        data = admission.copy()
+        # Data to update
+        data_person_updated = self.person_data.copy()
+        data_person_updated.update({'gender': 'F'})
+        data.update(data_person_updated.copy())
+        # Data to update
+        data_person_information_updated = self.continuing_education_person_data
+        data_person_information_updated.update({'birth_location': 'namur'})
+        data.update(data_person_information_updated.copy())
+
         url = reverse('admission_edit', args=[self.admission.pk])
-        response = self.client.post(url, data=admission)
+        response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
         self.admission.refresh_from_db()
+        self.admission.person_information.refresh_from_db()
+        self.admission.person_information.person.refresh_from_db()
 
         # verifying that fields are correctly updated
-        for key in admission:
-            field_value = self.admission.__getattribute__(key)
+        self._check_update_correct(admission, self.admission)
+        self._check_update_correct(data_person_updated, self.admission.person_information.person)
+        self._check_update_correct(self.continuing_education_person_data, self.admission.person_information)
+
+    def _check_update_correct(self, data, db_obj):
+        for key in data:
+            field_value = db_obj.__getattribute__(key)
             if isinstance(field_value, datetime.date):
                 field_value = field_value.strftime('%Y-%m-%d')
             if isinstance(field_value, models.Model):
                 field_value = field_value.pk
-            self.assertEqual(field_value, admission[key], key)
+            self.assertEqual(field_value, data[key], key)
 
     def test_admission_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
@@ -236,7 +293,8 @@ class ViewAdmissionTestCase(TestCase):
     def test_list(self):
         response = self.client.post(reverse('admission'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['admissions'].object_list[0], self.admission)
+        self.assertCountEqual(response.context['admissions'].object_list,
+                              [self.admission, self.admission_no_admission_required])
 
     def test_get_versions(self):
         version_list = get_versions(self.admission)
@@ -249,6 +307,15 @@ class ViewAdmissionTestCase(TestCase):
             version_list = get_versions(self.admission)
             self.assertEqual(len(version_list), i)
             i += 1
+
+    def test_ajax_get_formation_information(self):
+        response = self.client.get(reverse('get_formation_information'), data={
+            'formation_id': self.formation.pk
+        }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {'additional_information_label': 'additional_information'}
+                         )
 
 
 class InvoiceNotificationEmailTestCase(TestCase):

@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
 {% load static %}
@@ -44,9 +44,22 @@
     <div class="page-header">
         <h2 class="text-capitalize">{{ formation.acronym }} - {{ formation.title }}</h2>
     </div>
-    <a class="btn btn-default pull-right" style="margin: 0.5em;" href="{% url 'formation_edit' formation_id=formation.id %}">
-        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> {% trans 'Edit formation data' %}
-    </a>
+    <div class="row">
+        <div class="col-md-9">
+            {% if not formation.registration_required %}
+                <span  class="alert alert-info" role="alert">
+                    {% trans "For that formation a list of participants has to be sent to the UCLouvain insurance department" %}
+                </span>
+            {% endif %}
+        </div>
+        {% if can_edit_formation %}
+            <div class="col-md-3">
+                <a class="btn btn-default pull-right" style="margin: 0.5em;" href="{% url 'formation_edit' formation_id=formation.id %}">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> {% trans 'Edit formation data' %}
+                </a>
+            </div>
+        {% endif %}
+    </div>
     <div class="panel panel-default">
         <div class="panel panel-body">
             <div class="row">
@@ -54,6 +67,8 @@
                     {% bootstrap_label _("State") %} <br/> {{ formation.education_group|get_active_continuing_education_formation }}
                     <br/><br/>
                     {% bootstrap_label _("Training aid") %} <br/> {{ formation.training_aid|yesno|title }}
+                    <br/><br/>
+                    {% bootstrap_label _("Registration required") %} <br/> {{ formation.registration_required|yesno|title }}
                 </div>
                 <div class="col-md-6">
                     {% bootstrap_label _("Send notification emails") %} <br/> {{ formation.send_notification_emails|yesno|title }}
@@ -90,7 +105,7 @@
                 </div>
             </div>
         </div>
-                <div class="panel-heading"><h4>{% trans 'Address' %}</h4></div>
+        <div class="panel-heading"><h4>{% trans 'Address' %}</h4></div>
             <div class="panel panel-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -109,5 +124,17 @@
                     </div>
                 </div>
             </div>
+        <div class="panel-heading"><h4>{% trans 'Additional information' %}</h4></div>
+            <div class="panel panel-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        {% if formation.additional_information_label %}
+                        <label>{% trans 'Description' %}</label>:
+                        {% endif %}
+                        {{ formation.additional_information_label|linebreaks|default:_('No additional information')}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

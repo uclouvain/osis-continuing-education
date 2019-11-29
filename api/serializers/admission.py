@@ -28,7 +28,7 @@ from rest_framework import serializers
 from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
-from continuing_education.business.admission import send_state_changed_email
+from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
@@ -150,7 +150,9 @@ class AdmissionDetailSerializer(serializers.HyperlinkedModelSerializer):
             'awareness_other',
 
             'state_reason',
-            'condition_of_acceptance'
+            'condition_of_acceptance',
+
+            'additional_information'
         )
 
 
@@ -181,9 +183,7 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         instance._original_state = instance.state
         update_result = super(AdmissionDetailSerializer, self).update(instance, validated_data)
         if instance.state != instance._original_state:
-            message = get_valid_state_change_message(instance)
-            save_and_create_revision(self.context.get('request').user, get_revision_messages(message))
-            send_state_changed_email(instance, connected_user=self.context.get('request').user)
+            save_state_changed_and_send_email(instance, connected_user=self.context.get('request').user)
         return update_result
 
     def update_field(self, field, validated_data, instance):

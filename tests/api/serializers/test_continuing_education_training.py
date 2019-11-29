@@ -26,13 +26,13 @@
 
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
+from rest_framework.utils.serializer_helpers import ReturnDict
 
-from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
+from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
+    ContinuingEducationTrainingPostSerializer
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
@@ -41,13 +41,12 @@ class ContinuingEducationTrainingSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        edy = EducationGroupYearFactory(
+        EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
-        url = reverse('continuing_education_api_v1:continuing-education-training-list')
+        url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
         cls.serializer = ContinuingEducationTrainingSerializer(
             cls.continuing_education_training,
             context={'request': RequestFactory().get(url)}
@@ -57,13 +56,43 @@ class ContinuingEducationTrainingSerializerTestCase(TestCase):
         expected_fields = [
             'url',
             'uuid',
-            'acronym',
-            'title',
-            'faculty',
+            'education_group',
             'active',
             'managers',
             'training_aid',
-            'postal_address'
+            'postal_address',
+            'additional_information_label'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
-        self.assertEqual(type(self.serializer.data['managers']), list)
+        self.assertEqual(type(self.serializer.data['education_group']), ReturnDict)
+
+
+class ContinuingEducationTrainingPostSerializerTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        education_group = EducationGroupFactory()
+        cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=education_group)
+        url = reverse('continuing_education_api_v1:continuing-education-training-list-create')
+        cls.serializer = ContinuingEducationTrainingPostSerializer(
+            cls.continuing_education_training,
+            context={'request': RequestFactory().get(url)}
+        )
+
+    def test_contains_expected_fields(self):
+        expected_fields = [
+            'url',
+            'uuid',
+            'education_group',
+            'active',
+            'managers',
+            'training_aid',
+            'postal_address',
+            'additional_information_label'
+        ]
+        self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+    def test_ensure_education_group_year_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['education_group'],
+            self.continuing_education_training.education_group.uuid
+        )

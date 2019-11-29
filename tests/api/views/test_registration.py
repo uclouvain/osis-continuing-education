@@ -34,15 +34,14 @@ from rest_framework import status
 from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
-from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.serializers.registration import RegistrationListSerializer, RegistrationDetailSerializer, \
+from continuing_education.api.serializers.registration import RegistrationListSerializer, \
+    RegistrationDetailSerializer, \
     RegistrationPostSerializer
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, DRAFT, \
@@ -59,17 +58,16 @@ class RegistrationListTestCase(APITestCase):
     def setUpTestData(cls):
         cls.user = UserFactory()
 
-        new_country = CountryFactory(iso_code='NL')
+        CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
 
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
-        edy = EducationGroupYearFactory(
+        EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
@@ -84,8 +82,7 @@ class RegistrationListTestCase(APITestCase):
 
         for state in [VALIDATED, ACCEPTED, REGISTRATION_SUBMITTED]:
             cls.education_group = EducationGroupFactory()
-            education_group_year = EducationGroupYearFactory(education_group=cls.education_group)
-            EntityVersionFactory(entity=education_group_year.management_entity, entity_type=FACULTY)
+            EducationGroupYearFactory(education_group=cls.education_group)
             AdmissionFactory(
                 person_information=cls.person,
                 state=state,
@@ -157,11 +154,10 @@ class RegistrationDetailUpdateTestCase(APITestCase):
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         cls.user = UserFactory()
-        edy = EducationGroupYearFactory(
+        EducationGroupYearFactory(
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
         cls.admission = AdmissionFactory(
             person_information=ContinuingEducationPersonFactory(person=PersonFactory(user=cls.user)),
             formation=ContinuingEducationTrainingFactory(
@@ -266,7 +262,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
             'use_address_for_post': False,
             'state': REGISTRATION_SUBMITTED,
         }
-        self.client.patch(self.url, data=data)
+        self.client.put(self.url, data=data)
 
         self.assertTrue(mock_send_email.called)
 

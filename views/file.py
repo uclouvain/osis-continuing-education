@@ -35,7 +35,7 @@ from base.models.person import Person
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email
 from continuing_education.models.enums import admission_state_choices, file_category_choices
-from continuing_education.models.exceptions import TooLongFilenameException, InvalidFileCategoryException
+from continuing_education.models.enums.exceptions import ManagerFileUploadExceptions
 from continuing_education.models.file import AdmissionFile
 
 
@@ -70,7 +70,7 @@ def _upload_file(request, admission):
             send_invoice_uploaded_email(admission)
             display_success_messages(request, _("A notification email has been sent to the participant"))
 
-    except (TooLongFilenameException, InvalidFileCategoryException) as e:
+    except ManagerFileUploadExceptions as e:
         display_error_messages(request, str(e))
     except Exception as e:
         display_error_messages(request, _("A problem occured : the document is not uploaded"))

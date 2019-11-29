@@ -62,6 +62,8 @@ def get_titles_admission():
         str(_('Motivation')),
         str(_('Professional and personal interests')),
         str(_('Formation')),
+        str(_('Registration required')),
+        str(_('Additional information')),
         str(_('Training aid')),
         str(_('Faculty')),
         str(_('Formation administrator(s)')),
@@ -96,6 +98,8 @@ def extract_xls_data_from_admission(admission):
         admission.motivation if admission.motivation else '',
         admission.professional_personal_interests if admission.professional_personal_interests else '',
         admission.formation.acronym,
+        _('Yes') if admission.formation.registration_required else _('No'),
+        admission.additional_information,
         _('Yes') if admission.formation.training_aid else _('No'),
         admission.get_faculty() if admission.get_faculty() else '',
         admission.formation.formation_administrators,
@@ -128,6 +132,7 @@ def get_titles_registration():
         str(_('Assessment presented')),
         str(_('Assessment succeeded')),
         str(_('Diploma produced')),
+        str(_('Comment')),
     ]
 
 
@@ -156,4 +161,5 @@ def extract_xls_data_from_registration(registration):
         _('Yes') if registration.assessment_presented else _('No'),
         _('Yes') if registration.assessment_succeeded else _('No'),
         _('Yes') if registration.diploma_produced else _('No'),
+        registration.comment if registration.comment else '',
     ]

@@ -395,7 +395,7 @@ components:
             $ref: '#/components/schemas/CountryName'
           formation:
             $ref: '#/components/schemas/ContinuingEducationTrainingSerializer'
-          admission_email:
+          email:
             type: string
             example: "jane_doe@personnalprovider.com"
           state:
@@ -472,6 +472,8 @@ components:
           condition_of_acceptance:
             type: string
           state_reason:
+            type: string
+          additional_information:
             type: string
 
     AdmissionListSerializer:
@@ -683,6 +685,8 @@ components:
             $ref: '#/components/schemas/PersonBasic'
         postal_address:
           $ref: '#/components/schemas/AddressSerializer'
+        additional_information:
+          type: string
 
     PaginatedContinuingEducationTrainings:
       allOf:
@@ -796,36 +800,56 @@ components:
     StateEnum:
       type: string
       enum:
-        - Accepted
-        - Rejected
-        - Waiting
-        - Draft
-        - Submitted
-        - Registration submitted
-        - Validated
+        - ACCEPTED
+        - ACCEPTED_NO_REGISTRATION_REQUIRED
+        - REJECTED
+        - WAITING
+        - DRAFT
+        - SUBMITTED
+        - REGISTRATION_SUBMITTED
+        - VALIDATED
+        - CANCELLED
 
     RegistrationTypeEnum:
       type: string
       enum:
-        - Private
-        - Professional
+        - PRIVATE
+        - PROFESSIONAL
 
     MaritalStatusEnum:
       type: string
       enum:
-        - Single
-        - Married
-        - Widowed
-        - Divorced
-        - Separated
-        - Legal cohabitant
+        - SINGLE
+        - MARRIED
+        - WIDOWED
+        - DIVORCED
+        - SEPARATED
+        - LEGAL_COHABITANT
+
+    ActivitySectorEnum:
+      type: string
+      enum:
+        - PRIVATE
+        - PUBLIC
+        - ASSOCIATIVE
+        - HEALTH
+        - OTHER
+
+    ProfessionalStatusEnum:
+      type: string
+      enum:
+        - EMPLOYEE
+        - SELF_EMPLOYED
+        - JOB_SEEKER
+        - PUBLIC_SERVANT
+        - OTHER
 
     FileCategoryEnum:
       type: string
       enum:
-        - Document
-        - Invoice
-        - Participant
+        - DOCUMENT
+        - INVOICE
+        - PARTICIPANT
 
 security:
   - Token: []

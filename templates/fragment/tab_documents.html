@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 delete_file %}
 
@@ -61,7 +61,7 @@
                     <td> {{file.created_date}} </td>
                     <td>
                         {% check_permission_to_delete file as has_permission_to_delete %}
-                        <a class="button " role="button" title="{% trans 'Download document' %}"
+                        <a class="button no_spinner" role="button" title="{% trans 'Download document' %}"
                            href="{% url 'download_file' admission_id=admission.id file_id=file.id %}">
                             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span></a>
                         &nbsp;

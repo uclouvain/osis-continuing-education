@@ -30,17 +30,17 @@
     <div class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title">
-                {% trans 'Validate all selected registrations ?' %}
+                {% trans 'Update all selected registrations ?' %}
             </h4>
         </div>
         <div class="panel-default">
             <div class="panel-body">
-                {% trans 'This will validate all selected registrations. Are you sure ?' %}
+                {% trans 'This will mark that the paper admission file has been received for all selected registrations. Are you sure ?' %}
             </div>
         </div>
         <div class="modal-footer">
             <button type="button" id="btn_cancel_validate_registration" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
-            <button type="button" id="btn_confirm_validate_registration" class="btn btn-primary">{% trans 'Yes, validate all selected registrations' %}</button>
+            <button type="button" id="btn_confirm_validate_registration" class="btn btn-primary">{% trans 'Yes, update all selected registrations' %}</button>
         </div>
     </div>
   </div>
@@ -50,6 +50,9 @@
     <script>
         $("#btn_confirm_validate_registration").click(function(){
             $("#registrations_to_validate_form").submit();
+        });
+        $("#btn_paper_registrations_file_received").click(function(){
+            $("#registrations_to_validate_form").attr("action", "{% url 'paper_registrations_file_received' %}");
         });
     </script>
 {% endblock %}

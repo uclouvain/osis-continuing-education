@@ -71,7 +71,7 @@ class RegistrationQueueTestCase(TestCase):
             'first_name': self.admission.person_information.person.first_name,
             'birth_date': self.admission.person_information.birth_date.strftime("%d/%m/%Y"),
             'birth_location': self.admission.person_information.birth_location,
-            'birth_country': self.admission.person_information.birth_country.iso_code,
+            'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
             'sex': self.admission.person_information.person.gender,
             'civil_state': self.admission.marital_status,
             'nationality_iso_code': self.admission.citizenship.name,

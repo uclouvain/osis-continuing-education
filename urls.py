@@ -44,6 +44,7 @@ urlpatterns = [
             url(r'file/(?P<file_id>[0-9]+)/delete$', continuing_education.views.file.delete_file, name='delete_file'),
         ])),
         url(r'^validate_field/(?P<admission_id>[0-9]+)/$', admission.validate_field, name='validate_field'),
+        url(r'^ajax/formation/', admission.get_formation_information, name='get_formation_information')
     ])),
     url(r'^registration/', include([
         url(r'^$', registration.list_registrations, name='registration'),
@@ -71,12 +72,18 @@ urlpatterns = [
     url(r'^prospects/', include([
         url(r'^$', prospect.list_prospects, name='prospects'),
         url(r'^(?P<prospect_id>[0-9]+)/', prospect.prospect_details, name='prospect_details'),
+        url(r'^reporting', prospect.prospect_xls, name='prospects_xls'),
     ])),
     url(r'^tasks/', include([
         url(r'^$', tasks.list_tasks, name='list_tasks'),
-        url(r'^validate_registrations', tasks.validate_registrations, name='validate_registrations'),
+        url(r'^paper_registrations_file_received', tasks.paper_registrations_file_received,
+            name='paper_registrations_file_received'),
+        url(r'^registrations_fulfilled', tasks.registrations_fulfilled, name='registrations_fulfilled'),
+
+
+
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
-        url(r'^accept_admissions', tasks.accept_admissions, name='accept_admissions'),
+        url(r'^process_admissions', tasks.process_admissions, name='process_admissions'),
     ])),
     url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
     url(r'^managers/', include([

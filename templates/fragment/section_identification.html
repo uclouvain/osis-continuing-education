@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load bootstrap3 %}
 
@@ -33,12 +33,12 @@
     <div class="row form-group">
         <div class="col-md-3">{% bootstrap_label _("First name") %} <br/> {{ admission.person_information.person.first_name | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Last name") %} <br/> {{ admission.person_information.person.last_name | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.get_gender_display | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Citizenship") %} <br/> {{ admission.citizenship|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Gender") %} <br/> {{ admission.person_information.person.get_gender_display|title | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Citizenship") %} <br/> {{ admission.citizenship| default:"-"|upper  }} </div>
     </div>
     <div class="row form-group">
         <div class="col-md-3">{% bootstrap_label _("Birth date") %} <br/> {{ admission.person_information.birth_date | default:"-" }} </div>
         <div class="col-md-3">{% bootstrap_label _("Birth location") %} <br/> {{ admission.person_information.birth_location|upper | default:"-" }} </div>
-        <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {{ admission.person_information.birth_country|upper | default:"-" }} </div>
+        <div class="col-md-3">{% bootstrap_label _("Birth country") %} <br/> {% if admission.person_information.birth_country %}{{ admission.person_information.birth_country|upper }}{% else %}-{% endif %} </div>
     </div>
 </div>

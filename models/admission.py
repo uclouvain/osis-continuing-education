@@ -33,7 +33,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
-from continuing_education.models.enums import admission_state_choices, enums, groups
+from continuing_education.business.perms import is_continuing_education_manager
+from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.person_training import PersonTraining
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -413,18 +414,27 @@ class Admission(Model):
         verbose_name=_("Condition of acceptance")
     )
 
+    additional_information = models.TextField(
+        blank=True,
+        verbose_name=_("Additional information")
+    )
+
+    comment = models.TextField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name=_("Comment"),
+    )
+
     @property
     def formation_display(self):
         education_group_year = self.formation.get_most_recent_education_group_year()
         return get_formation_display(
             education_group_year.partial_acronym,
             education_group_year.acronym,
+            education_group_year.title,
             education_group_year.academic_year
         )
-
-    @property
-    def file_reference(self):
-        return "IUFC-%06d" % self.id
 
     @property
     def complete_contact_address(self):
@@ -465,6 +475,9 @@ class Admission(Model):
 
     def is_accepted(self):
         return self.state == admission_state_choices.ACCEPTED
+
+    def is_accepted_no_registration_required(self):
+        return self.state == admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED
 
     def is_rejected(self):
         return self.state == admission_state_choices.REJECTED
@@ -513,10 +526,11 @@ def search(**kwargs):
     return qs
 
 
-def get_formation_display(partial_acronym, acronym, academic_year):
-    return "{}{} - {}".format(
+def get_formation_display(partial_acronym, acronym, title, academic_year):
+    return "{}{} - {} - {}".format(
         "{} - ".format(partial_acronym) if partial_acronym else "",
         acronym,
+        title,
         academic_year,
     )
 
@@ -534,16 +548,10 @@ def can_access_admission(user, admission_id):
         raise PermissionDenied
 
 
-def is_continuing_education_manager(user):
-    return user.groups.filter(name=groups.MANAGERS_GROUP).exists()
-
-
 def _build_address(address):
-    return "{} - {} {} {}".format(address.location if address.location else '',
-                                  address.postal_code if address.postal_code else '',
-                                  address.city.upper() if address.city else '',
-                                  "- {}".format(address.country.name.upper()) if address.country else '')
-
-
-def is_continuing_education_training_manager(user):
-    return user.groups.filter(name=groups.TRAINING_MANAGERS_GROUP).exists()
+    if address:
+        return "{} - {} {} {}".format(address.location if address.location else '',
+                                      address.postal_code if address.postal_code else '',
+                                      address.city.upper() if address.city else '',
+                                      "- {}".format(address.country.name.upper()) if address.country else '')
+    return ''

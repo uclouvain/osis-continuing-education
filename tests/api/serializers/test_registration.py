@@ -1,12 +1,11 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from base.models.enums.entity_type import FACULTY
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.api.serializers.registration import RegistrationDetailSerializer, RegistrationListSerializer, \
+from continuing_education.api.serializers.registration import RegistrationDetailSerializer, \
+    RegistrationListSerializer, \
     RegistrationPostSerializer
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -17,8 +16,7 @@ class RegistrationListSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         ed = EducationGroupFactory()
-        edy = EducationGroupYearFactory(education_group=ed)
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
+        EducationGroupYearFactory(education_group=ed)
         cls.person_information = ContinuingEducationPersonFactory()
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
@@ -31,13 +29,11 @@ class RegistrationListSerializerTestCase(TestCase):
         expected_fields = [
             'uuid',
             'url',
-            'acronym',
+            'person_information',
+            'formation',
             'state',
             'state_text',
-            'title',
-            'faculty',
-            'code',
-            'academic_year'
+            'email',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -46,11 +42,10 @@ class RegistrationDetailSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         ed = EducationGroupFactory()
-        edy = EducationGroupYearFactory(education_group=ed)
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
+        EducationGroupYearFactory(education_group=ed)
         cls.person_information = ContinuingEducationPersonFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
-        new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        AcademicYearFactory(year=cls.academic_year.year+1)
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
             formation=ContinuingEducationTrainingFactory(education_group=ed)
@@ -64,16 +59,15 @@ class RegistrationDetailSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
-            'first_name',
-            'last_name',
+            'url',
+            'person_information',
+            'formation',
+            'state',
+            'state_text',
             'email',
-            'gender',
-            'person_uuid',
-            'birth_date',
-            'birth_country',
-            'birth_location',
             'address',
             'citizenship',
+            'phone_mobile',
             'registration_type',
             'registration_type_text',
             'use_address_for_billing',
@@ -90,6 +84,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
             'children_number',
             'previous_ucl_registration',
             'previous_noma',
+            'professional_status',
             'use_address_for_post',
             'residence_address',
             'residence_phone',
@@ -103,10 +98,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
             'sessions',
             'reduced_rates',
             'spreading_payments',
-            'condition_of_acceptance',
-            'state',
-            'state_text',
-            'formation'
+            'condition_of_acceptance'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -116,8 +108,7 @@ class RegistrationPostSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         ed = EducationGroupFactory()
-        edy = EducationGroupYearFactory(education_group=ed)
-        EntityVersionFactory(entity=edy.management_entity, entity_type=FACULTY)
+        EducationGroupYearFactory(education_group=ed)
         cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.registration = AdmissionFactory(
             person_information=cls.person_information,
@@ -132,16 +123,15 @@ class RegistrationPostSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         expected_fields = [
             'uuid',
-            'first_name',
-            'last_name',
+            'url',
+            'person_information',
+            'formation',
+            'state',
+            'state_text',
             'email',
-            'gender',
-            'person_uuid',
-            'birth_date',
-            'birth_country',
-            'birth_location',
             'address',
             'citizenship',
+            'phone_mobile',
             'registration_type',
             'registration_type_text',
             'use_address_for_billing',
@@ -158,6 +148,7 @@ class RegistrationPostSerializerTestCase(TestCase):
             'children_number',
             'previous_ucl_registration',
             'previous_noma',
+            'professional_status',
             'use_address_for_post',
             'residence_address',
             'residence_phone',
@@ -171,9 +162,12 @@ class RegistrationPostSerializerTestCase(TestCase):
             'sessions',
             'reduced_rates',
             'spreading_payments',
-            'condition_of_acceptance',
-            'state',
-            'state_text',
-            'formation'
+            'condition_of_acceptance'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
+
+    def test_ensure_formation_field_is_slugified(self):
+        self.assertEqual(
+            self.serializer.data['formation'],
+            self.formation.uuid
+        )

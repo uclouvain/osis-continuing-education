@@ -26,8 +26,8 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
-from continuing_education.models.admission import is_continuing_education_manager, \
-    is_continuing_education_training_manager
+from continuing_education.business.perms import is_continuing_education_training_manager
+from continuing_education.models.admission import is_continuing_education_manager
 from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 
 
