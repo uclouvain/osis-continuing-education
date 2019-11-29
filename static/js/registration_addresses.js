@@ -1,9 +1,11 @@
 
-const addresses_variables = [
-    {using: 'use_address_for_billing', address_type: 'billing', address_instance: billing_address},
+const addresses_variables = [];
+if (typeof(billing_address) !== 'undefined') addresses_variables.push(
+    {using: 'use_address_for_billing', address_type: 'billing', address_instance: billing_address}
+);
+if (typeof(residence_address) !== 'undefined') addresses_variables.push(
     {using: 'use_address_for_post', address_type: 'residence', address_instance: residence_address}
-];
-
+);
 for(let {using, address_type, address_instance} of addresses_variables) {
     $("[name=" + using + "]:radio").change(function () {
         if (this.value === "True") {
@@ -12,9 +14,7 @@ for(let {using, address_type, address_instance} of addresses_variables) {
             empty_address(address_type, address_instance)
         }
     });
-    if (typeof(address_instance) !== 'undefined') {
-        $("[name=" + using + "]:radio").prop('checked') ? copy_address(address_type) : empty_address(address_type, address_instance);
-    }
+    $("[name=" + using + "]:radio").prop('checked') ? copy_address(address_type) : empty_address(address_type, address_instance);
 }
 let fields_to_enable = ["birth_country", "billing-country", "residence-country", "gender"];
 //re-enable disabled field on form submit

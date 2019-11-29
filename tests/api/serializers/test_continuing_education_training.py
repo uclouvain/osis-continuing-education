@@ -61,7 +61,8 @@ class ContinuingEducationTrainingSerializerTestCase(TestCase):
             'managers',
             'training_aid',
             'postal_address',
-            'additional_information_label'
+            'additional_information_label',
+            'registration_required'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
         self.assertEqual(type(self.serializer.data['education_group']), ReturnDict)
@@ -87,7 +88,8 @@ class ContinuingEducationTrainingPostSerializerTestCase(TestCase):
             'managers',
             'training_aid',
             'postal_address',
-            'additional_information_label'
+            'additional_information_label',
+            'registration_required'
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
