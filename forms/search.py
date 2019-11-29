@@ -130,7 +130,7 @@ class AdmissionFilterForm(BootstrapForm):
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        ).distinct()
+        )
 
 
 def search_admissions_with_free_text(free_text, qs):
@@ -198,7 +198,7 @@ class RegistrationFilterForm(AdmissionFilterForm):
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        ).distinct()
+        )
 
 
 class ArchiveFilterForm(AdmissionFilterForm):
@@ -235,7 +235,7 @@ class ArchiveFilterForm(AdmissionFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
-        return qs.distinct()
+        return qs
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
