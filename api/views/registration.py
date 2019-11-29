@@ -29,7 +29,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from continuing_education.api.serializers.registration import RegistrationListSerializer, \
     RegistrationDetailSerializer, RegistrationPostSerializer
-from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmit
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 
@@ -77,7 +77,7 @@ class RegistrationDetailUpdate(generics.RetrieveUpdateAPIView):
         Return the detail of the registration or update it.
     """
     name = 'registration-detail-update'
-    permission_classes = (HasAdmissionAccess, CanSubmitRegistration, IsAuthenticated)
+    permission_classes = (HasAdmissionAccess, CanSubmit, IsAuthenticated)
     queryset = Admission.objects.all()
     lookup_field = 'uuid'
 

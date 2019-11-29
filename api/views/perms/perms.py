@@ -37,8 +37,10 @@ class HasAdmissionAccess(permissions.BasePermission):
         return obj.person_information.person.user == request.user
 
 
-class CanSubmitRegistration(permissions.BasePermission):
-    message = _('To submit a registration, its state must be ACCEPTED or DRAFT with no registration required.')
+class CanSubmit(permissions.BasePermission):
+    message = _(
+        'To submit a registration, its state must be ACCEPTED. To submit an admission, its state must be DRAFT.'
+    )
 
     def has_object_permission(self, request, view, obj):
         if request.method not in permissions.SAFE_METHODS:

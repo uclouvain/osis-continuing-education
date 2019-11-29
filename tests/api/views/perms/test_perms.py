@@ -28,7 +28,7 @@ from rest_framework.test import APIRequestFactory, APITestCase
 
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration, CanSendFiles, \
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmit, CanSendFiles, \
     CanSubmitAdmission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED, DRAFT, \
     REJECTED, \
@@ -70,7 +70,7 @@ class TestHasAdmissionAccess(APITestCase):
 class TestCanSubmitRegistration(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.permission = CanSubmitRegistration()
+        cls.permission = CanSubmit()
         cls.user = UserFactory()
         cls.request = APIRequestFactory(user=cls.user)
         cls.request.method = 'POST'
