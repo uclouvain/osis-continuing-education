@@ -91,6 +91,12 @@ class TestCanSubmitRegistration(APITestCase):
             self.permission.has_object_permission(self.request, None, admission)
         )
 
+    def test_cansubmitregistration_return_true_if_admission_state_draft_and_no_registration_required(self):
+        admission = AdmissionFactory(state=DRAFT, formation__registration_required=False)
+        self.assertTrue(
+            self.permission.has_object_permission(self.request, None, admission)
+        )
+
     def test_cansubmitregistration_return_true_if_not_safe_methods(self):
         admission = AdmissionFactory(state=REGISTRATION_SUBMITTED)
         self.request.method = 'GET'
