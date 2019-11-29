@@ -631,6 +631,8 @@ components:
                 $ref: '#/components/schemas/PersonBasic'
             additional_information:
               type: string
+            registration_required:
+              type: boolean
 
 
     File:
