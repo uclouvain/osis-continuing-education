@@ -55,7 +55,7 @@ from continuing_education.models.admission import Admission, filter_authorized_a
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED
+    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
     ADMISSION_CREATION, get_revision_messages
@@ -173,6 +173,8 @@ def _change_state(request, forms, accepted_states, admission):
     new_state = adm_form.instance.state
     if new_state == ACCEPTED and not admission.formation.registration_required:
         new_state = ACCEPTED_NO_REGISTRATION_REQUIRED
+    if new_state == CANCELLED and not admission.formation.registration_required:
+        new_state = CANCELLED_NO_REGISTRATION_REQUIRED
     if new_state in accepted_states.get('states', []):
         _save_form_with_provided_reason(
             waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form, cancel_adm_form
@@ -295,7 +297,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
         waiting_adm_form.save()
     elif new_state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED] and condition_acceptance_adm_form.is_valid():
         condition_acceptance_adm_form.save()
-    elif new_state == CANCELLED and cancel_adm_form.is_valid():
+    elif new_state in [CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED] and cancel_adm_form.is_valid():
         cancel_adm_form.save()
 
 
