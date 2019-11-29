@@ -506,7 +506,7 @@ class Admission(Model):
         return education_group_year.management_entity
 
     class Meta:
-        ordering = ('person_information',)
+        ordering = ('formation', 'person_information',)
         permissions = (
             ("can_access_admission", "Can consult IUFC admission information"),
             ("can_validate_registration", "Can validate IUFC registration file"),

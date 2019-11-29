@@ -44,7 +44,7 @@ class ContinuingEducationTrainingListCreate(generics.ListCreateAPIView):
        Return a list of all the trainings with optional filtering or create a training.
     """
     name = 'continuing-education-training-list-create'
-    queryset = ContinuingEducationTraining.objects.all().distinct()
+    queryset = ContinuingEducationTraining.objects.all()
     filter_class = ContinuingEducationTrainingFilter
     search_fields = (
         'education_group__educationgroupyear__acronym',

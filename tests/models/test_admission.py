@@ -73,16 +73,32 @@ class TestAdmission(TestCase):
         self.assertFalse(mock.called)
 
     def test_admission_ordering(self):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=ed,
+            academic_year=self.academic_year,
+            acronym='M'
+        )
+        ed_next = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=ed,
+            academic_year=self.academic_year,
+            acronym='O'
+        )
         persons_data = [
-            ('A', 'E'),
-            ('D', 'F'),
-            ('C', 'F'),
-            ('B', 'E')
+            ('A', 'I', ed),
+            ('D', 'J', ed),
+            ('C', 'J', ed),
+            ('B', 'I', ed),
+            ('E', 'K', ed_next),
+            ('H', 'L', ed_next),
+            ('G', 'L', ed_next),
+            ('F', 'K', ed_next)
         ]
-        for first_name, name in persons_data:
+        for first_name, name, education_group in persons_data:
             a_person = PersonWithoutUserFactory(first_name=first_name, last_name=name)
-            AdmissionFactory(person_information__person=a_person)
-        expected_order = ['A', 'B', 'C', 'D']
+            AdmissionFactory(person_information__person=a_person, formation__education_group=education_group)
+        expected_order = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         result = Admission.objects.all().values_list('person_information__person__first_name', flat=True)
         self.assertEquals(list(result), expected_order)
 

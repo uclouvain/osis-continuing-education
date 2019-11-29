@@ -212,9 +212,7 @@ class ArchiveFilterForm(AdmissionFilterForm):
         self.fields['state'].choices = _get_state_choices(ARCHIVE_STATE_CHOICES)
         _build_formation_choices(self.fields['formation'], STATES_FOR_ARCHIVE, True)
         if user and not user.groups.filter(name='continuing_education_managers').exists():
-            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
-                managers=user.person
-            ).order_by('education_group__educationgroupyear__acronym').distinct()
+            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(managers=user.person)
 
     def get_archives(self):
         a_state = self.cleaned_data.get('state')
@@ -270,10 +268,10 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
 
 
 def _build_formation_choices(field, states, archived_status=False):
-    field.queryset = ContinuingEducationTraining.objects \
-        .filter(id__in=Admission.objects.filter(state__in=states, archived=archived_status)
-                .values_list('formation', flat=False).distinct('formation')
-                ).order_by('education_group__educationgroupyear__acronym').distinct()
+    field.queryset = ContinuingEducationTraining.objects.filter(
+        id__in=Admission.objects.filter(state__in=states, archived=archived_status).values_list(
+            'formation', flat=False).distinct('formation')
+    )
 
 
 def _get_state_choices(choices):
@@ -372,7 +370,7 @@ class ManagerFilterForm(BootstrapForm):
     training = FormationModelChoiceField(
         queryset=ContinuingEducationTraining.objects.filter(
             id__in=PersonTraining.objects.values_list('training', flat=True)
-        ).order_by('education_group__educationgroupyear__acronym').distinct(),
+        ),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,

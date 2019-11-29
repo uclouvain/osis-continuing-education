@@ -72,9 +72,7 @@ def list_managers(request):
         display_errors(request, errors)
 
     for manager in managers:
-        manager.trainings = trainings.filter(
-            managers=manager
-        ).order_by('education_group__educationgroupyear__acronym').distinct()
+        manager.trainings = trainings.filter(managers=manager)
 
     return render(request, "managers.html", {
         'managers': get_object_list(request, managers),

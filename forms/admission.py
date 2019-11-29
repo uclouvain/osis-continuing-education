@@ -72,7 +72,7 @@ class AdmissionForm(ModelForm):
             )
         self.fields['formation'].queryset = qs.order_by(
             'education_group__educationgroupyear__acronym'
-        ).distinct()
+        )
 
         set_participant_required_fields(self.fields,
                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS)

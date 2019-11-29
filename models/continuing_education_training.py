@@ -153,3 +153,6 @@ class ContinuingEducationTraining(Model):
         education_group_year = self.get_most_recent_education_group_year()
         training_aid_mention = " ({})".format(_('Training aid available')) if self.training_aid else ''
         return "{} - {}{}".format(education_group_year.acronym, education_group_year.title, training_aid_mention)
+
+    class Meta:
+        ordering = ('education_group__educationgroupyear__acronym', )
