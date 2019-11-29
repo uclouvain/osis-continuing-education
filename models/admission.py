@@ -63,7 +63,6 @@ class AdmissionAdmin(VersionAdmin, ModelAdmin):
 
 
 class Admission(Model):
-
     CONTINUING_EDUCATION_TYPE = 8
 
     objects = Manager()
@@ -507,6 +506,7 @@ class Admission(Model):
         return education_group_year.management_entity
 
     class Meta:
+        ordering = ('person_information',)
         permissions = (
             ("can_access_admission", "Can consult IUFC admission information"),
             ("can_validate_registration", "Can validate IUFC registration file"),

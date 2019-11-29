@@ -239,7 +239,6 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
-
     qs = Admission.objects.all()
 
     if states:
@@ -267,7 +266,7 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
     if received_file:
         qs = qs.filter(registration_file_received=received_file)
 
-    return qs.order_by('person_information')
+    return qs
 
 
 def _build_formation_choices(field, states, archived_status=False):

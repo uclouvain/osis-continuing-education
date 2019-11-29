@@ -35,7 +35,9 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity import EntityFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.person import PersonWithoutUserFactory
 from continuing_education.models import admission
+from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -69,6 +71,20 @@ class TestAdmission(TestCase):
     def test_mail_not_sent_on_same_admission_state(self, mock):
         self.submitted_admission.save()
         self.assertFalse(mock.called)
+
+    def test_admission_ordering(self):
+        persons_data = [
+            ('A', 'E'),
+            ('D', 'F'),
+            ('C', 'F'),
+            ('B', 'E')
+        ]
+        for first_name, name in persons_data:
+            a_person = PersonWithoutUserFactory(first_name=first_name, last_name=name)
+            AdmissionFactory(person_information__person=a_person)
+        expected_order = ['A', 'B', 'C', 'D']
+        result = Admission.objects.all().values_list('person_information__person__first_name', flat=True)
+        self.assertEquals(list(result), expected_order)
 
 
 class TestAdmissionGetProperties(TestCase):
