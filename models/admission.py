@@ -493,6 +493,9 @@ class Admission(Model):
     def is_cancelled(self):
         return self.state == admission_state_choices.CANCELLED
 
+    def is_cancelled_no_registration_required(self):
+        return self.state == admission_state_choices.CANCELLED_NO_REGISTRATION_REQUIRED
+
     def is_registration(self):
         return self.is_accepted() or self.is_validated() or self.is_registration_submitted()
 
