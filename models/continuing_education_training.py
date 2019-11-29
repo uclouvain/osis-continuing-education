@@ -107,6 +107,10 @@ class ContinuingEducationTraining(Model):
     def get_most_recent_education_group_year(self):
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk
+        ).select_related(
+            'academic_year',
+            'administration_entity',
+            'management_entity'
         ).latest('academic_year__year')
 
     @property

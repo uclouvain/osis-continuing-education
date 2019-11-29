@@ -47,15 +47,17 @@ def save_state_changed_and_send_email(admission, connected_user=None):
     condition_of_acceptance, registration_required = None, None
     state_message = get_valid_state_change_message(admission)
     save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
-
     if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
         send_submission_email_to_admission_managers(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
         return
-    elif admission.state in (admission_state_choices.ACCEPTED,
-                             admission_state_choices.REJECTED,
-                             admission_state_choices.WAITING,
-                             admission_state_choices.VALIDATED):
+    elif admission.state in (
+            admission_state_choices.ACCEPTED,
+            admission_state_choices.REJECTED,
+            admission_state_choices.WAITING,
+            admission_state_choices.VALIDATED,
+            admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED
+    ):
         condition_of_acceptance, lower_state, registration_required = _get_datas_from_admission(admission)
     else:
         lower_state = 'other'
@@ -97,7 +99,8 @@ def save_state_changed_and_send_email(admission, connected_user=None):
 
 def _get_datas_from_admission(admission):
     condition_of_acceptance, registration_required = None, None
-    lower_state = admission.state.lower()
+    lower_state = admission_state_choices.ACCEPTED.lower() \
+        if admission.state == admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state.lower()
     if admission.state == admission_state_choices.ACCEPTED:
         registration_required = admission.formation.registration_required
         if admission.condition_of_acceptance != '':
@@ -298,19 +301,13 @@ def _get_managers_mails(formation):
 
 
 def check_required_field_for_participant(obj, meta, fields_required, extra=None):
-    if obj:
-        return _check_fields(fields_required, meta, obj, extra)
-    else:
-        return {response[key]: meta.get_field(key).verbose_name}
-
-
-def _check_fields(fields_required, meta, obj, extra):
     response = {}
-    for key in fields_required:
-        value = getattr(obj, key, None)
-        if value is None or (isinstance(value, str) and len(value) == 0):
-            _build_validation_msg(extra, key, meta, response)
-    return response
+    if obj:
+        for key in fields_required:
+            value = getattr(obj, key, None)
+            if value is None or (isinstance(value, str) and len(value) == 0):
+                _build_validation_msg(extra, key, meta, response)
+        return response
 
 
 def _build_validation_msg(extra, key, meta, response):
