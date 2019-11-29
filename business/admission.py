@@ -30,7 +30,8 @@ from django.utils.translation import gettext as _
 
 from base.models.entity_version import EntityVersion
 from base.models.enums.entity_type import FACULTY
-from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED, \
+    SUBMITTED, REGISTRATION_SUBMITTED, REJECTED, WAITING, VALIDATED
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import save_and_create_revision, MAIL_MESSAGE, MAIL, \
@@ -47,17 +48,11 @@ def save_state_changed_and_send_email(admission, connected_user=None):
     condition_of_acceptance, registration_required = None, None
     state_message = get_valid_state_change_message(admission)
     save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
-    if admission.state in (admission_state_choices.SUBMITTED, admission_state_choices.REGISTRATION_SUBMITTED):
+    if admission.state in (SUBMITTED, REGISTRATION_SUBMITTED):
         send_submission_email_to_admission_managers(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
         return
-    elif admission.state in (
-            admission_state_choices.ACCEPTED,
-            admission_state_choices.REJECTED,
-            admission_state_choices.WAITING,
-            admission_state_choices.VALIDATED,
-            admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED
-    ):
+    elif admission.state in (ACCEPTED, REJECTED, WAITING, VALIDATED, ACCEPTED_NO_REGISTRATION_REQUIRED):
         condition_of_acceptance, lower_state, registration_required = _get_datas_from_admission(admission)
     else:
         lower_state = 'other'
@@ -99,9 +94,8 @@ def save_state_changed_and_send_email(admission, connected_user=None):
 
 def _get_datas_from_admission(admission):
     condition_of_acceptance, registration_required = None, None
-    lower_state = admission_state_choices.ACCEPTED.lower() \
-        if admission.state == admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state.lower()
-    if admission.state == admission_state_choices.ACCEPTED:
+    lower_state = ACCEPTED.lower() if admission.state == ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state.lower()
+    if admission.state == ACCEPTED:
         registration_required = admission.formation.registration_required
         if admission.condition_of_acceptance != '':
             condition_of_acceptance = admission.condition_of_acceptance
