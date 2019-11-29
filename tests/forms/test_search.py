@@ -42,8 +42,10 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.forms.search import ADMISSION_STATE_CHOICES
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm
+from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
@@ -55,8 +57,6 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
-from continuing_education.forms.search import ADMISSION_STATE_CHOICES
-from continuing_education.models.admission import Admission
 
 COUNTRY_NAME_WITHOUT_ACCENT = 'Country - e'
 COUNTRY_NAME_WITH_ACCENT = 'Country - é'

@@ -67,8 +67,8 @@ def list_archives(request):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def archive_procedure(request, admission_id):
-    can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
+    can_access_admission(request.user, admission)
     if admission.is_draft():
         raise PermissionDenied
     redirection = request.META.get('HTTP_REFERER')
@@ -88,7 +88,8 @@ def archives_procedure(request):
 def change_archive_status(new_archive_status, request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
     for admission_id in selected_admissions_id:
-        can_access_admission(request.user, admission_id)
+        admission = Admission.objects.get(id=admission_id)
+        can_access_admission(request.user, admission)
     redirection = request.META.get('HTTP_REFERER')
     if selected_admissions_id:
         _mark_folders_as_archived(request, selected_admissions_id, new_archive_status)

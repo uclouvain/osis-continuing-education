@@ -127,7 +127,10 @@ class AdmissionFilterForm(BootstrapForm):
         if registration_required:
             qs = qs.filter(formation__registration_required=registration_required)
 
-        return qs.distinct()
+        return qs.select_related(
+            'person_information__person',
+            'formation__education_group'
+        ).distinct()
 
 
 def search_admissions_with_free_text(free_text, qs):
@@ -192,7 +195,10 @@ class RegistrationFilterForm(AdmissionFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
-        return qs.distinct()
+        return qs.select_related(
+            'person_information__person',
+            'formation__education_group'
+        ).distinct()
 
 
 class ArchiveFilterForm(AdmissionFilterForm):

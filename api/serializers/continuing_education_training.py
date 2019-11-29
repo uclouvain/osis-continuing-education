@@ -62,7 +62,8 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
             'managers',
             'training_aid',
             'postal_address',
-            'additional_information_label'
+            'additional_information_label',
+            'registration_required'
         )
 
     def get_faculty(self, obj):

@@ -30,8 +30,7 @@ from continuing_education.api.serializers.admission import AdmissionListSerializ
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.models.admission import Admission
-from continuing_education.views.common import get_valid_state_change_message, get_revision_messages, \
-    save_and_create_revision
+from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 

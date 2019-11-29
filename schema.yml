@@ -674,6 +674,7 @@ components:
     ContinuingEducationTrainingSerializer:
       allOf:
         - $ref: '#/components/schemas/FormationBasic'
+        - type: object
       properties:
         active:
           type: boolean
@@ -687,6 +688,8 @@ components:
           $ref: '#/components/schemas/AddressSerializer'
         additional_information:
           type: string
+        registration_required:
+          type: boolean
 
     PaginatedContinuingEducationTrainings:
       allOf:

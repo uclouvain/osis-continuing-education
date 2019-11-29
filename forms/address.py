@@ -30,6 +30,7 @@ class AddressForm(ModelForm):
 
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
-        set_participant_required_fields(self.fields,
-                                        ADDRESS_PARTICIPANT_REQUIRED_FIELDS
-                                        )
+        set_participant_required_fields(
+            self.fields,
+            ADDRESS_PARTICIPANT_REQUIRED_FIELDS
+        )

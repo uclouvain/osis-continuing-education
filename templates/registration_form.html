@@ -39,66 +39,34 @@
 
 {% block content %}
     <form id="form" method="POST" class="post-form">
-    {% csrf_token %}
-        <div class="page-header">
-            <a class="btn btn-default pull-right" id="cancel_registration_edit" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
-            </a>
-            <button type="button" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save_registration"
-                    data-modal_class="modal-lg"
-                    {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
-                <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
-            </button>
-            <h3>
-                {{ admission.person_information.person.last_name }}, {{ admission.person_information.person.first_name }}
-                &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.title }} &mdash;{{ admission.formation.academic_year }}
-            </h3>
-        </div>
+        {% csrf_token %}
 
-        <div class="panel panel-default">
-            <div class="panel-heading"><h4>{% trans 'Billing' %}</h4></div>
-            <div class="panel panel-body">
+        {% include "fragment/registration_form_header.html" with anchor='registration' %}
+        {% include "fragment/billing_form.html" %}
 
-                 <div class="row">
-                     {% bootstrap_field form.registration_type form_group_class="form-group col-md-3" label=_("Registration type") %}
-                     {% bootstrap_field form.head_office_name form_group_class="form-group col-md-3" label=_("Head office name") %}
-                     {% bootstrap_field form.company_number form_group_class="form-group col-md-3" label=_("Company number") %}
-                     {% bootstrap_field form.vat_number form_group_class="form-group col-md-3" label=_("VAT number") %}
-                </div>
-                <div class="row">
-                    {% bootstrap_field form.use_address_for_billing form_group_class="form-group col-md-12"%}
-                </div>
-                 <div id="billing_address" class="row" name="{% trans 'Billing' %}">
-                    {% bootstrap_field billing_address_form.location form_group_class="form-group col-md-3" class="participant_required" label=_("Street Address") %}
-                    {% bootstrap_field billing_address_form.postal_code form_group_class="form-group col-md-3" class="participant_required" label=_("Postal code") %}
-                    {% bootstrap_field billing_address_form.city form_group_class="form-group col-md-3" class="participant_required" label=_("City") %}
-                    {% bootstrap_field billing_address_form.country form_group_class="form-group col-md-3" class="participant_required" label=_("Country") %}
-                </div>
-            </div>
-        </div>
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Registration' %}</h4></div>
             <div class="panel panel-body">
-                <div class="row participant_required" style="margin-top:-15px" >
-                        <label id="msg_required" style="margin-left:15px; color: #8a6d3b;">
-                            {% trans 'At least one of the 3 following fields (national registry, id card number or passport number) must be filled-in be the participant'%}
-                        </label>
+                <div class="row participant_required" style="margin-top:-15px">
+                    <label id="msg_required" style="margin-left:15px; color: #8a6d3b;">
+                        {% trans 'At least one of the 3 following fields (national registry, id card number or passport number) must be filled-in be the participant' %}
+                    </label>
                 </div>
                 <div class="row participant_required">
-                    {% bootstrap_field form.national_registry_number form_group_class="form-group col-md-4"  label=_("National registry number") %}
-                    {% bootstrap_field form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
-                    {% bootstrap_field form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
+                    {% bootstrap_field registration_form.national_registry_number form_group_class="form-group col-md-4" label=_("National registry number") %}
+                    {% bootstrap_field registration_form.id_card_number form_group_class="form-group col-md-4" label=_("ID card number") %}
+                    {% bootstrap_field registration_form.passport_number form_group_class="form-group col-md-4" label=_("Passport number") %}
                 </div>
-                <div class="row participant_required" style="margin-top: -15px;" >&nbsp;
-                </div>
-                <div class="row">
-                    {% bootstrap_field form.marital_status form_group_class="form-group col-md-4" label=_("Marital status") %}
-                    {% bootstrap_field form.spouse_name form_group_class="form-group col-md-4" label=_("Spouse name") %}
-                    {% bootstrap_field form.children_number form_group_class="form-group col-md-4" label=_("Children number") %}
+                <div class="row participant_required" style="margin-top: -15px;">&nbsp;
                 </div>
                 <div class="row">
-                    {% bootstrap_field form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("Previous uclouvain registration") %}
-                    {% bootstrap_field form.previous_noma form_group_class="form-group col-md-4" label=_("Previous NOMA") %}
+                    {% bootstrap_field registration_form.marital_status form_group_class="form-group col-md-4" label=_("Marital status") %}
+                    {% bootstrap_field registration_form.spouse_name form_group_class="form-group col-md-4" label=_("Spouse name") %}
+                    {% bootstrap_field registration_form.children_number form_group_class="form-group col-md-4" label=_("Children number") %}
+                </div>
+                <div class="row">
+                    {% bootstrap_field registration_form.previous_ucl_registration form_group_class="form-group col-md-4" label=_("Previous uclouvain registration") %}
+                    {% bootstrap_field registration_form.previous_noma form_group_class="form-group col-md-4" label=_("Previous NOMA") %}
                 </div>
             </div>
         </div>
@@ -106,16 +74,16 @@
             <div class="panel-heading"><h4>{% trans 'Post' %}</h4></div>
             <div class="panel panel-body">
                 <div class="row">
-                    {% bootstrap_field form.use_address_for_post form_group_class="form-group col-md-12" %}
+                    {% bootstrap_field registration_form.use_address_for_post form_group_class="form-group col-md-12" %}
                 </div>
-                 <div id="residence_address"  class="row" name="{% trans 'Post' %}">
+                <div id="residence_address" class="row" name="{% trans 'Post' %}">
                     {% bootstrap_field residence_address_form.location form_group_class="form-group col-md-3" class="participant_required" label=_("Street Address") %}
                     {% bootstrap_field residence_address_form.postal_code form_group_class="form-group col-md-3" class="participant_required" label=_("Postal code") %}
                     {% bootstrap_field residence_address_form.city form_group_class="form-group col-md-3" class="participant_required" label=_("City") %}
                     {% bootstrap_field residence_address_form.country form_group_class="form-group col-md-3" class="participant_required" label=_("Country") %}
                 </div>
                 <div class="row">
-                    {% bootstrap_field form.residence_phone form_group_class="form-group col-md-3" label=_("Residence phone") %}
+                    {% bootstrap_field registration_form.residence_phone form_group_class="form-group col-md-3" label=_("Residence phone") %}
                 </div>
             </div>
         </div>
@@ -125,43 +93,43 @@
             <div class="panel panel-body">
                 <div class="row">
                     <div class="col-md-4">
-                        {% bootstrap_field form.ucl_registration_complete label=_("UCLouvain registration complete") %}
-                        {% bootstrap_field form.payment_complete label=_("Payment complete") %}
-                        {% bootstrap_field form.registration_file_received label=_("Registration file received") %}
-                        {% bootstrap_field form.noma label=_("NOMA") %}
-                        {% bootstrap_field form.reduced_rates label=_("Reduced rates") %}
-                        {% bootstrap_field form.spreading_payments label=_("Spreading payments") %}
+                        {% bootstrap_field registration_form.ucl_registration_complete label=_("UCLouvain registration complete") %}
+                        {% bootstrap_field registration_form.payment_complete label=_("Payment complete") %}
+                        {% bootstrap_field registration_form.registration_file_received label=_("Registration file received") %}
+                        {% bootstrap_field registration_form.noma label=_("NOMA") %}
+                        {% bootstrap_field registration_form.reduced_rates label=_("Reduced rates") %}
+                        {% bootstrap_field registration_form.spreading_payments label=_("Spreading payments") %}
                     </div>
                     <div class="col-md-4">
-                        {% bootstrap_field form.formation_spreading label=_("Formation spreading") %}
-                        {% bootstrap_field form.prior_experience_validation label=_("Prior experience validation") %}
+                        {% bootstrap_field registration_form.formation_spreading label=_("Formation spreading") %}
+                        {% bootstrap_field registration_form.prior_experience_validation label=_("Prior experience validation") %}
                     </div>
                     <div class="col-md-4">
-                        {% bootstrap_field form.assessment_presented label=_("Assessment presented") %}
-                        {% bootstrap_field form.assessment_succeeded label=_("Assessment succeeded") %}
-                        {% bootstrap_field form.diploma_produced label=_("Diploma produced") %}
+                        {% bootstrap_field registration_form.assessment_presented label=_("Assessment presented") %}
+                        {% bootstrap_field registration_form.assessment_succeeded label=_("Assessment succeeded") %}
+                        {% bootstrap_field registration_form.diploma_produced label=_("Diploma produced") %}
                     </div>
                 </div>
-
-
             </div>
         </div>
 
         <div class="panel panel-default">
             <div class="panel panel-body">
-                {% bootstrap_field form.comment label=_("Comment") %}
+                {% bootstrap_field registration_form.comment label=_("Comment") %}
             </div>
         </div>
 
-        <a class="btn btn-default pull-right" id="cancel_registration_edit_bottom" href="{% url 'admission_detail' admission_id=admission.id %}#registration">
+        <a class="btn btn-default pull-right" id="cancel_registration_edit_bottom"
+           href="{% url 'admission_detail' admission_id=admission.id %}#registration">
             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
         </a>
-        <button type="button" class="btn btn-primary pull-right" title="{%trans 'Save' %}"  style="margin-right: 10px;" name="btn_save_registration"
+        <button type="button" class="btn btn-primary pull-right" title="{% trans 'Save' %}" style="margin-right: 10px;"
+                name="btn_save_registration"
                 data-modal_class="modal-lg"
                 {% if admission.id %}data-url="{% url 'validate_field' admission.id %}"{% endif %}>
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
         </button>
-        {%  trans 'Do you confirm you want to save?' as confirm_msg_extra %}
+        {% trans 'Do you confirm you want to save?' as confirm_msg_extra %}
         {% include "fragment/submit_confirm_modal.html" with confirm_msg=confirm_msg_extra %}
 
     </form>
@@ -169,14 +137,16 @@
 
 {% block script %}
     <script>
-        //reuse address
+        $("#btn_confirm_fields").click(function () {
+            $('#form').submit();
+        });
         let address = {
             location: "{{admission.address.location | escapejs}}",
             postal_code: "{{admission.address.postal_code | escapejs}}",
             city: "{{admission.address.city | escapejs}}",
             country: "{{admission.address.country_id | escapejs}}",
         };
-        var billing_address = {
+        let billing_address = {
             location: "{{admission.billing_address.location | escapejs}}",
             postal_code: "{{admission.billing_address.postal_code | escapejs}}",
             city: "{{admission.billing_address.city | escapejs}}",
@@ -188,62 +158,7 @@
             city: "{{admission.residence_address.city | escapejs}}",
             country: "{{admission.residence_address.country_id | escapejs}}",
         };
-
-        $("[name='use_address_for_billing']:radio").change(function(){
-            if(this.value ==  "True"){
-                copy_address("billing");
-            } else {
-                empty_address("billing", billing_address);
-            }
-        });
-        // check when page is loaded
-        $("[name='use_address_for_billing']:radio").prop('checked')?copy_address("billing"):empty_address(("billing"), billing_address);
-
-        $("[name='use_address_for_post']:radio").change(function(){
-            if(this.value ==  "True"){
-                copy_address("residence");
-            } else {
-                empty_address("residence", residence_address);
-            }
-        });
-        //check when page is loaded
-        $("[name='use_address_for_post']:radio").prop('checked')?copy_address("residence"):empty_address(("residence"), residence_address);
-        let fields_to_enable = ["birth_country", "billing-country", "residence-country", "gender"];
-        //re-enable disabled field on form submit
-        $( "#form" ).submit(function( event ) {
-            enableFields(fields_to_enable);
-        });
-
-        function copy_address(e){
-            ["location", "postal_code", "city"].forEach(function(field) {
-                $("#id_"+e+"-"+field).val(address[field]);
-                $("#id_"+e+"-"+field).prop("readonly", true);
-            });
-            $("#id_"+e+"-country").val(address['country']);
-            $("#id_"+e+"-country").prop("disabled", true);
-        }
-
-        function empty_address(e, address){
-            ["location", "postal_code", "city"].forEach(function(field) {
-                $("#id_"+e+"-"+field).val(address[field]);
-                $("#id_"+e+"-"+field).prop("readonly", false);
-            });
-            $("#id_"+e+"-country").val(address['country']);
-            $("#id_"+e+"-country").prop("disabled", false);
-        }
-
-        $("#btn_confirm_fields").click(function(){
-            $('#form').submit();
-        });
-
-        function enableFields(fields) {
-            for (var field of fields) {
-                $("#id_" + field).prop( "disabled", false );
-            }
-        }
-
     </script>
-
+    <script src="{% static 'js/registration_addresses.js' %}"></script>
     <script src="{% static 'js/participant_required_fields.js' %}"></script>
-
 {% endblock %}

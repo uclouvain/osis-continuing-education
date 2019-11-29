@@ -132,8 +132,7 @@ def get_versions(admission):
             "revision__user__person",
             to_attr="author"
         )
-
-    ).order_by(
+    ).select_related('revision__user__person').order_by(
         "-revision__date_created"
     )
     return reversions

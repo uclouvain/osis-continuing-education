@@ -73,8 +73,8 @@ def list_registrations(request):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def registration_edit(request, admission_id):
-    can_access_admission(request.user, admission_id)
     admission = get_object_or_404(Admission, pk=admission_id)
+    can_access_admission(request.user, admission)
 
     if admission.is_draft():
         raise PermissionDenied
@@ -82,41 +82,41 @@ def registration_edit(request, admission_id):
     address = admission.address
     billing_address = admission.billing_address
     residence_address = admission.residence_address
-    form = RegistrationForm(request.POST or None, instance=admission)
+    registration_form = RegistrationForm(request.POST or None, instance=admission)
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
     residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
 
     errors = []
-    if form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
+    if registration_form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
         billing_address = _update_or_create_specific_address(
             admission.address,
             billing_address,
             billing_address_form,
-            not form.cleaned_data['use_address_for_billing']
+            not registration_form.cleaned_data['use_address_for_billing']
         )
         residence_address = _update_or_create_specific_address(
             admission.address,
             residence_address,
             residence_address_form,
-            not form.cleaned_data['use_address_for_post']
+            not registration_form.cleaned_data['use_address_for_post']
         )
-        admission = form.save(commit=False)
+        admission = registration_form.save(commit=False)
         admission.address = address
         admission.billing_address = billing_address
         admission.residence_address = residence_address
-        message = get_appropriate_revision_message(form)
+        message = get_appropriate_revision_message(registration_form)
         save_and_create_revision(request.user, message, admission)
 
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:
-        errors.append(form.errors)
+        errors.append(registration_form.errors)
 
     return render(
         request,
         'registration_form.html',
         {
             'admission': admission,
-            'form': form,
+            'registration_form': registration_form,
             'billing_address_form': billing_address_form,
             'residence_address_form': residence_address_form,
             'errors': errors,
@@ -192,8 +192,6 @@ def _switch_received_file_state(admission_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def list_cancelled(request):
-    user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-
     admission_list = Admission.objects.filter(state=admission_state_choices.CANCELLED)
     admission_list = filter_authorized_admissions(request.user, admission_list)
 
