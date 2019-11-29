@@ -84,7 +84,16 @@ STATES_CANCELLED = {
         (SUBMITTED, _('Submitted')),
         (VALIDATED, _('Validated')),
     ),
-    'states': [ACCEPTED, REJECTED, WAITING, VALIDATED, REGISTRATION_SUBMITTED, DRAFT, SUBMITTED]
+    'states': [
+        ACCEPTED,
+        REJECTED,
+        WAITING,
+        VALIDATED,
+        REGISTRATION_SUBMITTED,
+        DRAFT,
+        SUBMITTED,
+        ACCEPTED_NO_REGISTRATION_REQUIRED
+    ]
 }
 
 NEW_ADMIN_STATE = {

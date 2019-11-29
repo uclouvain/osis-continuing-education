@@ -557,7 +557,6 @@ class BillingEditTestCase(TestCase):
             'use_address_for_billing': True
         }
         data = billing_info.copy()
-        # Data to update
 
         url = reverse('billing_edit', args=[self.admission.pk])
         response = self.client.post(url, data=data)
