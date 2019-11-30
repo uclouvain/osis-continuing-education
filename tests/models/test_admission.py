@@ -81,7 +81,7 @@ class TestAdmission(TestCase):
         )
         ed_next = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=ed,
+            education_group=ed_next,
             academic_year=self.academic_year,
             acronym='O'
         )
