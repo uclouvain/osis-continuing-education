@@ -55,21 +55,18 @@ class TestAdmission(TestCase):
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
-        self.admission = AdmissionFactory(formation=self.formation)
-        self.submitted_admission = AdmissionFactory(state=admission_state_choices.SUBMITTED, formation=self.formation)
-        self.person = ContinuingEducationPersonFactory()
 
     def test_search(self):
-        an_admission = self.admission
+        an_admission = AdmissionFactory(formation=self.formation)
         persisted_admission = admission.search(person=an_admission.person_information)
         self.assertTrue(persisted_admission.exists())
 
-        nonexistent_admission = admission.search(person=self.person)
+        nonexistent_admission = admission.search(person=ContinuingEducationPersonFactory())
         self.assertFalse(nonexistent_admission.exists())
 
     @patch('osis_common.messaging.send_message.send_messages')
     def test_mail_not_sent_on_same_admission_state(self, mock):
-        self.submitted_admission.save()
+        AdmissionFactory(state=admission_state_choices.SUBMITTED, formation=self.formation).save()
         self.assertFalse(mock.called)
 
     def test_admission_ordering(self):
@@ -101,7 +98,9 @@ class TestAdmission(TestCase):
             a_person = ContinuingEducationPersonFactory(person=PersonFactory(first_name=first_name, last_name=name))
             AdmissionFactory(person_information=a_person, formation=formation)
         expected_order = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-        result = Admission.objects.all().values_list('person_information__person__first_name', flat=True)
+        result = Admission.objects.all().values_list(
+            'person_information__person__first_name', flat=True
+        )
         self.assertEquals(list(result), expected_order)
 
 
