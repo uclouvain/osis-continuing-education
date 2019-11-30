@@ -70,9 +70,6 @@ class AdmissionForm(ModelForm):
             qs = qs.filter(
                 managers=user.person
             )
-        self.fields['formation'].queryset = qs.order_by(
-            'education_group__educationgroupyear__acronym'
-        )
 
         set_participant_required_fields(self.fields,
                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
