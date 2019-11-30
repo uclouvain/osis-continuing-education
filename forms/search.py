@@ -270,7 +270,7 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
 def _build_formation_choices(field, states, archived_status=False):
     field.queryset = ContinuingEducationTraining.objects.filter(
         id__in=Admission.objects.filter(state__in=states, archived=archived_status).values_list(
-            'formation', flat=False).distinct('formation')
+            'formation', flat=False).distinct('education_group__educationgroupyear__acronym')
     )
 
 
