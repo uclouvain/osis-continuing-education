@@ -79,25 +79,27 @@ class TestAdmission(TestCase):
             academic_year=self.academic_year,
             acronym='M'
         )
+        cet = ContinuingEducationTrainingFactory(education_group=ed)
         ed_next = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=ed_next,
             academic_year=self.academic_year,
             acronym='O'
         )
+        cet_next = ContinuingEducationTrainingFactory(education_group=ed_next)
         persons_data = [
-            ('A', 'I', ed),
-            ('D', 'J', ed),
-            ('C', 'J', ed),
-            ('B', 'I', ed),
-            ('E', 'K', ed_next),
-            ('H', 'L', ed_next),
-            ('G', 'L', ed_next),
-            ('F', 'K', ed_next)
+            ('A', 'I', cet),
+            ('D', 'J', cet),
+            ('C', 'J', cet),
+            ('B', 'I', cet),
+            ('E', 'K', cet_next),
+            ('H', 'L', cet_next),
+            ('G', 'L', cet_next),
+            ('F', 'K', cet_next)
         ]
-        for first_name, name, education_group in persons_data:
+        for first_name, name, formation in persons_data:
             a_person = ContinuingEducationPersonFactory(person=PersonFactory(first_name=first_name, last_name=name))
-            AdmissionFactory(person_information=a_person, formation__education_group=education_group)
+            AdmissionFactory(person_information=a_person, formation=formation)
         expected_order = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         result = Admission.objects.all().values_list('person_information__person__first_name', flat=True)
         self.assertEquals(list(result), expected_order)
