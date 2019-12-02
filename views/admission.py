@@ -210,11 +210,13 @@ def admission_form(request, admission_id=None):
         can_access_admission(request.user, admission)
         if admission.is_draft():
             raise PermissionDenied
+    selected_person = bool(request.POST.get('person_information', False))
     states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(
         data=request.POST or None,
         instance=base_person,
+        selected_person=selected_person,
         no_first_name_checked=request.POST.get('no_first_name', False)
     )
     person_information = continuing_education_person.find_by_person(person=base_person)
@@ -229,7 +231,11 @@ def admission_form(request, admission_id=None):
             'state': state
         }
     )
-    person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
+    person_form = ContinuingEducationPersonForm(
+        data=request.POST or None,
+        instance=person_information,
+        selected_person=selected_person
+    )
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission.state if admission else None
     if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid() and base_person_form.is_valid():
@@ -272,7 +278,8 @@ def admission_form(request, admission_id=None):
             'address_form': address_form,
             'base_person_form': base_person_form,
             'state': state,
-            'states': states
+            'states': states,
+            'selected_person': selected_person
         }
     )
 

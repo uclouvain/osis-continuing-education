@@ -86,7 +86,7 @@
                         {% bootstrap_field admission_form.person_information form_group_class="form-group col-md-12" label=_("Person") %}
                     </div>
                 {% endif %}
-                <div id="person_details">
+                <div id="person_details" {% if selected_person %} class="hidden" {% endif %}>
                     <div class="row">
                         <div class="form-group col-md-4">
                             {% bootstrap_field base_person_form.first_name label=_("First name") %}
