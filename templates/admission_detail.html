@@ -157,11 +157,13 @@
                 {% endif %}
             </div>
         {% endif %}
-        {% if admission.state_reason and admission.is_cancelled %}
+        {% if admission.state_reason %}
+            {% if admission.is_cancelled or admission.is_cancelled_no_registration_required %}
             <div class="alert alert-info" role="alert">
                 <strong>{% trans 'Cancel state reason' %}: </strong>
                 {{ admission.state_reason }}
             </div>
+            {% endif %}
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
           <li role="presentation" id="tab_admission" {% if opened_tab == 'tab_admission' or not opened_tab %}class="active"{% endif %}><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
@@ -258,7 +260,7 @@
                     'condition_acceptance_modal',
                     condition_acceptance
                 );
-            } else if (newState === "Cancelled") {
+            } else if (newState.includes("Cancelled")) {
                 let cancelled_reason = {New: 'id_state_reason', Old: 'old_cancel_reason'};
                 openModal(
                     'cancel_reason_modal',
