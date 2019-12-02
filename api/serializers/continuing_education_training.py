@@ -25,8 +25,10 @@
 ##############################################################################
 from rest_framework import serializers
 
+from base.models.education_group import EducationGroup
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from education_group.api.serializers.training import TrainingListSerializer
 
 
 class PersonTrainingListField(serializers.RelatedField):
@@ -45,7 +47,7 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
         view_name='continuing_education_api_v1:continuing-education-training-detail',
         lookup_field='uuid'
     )
-    faculty = serializers.SerializerMethodField()
+    education_group = serializers.SerializerMethodField()
     postal_address = AddressSerializer(allow_null=True)
 
     managers = PersonTrainingListField(many=True, read_only=True)
@@ -55,9 +57,7 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
         fields = (
             'url',
             'uuid',
-            'acronym',
-            'title',
-            'faculty',
+            'education_group',
             'active',
             'managers',
             'training_aid',
@@ -66,7 +66,17 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
             'registration_required'
         )
 
-    def get_faculty(self, obj):
-        ac = obj.academic_year
-        faculty_version = obj.management_entity.entityversion_set.first().find_faculty_version(ac)
-        return faculty_version.acronym if faculty_version else None
+    def get_education_group(self, obj):
+        # return last education_group_year
+        return TrainingListSerializer(
+            obj.get_most_recent_education_group_year(),
+            context={'request': self.context['request']}
+        ).data
+
+
+class ContinuingEducationTrainingPostSerializer(ContinuingEducationTrainingSerializer):
+    education_group = serializers.SlugRelatedField(
+        queryset=EducationGroup.objects.all(),
+        slug_field='uuid',
+        required=True
+    )
