@@ -27,7 +27,8 @@ from rest_framework import serializers
 
 from base.models.person import Person
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
-from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
+from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
+    ContinuingEducationPersonPostSerializer
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.models.address import Address
@@ -146,12 +147,7 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         slug_field='uuid',
         required=True
     )
-    birth_country = serializers.SlugRelatedField(
-        slug_field='iso_code',
-        queryset=Country.objects.all(),
-        required=True,
-        source='person_information.birth_country'
-    )
+    person_information = ContinuingEducationPersonPostSerializer()
 
     def update(self, instance, validated_data):
         self.update_field('address', validated_data, instance.address)

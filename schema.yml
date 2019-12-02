@@ -238,17 +238,15 @@ paths:
 
   /persons/details:
     get:
-      description: Obtain uuid of the ContinuingEducationPerson of the logged user
+      description: Obtain details of the ContinuingEducationPerson of the logged user
       responses:
         200:
-          description: Successful get of the uuid of the ContinuingEducationPerson of the logged user
+          description: Successful get of the details of the ContinuingEducationPerson of the logged user
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  uuid:
-                    $ref: '#/components/schemas/Uuid'
+                $ref: '#/components/schemas/ContinuingEducationPersonSerializer'
+
 
   /persons/{uuid}/admissions/:
     get:
@@ -501,8 +499,6 @@ components:
           properties:
             address:
               $ref: '#/components/schemas/AddressPostSerializer'
-            birth_country:
-              $ref: '#/components/schemas/CountryIsoCode'
             citizenship:
               $ref: '#/components/schemas/CountryIsoCode'
             formation:
@@ -655,6 +651,22 @@ components:
           type: string
           format: email
           example: jane.doe@provider.com
+
+    ContinuingEducationPersonSerializer:
+      type: object
+      properties:
+        uuid:
+          $ref: '#/components/schemas/Uuid'
+        person:
+          $ref: '#/components/schemas/PersonDetailSerializer'
+        birth_date:
+          type: string
+          example: "2000-01-01"
+        birth_location:
+          type: string
+          example: Mogadiscio
+        birth_country:
+          $ref: '#/components/schemas/CountryName'
 
     FormationBasic:
       type: object
