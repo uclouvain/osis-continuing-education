@@ -150,12 +150,13 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             instance,
             not validated_data['use_address_for_billing']
         )
-        instance.residence_address = self.update_addresses(
-            'residence_address',
-            validated_data,
-            instance,
-            not validated_data['use_address_for_post']
-        )
+        if instance.formation.registration_required:
+            instance.residence_address = self.update_addresses(
+                'residence_address',
+                validated_data,
+                instance,
+                not validated_data['use_address_for_post']
+            )
         instance._original_state = instance.state
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:
