@@ -96,7 +96,7 @@ class RegistrationQueueTestCase(TestCase):
             'id_card_number': self.admission.id_card_number,
             'passport_number': self.admission.passport_number,
             'formation_code': self.admission.formation.acronym,
-            'formation_academic_year': str(self.admission.formation.academic_year),
+            'formation_academic_year': str(self.admission.formation.academic_year.year),
             'student_case_uuid': str(self.admission.uuid)
         }
         self.assertDictEqual(result, expected_result)
