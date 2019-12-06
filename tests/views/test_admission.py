@@ -413,10 +413,9 @@ class AdmissionStateChangedTestCase(TestCase):
             state=SUBMITTED
         )
 
-    @patch('continuing_education.views.admission.send_admission_to_queue')
     @patch('continuing_education.business.admission._get_continuing_education_managers')
     @patch('osis_common.messaging.send_message.send_messages')
-    def test_admission_detail_edit_state(self, mock_send, mock_managers, mock_queue):
+    def test_admission_detail_edit_state(self, mock_send, mock_managers):
         states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
         if self.admission.state == admission_state_choices.SUBMITTED:
             states.remove(DRAFT)
@@ -436,8 +435,6 @@ class AdmissionStateChangedTestCase(TestCase):
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.state, admission['state'], 'state')
-        if self.admission.state == admission_state_choices.VALIDATED:
-            self.assertTrue(mock_queue.called)
 
     @mock.patch('continuing_education.business.admission.send_email')
     def test_admission_detail_edit_state_to_draft(self, mock_send_email):
