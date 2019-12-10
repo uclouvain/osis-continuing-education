@@ -40,7 +40,7 @@ class RegistrationList(generics.ListAPIView):
     """
     name = 'registration-list'
 
-    filter_fields = (
+    filterset_fields = (
         'person_information',
         'formation',
         'state',

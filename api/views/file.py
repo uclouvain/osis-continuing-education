@@ -42,7 +42,7 @@ class AdmissionFileListCreate(generics.ListCreateAPIView):
        Return a list of all the files with optional filtering.
     """
     name = 'file-list-create'
-    filter_fields = (
+    filterset_fields = (
         'name',
         'size',
         'created_date',
