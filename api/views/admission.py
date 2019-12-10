@@ -40,7 +40,7 @@ class AdmissionList(generics.ListAPIView):
     """
     name = 'admission-list'
 
-    filter_fields = (
+    filterset_fields = (
         'person_information',
         'formation',
         'state'
