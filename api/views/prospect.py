@@ -35,7 +35,7 @@ class ProspectListCreate(generics.ListCreateAPIView):
     """
     name = 'prospect-list-create'
     queryset = Prospect.objects.all()
-    filter_fields = (
+    filterset_fields = (
         'first_name',
         'name',
         'email',

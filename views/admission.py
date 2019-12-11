@@ -40,7 +40,6 @@ from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, save_state_changed_and_send_email, \
     check_required_field_for_participant
 from continuing_education.business.perms import is_not_student_worker
-from continuing_education.business.registration_queue import send_admission_to_queue
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
@@ -210,11 +209,13 @@ def admission_form(request, admission_id=None):
         can_access_admission(request.user, admission)
         if admission.is_draft():
             raise PermissionDenied
+    selected_person = bool(request.POST.get('person_information', False))
     states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
     base_person = admission.person_information.person if admission else None
     base_person_form = PersonForm(
         data=request.POST or None,
         instance=base_person,
+        selected_person=selected_person,
         no_first_name_checked=request.POST.get('no_first_name', False)
     )
     person_information = ContinuingEducationPerson.objects.filter(person=base_person).first()
@@ -229,7 +230,11 @@ def admission_form(request, admission_id=None):
             'state': state
         }
     )
-    person_form = ContinuingEducationPersonForm(request.POST or None, instance=person_information)
+    person_form = ContinuingEducationPersonForm(
+        data=request.POST or None,
+        instance=person_information,
+        selected_person=selected_person
+    )
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission.state if admission else None
     if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid() and base_person_form.is_valid():
@@ -272,7 +277,8 @@ def admission_form(request, admission_id=None):
             'address_form': address_form,
             'base_person_form': base_person_form,
             'state': state,
-            'states': states
+            'states': states,
+            'selected_person': selected_person
         }
     )
 
@@ -282,7 +288,6 @@ def _new_state_management(request, adm_form, admission, new_state):
         save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)
-        send_admission_to_queue(admission)
     query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
     return redirect(
         reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param

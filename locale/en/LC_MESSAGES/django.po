@@ -1038,7 +1038,7 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-msgid "To submit a registration, its state must be ACCEPTED."
+msgid "To submit a registration, its state must be ACCEPTED. To submit an admission, its state must be DRAFT."
 msgstr ""
 
 msgid "To submit an admission, its state must be DRAFT."

@@ -413,10 +413,9 @@ class AdmissionStateChangedTestCase(TestCase):
             state=SUBMITTED
         )
 
-    @patch('continuing_education.views.admission.send_admission_to_queue')
     @patch('continuing_education.business.admission._get_continuing_education_managers')
     @patch('osis_common.messaging.send_message.send_messages')
-    def test_admission_detail_edit_state(self, mock_send, mock_managers, mock_queue):
+    def test_admission_detail_edit_state(self, mock_send, mock_managers):
         states = NEW_ADMIN_STATE[self.admission.state]['states'].copy()
         if self.admission.state == admission_state_choices.SUBMITTED:
             states.remove(DRAFT)
@@ -436,8 +435,6 @@ class AdmissionStateChangedTestCase(TestCase):
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.state, admission['state'], 'state')
-        if self.admission.state == admission_state_choices.VALIDATED:
-            self.assertTrue(mock_queue.called)
 
     @mock.patch('continuing_education.business.admission.send_email')
     def test_admission_detail_edit_state_to_draft(self, mock_send_email):
@@ -562,8 +559,8 @@ class BillingEditTestCase(TestCase):
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#billing')
         self.admission.refresh_from_db()
-        self.assertEquals(self.admission.registration_type, billing_info['registration_type'])
-        self.assertEquals(self.admission.head_office_name, billing_info['head_office_name'])
-        self.assertEquals(self.admission.company_number, billing_info['company_number'])
-        self.assertEquals(self.admission.vat_number, billing_info['vat_number'])
-        self.assertEquals(self.admission.use_address_for_billing, billing_info['use_address_for_billing'])
+        self.assertEqual(self.admission.registration_type, billing_info['registration_type'])
+        self.assertEqual(self.admission.head_office_name, billing_info['head_office_name'])
+        self.assertEqual(self.admission.company_number, billing_info['company_number'])
+        self.assertEqual(self.admission.vat_number, billing_info['vat_number'])
+        self.assertEqual(self.admission.use_address_for_billing, billing_info['use_address_for_billing'])

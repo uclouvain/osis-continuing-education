@@ -35,7 +35,7 @@ class AddressListCreate(generics.ListCreateAPIView):
     """
     name = 'address-list-create'
     queryset = Address.objects.all()
-    filter_fields = (
+    filterset_fields = (
         'country',
         'city',
     )
