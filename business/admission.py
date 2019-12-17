@@ -288,7 +288,7 @@ def _get_faculty_parent(management_entity):
 
 
 def _get_managers_mails(formation):
-    managers_mail = formation.managers.filter(email__isnull=False)\
+    managers_mail = formation.managers.exclude(email="")\
         .order_by('last_name').\
         values_list('email', flat=True) if formation else []
     return _(" or ").join(managers_mail)

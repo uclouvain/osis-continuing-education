@@ -108,8 +108,8 @@ class TestAdmission(TestCase):
     def test_get_managers_mail_mail_missing(self):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
-        manager = PersonFactory(last_name="AAA", email=None)
-        manager_2 = PersonFactory(last_name="BBB")
+        manager = PersonFactory(last_name="AAA", email="")
+        manager_2 = PersonFactory(last_name="BBB", email="")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=manager, training=cet)
         PersonTrainingFactory(person=manager_2, training=cet)
@@ -392,7 +392,7 @@ class SendEmailSettingsTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_email_email_missing(self, mock_send_mail):
-        self.manager_without_email = PersonFactory(last_name="AAA", email=None)
+        self.manager_without_email = PersonFactory(last_name="AAA", email="")
         self.manager_without_email.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
         PersonTrainingFactory(person=self.manager_without_email, training=self.cet)
 
