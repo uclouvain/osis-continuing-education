@@ -791,7 +791,7 @@ msgid "Produce xls with list of admissions"
 msgstr "Produire un fichier xls avec la liste des admissions"
 
 msgid "Professional"
-msgstr "Professionel"
+msgstr "Professionnel"
 
 msgid "Professional and personal interests"
 msgstr "Intérêts professionnels et personnels"
@@ -800,7 +800,7 @@ msgid "Professional background"
 msgstr "Parcours professionnel"
 
 msgid "Professional status"
-msgstr "Statut professionel"
+msgstr "Statut professionnel"
 
 msgid "Prospects"
 msgstr "Prospects"
