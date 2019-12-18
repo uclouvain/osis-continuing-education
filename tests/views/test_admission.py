@@ -118,6 +118,7 @@ class ViewAdmissionTestCase(TestCase):
             'last_name': cls.admission.person_information.person.last_name,
             'first_name': cls.admission.person_information.person.first_name,
             'gender': cls.admission.person_information.person.gender,
+            'email': cls.admission.person_information.person.email,
         }
         cls.continuing_education_person_data = {
             'birth_date': cls.admission.person_information.birth_date.strftime('%Y-%m-%d'),
@@ -222,7 +223,6 @@ class ViewAdmissionTestCase(TestCase):
             'professional_personal_interests': 'abcd',
             'formation': self.formation.pk,
             'awareness_ucl_website': True,
-
         }
         data = admission.copy()
         # Data to update
