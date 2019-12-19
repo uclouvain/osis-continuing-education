@@ -45,15 +45,16 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 
 
 class TestAdmission(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
 
     def test_search(self):
@@ -105,40 +106,40 @@ class TestAdmission(TestCase):
 
 
 class TestAdmissionGetProperties(TestCase):
-
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         entities = create_entities_hierarchy()
-        self.faculty = entities['child_one_entity_version']
-        self.child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
-        self.child_entity_version = EntityVersionFactory(acronym="CHILD_1_UNDER_FAC",
-                                                         parent=self.faculty.entity,
-                                                         entity_type=SCHOOL,
-                                                         end_date=None,
-                                                         entity=self.child_entity,
-                                                         start_date=entities['start_date'])
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.faculty = entities['child_one_entity_version']
+        cls.child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
+        cls.child_entity_version = EntityVersionFactory(acronym="CHILD_1_UNDER_FAC",
+                                                        parent=cls.faculty.entity,
+                                                        entity_type=SCHOOL,
+                                                        end_date=None,
+                                                        entity=cls.child_entity,
+                                                        start_date=entities['start_date'])
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year,
-            management_entity=self.child_entity
+            education_group=cls.education_group,
+            academic_year=cls.academic_year,
+            management_entity=cls.child_entity
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group,
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
         )
-        self.admission = AdmissionFactory(formation=self.formation,
-                                          awareness_ucl_website=False,
-                                          awareness_formation_website=False,
-                                          awareness_press=False,
-                                          awareness_facebook=True,
-                                          awareness_linkedin=False,
-                                          awareness_customized_mail=False,
-                                          awareness_emailing=False,
-                                          awareness_other='Other awareness',
-                                          awareness_word_of_mouth=False,
-                                          awareness_friends=False,
-                                          awareness_former_students=False,
-                                          awareness_moocs=False)
+        cls.admission = AdmissionFactory(formation=cls.formation,
+                                         awareness_ucl_website=False,
+                                         awareness_formation_website=False,
+                                         awareness_press=False,
+                                         awareness_facebook=True,
+                                         awareness_linkedin=False,
+                                         awareness_customized_mail=False,
+                                         awareness_emailing=False,
+                                         awareness_other='Other awareness',
+                                         awareness_word_of_mouth=False,
+                                         awareness_friends=False,
+                                         awareness_former_students=False,
+                                         awareness_moocs=False)
 
     def test_get_faculty(self):
         an_admission = AdmissionFactory(
