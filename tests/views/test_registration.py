@@ -49,28 +49,31 @@ from continuing_education.tests.factories.continuing_education_training import C
 
 
 class ViewRegistrationTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.admission_accepted = AdmissionFactory(
+        cls.admission_accepted = AdmissionFactory(
             state=admission_state_choices.ACCEPTED,
-            formation=self.formation
+            formation=cls.formation
         )
-        self.admission_rejected = AdmissionFactory(
+        cls.admission_rejected = AdmissionFactory(
             state=admission_state_choices.REJECTED,
-            formation=self.formation
+            formation=cls.formation
         )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_list_registrations(self):
         url = reverse('registration')
@@ -166,37 +169,38 @@ class ViewRegistrationTestCase(TestCase):
 
 
 class RegistrationStateChangedTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.faculty_manager = PersonWithPermissionsFactory(
+        cls.faculty_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
         )
-        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group)
-        PersonTraining(person=self.faculty_manager, training=self.formation).save()
+        cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
+        PersonTraining(person=cls.faculty_manager, training=cls.formation).save()
         training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        self.faculty_manager.user.groups.add(training_manager_group)
+        cls.faculty_manager.user.groups.add(training_manager_group)
         group = GroupFactory(name='continuing_education_managers')
-        self.continuing_education_manager = PersonWithPermissionsFactory(
+        cls.continuing_education_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
-        self.continuing_education_manager.user.groups.add(group)
+        cls.continuing_education_manager.user.groups.add(group)
         EntityVersionFactory(
-            entity=self.formation.management_entity
+            entity=cls.formation.management_entity
         )
-        self.registration_submitted = AdmissionFactory(
-            formation=self.formation,
+        cls.registration_submitted = AdmissionFactory(
+            formation=cls.formation,
             state=REGISTRATION_SUBMITTED
         )
-        self.registration_validated = AdmissionFactory(
-            formation=self.formation,
+        cls.registration_validated = AdmissionFactory(
+            formation=cls.formation,
             state=VALIDATED
         )
 
@@ -253,24 +257,27 @@ class RegistrationStateChangedTestCase(TestCase):
 
 
 class ViewRegistrationsTrainingManagerTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
-        self.client.force_login(self.training_manager.user)
-        self.registration = AdmissionFactory(
-            formation=self.formation,
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
+        cls.registration = AdmissionFactory(
+            formation=cls.formation,
             state=REGISTRATION_SUBMITTED,
         )
+
+    def setUp(self):
+        self.client.force_login(self.training_manager.user)
 
     def test_list_with_no_registrations_visible(self):
         url = reverse('registration')
