@@ -130,7 +130,7 @@ class AdmissionFilterForm(BootstrapForm):
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        )
+        ).distinct()
 
 
 def search_admissions_with_free_text(free_text, qs):
@@ -198,7 +198,7 @@ class RegistrationFilterForm(AdmissionFilterForm):
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        )
+        ).distinct()
 
 
 class ArchiveFilterForm(AdmissionFilterForm):
@@ -212,7 +212,9 @@ class ArchiveFilterForm(AdmissionFilterForm):
         self.fields['state'].choices = _get_state_choices(ARCHIVE_STATE_CHOICES)
         _build_formation_choices(self.fields['formation'], STATES_FOR_ARCHIVE, True)
         if user and not user.groups.filter(name='continuing_education_managers').exists():
-            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(managers=user.person)
+            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
+                managers=user.person
+            ).distinct()
 
     def get_archives(self):
         a_state = self.cleaned_data.get('state')
@@ -233,7 +235,7 @@ class ArchiveFilterForm(AdmissionFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
-        return qs
+        return qs.distinct()
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
@@ -272,7 +274,7 @@ def _build_formation_choices(field, states, archived_status=False):
         id__in=Admission.objects.filter(
             state__in=states,
             archived=archived_status
-        ).values_list('formation', flat=False).distinct('formation__education_group__educationgroupyear__acronym')
+        ).values_list('formation', flat=False).distinct('formation')
     )
 
 
@@ -372,7 +374,7 @@ class ManagerFilterForm(BootstrapForm):
     training = FormationModelChoiceField(
         queryset=ContinuingEducationTraining.objects.filter(
             id__in=PersonTraining.objects.values_list('training', flat=True)
-        ),
+        ).distinct(),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,

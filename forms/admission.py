@@ -70,9 +70,8 @@ class AdmissionForm(ModelForm):
             qs = qs.filter(
                 managers=user.person
             )
-
-        set_participant_required_fields(self.fields,
-                                        ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
+        self.fields['formation'].queryset = qs.distinct()
+        set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
 
     class Meta:
         model = Admission

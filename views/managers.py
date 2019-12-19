@@ -72,7 +72,7 @@ def list_managers(request):
         display_errors(request, errors)
 
     for manager in managers:
-        manager.trainings = trainings.filter(managers=manager)
+        manager.trainings = trainings.filter(managers=manager).distinct()
 
     return render(request, "managers.html", {
         'managers': get_object_list(request, managers),
