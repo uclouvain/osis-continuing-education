@@ -44,7 +44,7 @@ class AdmissionForm(ModelForm):
         required=False
     )
     citizenship = CountryChoiceField(
-        queryset=Country.objects.all().order_by('name'),
+        queryset=Country.objects.all(),
         label=_("Citizenship"),
         required=False,
     )
@@ -56,9 +56,7 @@ class AdmissionForm(ModelForm):
         label=_("High school diploma")
     )
     person_information = ContinuingEducationPersonChoiceField(
-        queryset=ContinuingEducationPerson.objects.all().order_by(
-            'person__last_name', 'person__first_name'
-        ).select_related('person'),
+        queryset=ContinuingEducationPerson.objects.all().select_related('person'),
         required=False,
         empty_label=_("New person")
     )

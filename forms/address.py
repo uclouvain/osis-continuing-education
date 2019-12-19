@@ -11,7 +11,7 @@ ADDRESS_PARTICIPANT_REQUIRED_FIELDS = ['location', 'postal_code', 'city', 'count
 
 class AddressForm(ModelForm):
     country = CountryChoiceField(
-        queryset=Country.objects.all().order_by('name'),
+        queryset=Country.objects.all(),
         label=_("Country"),
         required=False,
     )

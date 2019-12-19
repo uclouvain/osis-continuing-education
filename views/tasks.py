@@ -53,8 +53,6 @@ def list_tasks(request):
         raise PermissionDenied
     all_admissions = Admission.objects.select_related(
         'person_information__person', 'formation__education_group'
-    ).order_by(
-        'person_information__person__last_name', 'person_information__person__first_name'
     )
     if not is_student_worker(request.user):
         all_admissions = filter_authorized_admissions(request.user, all_admissions)
