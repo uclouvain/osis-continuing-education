@@ -274,7 +274,7 @@ def _build_formation_choices(field, states, archived_status=False):
         id__in=Admission.objects.filter(
             state__in=states,
             archived=archived_status
-        ).values_list('formation', flat=False).distinct('formation')
+        ).values_list('formation', flat=False).distinct('formation__education_group__educationgroupyear__acronym')
     )
 
 
