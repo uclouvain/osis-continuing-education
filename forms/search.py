@@ -214,7 +214,7 @@ class ArchiveFilterForm(AdmissionFilterForm):
         if user and not user.groups.filter(name='continuing_education_managers').exists():
             self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
                 managers=user.person
-            ).order_by('education_group__educationgroupyear__acronym').distinct()
+            ).distinct()
 
     def get_archives(self):
         a_state = self.cleaned_data.get('state')
@@ -239,7 +239,6 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
-
     qs = Admission.objects.all()
 
     if states:
@@ -267,14 +266,16 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
     if received_file:
         qs = qs.filter(registration_file_received=received_file)
 
-    return qs.order_by('person_information')
+    return qs
 
 
 def _build_formation_choices(field, states, archived_status=False):
-    field.queryset = ContinuingEducationTraining.objects \
-        .filter(id__in=Admission.objects.filter(state__in=states, archived=archived_status)
-                .values_list('formation', flat=False).distinct('formation')
-                ).order_by('education_group__educationgroupyear__acronym').distinct()
+    field.queryset = ContinuingEducationTraining.objects.filter(
+        id__in=Admission.objects.filter(
+            state__in=states,
+            archived=archived_status
+        ).values_list('formation', flat=False).distinct('formation__education_group__educationgroupyear__acronym')
+    )
 
 
 def _get_state_choices(choices):
@@ -347,7 +348,7 @@ def _build_active_parameter(qs, state):
 
 def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
     entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
-    return qs.filter(educationgroupyear__management_entity__in=entity_ids)
+    return qs.filter(educationgroupyear__management_entity__in=entity_ids).distinct()
 
 
 class ManagerFilterForm(BootstrapForm):
@@ -373,7 +374,7 @@ class ManagerFilterForm(BootstrapForm):
     training = FormationModelChoiceField(
         queryset=ContinuingEducationTraining.objects.filter(
             id__in=PersonTraining.objects.values_list('training', flat=True)
-        ).order_by('education_group__educationgroupyear__acronym').distinct(),
+        ).distinct(),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,

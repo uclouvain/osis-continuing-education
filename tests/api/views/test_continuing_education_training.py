@@ -95,7 +95,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        trainings = ContinuingEducationTraining.objects.all().order_by('education_group__educationgroupyear__acronym')
+        trainings = ContinuingEducationTraining.objects.all()
         serializer = ContinuingEducationTrainingSerializer(trainings, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'], serializer.data)
 
@@ -103,7 +103,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        trainings = ContinuingEducationTraining.objects.all().order_by('education_group__educationgroupyear__acronym')
+        trainings = ContinuingEducationTraining.objects.all()
         serializer = ContinuingEducationTrainingSerializer(trainings, many=True, context={'request': RequestFactory().get(self.url)})
         self.assertEqual(response.data['results'][0]['managers'], serializer.data[0]['managers'])
 

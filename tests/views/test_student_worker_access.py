@@ -38,28 +38,30 @@ from continuing_education.tests.factories.continuing_education_training import C
 
 
 class ViewsLimitedForStudentWorker(TestCase):
-
-    def setUp(self):
-        self.student = PersonWithPermissionsFactory('can_access_admission', 'can_edit_received_file_field',
+    @classmethod
+    def setUpTestData(cls):
+        cls.student = PersonWithPermissionsFactory('can_access_admission', 'can_edit_received_file_field',
                                                     groups=[STUDENT_WORKERS_GROUP])
-        self.client.force_login(self.student.user)
-        self.admission = AdmissionFactory()
+        cls.admission = AdmissionFactory()
 
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year,
+            education_group=cls.education_group,
+            academic_year=cls.academic_year,
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group,
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
             active=True
         )
-        self.training_manager = PersonWithPermissionsFactory(
+        cls.training_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             employee=True, groups=['continuing_education_training_managers']
         )
+
+    def setUp(self):
+        self.client.force_login(self.student.user)
 
     def test_get_access(self):
         urls = [reverse('admission'),

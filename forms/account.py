@@ -12,7 +12,7 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
 
 class ContinuingEducationPersonForm(ModelForm):
     birth_country = CountryChoiceField(
-        queryset=Country.objects.all().order_by('name'),
+        queryset=Country.objects.all(),
         label=_("Birth country"),
         required=False,
     )

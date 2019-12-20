@@ -48,9 +48,9 @@ from continuing_education.forms.admission import AdmissionForm, RejectedAdmissio
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
-from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
@@ -218,7 +218,7 @@ def admission_form(request, admission_id=None):
         selected_person=selected_person,
         no_first_name_checked=request.POST.get('no_first_name', False)
     )
-    person_information = continuing_education_person.find_by_person(person=base_person)
+    person_information = ContinuingEducationPerson.objects.filter(person=base_person).first()
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
     state = admission.state if admission else SUBMITTED
