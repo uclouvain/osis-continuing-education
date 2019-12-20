@@ -468,10 +468,13 @@ class AdmissionStateChangedTestCase(TestCase):
 
 
 class ViewAdmissionCacheTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+
+    def setUp(self):
         self.client.force_login(self.manager.user)
         self.addCleanup(cache.clear)
 
