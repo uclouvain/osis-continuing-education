@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import random
+
 from django.test import TestCase
 from django.utils.translation import gettext_lazy as _
 
@@ -43,49 +45,40 @@ ANY_REASON = 'Anything'
 
 
 class TestAdmissionForm(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
+        group = GroupFactory(name='continuing_education_training_managers')
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        PersonTraining(person=cls.manager, training=cls.formation).save()
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
+        admission = AdmissionFactory(formation=self.formation)
+        self.data = admission.__dict__
+        self.data['formation'] = admission.formation.pk
 
     def test_valid_form_for_managers(self):
-        admission = AdmissionFactory(formation=self.formation)
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
-        data = admission.__dict__
-        data['formation'] = admission.formation.pk
-        form = AdmissionForm(data=data, user=self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_valid_form_for_training_managers(self):
-        admission = AdmissionFactory(formation=self.formation)
-        group = GroupFactory(name='continuing_education_training_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        PersonTraining(person=self.manager, training=self.formation).save()
-        self.client.force_login(self.manager.user)
-        data = admission.__dict__
-        data['formation'] = admission.formation.pk
-        form = AdmissionForm(data=data, user=self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_not_valid_wrong_phone_format(self):
-        admission = AdmissionFactory(formation=self.formation)
-        group = GroupFactory(name='continuing_education_training_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        PersonTraining(person=self.manager, training=self.formation).save()
-        self.client.force_login(self.manager.user)
-        data = admission.__dict__
-        data['formation'] = admission.formation.pk
         wrong_numbers = [
             '1234567891',
             '00+32474945669',
@@ -96,45 +89,44 @@ class TestAdmissionForm(TestCase):
         ]
         short_numbers = ['0032123', '+321234', '0123456']
         long_numbers = ['003212345678912456', '+3212345678912345', '01234567891234567']
-        for number in wrong_numbers + short_numbers + long_numbers:
-            data['phone_mobile'] = number
-            form = AdmissionForm(data=data, user=self.manager.user)
-            self.assertFalse(form.is_valid(), form.errors)
-            self.assertDictEqual(
-                form.errors,
-                {
-                    'phone_mobile': [
-                        _("Phone number must start with 0 or 00 or '+' followed by at least "
-                          "7 digits and up to 15 digits.")
-                    ],
-                }
-            )
+        self.data['phone_mobile'] = random.choice(wrong_numbers + short_numbers + long_numbers)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.assertFalse(form.is_valid(), form.errors)
+        self.assertDictEqual(
+            form.errors,
+            {
+                'phone_mobile': [
+                    _("Phone number must start with 0 or 00 or '+' followed by at least "
+                      "7 digits and up to 15 digits.")
+                ],
+            }
+        )
 
 
 class TestRejectedAdmissionForm(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.rejected_admission_other = AdmissionFactory(
+        cls.rejected_admission_other = AdmissionFactory(
             state=REJECTED,
             state_reason=ANY_REASON,
-            formation=self.formation
+            formation=cls.formation
         )
-        self.rejected_admission_not_other = AdmissionFactory(
+        cls.rejected_admission_not_other = AdmissionFactory(
             state=REJECTED,
             state_reason=NOT_ENOUGH_EXPERIENCE,
-            formation=self.formation
+            formation=cls.formation
         )
 
     def test_init_rejected_init_not_other(self):
-
         form = RejectedAdmissionForm(None, instance=self.rejected_admission_not_other)
 
         self.assertEqual(form.fields['other_reason'].initial, '')
@@ -182,31 +174,32 @@ def convert_dates(person):
 
 
 class TestAcceptedAdmissionForm(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.accepted_admission_without_condition = AdmissionFactory(
+        cls.accepted_admission_without_condition = AdmissionFactory(
             state=ACCEPTED,
-            formation=self.formation
+            formation=cls.formation
         )
-        self.accepted_admission_with_condition = AdmissionFactory(
+        cls.accepted_admission_with_condition = AdmissionFactory(
             state=ACCEPTED,
             condition_of_acceptance="Condition",
-            formation=self.formation
+            formation=cls.formation
         )
 
     def test_init_accepted_init_with_condition(self):
-
         form = ConditionAcceptanceAdmissionForm(None, instance=self.accepted_admission_with_condition)
 
-        self.assertEqual(form.fields['condition_of_acceptance'].initial, self.accepted_admission_with_condition.condition_of_acceptance)
+        self.assertEqual(form.fields['condition_of_acceptance'].initial,
+                         self.accepted_admission_with_condition.condition_of_acceptance)
         self.assertFalse(form.fields['condition_of_acceptance'].disabled)
         self.assertTrue(form.fields['condition_of_acceptance_existing'].initial)
 
