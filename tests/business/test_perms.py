@@ -33,18 +33,19 @@ from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MA
 
 
 class PermsTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group_training_manager = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        self.training_manager = PersonFactory()
-        self.training_manager.user.groups.add(group_training_manager)
+        cls.training_manager = PersonFactory()
+        cls.training_manager.user.groups.add(group_training_manager)
 
         group_manager = GroupFactory(name=MANAGERS_GROUP)
-        self.manager = PersonFactory()
-        self.manager.user.groups.add(group_manager)
+        cls.manager = PersonFactory()
+        cls.manager.user.groups.add(group_manager)
 
         group_student_worker = GroupFactory(name=STUDENT_WORKERS_GROUP)
-        self.student_worker = PersonFactory()
-        self.student_worker.user.groups.add(group_student_worker)
+        cls.student_worker = PersonFactory()
+        cls.student_worker.user.groups.add(group_student_worker)
 
     def test_is_continuing_education_training_manager(self):
         self.assertTrue(perms.is_continuing_education_training_manager(self.training_manager.user))
