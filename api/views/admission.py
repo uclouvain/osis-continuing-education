@@ -68,7 +68,7 @@ class AdmissionList(generics.ListAPIView):
             'person_information',
             'citizenship',
             'address',
-        )
+        ).distinct()
 
 
 class AdmissionCreate(generics.CreateAPIView):

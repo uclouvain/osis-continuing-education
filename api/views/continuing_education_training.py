@@ -64,7 +64,7 @@ class ContinuingEducationTrainingDetailUpdateDestroy(generics.RetrieveUpdateDest
         Return the detail of the training, destroy one or update one.
     """
     name = 'continuing-education-training-detail-update-delete'
-    queryset = ContinuingEducationTraining.objects.all()
+    queryset = ContinuingEducationTraining.objects.all().distinct()
     lookup_field = 'uuid'
 
     def get_serializer_class(self):
