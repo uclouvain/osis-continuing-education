@@ -44,28 +44,28 @@ FACULTY_ACRONYM = "AGRO"
 
 
 class TestRegistrationXls(TestCase):
-
-    def setUp(self):
-        self.user = UserFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = UserFactory()
         current_academic_yr = create_current_academic_year()
-        self.next_academic_yr = AcademicYearFactory(year=current_academic_yr.year + 1)
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.next_academic_yr = AcademicYearFactory(year=current_academic_yr.year + 1)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.entity_version = EntityVersionFactory(
-            entity=self.formation.management_entity,
+        cls.entity_version = EntityVersionFactory(
+            entity=cls.formation.management_entity,
             acronym=FACULTY_ACRONYM,
             entity_type=entity_type.FACULTY
 
         )
-        self.registration = AdmissionFactory(
-            formation=self.formation,
+        cls.registration = AdmissionFactory(
+            formation=cls.formation,
             state=ACCEPTED,
             ucl_registration_complete=True,
             payment_complete=False,
