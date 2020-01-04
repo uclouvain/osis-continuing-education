@@ -324,14 +324,15 @@ class SendEmailTest(TestCase):
 
 
 class SendEmailSettingsTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
-        self.manager = PersonFactory(last_name="AAA")
-        self.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
-        self.cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=self.manager, training=self.cet)
-        self.admission = AdmissionFactory(formation=self.cet)
+        cls.manager = PersonFactory(last_name="AAA")
+        cls.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+        cls.cet = ContinuingEducationTrainingFactory(education_group=ed)
+        PersonTrainingFactory(person=cls.manager, training=cls.cet)
+        cls.admission = AdmissionFactory(formation=cls.cet)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_email_setting_false(self, mock_send_mail):

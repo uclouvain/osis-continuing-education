@@ -34,15 +34,16 @@ from continuing_education.tests.factories.continuing_education_training import C
 
 
 class TestRegistrationForm(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
 
     def test_previous_ucl_registration_not_required_if_only_billing(self):

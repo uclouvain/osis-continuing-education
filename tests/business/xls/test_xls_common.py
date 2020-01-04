@@ -42,33 +42,33 @@ COUNTRY_NAME = 'Algérie'
 
 
 class TestXlsCommon(TestCase):
-
-    def setUp(self):
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
+            education_group=cls.education_group,
             academic_year=AcademicYearFactory(year=2018)
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         algeria = CountryFactory(name=COUNTRY_NAME)
-        self.address = AddressFactory(city=CITY_NAME,
+        cls.address = AddressFactory(city=CITY_NAME,
                                       country=algeria,
                                       location='Street',
                                       postal_code='5500')
 
-        self.registration = AdmissionFactory(
-            formation=self.formation,
+        cls.registration = AdmissionFactory(
+            formation=cls.formation,
             state=ACCEPTED,
             ucl_registration_complete=True,
             payment_complete=False,
             citizenship=algeria,
             person_information=ContinuingEducationPersonFactory(birth_location=CITY_NAME,
                                                                 birth_country=algeria),
-            address=self.address,
-            billing_address=self.address,
-            residence_address=self.address
+            address=cls.address,
+            billing_address=cls.address,
+            residence_address=cls.address
         )
 
     def test_upper_in_country_city(self):
