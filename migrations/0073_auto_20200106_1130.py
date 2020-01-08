@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='continuingeducationtraining',
-            options={'ordering': ('education_group__educationgroupyear__acronym',)},
+            options={'ordering': ('education_group',)},
         ),
         migrations.AlterField(
             model_name='admission',
