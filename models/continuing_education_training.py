@@ -58,7 +58,7 @@ class ContinuingEducationTraining(Model):
     education_group = models.OneToOneField(
         'base.EducationGroup',
         on_delete=models.CASCADE,
-        default=None
+        default=None,
     )
 
     active = models.BooleanField(
@@ -155,4 +155,4 @@ class ContinuingEducationTraining(Model):
         return "{} - {}{}".format(education_group_year.acronym, education_group_year.title, training_aid_mention)
 
     class Meta:
-        ordering = ('education_group__educationgroupyear__acronym', )
+        ordering = ('education_group', )

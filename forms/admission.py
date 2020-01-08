@@ -63,12 +63,10 @@ class AdmissionForm(ModelForm):
 
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
-        qs = self.fields['formation'].queryset
         if user and not user.groups.filter(name='continuing_education_managers').exists():
-            qs = qs.filter(
+            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
                 managers=user.person
             )
-        self.fields['formation'].queryset = qs.distinct()
         set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
 
     class Meta:

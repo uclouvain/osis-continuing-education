@@ -106,7 +106,7 @@ def admission_detail(request, admission_id):
     if not user_is_continuing_education_student_worker:
         can_access_admission(request.user, admission)
 
-    files = AdmissionFile.objects.all().filter(admission=admission_id)
+    files = AdmissionFile.objects.filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     states = _get_states_choices(accepted_states, admission, request)
 
