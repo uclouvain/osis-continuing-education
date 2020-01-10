@@ -536,6 +536,12 @@ components:
               type: boolean
             spreading_payments:
               type: boolean
+            high_school_diploma:
+              type: boolean
+            high_school_graduation_year:
+              type: integer
+            last_degree_graduation_year:
+              type: integer
 
     RegistrationPutPatch:
       allOf:
