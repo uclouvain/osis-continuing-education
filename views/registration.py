@@ -192,7 +192,10 @@ def _switch_received_file_state(admission_id):
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def list_cancelled(request):
-    admission_list = Admission.objects.filter(state=admission_state_choices.CANCELLED)
+    admission_list = Admission.objects.filter(state__in=[
+        admission_state_choices.CANCELLED,
+        admission_state_choices.CANCELLED_NO_REGISTRATION_REQUIRED
+    ])
     admission_list = filter_authorized_admissions(request.user, admission_list)
 
     return render(request, "cancellations.html", {
