@@ -16,12 +16,14 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
-                    <li>
-                        <a id="btn_UCLOUVAIN_registrations_fulfilled" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#registrations_registration_fulfilled_modal">
-                            {% trans 'UCLouvain registration fulfilled' %}
-                        </a>
-                    </li>
+                    {% if continuing_education_manager %}
+                        <li>
+                            <a id="btn_UCLOUVAIN_registrations_fulfilled" style="margin-right:10px;"
+                               data-toggle="modal" data-target="#registrations_registration_fulfilled_modal">
+                                {% trans 'UCLouvain registration fulfilled' %}
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a id="btn_paper_registrations_file_received" style="margin-right:10px;"
                            data-toggle="modal" data-target="#registrations_to_validate_modal">

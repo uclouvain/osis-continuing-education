@@ -402,6 +402,10 @@ class ViewTasksStudentWorkerTestCase(TestCase):
             formation=cls.formation,
             state=VALIDATED,
         )
+        cls.registration_to_validate = AdmissionFactory(
+            formation=cls.formation,
+            state=REGISTRATION_SUBMITTED,
+        )
 
     def setUp(self):
         self.client.force_login(self.student_worker.user)
@@ -413,6 +417,17 @@ class ViewTasksStudentWorkerTestCase(TestCase):
         }
         response = self.client.post(
             reverse('mark_diplomas_produced'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_edit_uclouvain_registration_denied(self):
+        post_data = {
+            "selected_registrations_to_validate":
+                [str(self.registration_to_validate.pk)]
+        }
+        response = self.client.post(
+            reverse('registrations_fulfilled'),
             data=post_data
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)

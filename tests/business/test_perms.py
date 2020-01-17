@@ -56,3 +56,13 @@ class PermsTestCase(TestCase):
         self.assertTrue(perms.is_iufc_manager(self.training_manager.user))
         self.assertTrue(perms.is_iufc_manager(self.manager.user))
         self.assertFalse(perms.is_iufc_manager(self.student_worker.user))
+
+    def test_is_student_worker(self):
+        self.assertFalse(perms.is_student_worker(self.training_manager.user))
+        self.assertFalse(perms.is_student_worker(self.manager.user))
+        self.assertTrue(perms.is_student_worker(self.student_worker.user))
+
+    def test_is_continuing_education_manager(self):
+        self.assertFalse(perms.is_continuing_education_manager(self.training_manager.user))
+        self.assertTrue(perms.is_continuing_education_manager(self.manager.user))
+        self.assertFalse(perms.is_continuing_education_manager(self.student_worker.user))

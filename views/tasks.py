@@ -33,8 +33,9 @@ from django.views.decorators.http import require_http_methods
 
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business.admission import save_state_changed_and_send_email
-from continuing_education.business.perms import is_not_student_worker, is_student_worker, registration_process, \
-    is_continuing_education_training_manager, is_iufc_manager
+from continuing_education.business.perms import is_not_student_worker, is_student_worker, \
+    is_continuing_education_training_manager, is_iufc_manager, can_edit_paper_registration_received, \
+    can_edit_ucl_registration_complete
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
@@ -147,14 +148,14 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
 
 @require_http_methods(['POST'])
 @login_required
-@user_passes_test(registration_process)
+@user_passes_test(can_edit_paper_registration_received)
 def paper_registrations_file_received(request):
     return _update_registrations("registration_file_received", request)
 
 
 @require_http_methods(['POST'])
 @login_required
-@user_passes_test(registration_process)
+@user_passes_test(can_edit_ucl_registration_complete)
 def registrations_fulfilled(request):
     return _update_registrations("ucl_registration_complete", request)
 
