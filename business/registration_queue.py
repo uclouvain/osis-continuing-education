@@ -70,13 +70,10 @@ def format_address_for_json(address):
             'country_name': address.country.name if address.country else '',
             'country_iso_code': address.country.iso_code if address.country else ''
         }
-    return {
-            'street': '',
-            'locality': '',
-            'postal_code': '',
-            'country_name': '',
-            'country_iso_code': ''
-        }
+    return dict.fromkeys(
+        ['street', 'locality', 'postal_code', 'country_name', 'country_iso_code'],
+        ''
+    )
 
 
 def save_role_registered_in_admission(data):
