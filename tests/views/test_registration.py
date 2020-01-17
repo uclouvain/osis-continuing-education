@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -204,7 +205,8 @@ class RegistrationStateChangedTestCase(TestCase):
             state=VALIDATED
         )
 
-    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self):
+    @patch('continuing_education.views.admission.send_admission_to_queue')
+    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self, mock_queue):
         self.client.force_login(self.continuing_education_manager.user)
         registration = {
             'state': VALIDATED,
@@ -214,11 +216,13 @@ class RegistrationStateChangedTestCase(TestCase):
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=data)
+        mock_queue.assert_called_with(self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
 
-    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self):
+    @patch('continuing_education.views.admission.send_admission_to_queue')
+    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self, mock_queue):
         self.client.force_login(self.faculty_manager.user)
         registration = {
             'state': VALIDATED,
@@ -228,6 +232,7 @@ class RegistrationStateChangedTestCase(TestCase):
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=data)
+        mock_queue.assert_called_with(self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         # state should not be changed and error message should be presented to user
