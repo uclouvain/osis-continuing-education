@@ -84,6 +84,14 @@ class Admission(Model):
         verbose_name=_("Formation")
     )
 
+    academic_year = models.ForeignKey(
+        'base.AcademicYear',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        verbose_name=_("Academic year")
+    )
+
     # Contact
     citizenship = models.ForeignKey(
         'reference.Country',
