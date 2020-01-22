@@ -208,7 +208,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
     def test_init_form_academic_year_choice_list(self):
         form = ConditionAcceptanceAdmissionForm(None)
-        starting_year = AcademicYear.objects.current().year
+        starting_year = self.academic_year.year
         academic_years = AcademicYear.objects.min_max_years(starting_year - 1, starting_year + 6)
         self.assertCountEqual(
             form.fields['academic_year'].choices.queryset,
