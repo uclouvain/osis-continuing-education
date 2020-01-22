@@ -234,7 +234,6 @@ class WaitingAdmissionForm(ModelForm):
 
 
 class ConditionAcceptanceAdmissionForm(ModelForm):
-
     condition_of_acceptance_existing = forms.ChoiceField(
         widget=forms.RadioSelect,
         choices=[
@@ -248,9 +247,8 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         required=False,
         label=_('Condition of acceptance'),
     )
-    starting_year = AcademicYear.objects.current().year
     academic_year = forms.ModelChoiceField(
-        queryset=AcademicYear.objects.min_max_years(starting_year - 1, starting_year + 6).order_by('year'),
+        queryset=AcademicYear.objects.all(),
         label=_('Academic year'),
         required=True,
         help_text=_("Choose here the academic year during which the participant will follow the formation.")
@@ -265,8 +263,16 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         ]
 
     def __init__(self, data, **kwargs):
-
         super().__init__(data, **kwargs)
+
+        try:
+            starting_year = AcademicYear.objects.current().year
+            self.fields['academic_year'].queryset = AcademicYear.objects.min_max_years(
+                starting_year - 1, starting_year + 6
+            ).order_by('year')
+        except AttributeError:
+            self.fields['academic_year'].queryset = AcademicYear.objects.none()
+
         if data is None:
             # GET
             if self.instance.state == admission_state_choices.ACCEPTED:
