@@ -32,7 +32,6 @@ $('#add_condition_acceptance').click(function(){
 });
 
 $("#id_academic_year").change(function (e) {
-    console.log($(this).prop('value'));
     if ($(this).prop('value')) {
         $('#add_condition_acceptance').prop('disabled', false);
     } else {

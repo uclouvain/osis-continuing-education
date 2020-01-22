@@ -28,7 +28,8 @@ import random
 from django.test import TestCase
 from django.utils.translation import gettext_lazy as _
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.models.academic_year import AcademicYear
+from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -176,7 +177,9 @@ def convert_dates(person):
 class TestAcceptedAdmissionForm(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
+        AcademicYearFactory.produce(base_year=cls.academic_year.year, number_past=10, number_future=10)
+
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -203,6 +206,15 @@ class TestAcceptedAdmissionForm(TestCase):
         self.assertFalse(form.fields['condition_of_acceptance'].disabled)
         self.assertTrue(form.fields['condition_of_acceptance_existing'].initial)
 
+    def test_init_form_academic_year_choice_list(self):
+        form = ConditionAcceptanceAdmissionForm(None)
+        starting_year = AcademicYear.objects.current().year
+        academic_years = AcademicYear.objects.min_max_years(starting_year - 1, starting_year + 6)
+        self.assertCountEqual(
+            form.fields['academic_year'].choices.queryset,
+            academic_years
+        )
+
     def test_init_accepted_init_without_condition(self):
         form = ConditionAcceptanceAdmissionForm(None, instance=self.accepted_admission_without_condition)
 
@@ -215,6 +227,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
         data['condition_of_acceptance_existing'] = True
         data['condition_of_acceptance'] = 'New Condition'
+        data['academic_year'] = self.academic_year.pk
 
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_with_condition)
         obj_updated = form.save()
@@ -226,6 +239,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
         data['condition_of_acceptance_existing'] = False
         data['condition_of_acceptance'] = 'If false before no condition possible'
+        data['academic_year'] = self.academic_year.pk
 
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_without_condition)
         obj_updated = form.save()
