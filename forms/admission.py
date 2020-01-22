@@ -253,6 +253,7 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         queryset=AcademicYear.objects.min_max_years(starting_year - 1, starting_year + 6).order_by('year'),
         label=_('Academic year'),
         required=True,
+        help_text=_("Choose here the academic year during which the participant will follow the formation.")
     )
 
     class Meta:
