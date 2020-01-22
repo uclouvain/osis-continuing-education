@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
 from django.utils.translation import gettext_lazy as _
 
+from base.models.academic_year import AcademicYear
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
@@ -247,18 +248,24 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         required=False,
         label=_('Condition of acceptance'),
     )
+    starting_year = AcademicYear.objects.current().year
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.min_max_years(starting_year - 1, starting_year + 6).order_by('year'),
+        label=_('Academic year'),
+        required=True,
+    )
 
     class Meta:
         model = Admission
         fields = [
             'state',
             'condition_of_acceptance',
+            'academic_year'
         ]
 
     def __init__(self, data, **kwargs):
 
         super().__init__(data, **kwargs)
-
         if data is None:
             # GET
             if self.instance.state == admission_state_choices.ACCEPTED:
