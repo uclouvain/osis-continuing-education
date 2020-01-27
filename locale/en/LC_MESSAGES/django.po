@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-29 11:16+0100\n"
+"POT-Creation-Date: 2020-01-22 13:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,6 +34,9 @@ msgid "A problem occured : the document is not uploaded"
 msgstr ""
 
 msgid "A problem occured during delete"
+msgstr ""
+
+msgid "Academic year"
 msgstr ""
 
 msgid "Accept all selected admissions ?"
@@ -244,6 +247,11 @@ msgid "Check All"
 msgstr ""
 
 msgid "Children number"
+msgstr ""
+
+msgid ""
+"Choose here the academic year during which the participant will follow the "
+"formation."
 msgstr ""
 
 msgid "Citizenship"
@@ -1038,7 +1046,9 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-msgid "To submit a registration, its state must be ACCEPTED. To submit an admission, its state must be DRAFT."
+msgid ""
+"To submit a registration, its state must be ACCEPTED. To submit an "
+"admission, its state must be DRAFT."
 msgstr ""
 
 msgid "To submit an admission, its state must be DRAFT."
@@ -1132,6 +1142,9 @@ msgid "Who will receive notification emails ?"
 msgstr ""
 
 msgid "Widowed"
+msgstr ""
+
+msgid "Will be defined on admission acceptation"
 msgstr ""
 
 msgid "Yes"
