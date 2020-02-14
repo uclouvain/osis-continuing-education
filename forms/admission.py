@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
 from django.utils.translation import gettext_lazy as _
 
+from base.models.academic_year import AcademicYear
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
@@ -44,7 +45,7 @@ class AdmissionForm(ModelForm):
         required=False
     )
     citizenship = CountryChoiceField(
-        queryset=Country.objects.all().order_by('name'),
+        queryset=Country.objects.all(),
         label=_("Citizenship"),
         required=False,
     )
@@ -56,26 +57,18 @@ class AdmissionForm(ModelForm):
         label=_("High school diploma")
     )
     person_information = ContinuingEducationPersonChoiceField(
-        queryset=ContinuingEducationPerson.objects.all().order_by(
-            'person__last_name', 'person__first_name'
-        ).select_related('person'),
+        queryset=ContinuingEducationPerson.objects.all().select_related('person'),
         required=False,
         empty_label=_("New person")
     )
 
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
-        qs = self.fields['formation'].queryset
         if user and not user.groups.filter(name='continuing_education_managers').exists():
-            qs = qs.filter(
+            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
                 managers=user.person
             )
-        self.fields['formation'].queryset = qs.order_by(
-            'education_group__educationgroupyear__acronym'
-        ).distinct()
-
-        set_participant_required_fields(self.fields,
-                                        ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
+        set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
 
     class Meta:
         model = Admission
@@ -241,7 +234,6 @@ class WaitingAdmissionForm(ModelForm):
 
 
 class ConditionAcceptanceAdmissionForm(ModelForm):
-
     condition_of_acceptance_existing = forms.ChoiceField(
         widget=forms.RadioSelect,
         choices=[
@@ -255,17 +247,31 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         required=False,
         label=_('Condition of acceptance'),
     )
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.all(),
+        label=_('Academic year'),
+        required=True,
+        help_text=_("Choose here the academic year during which the participant will follow the formation.")
+    )
 
     class Meta:
         model = Admission
         fields = [
             'state',
             'condition_of_acceptance',
+            'academic_year'
         ]
 
     def __init__(self, data, **kwargs):
-
         super().__init__(data, **kwargs)
+
+        try:
+            starting_year = AcademicYear.objects.current().year
+            self.fields['academic_year'].queryset = AcademicYear.objects.min_max_years(
+                starting_year - 1, starting_year + 6
+            ).order_by('year')
+        except AttributeError:
+            self.fields['academic_year'].queryset = AcademicYear.objects.none()
 
         if data is None:
             # GET

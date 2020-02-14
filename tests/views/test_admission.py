@@ -118,6 +118,7 @@ class ViewAdmissionTestCase(TestCase):
             'last_name': cls.admission.person_information.person.last_name,
             'first_name': cls.admission.person_information.person.first_name,
             'gender': cls.admission.person_information.person.gender,
+            'email': cls.admission.person_information.person.email,
         }
         cls.continuing_education_person_data = {
             'birth_date': cls.admission.person_information.birth_date.strftime('%Y-%m-%d'),
@@ -222,7 +223,6 @@ class ViewAdmissionTestCase(TestCase):
             'professional_personal_interests': 'abcd',
             'formation': self.formation.pk,
             'awareness_ucl_website': True,
-
         }
         data = admission.copy()
         # Data to update
@@ -320,30 +320,33 @@ class ViewAdmissionTestCase(TestCase):
 
 
 class InvoiceNotificationEmailTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
 
-        self.admission = AdmissionFactory(
-            formation=self.formation,
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
             state=ACCEPTED
         )
-        self.admission_file = AdmissionFileFactory(
-            admission=self.admission
+        cls.admission_file = AdmissionFileFactory(
+            admission=cls.admission
         )
 
-        self.url = reverse('send_invoice_notification_mail', args=[self.admission.pk])
+        cls.url = reverse('send_invoice_notification_mail', args=[cls.admission.pk])
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_mail_with_invoice(self, mock_send_mail):
@@ -383,35 +386,38 @@ class InvoiceNotificationEmailTestCase(TestCase):
 
 
 class AdmissionStateChangedTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         education_group_year = EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.manager = PersonWithPermissionsFactory(
+        cls.manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
         group = GroupFactory(name='continuing_education_managers')
-        group.user_set.add(self.manager.user)
-        self.client.force_login(self.manager.user)
+        group.user_set.add(cls.manager.user)
         EntityVersionFactory(
             entity=education_group_year.management_entity
         )
-        self.admission = AdmissionFactory(
-            formation=self.formation,
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
             state=random.choice(admission_state_choices.STATE_CHOICES)[0]
         )
-        self.admission_submitted = AdmissionFactory(
-            formation=self.formation,
+        cls.admission_submitted = AdmissionFactory(
+            formation=cls.formation,
             state=SUBMITTED
         )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     @patch('continuing_education.business.admission._get_continuing_education_managers')
     @patch('osis_common.messaging.send_message.send_messages')
@@ -462,10 +468,13 @@ class AdmissionStateChangedTestCase(TestCase):
 
 
 class ViewAdmissionCacheTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+
+    def setUp(self):
         self.client.force_login(self.manager.user)
         self.addCleanup(cache.clear)
 

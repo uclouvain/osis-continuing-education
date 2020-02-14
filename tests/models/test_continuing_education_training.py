@@ -32,12 +32,14 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
 
 
 class TestContinuingEducationTraining(TestCase):
-    def setUp(self):
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.education_group = EducationGroupFactory()
 
     def test_validation_error_raised_for_training_without_education_group_year(self):
         training = ContinuingEducationTraining(education_group=self.education_group)
@@ -62,3 +64,19 @@ class TestContinuingEducationTraining(TestCase):
                                                                                        person_2.first_name,
                                                                                        person_1.last_name.upper(),
                                                                                        person_1.first_name))
+
+    def test_formation_ordering(self):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=ed,
+            acronym='A'
+        )
+        ced_a = ContinuingEducationTrainingFactory(education_group=ed)
+        ed_b = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=ed_b,
+            acronym='B'
+        )
+        ced_b = ContinuingEducationTrainingFactory(education_group=ed_b)
+        result = ContinuingEducationTraining.objects.all()
+        self.assertEquals(list(result), [ced_a, ced_b])

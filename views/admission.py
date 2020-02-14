@@ -48,9 +48,9 @@ from continuing_education.forms.admission import AdmissionForm, RejectedAdmissio
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
-from continuing_education.models import continuing_education_person
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
@@ -106,7 +106,7 @@ def admission_detail(request, admission_id):
     if not user_is_continuing_education_student_worker:
         can_access_admission(request.user, admission)
 
-    files = AdmissionFile.objects.all().filter(admission=admission_id)
+    files = AdmissionFile.objects.filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     states = _get_states_choices(accepted_states, admission, request)
 
@@ -218,7 +218,7 @@ def admission_form(request, admission_id=None):
         selected_person=selected_person,
         no_first_name_checked=request.POST.get('no_first_name', False)
     )
-    person_information = continuing_education_person.find_by_person(person=base_person)
+    person_information = ContinuingEducationPerson.objects.filter(person=base_person).first()
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
     state = admission.state if admission else SUBMITTED

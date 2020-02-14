@@ -27,6 +27,7 @@ import random
 
 import factory
 
+from base.tests.factories.academic_year import AcademicYearFactory
 from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -86,6 +87,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
 
     # Formation
     formation = factory.SubFactory(ContinuingEducationTrainingFactory)
+    academic_year = factory.SubFactory(AcademicYearFactory)
 
     # Awareness
     awareness_ucl_website = factory.fuzzy.FuzzyChoice([True, False])

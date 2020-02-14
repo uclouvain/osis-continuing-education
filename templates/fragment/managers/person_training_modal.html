@@ -38,7 +38,7 @@
             <div class="panel-body">
                 <form id="person_training_form" method="POST" class="post-form">
                     {% csrf_token %}
-                    {% bootstrap_field person_training_form.person form_group_class="form-group" label=_("Manager") %}
+                    {% bootstrap_field person_training_form.person form_group_class="form-group" label=_("Manager") id='person_field' %}
                     {% bootstrap_field person_training_form.training form_group_class="form-group" label=_("Training") %}
                     <br/>
                 </form>

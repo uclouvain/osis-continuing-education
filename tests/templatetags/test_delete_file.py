@@ -34,7 +34,6 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 
 
 class TestDeleteFile(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         participant = PersonFactory()

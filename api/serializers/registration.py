@@ -119,7 +119,9 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'sessions',
             'reduced_rates',
             'spreading_payments',
-            'condition_of_acceptance'
+            'condition_of_acceptance',
+            'high_school_graduation_year',
+            'last_degree_graduation_year',
 
         )
 

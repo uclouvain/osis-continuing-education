@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-29 11:16+0100\n"
+"POT-Creation-Date: 2020-01-22 13:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,6 +38,9 @@ msgstr "Une erreur est survenue : le document n'a pas été uploadé"
 
 msgid "A problem occured during delete"
 msgstr "Un problème est survenu durant la suppression"
+
+msgid "Academic year"
+msgstr "Année académique"
 
 msgid "Accept all selected admissions ?"
 msgstr "Accepter les admissions sélectionnées ?"
@@ -250,6 +253,11 @@ msgstr "Tout sélectionner"
 
 msgid "Children number"
 msgstr "Nombre d'enfants"
+
+msgid ""
+"Choose here the academic year during which the participant will follow the "
+"formation."
+msgstr "Choisissez ici l'année académique durant laquelle le participant suivra la formation."
 
 msgid "Citizenship"
 msgstr "Nationalité"
@@ -791,7 +799,7 @@ msgid "Produce xls with list of admissions"
 msgstr "Produire un fichier xls avec la liste des admissions"
 
 msgid "Professional"
-msgstr "Professionel"
+msgstr "Professionnel"
 
 msgid "Professional and personal interests"
 msgstr "Intérêts professionnels et personnels"
@@ -800,7 +808,7 @@ msgid "Professional background"
 msgstr "Parcours professionnel"
 
 msgid "Professional status"
-msgstr "Statut professionel"
+msgstr "Statut professionnel"
 
 msgid "Prospects"
 msgstr "Prospects"
@@ -1110,8 +1118,12 @@ msgstr ""
 msgid "Title"
 msgstr "Titre"
 
-msgid "To submit a registration, its state must be ACCEPTED. To submit an admission, its state must be DRAFT."
-msgstr "Pour soumettre une inscription, son état doit être Accepté. Pour soumettre une admission, sont état doit être Brouillon"
+msgid ""
+"To submit a registration, its state must be ACCEPTED. To submit an "
+"admission, its state must be DRAFT."
+msgstr ""
+"Pour soumettre une inscription, son état doit être Accepté. Pour soumettre "
+"une admission, sont état doit être Brouillon"
 
 msgid "To submit an admission, its state must be DRAFT."
 msgstr "Pour soumettre une admission, son état doit être Brouillon."
@@ -1211,6 +1223,9 @@ msgstr "Qui recevra les emails de notification ?"
 
 msgid "Widowed"
 msgstr "Veuf(ve)"
+
+msgid "Will be defined on admission acceptation"
+msgstr "Sera définie lors de l'acceptation de l'admission"
 
 msgid "Yes"
 msgstr "Oui"

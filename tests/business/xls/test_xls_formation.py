@@ -43,21 +43,21 @@ ACRONYM = "ACRO"
 
 
 class TestFormationXls(TestCase):
-
-    def setUp(self):
-        self.user = UserFactory()
-        self.entity_version = EntityVersionFactory(
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = UserFactory()
+        cls.entity_version = EntityVersionFactory(
             entity_type=entity_type.FACULTY
 
         )
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group_yr = EducationGroupYearFactory(
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group_yr = EducationGroupYearFactory(
             acronym="ACRO",
-            management_entity=self.entity_version.entity,
-            academic_year=self.academic_year
+            management_entity=cls.entity_version.entity,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group_yr.education_group,
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group_yr.education_group,
             active=True
         )
 

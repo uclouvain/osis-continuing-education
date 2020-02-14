@@ -49,32 +49,35 @@ from continuing_education.tests.factories.continuing_education_training import C
 
 
 class ViewRegistrationTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.admission_accepted = AdmissionFactory(
+        cls.admission_accepted = AdmissionFactory(
             state=admission_state_choices.ACCEPTED,
-            formation=self.formation
+            formation=cls.formation
         )
-        self.admission_rejected = AdmissionFactory(
+        cls.admission_rejected = AdmissionFactory(
             state=admission_state_choices.REJECTED,
-            formation=self.formation
+            formation=cls.formation
         )
-        self.admission_validated = AdmissionFactory(
+        cls.admission_validated = AdmissionFactory(
             state=admission_state_choices.VALIDATED,
-            formation=self.formation
+            formation=cls.formation
         )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_list_registrations(self):
         url = reverse('registration')
@@ -257,48 +260,38 @@ class RegistrationStateChangedTestCase(TestCase):
 
 
 class ViewRegistrationsTrainingManagerTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
-        self.client.force_login(self.training_manager.user)
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
 
         valid_state = [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]
-        self.registrations = []
+        cls.registrations = []
         for valid_state in valid_state:
-            self.registrations.append(AdmissionFactory(
-                formation=self.formation,
+            cls.registrations.append(AdmissionFactory(
+                formation=cls.formation,
                 state=valid_state
             ))
 
         for invalid_state in admission_state_choices.STATE_CHOICES:
             if invalid_state[0] not in [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]:
                 AdmissionFactory(
-                    formation=self.formation,
+                    formation=cls.formation,
                     state=invalid_state[0]
                 )
-        # invalid_state_for_training_manager = [admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED,
-        #                                       admission_state_choices.REJECTED,
-        #                                       admission_state_choices.WAITING,
-        #                                       admission_state_choices.DRAFT,
-        #                                       admission_state_choices.SUBMITTED,
-        #                                       admission_state_choices.CANCELLED,
-        #                                       admission_state_choices.CANCELLED_NO_REGISTRATION_REQUIRED]
 
-        # for invalid_state in invalid_state_for_training_manager:
-        #     AdmissionFactory(
-        #         formation=self.formation,
-        #         state=invalid_state,
-        #     )
+    def setUp(self):
+        self.client.force_login(self.training_manager.user)
 
     def test_list_with_no_registrations_visible(self):
         url = reverse('registration')
@@ -319,10 +312,13 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
 
 
 class ViewRegistrationCacheTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+
+    def setUp(self):
         self.client.force_login(self.manager.user)
         self.addCleanup(cache.clear)
 

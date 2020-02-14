@@ -35,7 +35,9 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity import EntityFactory
 from base.tests.factories.entity_version import EntityVersionFactory
+from base.tests.factories.person import PersonFactory
 from continuing_education.models import admission
+from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -43,69 +45,101 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 
 
 class TestAdmission(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.admission = AdmissionFactory(formation=self.formation)
-        self.submitted_admission = AdmissionFactory(state=admission_state_choices.SUBMITTED, formation=self.formation)
-        self.person = ContinuingEducationPersonFactory()
 
     def test_search(self):
-        an_admission = self.admission
+        an_admission = AdmissionFactory(formation=self.formation)
         persisted_admission = admission.search(person=an_admission.person_information)
         self.assertTrue(persisted_admission.exists())
 
-        nonexistent_admission = admission.search(person=self.person)
+        nonexistent_admission = admission.search(person=ContinuingEducationPersonFactory())
         self.assertFalse(nonexistent_admission.exists())
 
     @patch('osis_common.messaging.send_message.send_messages')
     def test_mail_not_sent_on_same_admission_state(self, mock):
-        self.submitted_admission.save()
+        AdmissionFactory(state=admission_state_choices.SUBMITTED, formation=self.formation).save()
         self.assertFalse(mock.called)
+
+    def test_admission_ordering(self):
+        ed = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=ed,
+            academic_year=self.academic_year,
+            acronym='M'
+        )
+        cet = ContinuingEducationTrainingFactory(education_group=ed)
+        ed_next = EducationGroupFactory()
+        EducationGroupYearFactory(
+            education_group=ed_next,
+            academic_year=self.academic_year,
+            acronym='O'
+        )
+        cet_next = ContinuingEducationTrainingFactory(education_group=ed_next)
+        persons_data = [
+            ('A', 'I', cet),
+            ('D', 'J', cet),
+            ('C', 'J', cet),
+            ('B', 'I', cet),
+            ('E', 'K', cet_next),
+            ('H', 'L', cet_next),
+            ('G', 'L', cet_next),
+            ('F', 'K', cet_next)
+        ]
+        for first_name, name, formation in persons_data:
+            a_person = ContinuingEducationPersonFactory(person=PersonFactory(first_name=first_name, last_name=name))
+            AdmissionFactory(person_information=a_person, formation=formation)
+        expected_order = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        result = Admission.objects.all().values_list(
+            'person_information__person__first_name', flat=True
+        )
+        self.assertEquals(list(result), expected_order)
 
 
 class TestAdmissionGetProperties(TestCase):
-
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         entities = create_entities_hierarchy()
-        self.faculty = entities['child_one_entity_version']
-        self.child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
-        self.child_entity_version = EntityVersionFactory(acronym="CHILD_1_UNDER_FAC",
-                                                         parent=self.faculty.entity,
-                                                         entity_type=SCHOOL,
-                                                         end_date=None,
-                                                         entity=self.child_entity,
-                                                         start_date=entities['start_date'])
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.faculty = entities['child_one_entity_version']
+        cls.child_entity = EntityFactory(country=entities['country'], organization=entities['organization'])
+        cls.child_entity_version = EntityVersionFactory(acronym="CHILD_1_UNDER_FAC",
+                                                        parent=cls.faculty.entity,
+                                                        entity_type=SCHOOL,
+                                                        end_date=None,
+                                                        entity=cls.child_entity,
+                                                        start_date=entities['start_date'])
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year,
-            management_entity=self.child_entity
+            education_group=cls.education_group,
+            academic_year=cls.academic_year,
+            management_entity=cls.child_entity
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group,
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
         )
-        self.admission = AdmissionFactory(formation=self.formation,
-                                          awareness_ucl_website=False,
-                                          awareness_formation_website=False,
-                                          awareness_press=False,
-                                          awareness_facebook=True,
-                                          awareness_linkedin=False,
-                                          awareness_customized_mail=False,
-                                          awareness_emailing=False,
-                                          awareness_other='Other awareness',
-                                          awareness_word_of_mouth=False,
-                                          awareness_friends=False,
-                                          awareness_former_students=False,
-                                          awareness_moocs=False)
+        cls.admission = AdmissionFactory(formation=cls.formation,
+                                         awareness_ucl_website=False,
+                                         awareness_formation_website=False,
+                                         awareness_press=False,
+                                         awareness_facebook=True,
+                                         awareness_linkedin=False,
+                                         awareness_customized_mail=False,
+                                         awareness_emailing=False,
+                                         awareness_other='Other awareness',
+                                         awareness_word_of_mouth=False,
+                                         awareness_friends=False,
+                                         awareness_former_students=False,
+                                         awareness_moocs=False)
 
     def test_get_faculty(self):
         an_admission = AdmissionFactory(

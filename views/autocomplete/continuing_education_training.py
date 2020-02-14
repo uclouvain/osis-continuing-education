@@ -33,11 +33,9 @@ class ContinuingEducationTrainingAutocomplete(autocomplete.Select2QuerySetView):
         if not self.request.user.is_authenticated:
             return ContinuingEducationTraining.objects.none()
 
-        qs = ContinuingEducationTraining.objects.all().order_by(
-            'education_group__educationgroupyear__acronym'
-        ).distinct()
+        qs = ContinuingEducationTraining.objects.all().distinct()
 
         if self.q:
             qs = qs.filter(education_group__educationgroupyear__acronym__istartswith=self.q)
 
-        return qs
+        return qs.order_by('education_group__educationgroupyear__acronym')

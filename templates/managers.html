@@ -44,34 +44,36 @@
     <div class="panel panel-default">
         <div class="panel panel-body">
             <div class="row">
-                <form style="display: inline;" action="{% url 'list_managers' %}" method="get" class="" id="search_form">
+                <form style="display: inline;" action="{% url 'list_managers' %}" method="get" class=""
+                      id="search_form">
                     {% csrf_token %}
-                        <div class="col-md-2">
-                            <label for="training_id">{% trans 'Training' %}</label>
-                            {{ search_form.training }}
-                        </div>
-                        <div class="col-md-2">
-                            <label for="manager_id">{% trans 'Person' %}</label>
-                            {{ search_form.person }}
-                        </div>
-                        <div class="col-md-2">
-                            <label for="faculty_id">{% trans 'Faculty' %}</label>
-                            {{ search_form.faculty }}
-                        </div>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                            </button>
-                            {% include 'blocks/button/button_filter_refresh.html' %}
-                        </div>
+                    <div class="col-md-2">
+                        <label for="training_id">{% trans 'Training' %}</label>
+                        {{ search_form.training }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="manager_id">{% trans 'Person' %}</label>
+                        {{ search_form.person }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="faculty_id">{% trans 'Faculty' %}</label>
+                        {{ search_form.faculty }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
+                    </div>
                 </form>
                 {% include 'blocks/form/search_form_reset.html' %}
                 <div class="pull-right">
                     <button data-toggle="modal" data-target="#person_training_modal"
                             style="margin-top: 26px; margin-right:10px;" type="button" class="btn btn-default">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {% trans 'Assign manager to training' %}
+                        <span class="glyphicon glyphicon-plus"
+                              aria-hidden="true"></span> {% trans 'Assign manager to training' %}
                     </button>
-                 </div>
+                </div>
             </div>
         </div>
         <div class="panel panel-body">
@@ -82,17 +84,17 @@
                 {% csrf_token %}
                 <table class="table table-striped table-hover" id="managers_table">
                     <thead>
-                    <tr>
-                        <th class="searchable">{% trans 'Name' %}</th>
-                        <th class="searchable">{% trans 'First name' %}</th>
-                        <th class="searchable">{% trans 'Trainings' %}</th>
-                    </tr>
+                        <tr>
+                            <th class="searchable">{% trans 'Name' %}</th>
+                            <th class="searchable">{% trans 'First name' %}</th>
+                            <th class="searchable">{% trans 'Trainings' %}</th>
+                        </tr>
                     </thead>
                     <tfoot>
                     <tr>
-                        <td colspan="5">
+                        <th colspan="3">
                             {% bootstrap_pagination managers extra=request.GET.urlencode %}
-                        </td>
+                        </th>
                     </tr>
                     </tfoot>
                     <tbody>
@@ -102,16 +104,16 @@
                             <td>{{ manager.first_name }}</td>
                             <td>
                                 <ul style='list-style-type:none; padding-left: 0;'>
-                                {% if not manager.trainings %}
-                                    <li>{% trans 'No assigned training' %}</li>
-                                {% else %}
-                                    {% for training in manager.trainings %}
-                                        <li>
-                                            <a href="{% url 'delete_person_training' training=training.pk manager=manager.pk %}">
-                                                <i class="fa fa-times"></i></a>
-                                            {{ training }} - {{ training.management_entity }}</li>
-                                    {% endfor %}
-                                {% endif %}
+                                    {% if not manager.trainings %}
+                                        <li>{% trans 'No assigned training' %}</li>
+                                    {% else %}
+                                        {% for training in manager.trainings %}
+                                            <li>
+                                                <a href="{% url 'delete_person_training' training=training.pk manager=manager.pk %}">
+                                                    <i class="fa fa-times"></i></a>
+                                                {{ training }} - {{ training.management_entity }}</li>
+                                        {% endfor %}
+                                    {% endif %}
                                 </ul>
                             </td>
                         </tr>
@@ -125,5 +127,16 @@
 {% endblock %}
 
 {% block script %}
-
+    <script>
+        $('#managers_table').DataTable({
+            "order": [[0, "asc"]],
+            "paging": false,
+            "info": false,
+            "bFilter": false,
+            "language":
+                {
+                    "sEmptyTable": "{% trans 'No data' %}",
+                },
+        });
+    </script>
 {% endblock %}

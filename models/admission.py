@@ -63,7 +63,6 @@ class AdmissionAdmin(VersionAdmin, ModelAdmin):
 
 
 class Admission(Model):
-
     CONTINUING_EDUCATION_TYPE = 8
 
     objects = Manager()
@@ -83,6 +82,14 @@ class Admission(Model):
         'continuing_education.ContinuingEducationTraining',
         on_delete=models.PROTECT,
         verbose_name=_("Formation")
+    )
+
+    academic_year = models.ForeignKey(
+        'base.AcademicYear',
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
+        verbose_name=_("Academic year")
     )
 
     # Contact
@@ -507,6 +514,7 @@ class Admission(Model):
         return education_group_year.management_entity
 
     class Meta:
+        ordering = ('formation', 'person_information',)
         permissions = (
             ("can_access_admission", "Can consult IUFC admission information"),
             ("can_validate_registration", "Can validate IUFC registration file"),
