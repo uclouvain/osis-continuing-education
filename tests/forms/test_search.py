@@ -44,7 +44,8 @@ from base.tests.factories.person import PersonFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.search import ADMISSION_STATE_CHOICES
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
-    ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm
+    ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm, \
+    REGISTRATION_STATE_CHOICES, REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
@@ -577,7 +578,7 @@ class TestFormationFilterForm(TestCase):
                                          [self.iufc_education_group_yr_ACRO_10.education_group])
 
 
-class TestManagerFilterForm(TestCase):
+class TestcontinuingEducationManagerFilterForm(TestCase):
 
     def setUp(self):
         self.academic_year = AcademicYearFactory(year=2018)
@@ -628,6 +629,17 @@ class TestManagerFilterForm(TestCase):
 
     def test_managers_filter_by_faculty(self):
         self._assert_results_count_equal({'faculty': self.formation}, [self.training_managers[0]])
+
+    def test_get_state_choices_for_continuing_education_manager(self):
+        form = RegistrationFilterForm(user=self.continuing_education_manager.user)
+        if form.is_valid():
+            self.assertCountEqual(form.fields['state'].queryset,
+                                  REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR)
+
+    def test_get_state_choices_for_continuing_education_training_managers(self):
+        form = RegistrationFilterForm(user=self.training_managers[0].user)
+        if form.is_valid():
+            self.assertCountEqual(form.fields['state'].queryset, REGISTRATION_STATE_CHOICES)
 
     def _assert_results_count_equal(self, data, expected_results):
         form = ManagerFilterForm(data)

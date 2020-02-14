@@ -42,7 +42,7 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -69,6 +69,10 @@ class ViewRegistrationTestCase(TestCase):
         )
         self.admission_rejected = AdmissionFactory(
             state=admission_state_choices.REJECTED,
+            formation=self.formation
+        )
+        self.admission_validated = AdmissionFactory(
+            state=admission_state_choices.VALIDATED,
             formation=self.formation
         )
 
@@ -157,7 +161,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cancellations.html')
 
-    def test_registration_list_unauthorized(self):
+    def test_registration_list_unauthorized_cancelled_files(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
         url = reverse('cancelled_files')
@@ -267,10 +271,34 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.training_manager.user.groups.add(group)
         self.client.force_login(self.training_manager.user)
-        self.registration = AdmissionFactory(
-            formation=self.formation,
-            state=REGISTRATION_SUBMITTED,
-        )
+
+        valid_state = [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]
+        self.registrations = []
+        for valid_state in valid_state:
+            self.registrations.append(AdmissionFactory(
+                formation=self.formation,
+                state=valid_state
+            ))
+
+        for invalid_state in admission_state_choices.STATE_CHOICES:
+            if invalid_state[0] not in [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]:
+                AdmissionFactory(
+                    formation=self.formation,
+                    state=invalid_state[0]
+                )
+        # invalid_state_for_training_manager = [admission_state_choices.ACCEPTED_NO_REGISTRATION_REQUIRED,
+        #                                       admission_state_choices.REJECTED,
+        #                                       admission_state_choices.WAITING,
+        #                                       admission_state_choices.DRAFT,
+        #                                       admission_state_choices.SUBMITTED,
+        #                                       admission_state_choices.CANCELLED,
+        #                                       admission_state_choices.CANCELLED_NO_REGISTRATION_REQUIRED]
+
+        # for invalid_state in invalid_state_for_training_manager:
+        #     AdmissionFactory(
+        #         formation=self.formation,
+        #         state=invalid_state,
+        #     )
 
     def test_list_with_no_registrations_visible(self):
         url = reverse('registration')
@@ -284,8 +312,9 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         url = reverse('registration')
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertCountEqual(response.context['admissions'], [self.registration])
-        self.assertEqual(response.context['admissions_number'], 1)
+        self.assertCountEqual(response.context['admissions'],
+                              self.registrations)
+        self.assertEqual(response.context['admissions_number'], 3)
         self.assertTemplateUsed(response, 'registrations.html')
 
 
