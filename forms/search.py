@@ -2,7 +2,7 @@ from datetime import datetime
 from operator import itemgetter
 
 from django import forms
-from django.db.models import Q, Subquery
+from django.db.models import Q
 from django.forms import ModelChoiceField
 from django.utils.translation import gettext_lazy as _, pgettext
 from django.utils.translation import pgettext_lazy
