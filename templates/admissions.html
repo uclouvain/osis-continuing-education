@@ -61,12 +61,6 @@
                         <label for="state_id">{% trans 'State' %}</label>
                         {{ search_form.state }}
                     </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </button>
-                        {% include 'blocks/button/button_filter_refresh.html' %}
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3">
@@ -76,6 +70,12 @@
                     <div class="col-md-3">
                         <label for="registration_required_id">{% trans 'Registration required' %}</label>
                         {{ search_form.registration_required }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
                     </div>
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
@@ -158,6 +158,7 @@
                             <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
                             <td>{{ admission.email | default_if_none:'' }}</td>
                             <td title="{{admission.formation.title}}">{{ admission.formation_display }}</td>
+
                             <td>{{ admission.formation.registration_required|yesno|title}}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
                             <td style="vertical-align: middle;" class="admission-state">

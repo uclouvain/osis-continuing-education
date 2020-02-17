@@ -63,13 +63,6 @@
                         <label for="registration_file_received_id">{% trans 'Received file' %}</label>
                         {{ search_form.registration_file_received }}
                     </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </button>
-                        {% include 'blocks/button/button_filter_refresh.html' %}
-                    </div>
-
                 </div>
                 <div class="row">
                     <div class="col-md-2">
@@ -83,6 +76,16 @@
                     <div class="col-md-2">
                         <label for="free_text_id">{% trans 'In all fields' %}</label>
                         {{ search_form.free_text }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="academic_year_id">{% trans 'Academic year' %}</label>
+                        {{ search_form.academic_year }}
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
                     </div>
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
@@ -116,6 +119,7 @@
                         <th class="searchable">{% trans 'First name' %}</th>
                         <th class="searchable">{% trans 'Email' %}</th>
                         <th class="searchable">{% trans 'Formation' %}</th>
+                        <th class="searchable">{% trans 'Academic year' %}</th>
                         <th class="searchable">{% trans 'Faculty' %}</th>
                         <th class="searchable">{% trans 'State' %}</th>
                         <th class="searchable">{% trans 'Received file' %}</th>
@@ -147,6 +151,7 @@
                             <td>{{ admission.person_information.person.first_name | default_if_none:'-' }}</td>
                             <td>{{ admission.person_information.person.email | default_if_none:'-' }}</td>
                             <td>{{ admission.formation }}</td>
+                            <td>{{ admission.academic_year | default_if_none:'' }}</td>
                             <td title="{{ admission.faculty.title }}">{{ admission.get_faculty | default_if_none:'' }}</td>
                             <td style="vertical-align: middle;" class="admission-state">
                                 {% if admission.is_accepted %}

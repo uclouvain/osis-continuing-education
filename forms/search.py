@@ -2,13 +2,14 @@ from datetime import datetime
 from operator import itemgetter
 
 from django import forms
-from django.db.models import Q
+from django.db.models import Q, Subquery
 from django.forms import ModelChoiceField
 from django.utils.translation import gettext_lazy as _, pgettext
 from django.utils.translation import pgettext_lazy
 
 from base.business.entity import get_entities_ids
 from base.models import entity_version
+from base.models.academic_year import AcademicYear
 from base.models.education_group import EducationGroup
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
@@ -165,6 +166,13 @@ class RegistrationFilterForm(AdmissionFilterForm):
     )
 
     registration_file_received = forms.ChoiceField(choices=BOOLEAN_CHOICES, required=False)
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.filter(year__gte=2018),
+        widget=forms.Select(),
+        empty_label=pgettext("plural", "All"),
+        required=False,
+        label=_('Academic year')
+    )
 
     def __init__(self, *args, **kwargs):
         super(RegistrationFilterForm, self).__init__(*args, **kwargs)
@@ -176,6 +184,7 @@ class RegistrationFilterForm(AdmissionFilterForm):
         paid = self.cleaned_data.get('payment_complete')
         a_state = self.cleaned_data.get('state')
         free_text = self.cleaned_data.get('free_text')
+        academic_year = self.cleaned_data.get('academic_year')
 
         qs = get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
                                                self.cleaned_data.get('formation'),
@@ -194,6 +203,9 @@ class RegistrationFilterForm(AdmissionFilterForm):
 
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
+
+        if academic_year:
+            qs = qs.filter(academic_year=academic_year)
 
         return qs.select_related(
             'person_information__person',
