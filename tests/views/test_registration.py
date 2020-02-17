@@ -42,7 +42,7 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -69,6 +69,10 @@ class ViewRegistrationTestCase(TestCase):
         )
         cls.admission_rejected = AdmissionFactory(
             state=admission_state_choices.REJECTED,
+            formation=cls.formation
+        )
+        cls.admission_validated = AdmissionFactory(
+            state=admission_state_choices.VALIDATED,
             formation=cls.formation
         )
 
@@ -160,7 +164,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cancellations.html')
 
-    def test_registration_list_unauthorized(self):
+    def test_registration_list_unauthorized_cancelled_files(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
         url = reverse('cancelled_files')
@@ -169,6 +173,7 @@ class ViewRegistrationTestCase(TestCase):
 
 
 class RegistrationStateChangedTestCase(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -271,10 +276,21 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         group = GroupFactory(name='continuing_education_training_managers')
         cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
-        cls.registration = AdmissionFactory(
-            formation=cls.formation,
-            state=REGISTRATION_SUBMITTED,
-        )
+
+        valid_state = [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]
+        cls.registrations = []
+        for valid_state in valid_state:
+            cls.registrations.append(AdmissionFactory(
+                formation=cls.formation,
+                state=valid_state
+            ))
+
+        for invalid_state in admission_state_choices.STATE_CHOICES:
+            if invalid_state[0] not in [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]:
+                AdmissionFactory(
+                    formation=cls.formation,
+                    state=invalid_state[0]
+                )
 
     def setUp(self):
         self.client.force_login(self.training_manager.user)
@@ -291,8 +307,9 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         url = reverse('registration')
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertCountEqual(response.context['admissions'], [self.registration])
-        self.assertEqual(response.context['admissions_number'], 1)
+        self.assertCountEqual(response.context['admissions'],
+                              self.registrations)
+        self.assertEqual(response.context['admissions_number'], 3)
         self.assertTemplateUsed(response, 'registrations.html')
 
 
