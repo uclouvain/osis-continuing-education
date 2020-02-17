@@ -173,37 +173,39 @@ class ViewRegistrationTestCase(TestCase):
 
 
 class RegistrationStateChangedTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.faculty_manager = PersonWithPermissionsFactory(
+        cls.faculty_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
         )
-        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group)
-        PersonTraining(person=self.faculty_manager, training=self.formation).save()
+        cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
+        PersonTraining(person=cls.faculty_manager, training=cls.formation).save()
         training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        self.faculty_manager.user.groups.add(training_manager_group)
+        cls.faculty_manager.user.groups.add(training_manager_group)
         group = GroupFactory(name='continuing_education_managers')
-        self.continuing_education_manager = PersonWithPermissionsFactory(
+        cls.continuing_education_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
-        self.continuing_education_manager.user.groups.add(group)
+        cls.continuing_education_manager.user.groups.add(group)
         EntityVersionFactory(
-            entity=self.formation.management_entity
+            entity=cls.formation.management_entity
         )
-        self.registration_submitted = AdmissionFactory(
-            formation=self.formation,
+        cls.registration_submitted = AdmissionFactory(
+            formation=cls.formation,
             state=REGISTRATION_SUBMITTED
         )
-        self.registration_validated = AdmissionFactory(
-            formation=self.formation,
+        cls.registration_validated = AdmissionFactory(
+            formation=cls.formation,
             state=VALIDATED
         )
 
