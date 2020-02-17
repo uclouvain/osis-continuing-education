@@ -49,7 +49,7 @@ from continuing_education.views.home import is_continuing_education_student_work
 @permission_required('continuing_education.can_access_admission', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
-    search_form = RegistrationFilterForm(request.GET)
+    search_form = RegistrationFilterForm(request.GET, user=request.user)
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
     admission_list = []
     if search_form.is_valid():
