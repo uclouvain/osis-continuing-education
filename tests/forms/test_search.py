@@ -66,6 +66,7 @@ CITY_NAME_WITH_ACCENT = 'City - é'
 
 
 class TestFilterForm(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         cls.current_academic_yr = create_current_academic_year()
@@ -172,6 +173,9 @@ class TestFilterForm(TestCase):
             ucl_registration_complete=False,
             academic_year=cls.current_academic_yr
             )
+
+        cls.all_registrations_expected = cls.registrations.copy()
+        cls.all_registrations_expected.append(cls.registration_validated)
 
         cls.archived_submitted = AdmissionFactory(
             formation=ContinuingEducationTrainingFactory(
@@ -352,9 +356,11 @@ class TestFilterForm(TestCase):
         self.assertCountEqual(results, [admission])
 
     def test_get_registrations_no_criteria(self):
-        if self.registration_form.is_valid():
-            results = self.registration_form.get_registrations()
-            self.assertCountEqual(results, self.registrations)
+        form = RegistrationFilterForm({})
+        self.assertTrue(form.is_valid())
+
+        results = form.get_registrations()
+        self.assertCountEqual(results, self.all_registrations_expected)
 
     def test_get_registrations_by_formation_criteria(self):
         form = RegistrationFilterForm({"formation": self.registrations[0].formation.id})
@@ -366,7 +372,7 @@ class TestFilterForm(TestCase):
         form = RegistrationFilterForm({"faculty": self.fac_1_version.id})
         self.assertTrue(form.is_valid())
         results = form.get_registrations()
-        self.assertCountEqual(results, self.registrations)
+        self.assertCountEqual(list(results), self.registrations)
 
     def test_get_registrations_by_faculty_and_formation_criteria(self):
         form = RegistrationFilterForm({"faculty": self.fac_1_version.id,
@@ -446,10 +452,7 @@ class TestFilterForm(TestCase):
         self.assertTrue(form.is_valid())
         results = form.get_registrations()
 
-        expected = self.registrations
-        expected.append(self.registration_validated)
-
-        self.assertListEqual(list(results), expected)
+        self.assertListEqual(list(results), self.all_registrations_expected)
 
     def test_get_archives_by_free_text(self):
         self._create_admissions_for_free_text_search()
