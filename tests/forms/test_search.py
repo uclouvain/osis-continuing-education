@@ -57,6 +57,7 @@ from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
 COUNTRY_NAME_WITHOUT_ACCENT = 'Country - e'
@@ -65,10 +66,11 @@ CITY_NAME_WITH_ACCENT = 'City - é'
 
 
 class TestFilterForm(TestCase):
+
     @classmethod
     def setUpTestData(cls):
         cls.current_academic_yr = create_current_academic_year()
-        next_academic_yr = AcademicYearFactory(year=cls.current_academic_yr.year + 1)
+        cls.next_academic_yr = AcademicYearFactory(year=cls.current_academic_yr.year + 1)
 
         cls.start_date = date.today().replace(year=2010)
 
@@ -110,27 +112,27 @@ class TestFilterForm(TestCase):
             end_date=None,
         )
         letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-        cls.education_groups_fac_1_version = [EducationGroupFactory() for _ in range(0, len(letters))]
+        cls.education_groups_fac_1_version = [EducationGroupFactory(start_year=cls.current_academic_yr) for _ in range(0, len(letters))]
         cls.education_group_yrs = [
             EducationGroupYearFactory(
-                academic_year=next_academic_yr,
+                academic_year=cls.next_academic_yr,
                 acronym='{}_FORM'.format(letters[index]),
                 management_entity=cls.fac_1_version.entity,
                 education_group=education_group)
             for index, education_group in enumerate(cls.education_groups_fac_1_version)
         ]
 
-        cls.education_group_on_faculty = EducationGroupFactory()
+        cls.education_group_on_faculty = EducationGroupFactory(start_year=cls.current_academic_yr)
         cls.education_group_yr_on_faculty = EducationGroupYearFactory(
-            academic_year=next_academic_yr,
+            academic_year=cls.next_academic_yr,
             acronym='E_FORM',
             management_entity=cls.fac_3_version_with_child.entity,
             education_group=cls.education_group_on_faculty
         )
 
-        cls.education_group_on_faculty_child = EducationGroupFactory()
+        cls.education_group_on_faculty_child = EducationGroupFactory(start_year=cls.current_academic_yr)
         cls.education_group_yr_on_faculty_child = EducationGroupYearFactory(
-            academic_year=next_academic_yr,
+            academic_year=cls.next_academic_yr,
             acronym='E_FORM_Child',
             management_entity=cls.fac_3_child_version.entity,
             education_group=cls.education_group_on_faculty_child
@@ -139,7 +141,8 @@ class TestFilterForm(TestCase):
         cls.admissions_fac_1_version = [
             AdmissionFactory(
                 formation=ContinuingEducationTrainingFactory(education_group=cls.education_groups_fac_1_version[index]),
-                state=state
+                state=state,
+                academic_year=cls.current_academic_yr
             ) for index, state in enumerate([SUBMITTED, REJECTED, WAITING, DRAFT, SUBMITTED])
         ]
 
@@ -150,13 +153,14 @@ class TestFilterForm(TestCase):
                 ),
                 state=state,
                 ucl_registration_complete=index == 0,
-                payment_complete=index != 0
+                payment_complete=index != 0,
+                academic_year=cls.current_academic_yr
             ) for index, state in enumerate([ACCEPTED, REGISTRATION_SUBMITTED])
         ]
 
-        cls.education_group_on_fac4 = EducationGroupFactory()
+        cls.education_group_on_fac4 = EducationGroupFactory(start_year=cls.current_academic_yr)
         cls.education_group_yr_on_faculty_child = EducationGroupYearFactory(
-            academic_year=next_academic_yr,
+            academic_year=cls.next_academic_yr,
             acronym='E_FORM_Child',
             management_entity=cls.fac_4_version.entity,
             education_group=cls.education_group_on_fac4
@@ -167,31 +171,36 @@ class TestFilterForm(TestCase):
             state=VALIDATED,
             payment_complete=False,
             ucl_registration_complete=False,
+            academic_year=cls.current_academic_yr
             )
+
+        cls.all_registrations_expected = cls.registrations.copy()
+        cls.all_registrations_expected.append(cls.registration_validated)
 
         cls.archived_submitted = AdmissionFactory(
             formation=ContinuingEducationTrainingFactory(
                 education_group=cls.education_groups_fac_1_version[7],
             ),
             state=SUBMITTED,
-            archived=True
+            archived=True,
+            academic_year=cls.current_academic_yr
         )
 
-        ed_free_text_acronym = EducationGroupFactory()
+        ed_free_text_acronym = EducationGroupFactory(start_year=cls.current_academic_yr)
         EducationGroupYearFactory(
             acronym="TestText",
-            academic_year=next_academic_yr,
+            academic_year=cls.next_academic_yr,
             education_group=ed_free_text_acronym
         )
-        ed_free_text_title = EducationGroupFactory()
+        ed_free_text_title = EducationGroupFactory(start_year=cls.current_academic_yr)
         EducationGroupYearFactory(
-            academic_year=next_academic_yr,
+            academic_year=cls.next_academic_yr,
             education_group=ed_free_text_title,
             title="bla TestText bla"
         )
-        ed = EducationGroupFactory()
+        ed = EducationGroupFactory(start_year=cls.current_academic_yr)
         EducationGroupYearFactory(
-            academic_year=next_academic_yr,
+            academic_year=cls.next_academic_yr,
             education_group=ed
         )
         cls.formation_no_registration_required = ContinuingEducationTrainingFactory(
@@ -240,6 +249,17 @@ class TestFilterForm(TestCase):
                 ('Registration submitted',  _('Registration submitted')),
                 ('Validated', _('Validated'))
             ]
+        )
+
+    def test_queryset_academic_year_init(self):
+        expected = [
+                ('', pgettext_lazy("plural", "All")),
+                (self.current_academic_yr.id, str(self.current_academic_yr)),
+                (self.next_academic_yr.id, str(self.next_academic_yr)),
+            ]
+        self.assertCountEqual(
+            list(self.registration_form.fields['academic_year'].choices),
+            expected
         )
 
     def test_get_admissions_no_criteria(self):
@@ -336,9 +356,11 @@ class TestFilterForm(TestCase):
         self.assertCountEqual(results, [admission])
 
     def test_get_registrations_no_criteria(self):
-        if self.registration_form.is_valid():
-            results = self.registration_form.get_registrations()
-            self.assertCountEqual(results, self.registrations)
+        form = RegistrationFilterForm({})
+        self.assertTrue(form.is_valid())
+
+        results = form.get_registrations()
+        self.assertCountEqual(results, self.all_registrations_expected)
 
     def test_get_registrations_by_formation_criteria(self):
         form = RegistrationFilterForm({"formation": self.registrations[0].formation.id})
@@ -350,7 +372,7 @@ class TestFilterForm(TestCase):
         form = RegistrationFilterForm({"faculty": self.fac_1_version.id})
         self.assertTrue(form.is_valid())
         results = form.get_registrations()
-        self.assertCountEqual(results, self.registrations)
+        self.assertCountEqual(list(results), self.registrations)
 
     def test_get_registrations_by_faculty_and_formation_criteria(self):
         form = RegistrationFilterForm({"faculty": self.fac_1_version.id,
@@ -424,6 +446,13 @@ class TestFilterForm(TestCase):
         self.assertTrue(form.is_valid())
         results = form.get_registrations()
         self.assertCountEqual(results, [self.registrations[0], self.registrations[1], self.registration_validated])
+
+    def test_get_registrations_by_academic_year(self):
+        form = RegistrationFilterForm({"academic_year": self.current_academic_yr.id})
+        self.assertTrue(form.is_valid())
+        results = form.get_registrations()
+
+        self.assertListEqual(list(results), self.all_registrations_expected)
 
     def test_get_archives_by_free_text(self):
         self._create_admissions_for_free_text_search()
