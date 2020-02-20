@@ -34,10 +34,16 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'first_name', 'last_name', 'gender',
 ]
 
+IUFC_GENDER_CHOICES = (
+    ('', '---------'),
+    ('F', _('Female')),
+    ('M', _('Male'))
+)
+
 
 class PersonForm(ModelForm):
     gender = forms.ChoiceField(
-        choices=Person.GENDER_CHOICES,
+        choices=IUFC_GENDER_CHOICES,
     )
 
     def __init__(self, selected_person, no_first_name_checked, *args, **kwargs):
@@ -51,7 +57,7 @@ class PersonForm(ModelForm):
                 True
             )
 
-        self.fields['gender'].initial = Person.GENDER_CHOICES[2]
+        self.fields['gender'].initial = IUFC_GENDER_CHOICES[0]
         if no_first_name_checked:
             self.fields['first_name'].required = False
 
