@@ -7,6 +7,8 @@ from continuing_education.forms.admission import phone_regex
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.enums import YES_NO_CHOICES
 
+UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_MGR = ['registration_file_received', 'ucl_registration_complete']
+
 
 class RegistrationForm(ModelForm):
     previous_ucl_registration = forms.TypedChoiceField(
@@ -41,8 +43,8 @@ class RegistrationForm(ModelForm):
             self.fields['previous_ucl_registration'].required = False
 
         if user and is_continuing_education_manager(user):
-            self.fields['registration_file_received'].disabled = True
-            self.fields['ucl_registration_complete'].disabled = True
+            for field_name in UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_MGR:
+                self.fields[field_name].disabled = True
 
     class Meta:
         model = Admission
