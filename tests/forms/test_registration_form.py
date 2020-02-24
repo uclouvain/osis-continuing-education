@@ -55,17 +55,17 @@ class TestRegistrationForm(TestCase):
         form = RegistrationForm(data=data, only_billing=True)
         self.assertFalse(form.fields['previous_ucl_registration'].required)
 
-    def test_fields_disabled_for_continuing_manager(self):
-        manager_group = GroupFactory(name=MANAGERS_GROUP)
+    def test_fields_disabled_for_continuing_training_manager(self):
+        training_manager_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
         manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        manager.user.groups.add(manager_group)
+        manager.user.groups.add(training_manager_group)
 
         form = RegistrationForm(data={}, user=manager.user)
         self.assertTrue(form.fields['registration_file_received'].disabled)
         self.assertTrue(form.fields['ucl_registration_complete'].disabled)
 
-    def test_fields_enabled_if_not_continuing_manager(self):
-        for group in [TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP]:
+    def test_fields_enabled_if_not_continuing_training_manager(self):
+        for group in [MANAGERS_GROUP, STUDENT_WORKERS_GROUP]:
             manager_group = GroupFactory(name=group)
             person_not_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
             person_not_manager.user.groups.add(manager_group)
