@@ -24,6 +24,7 @@
 #
 ##############################################################################
 from django import forms
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
@@ -35,7 +36,7 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
 ]
 
 IUFC_GENDER_CHOICES = (
-    ('', '---------'),
+    BLANK_CHOICE_DASH[0],
     ('F', _('Female')),
     ('M', _('Male'))
 )
