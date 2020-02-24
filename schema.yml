@@ -540,6 +540,8 @@ components:
               type: integer
             last_degree_graduation_year:
               type: integer
+            academic_yr:
+              type: string
 
     RegistrationPutPatch:
       allOf:
