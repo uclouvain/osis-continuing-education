@@ -101,6 +101,7 @@ class RegistrationDetailSerializerTestCase(TestCase):
             'condition_of_acceptance',
             'high_school_graduation_year',
             'last_degree_graduation_year',
+            'academic_yr',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
@@ -167,6 +168,7 @@ class RegistrationPostSerializerTestCase(TestCase):
             'condition_of_acceptance',
             'high_school_graduation_year',
             'last_degree_graduation_year',
+            'academic_yr',
         ]
         self.assertListEqual(list(self.serializer.data.keys()), expected_fields)
 
