@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import random
 
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -40,7 +41,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.forms.registration import RegistrationForm
+from continuing_education.forms.registration import RegistrationForm, UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.person_training import PersonTraining
@@ -126,7 +127,8 @@ class ViewRegistrationTestCase(TestCase):
         # verifying that fields are correctly updated
         for key in form.cleaned_data.keys():
             field_value = self.admission_accepted.__getattribute__(key)
-            self.assertEqual(field_value, admission_dict[key])
+            if key not in UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
+                self.assertEqual(field_value, admission_dict[key])
 
     def test_registration_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')

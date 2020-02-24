@@ -82,7 +82,7 @@ def registration_edit(request, admission_id):
     address = admission.address
     billing_address = admission.billing_address
     residence_address = admission.residence_address
-    registration_form = RegistrationForm(request.POST or None, instance=admission)
+    registration_form = RegistrationForm(request.POST or None, instance=admission, user=request.user)
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
     residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
 

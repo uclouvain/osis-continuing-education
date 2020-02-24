@@ -371,7 +371,7 @@ def billing_edit(request, admission_id):
     if admission.is_draft() or admission.formation.registration_required:
         raise PermissionDenied
 
-    registration_form = RegistrationForm(request.POST or None, instance=admission, only_billing=True)
+    registration_form = RegistrationForm(request.POST or None, instance=admission, only_billing=True, user=request.user)
     address = admission.address
     billing_address = admission.billing_address
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
