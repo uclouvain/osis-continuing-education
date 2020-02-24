@@ -31,14 +31,17 @@ from django.utils.translation import gettext_lazy as _
 from base.models.person import Person
 from continuing_education.forms.common import set_participant_required_fields
 
+FEMALE = 'F'
+MALE = 'M'
+
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'first_name', 'last_name', 'gender',
 ]
 
 IUFC_GENDER_CHOICES = (
     BLANK_CHOICE_DASH[0],
-    ('F', _('Female')),
-    ('M', _('Male'))
+    (FEMALE, _('Female')),
+    (MALE, _('Male'))
 )
 
 
