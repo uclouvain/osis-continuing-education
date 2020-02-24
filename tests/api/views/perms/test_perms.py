@@ -26,7 +26,7 @@
 
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from base.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmit, CanSendFiles, \
     CanSubmitAdmission

@@ -27,7 +27,7 @@
 import factory
 from django.utils.datetime_safe import datetime
 
-from base.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
