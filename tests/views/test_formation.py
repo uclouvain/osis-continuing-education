@@ -233,7 +233,7 @@ class ViewFormationTestCase(TestCase):
             for m in messages_build:
                 self.assertEqual(str(m), messages_expected[idx])
                 self.assertEqual(m.level, 40)
-                
+
 
 class FormationActivateTestCase(TestCase):
     @classmethod

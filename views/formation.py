@@ -62,13 +62,14 @@ def list_formations(request):
     trainings_managing = list(
         PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True).distinct(
             'training')) if continuing_education_training_manager else None
-    return render(request, "formations.html", {
-        'formations': get_object_list(request, formation_list),
-        'formations_number': len(formation_list),
-        'search_form': search_form,
-        'continuing_education_training_manager': continuing_education_training_manager,
-        'trainings_managing': trainings_managing
-    }
+    return render(request, "formations.html",
+                  {
+                      'formations': get_object_list(request, formation_list),
+                      'formations_number': len(formation_list),
+                      'search_form': search_form,
+                      'continuing_education_training_manager': continuing_education_training_manager,
+                      'trainings_managing': trainings_managing
+                  }
                   )
 
 
