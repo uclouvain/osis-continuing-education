@@ -49,6 +49,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.views.formation import _set_error_message
 
 STR_TRUE = "True"
 STR_FALSE = "False"
@@ -200,6 +201,39 @@ class ViewFormationTestCase(TestCase):
         self.assertIn(messages.ERROR, msg_level)
         self.assertEqual(msg[0], _('You are not authorized to edit this training'))
 
+    def test_context_manager_contents(self):
+        self.client.force_login(self.manager.user)
+        response = self.client.get(reverse('formation'))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context['continuing_education_training_manager'])
+        self.assertIsNone(response.context['trainings_managing'])
+
+    def test_context_trainer_manager_contents(self):
+        training_manager_person_training = PersonTrainingFactory(person=self.training_manager,
+                                                                 training=self.continuing_education_training)
+        self.client.force_login(self.training_manager.user)
+        response = self.client.get(reverse('formation'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['continuing_education_training_manager'])
+        self.assertCountEqual(response.context['trainings_managing'], [training_manager_person_training.training.id])
+
+    def test_set_error_message_no_formation_inactivated(self):
+        input_values = [None, 'New state']
+        messages_expected = [_('No formation inactivated'),  _('No formation activated')]
+
+        url = reverse('formation')
+        for idx, input_value in enumerate(input_values):
+            response = self.client.post(url)
+            self.assertEqual(response.status_code, 200)
+            _set_error_message(input_value, response.wsgi_request)
+
+            messages_build = get_messages(response.wsgi_request)
+            self.assertEqual(len(messages_build), 1)
+
+            for m in messages_build:
+                self.assertEqual(str(m), messages_expected[idx])
+                self.assertEqual(m.level, 40)
+                
 
 class FormationActivateTestCase(TestCase):
     @classmethod

@@ -32,5 +32,4 @@ class ContinuingEducationTrainingForm(ModelForm):
             "2. ..."
         )
         if user and not is_continuing_education_manager(user):
-            self.fields['training_aid'].disabled = True
             self.fields['active'].disabled = True

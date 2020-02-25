@@ -34,7 +34,8 @@ from django.utils.translation import gettext_lazy as _
 from base.models.education_group import EducationGroup
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.perms import is_not_student_worker, is_continuing_education_manager
+from continuing_education.business.perms import is_not_student_worker, is_continuing_education_manager, \
+    is_continuing_education_training_manager
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
@@ -57,12 +58,18 @@ def list_formations(request):
 
     if request.GET.get('xls_status') == "xls_formations":
         return create_xls(request.user, formation_list, search_form)
-
+    continuing_education_training_manager = is_continuing_education_training_manager(request.user)
+    trainings_managing = list(
+        PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True).distinct(
+            'training')) if continuing_education_training_manager else None
     return render(request, "formations.html", {
         'formations': get_object_list(request, formation_list),
         'formations_number': len(formation_list),
-        'search_form': search_form
-    })
+        'search_form': search_form,
+        'continuing_education_training_manager': continuing_education_training_manager,
+        'trainings_managing': trainings_managing
+    }
+                  )
 
 
 @login_required
