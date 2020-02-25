@@ -29,6 +29,8 @@ from django.utils.translation import gettext_lazy as _
 from continuing_education.business.admission import get_management_faculty
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
+DISABLED = "disabled"
+
 register = template.Library()
 
 
@@ -51,3 +53,19 @@ def get_most_recent_education_group(formation):
 @register.filter
 def get_faculty(most_recent_education_group):
     return get_management_faculty(most_recent_education_group)
+
+
+@register.simple_tag(takes_context=True)
+def action_disabled(context, **kwargs):
+    formation = kwargs['formation']
+
+    continuing_education_training_manager = context['continuing_education_training_manager']
+
+    if continuing_education_training_manager:
+        trainings_managing = context['trainings_managing']
+        if isinstance(formation, ContinuingEducationTraining) and trainings_managing:
+            if formation.id not in trainings_managing:
+                return DISABLED
+        else:
+            return DISABLED
+    return ""
