@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
 from django.utils.translation import gettext_lazy as _
 
+from base.models.academic_year import AcademicYear
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
@@ -233,7 +234,6 @@ class WaitingAdmissionForm(ModelForm):
 
 
 class ConditionAcceptanceAdmissionForm(ModelForm):
-
     condition_of_acceptance_existing = forms.ChoiceField(
         widget=forms.RadioSelect,
         choices=[
@@ -247,17 +247,31 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         required=False,
         label=_('Condition of acceptance'),
     )
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.all(),
+        label=_('Academic year'),
+        required=True,
+        help_text=_("Choose here the academic year during which the participant will follow the formation.")
+    )
 
     class Meta:
         model = Admission
         fields = [
             'state',
             'condition_of_acceptance',
+            'academic_year'
         ]
 
     def __init__(self, data, **kwargs):
-
         super().__init__(data, **kwargs)
+
+        try:
+            starting_year = AcademicYear.objects.current().year
+            self.fields['academic_year'].queryset = AcademicYear.objects.min_max_years(
+                starting_year - 1, starting_year + 6
+            ).order_by('year')
+        except AttributeError:
+            self.fields['academic_year'].queryset = AcademicYear.objects.none()
 
         if data is None:
             # GET

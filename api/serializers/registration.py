@@ -72,6 +72,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
+    academic_yr = serializers.CharField(source='academic_year', read_only=True)
 
     class Meta:
         model = Admission
@@ -122,6 +123,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'condition_of_acceptance',
             'high_school_graduation_year',
             'last_degree_graduation_year',
+            'academic_yr'
 
         )
 

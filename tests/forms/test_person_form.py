@@ -1,14 +1,14 @@
 from django.forms import model_to_dict
 from django.test import TestCase
 
-from base.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory
 from continuing_education.forms.person import PersonForm
 
 
 class TestPersonForm(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.data = model_to_dict(PersonFactory())
+        cls.data = model_to_dict(IUFCPersonFactory())
 
     def test_valid_form(self):
         form = PersonForm(data=self.data, selected_person=False, no_first_name_checked=False)

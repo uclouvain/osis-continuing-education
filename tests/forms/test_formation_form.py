@@ -58,5 +58,4 @@ class TestContinuingEducationTrainingFormForm(TestCase):
         self.training_manager = PersonWithPermissionsFactory(groups='continuing_education_training_managers')
         self.client.force_login(self.training_manager.user)
         form = ContinuingEducationTrainingForm(data=None, user=self.training_manager.user)
-        self.assertTrue(form['training_aid'].field.disabled)
         self.assertTrue(form['active'].field.disabled)
