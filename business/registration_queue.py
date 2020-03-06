@@ -56,7 +56,7 @@ def get_json_for_epc(admission):
         'id_card_number': admission.id_card_number,
         'passport_number': admission.passport_number,
         'formation_code': admission.formation.acronym,
-        'formation_academic_year': str(admission.formation.academic_year.year),
+        'formation_academic_year': str(admission.academic_year.year),
         'student_case_uuid': str(admission.uuid)
     }
 
