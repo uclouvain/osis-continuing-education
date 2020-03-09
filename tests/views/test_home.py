@@ -32,19 +32,21 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 
 
 class ViewHomeTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.url = reverse('continuing_education')
+
     def setUp(self):
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
         self.client.force_login(self.manager.user)
 
     def test_admin_view(self):
-        url = reverse('continuing_education')
-        response = self.client.get(url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTemplateUsed(response, 'admin_home.html')
 
     def test_admission_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
-        url = reverse('continuing_education')
-        response = self.client.get(url)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

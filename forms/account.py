@@ -12,18 +12,21 @@ ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
 
 class ContinuingEducationPersonForm(ModelForm):
     birth_country = CountryChoiceField(
-        queryset=Country.objects.all().order_by('name'),
+        queryset=Country.objects.all(),
         label=_("Birth country"),
         required=False,
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, selected_person, *args, **kwargs):
 
         super(ContinuingEducationPersonForm, self).__init__(*args, **kwargs)
 
-        set_participant_required_fields(self.fields,
-                                        ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
-                                        True)
+        if not selected_person:
+            set_participant_required_fields(
+                self.fields,
+                ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
+                True
+            )
 
     class Meta:
         model = ContinuingEducationPerson

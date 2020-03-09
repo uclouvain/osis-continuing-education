@@ -44,6 +44,5 @@ class ContinuingEducationPerson(Model):
     def __str__(self):
         return "{} - {} {}".format(self.id, self.person.first_name, self.person.last_name)
 
-
-def find_by_person(person):
-    return ContinuingEducationPerson.objects.filter(person=person).first()
+    class Meta:
+        ordering = ('person__last_name', 'person__first_name')

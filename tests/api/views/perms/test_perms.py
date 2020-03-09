@@ -26,9 +26,9 @@
 
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from base.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
-from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmitRegistration, CanSendFiles, \
+from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmit, CanSendFiles, \
     CanSubmitAdmission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, REGISTRATION_SUBMITTED, DRAFT, \
     REJECTED, \
@@ -70,7 +70,7 @@ class TestHasAdmissionAccess(APITestCase):
 class TestCanSubmitRegistration(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.permission = CanSubmitRegistration()
+        cls.permission = CanSubmit()
         cls.user = UserFactory()
         cls.request = APIRequestFactory(user=cls.user)
         cls.request.method = 'POST'
@@ -87,6 +87,12 @@ class TestCanSubmitRegistration(APITestCase):
 
     def test_cansubmitregistration_return_true_if_admission_state_accepted(self):
         admission = AdmissionFactory(state=ACCEPTED)
+        self.assertTrue(
+            self.permission.has_object_permission(self.request, None, admission)
+        )
+
+    def test_cansubmitregistration_return_true_if_admission_state_draft_and_no_registration_required(self):
+        admission = AdmissionFactory(state=DRAFT, formation__registration_required=False)
         self.assertTrue(
             self.permission.has_object_permission(self.request, None, admission)
         )

@@ -5,7 +5,13 @@
     <div class="row">
         <div class="col-md-10">
             <div class="alert alert-info" style="display:inline-block;">
-                <i class="fa fa-info-circle"></i> {% trans "This page contains the registrations submitted by the participants. Registrations for which the steps 'UCLouvain registration complete' and/or 'Registration file received' have to be validated." %}
+                <i class="fa fa-info-circle"></i>
+                {% trans "This page contains the registrations submitted by the participants. " %}
+                {% if user_is_continuing_education_student_worker %}
+                    {% trans "Registrations for which the step 'Registration file received' has to be validated." %}
+                {% else %}
+                    {% trans "Registrations for which the steps 'UCLouvain registration complete' and/or 'Registration file received' have to be validated." %}
+                {% endif %}
             </div>
         </div>
         <div class="col-md-2">
@@ -16,12 +22,14 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
-                    <li>
-                        <a id="btn_UCLOUVAIN_registrations_fulfilled" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#registrations_registration_fulfilled_modal">
-                            {% trans 'UCLouvain registration fulfilled' %}
-                        </a>
-                    </li>
+                    {% if continuing_education_manager %}
+                        <li>
+                            <a id="btn_UCLOUVAIN_registrations_fulfilled" style="margin-right:10px;"
+                               data-toggle="modal" data-target="#registrations_registration_fulfilled_modal">
+                                {% trans 'UCLouvain registration fulfilled' %}
+                            </a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a id="btn_paper_registrations_file_received" style="margin-right:10px;"
                            data-toggle="modal" data-target="#registrations_to_validate_modal">

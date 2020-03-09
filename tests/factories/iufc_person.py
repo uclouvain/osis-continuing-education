@@ -23,19 +23,11 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import random
 
-import factory
-
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
-from reference.tests.factories.country import CountryFactory
+from base.tests.factories.person import PersonFactory
+from continuing_education.forms.person import FEMALE, MALE
 
 
-class ContinuingEducationPersonFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = 'continuing_education.ContinuingEducationPerson'
-
-    person = factory.SubFactory(PersonFactory)
-
-    # Identification
-    birth_location = factory.Faker('city')
-    birth_country = factory.SubFactory(CountryFactory)
+class IUFCPersonFactory(PersonFactory):
+    gender = random.choice([FEMALE, MALE])

@@ -38,7 +38,7 @@ class ContinuingEducationPersonList(generics.ListAPIView):
     queryset = ContinuingEducationPerson.objects.all().select_related(
         'person'
     )
-    filter_fields = (
+    filterset_fields = (
         'person',
     )
     search_fields = (

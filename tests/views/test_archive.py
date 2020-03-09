@@ -48,52 +48,54 @@ from continuing_education.views.archive import _switch_archived_state, _mark_as_
 
 
 class ViewArchiveTestCase(TestCase):
-
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation_1 = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation_1 = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.education_group = EducationGroupFactory()
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation_2 = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation_2 = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
         EntityVersionFactory(
-            entity=self.formation_1.management_entity
+            entity=cls.formation_1.management_entity
         )
-        self.admission_archived = AdmissionFactory(
-            formation=self.formation_1,
+        cls.admission_archived = AdmissionFactory(
+            formation=cls.formation_1,
             state=WAITING,
             archived=True
         )
-        self.admission_no_registration_required_archived = AdmissionFactory(
-            formation=self.formation_1,
+        cls.admission_no_registration_required_archived = AdmissionFactory(
+            formation=cls.formation_1,
             state=ACCEPTED_NO_REGISTRATION_REQUIRED,
             archived=True
         )
-        self.registration_1_unarchived = AdmissionFactory(
-            formation=self.formation_2,
+        cls.registration_1_unarchived = AdmissionFactory(
+            formation=cls.formation_2,
             state=ACCEPTED,
             archived=False
         )
-        self.registration_2_archived = AdmissionFactory(
-            formation=self.formation_2,
+        cls.registration_2_archived = AdmissionFactory(
+            formation=cls.formation_2,
             state=ACCEPTED,
             archived=True
         )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_switch_archived_state(self):
         admision_changed = _switch_archived_state(self.manager.user, self.admission_archived.id)
@@ -140,7 +142,6 @@ class ViewArchiveTestCase(TestCase):
         self.assertTrue(ad.archived)
 
     def test_mark_registration_folders_as_archived_plural(self):
-
         response = self.client.post(reverse('archives_procedure'),
                                     data={"selected_action": [
                                         str(self.registration_1_unarchived.id),
@@ -160,7 +161,6 @@ class ViewArchiveTestCase(TestCase):
                                                 _('archived')))
 
     def test_mark_registration_folders_as_archived_single(self):
-
         response = self.client.post(reverse('archives_procedure'),
                                     data={"selected_action": [str(self.registration_1_unarchived.id)]},
                                     follow=True,
@@ -202,24 +202,27 @@ class ViewArchiveTestCase(TestCase):
 
 
 class ViewArchiveTrainingManagerTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
-        self.client.force_login(self.training_manager.user)
-        self.admission = AdmissionFactory(
-            formation=self.formation,
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
             state=SUBMITTED,
         )
+
+    def setUp(self):
+        self.client.force_login(self.training_manager.user)
 
     def test_list_with_no_archive_visible(self):
         self.admission.archived = True
@@ -251,10 +254,13 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
 
 
 class ViewArchiveCacheTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+
+    def setUp(self):
         self.client.force_login(self.manager.user)
         self.addCleanup(cache.clear)
 

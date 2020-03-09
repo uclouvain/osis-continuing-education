@@ -49,10 +49,13 @@ from continuing_education.tests.factories.continuing_education_training import C
     }
 )
 class RegistrationQueueTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
-        self.formation = ContinuingEducationTrainingFactory(education_group=ed)
+        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
+
+    def setUp(self):
         self.admission = AdmissionFactory(
             formation=self.formation,
             ucl_registration_complete=False
@@ -96,7 +99,7 @@ class RegistrationQueueTestCase(TestCase):
             'id_card_number': self.admission.id_card_number,
             'passport_number': self.admission.passport_number,
             'formation_code': self.admission.formation.acronym,
-            'formation_academic_year': str(self.admission.formation.academic_year),
+            'formation_academic_year': str(self.admission.academic_year.year),
             'student_case_uuid': str(self.admission.uuid)
         }
         self.assertDictEqual(result, expected_result)

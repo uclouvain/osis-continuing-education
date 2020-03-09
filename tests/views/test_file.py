@@ -218,27 +218,30 @@ class UploadFileTestCase(TestCase):
 
 
 class DeleteFileTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
-        self.admission = AdmissionFactory(
-            formation=self.formation,
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        cls.admission = AdmissionFactory(
+            formation=cls.formation,
             state=SUBMITTED
         )
-        self.admission_file = AdmissionFileFactory(
-            admission=self.admission
+        cls.admission_file = AdmissionFileFactory(
+            admission=cls.admission
         )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_delete_file(self):
         self.assertEqual(AdmissionFile.objects.all().count(), 1)

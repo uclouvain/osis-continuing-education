@@ -56,7 +56,7 @@ def get_json_for_epc(admission):
         'id_card_number': admission.id_card_number,
         'passport_number': admission.passport_number,
         'formation_code': admission.formation.acronym,
-        'formation_academic_year': str(admission.formation.academic_year),
+        'formation_academic_year': str(admission.academic_year.year),
         'student_case_uuid': str(admission.uuid)
     }
 
@@ -70,13 +70,10 @@ def format_address_for_json(address):
             'country_name': address.country.name if address.country else '',
             'country_iso_code': address.country.iso_code if address.country else ''
         }
-    return {
-            'street': '',
-            'locality': '',
-            'postal_code': '',
-            'country_name': '',
-            'country_iso_code': ''
-        }
+    return dict.fromkeys(
+        ['street', 'locality', 'postal_code', 'country_name', 'country_iso_code'],
+        ''
+    )
 
 
 def save_role_registered_in_admission(data):

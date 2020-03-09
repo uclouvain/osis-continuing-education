@@ -9,6 +9,7 @@ from django.utils.translation import pgettext_lazy
 
 from base.business.entity import get_entities_ids
 from base.models import entity_version
+from base.models.academic_year import AcademicYear
 from base.models.education_group import EducationGroup
 from base.models.entity_version import EntityVersion
 from base.models.enums import entity_type
@@ -17,13 +18,14 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
-    ADMISSION_STATE_CHOICES
+    ADMISSION_STATE_CHOICES, REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
+STATE_FOR_REGISTRATION_CONTINUING_MANAGER = [ACCEPTED, REGISTRATION_SUBMITTED]
 STATES_FOR_ARCHIVE = [
     ACCEPTED, REJECTED, REGISTRATION_STATE_CHOICES, WAITING, SUBMITTED, REGISTRATION_SUBMITTED, VALIDATED,
     ACCEPTED_NO_REGISTRATION_REQUIRED
@@ -130,7 +132,7 @@ class AdmissionFilterForm(BootstrapForm):
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        ).distinct()
+        )
 
 
 def search_admissions_with_free_text(free_text, qs):
@@ -165,21 +167,34 @@ class RegistrationFilterForm(AdmissionFilterForm):
     )
 
     registration_file_received = forms.ChoiceField(choices=BOOLEAN_CHOICES, required=False)
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.filter(year__gte=2018),
+        widget=forms.Select(),
+        empty_label=pgettext("plural", "All"),
+        required=False,
+        label=_('Academic year')
+    )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         super(RegistrationFilterForm, self).__init__(*args, **kwargs)
-        self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES)
-        _build_formation_choices(self.fields['formation'], STATE_FOR_REGISTRATION)
+        if user and user.groups.filter(name='continuing_education_managers').exists():
+            self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR)
+            self.states_filter = STATE_FOR_REGISTRATION_CONTINUING_MANAGER
+        else:
+            self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES)
+            self.states_filter = STATE_FOR_REGISTRATION
+        _build_formation_choices(self.fields['formation'], self.states_filter)
 
     def get_registrations(self):
         registered = self.cleaned_data.get('ucl_registration_complete')
         paid = self.cleaned_data.get('payment_complete')
         a_state = self.cleaned_data.get('state')
         free_text = self.cleaned_data.get('free_text')
+        academic_year = self.cleaned_data.get('academic_year')
 
         qs = get_queryset_by_faculty_formation(self.cleaned_data['faculty'],
                                                self.cleaned_data.get('formation'),
-                                               STATE_FOR_REGISTRATION,
+                                               self.states_filter,
                                                False,
                                                self.cleaned_data.get('registration_file_received'))
 
@@ -195,10 +210,13 @@ class RegistrationFilterForm(AdmissionFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
+        if academic_year:
+            qs = qs.filter(academic_year=academic_year)
+
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        ).distinct()
+        )
 
 
 class ArchiveFilterForm(AdmissionFilterForm):
@@ -214,7 +232,7 @@ class ArchiveFilterForm(AdmissionFilterForm):
         if user and not user.groups.filter(name='continuing_education_managers').exists():
             self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
                 managers=user.person
-            ).order_by('education_group__educationgroupyear__acronym').distinct()
+            )
 
     def get_archives(self):
         a_state = self.cleaned_data.get('state')
@@ -235,11 +253,10 @@ class ArchiveFilterForm(AdmissionFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
-        return qs.distinct()
+        return qs
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
-
     qs = Admission.objects.all()
 
     if states:
@@ -267,14 +284,16 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
     if received_file:
         qs = qs.filter(registration_file_received=received_file)
 
-    return qs.order_by('person_information')
+    return qs
 
 
 def _build_formation_choices(field, states, archived_status=False):
-    field.queryset = ContinuingEducationTraining.objects \
-        .filter(id__in=Admission.objects.filter(state__in=states, archived=archived_status)
-                .values_list('formation', flat=False).distinct('formation')
-                ).order_by('education_group__educationgroupyear__acronym').distinct()
+    field.queryset = ContinuingEducationTraining.objects.filter(
+        id__in=Admission.objects.filter(
+            state__in=states,
+            archived=archived_status
+        ).values_list('formation', flat=False)
+    )
 
 
 def _get_state_choices(choices):
@@ -298,9 +317,9 @@ class FormationFilterForm(AdmissionFilterForm):
         self.fields['state'].choices = FORMATION_STATE_CHOICES
 
     def get_formations(self):
-        faculty = self.cleaned_data.get('faculty', None)
-        acronym = self.cleaned_data.get('acronym', None)
-        title = self.cleaned_data.get('title', None)
+        faculty = self.cleaned_data.get('faculty')
+        acronym = self.cleaned_data.get('acronym')
+        title = self.cleaned_data.get('title')
         training_aid = self.cleaned_data.get('training_aid')
         free_text = self.cleaned_data.get('free_text')
 
@@ -308,7 +327,7 @@ class FormationFilterForm(AdmissionFilterForm):
             educationgroupyear__education_group_type__name__in=CONTINUING_EDUCATION_TRAINING_TYPES,
         )
 
-        qs = _build_active_parameter(qs, self.cleaned_data.get('state', None))
+        qs = _build_active_parameter(qs, self.cleaned_data.get('state'))
         if faculty:
             qs = _get_formation_filter_entity_management(
                 qs,
@@ -333,7 +352,7 @@ class FormationFilterForm(AdmissionFilterForm):
                 Q(educationgroupyear__title__icontains=free_text)
             )
 
-        return qs.order_by('educationgroupyear__acronym').select_related('continuingeducationtraining').distinct()
+        return qs.select_related('continuingeducationtraining').order_by('educationgroupyear__acronym').distinct()
 
 
 def _build_active_parameter(qs, state):
@@ -341,7 +360,7 @@ def _build_active_parameter(qs, state):
         active_state = state == ACTIVE
         return qs.filter(continuingeducationtraining__active=active_state)
     elif state == NOT_ORGANIZED:
-        return qs.filter(continuingeducationtraining__isnull=True).distinct()
+        return qs.filter(continuingeducationtraining__isnull=True)
     return qs
 
 
@@ -373,7 +392,7 @@ class ManagerFilterForm(BootstrapForm):
     training = FormationModelChoiceField(
         queryset=ContinuingEducationTraining.objects.filter(
             id__in=PersonTraining.objects.values_list('training', flat=True)
-        ).order_by('education_group__educationgroupyear__acronym').distinct(),
+        ),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,

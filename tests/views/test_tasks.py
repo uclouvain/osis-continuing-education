@@ -24,6 +24,8 @@
 #
 ##############################################################################
 
+import random
+
 from django.http import HttpResponse, HttpResponseForbidden
 from django.test import TestCase
 from django.urls import reverse
@@ -32,71 +34,74 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory, PersonFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-import random
 
 
 class ViewUpdateTasksTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name=MANAGERS_GROUP)
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.registrations_to_validate = [
+        cls.registrations_to_validate = [
             AdmissionFactory(
                 state=admission_state_choices.REGISTRATION_SUBMITTED,
-                formation=self.formation
+                formation=cls.formation
             ) for _ in range(2)
         ]
-        self.registration_not_to_validate = AdmissionFactory(
+        cls.registration_not_to_validate = AdmissionFactory(
             state=admission_state_choices.DRAFT,
             diploma_produced=True,
-            formation=self.formation
+            formation=cls.formation
         )
 
-        self.diplomas_to_produce = [
+        cls.diplomas_to_produce = [
             AdmissionFactory(
                 state=admission_state_choices.VALIDATED,
                 diploma_produced=False,
-                formation=self.formation,
+                formation=cls.formation,
                 ucl_registration_complete=True,
                 payment_complete=True,
                 assessment_succeeded=True,
             ) for _ in range(2)
         ]
-        self.no_diploma_to_produce_because_waiting = AdmissionFactory(
+        cls.no_diploma_to_produce_because_waiting = AdmissionFactory(
             state=admission_state_choices.WAITING,
             diploma_produced=True,
-            formation=self.formation
+            formation=cls.formation
         )
 
-        self.admissions_to_accept = [
+        cls.admissions_to_accept = [
             AdmissionFactory(
                 state=random.choice([admission_state_choices.SUBMITTED, admission_state_choices.WAITING]),
-                formation=self.formation
+                formation=cls.formation
             ) for _ in range(2)
             ]
-        self.admission_not_to_accept = AdmissionFactory(
+        cls.admission_not_to_accept = AdmissionFactory(
             state=admission_state_choices.DRAFT,
-            formation=self.formation
+            formation=cls.formation
         )
         training_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(training_group)
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(training_group)
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_list_tasks_html_content_for_iufc(self):
         response = self.client.get(reverse('list_tasks'))
@@ -251,21 +256,24 @@ class ViewUpdateTasksTestCase(TestCase):
 
 
 class UpdateTasksPermissionsTestCase(TestCase):
-    def setUp(self):
-        person_without_change_perm = PersonWithPermissionsFactory('can_access_admission')
-        self.client.force_login(person_without_change_perm.user)
+    @classmethod
+    def setUpTestData(cls):
+        cls.person_without_change_perm = PersonWithPermissionsFactory('can_access_admission')
 
-        self.registrations_to_validate = [
+        cls.registrations_to_validate = [
             AdmissionFactory(state=admission_state_choices.REGISTRATION_SUBMITTED) for _ in range(2)
         ]
 
-        self.diplomas_to_produce = [
+        cls.diplomas_to_produce = [
             AdmissionFactory(state=admission_state_choices.VALIDATED, diploma_produced=False) for _ in range(2)
         ]
 
-        self.admissions_to_validate = [
+        cls.admissions_to_validate = [
             AdmissionFactory(state=admission_state_choices.SUBMITTED) for _ in range(2)
             ]
+
+    def setUp(self):
+        self.client.force_login(self.person_without_change_perm.user)
 
     def test_paper_registrations_file_received_without_permission(self):
         post_data = {
@@ -322,32 +330,35 @@ class UpdateTasksPermissionsTestCase(TestCase):
 
 
 class ViewTasksTrainingManagerTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
-        self.client.force_login(self.training_manager.user)
-        self.registration_to_validate = AdmissionFactory(
-            formation=self.formation,
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
+        cls.registration_to_validate = AdmissionFactory(
+            formation=cls.formation,
             state=REGISTRATION_SUBMITTED,
         )
-        self.admission_diploma_to_produce = AdmissionFactory(
-            formation=self.formation,
+        cls.admission_diploma_to_produce = AdmissionFactory(
+            formation=cls.formation,
             state=VALIDATED,
         )
-        self.admission_to_validate = AdmissionFactory(
-            formation=self.formation,
+        cls.admission_to_validate = AdmissionFactory(
+            formation=cls.formation,
             state=admission_state_choices.SUBMITTED,
         )
+
+    def setUp(self):
+        self.client.force_login(self.training_manager.user)
 
     def test_paper_registrations_file_received_denied(self):
         post_data = {
@@ -373,25 +384,32 @@ class ViewTasksTrainingManagerTestCase(TestCase):
 
 
 class ViewTasksStudentWorkerTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name=STUDENT_WORKERS_GROUP)
-        self.student_worker = PersonFactory()
-        self.student_worker.user.groups.add(group)
-        self.client.force_login(self.student_worker.user)
+        cls.student_worker = PersonFactory()
+        cls.student_worker.user.groups.add(group)
 
-        self.admission_diploma_to_produce = AdmissionFactory(
-            formation=self.formation,
+        cls.admission_diploma_to_produce = AdmissionFactory(
+            formation=cls.formation,
             state=VALIDATED,
         )
+        cls.registration_to_validate = AdmissionFactory(
+            formation=cls.formation,
+            state=REGISTRATION_SUBMITTED,
+        )
+
+    def setUp(self):
+        self.client.force_login(self.student_worker.user)
 
     def test_produce_diploma_denied(self):
         post_data = {
@@ -400,6 +418,17 @@ class ViewTasksStudentWorkerTestCase(TestCase):
         }
         response = self.client.post(
             reverse('mark_diplomas_produced'),
+            data=post_data
+        )
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_edit_uclouvain_registration_denied(self):
+        post_data = {
+            "selected_registrations_to_validate":
+                [str(self.registration_to_validate.pk)]
+        }
+        response = self.client.post(
+            reverse('registrations_fulfilled'),
             data=post_data
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)

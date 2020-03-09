@@ -34,35 +34,39 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory, PersonFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class ManagerListTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory(
+        cls.manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
-        self.manager.employee = True
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.manager.employee = True
+        cls.manager.user.groups.add(group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year,
+            education_group=cls.education_group,
+            academic_year=cls.academic_year,
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group,
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group,
             active=True
         )
-        self.training_manager = PersonWithPermissionsFactory(employee=True)
-        self.training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager.user.groups.add(self.training_manager_group)
+        cls.training_manager = PersonWithPermissionsFactory(employee=True)
+        cls.training_manager_group = GroupFactory(name='continuing_education_training_managers')
+        cls.training_manager.user.groups.add(cls.training_manager_group)
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_managers_list(self):
         response = self.client.get(reverse('list_managers'))
@@ -150,12 +154,15 @@ class ManagerListTestCase(TestCase):
 
 
 class ViewManagerCacheTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory(
+        cls.manager = PersonWithPermissionsFactory(
             'can_access_admission', 'change_admission','can_validate_registration'
         )
-        self.manager.user.groups.add(group)
+        cls.manager.user.groups.add(group)
+
+    def setUp(self):
         self.client.force_login(self.manager.user)
         self.addCleanup(cache.clear)
 

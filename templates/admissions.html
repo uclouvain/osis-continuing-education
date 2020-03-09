@@ -61,12 +61,6 @@
                         <label for="state_id">{% trans 'State' %}</label>
                         {{ search_form.state }}
                     </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </button>
-                        {% include 'blocks/button/button_filter_refresh.html' %}
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3">
@@ -76,6 +70,12 @@
                     <div class="col-md-3">
                         <label for="registration_required_id">{% trans 'Registration required' %}</label>
                         {{ search_form.registration_required }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
                     </div>
                 </div>
                 {% include 'blocks/button/xls_hidden.html' %}
@@ -156,8 +156,9 @@
                             </a>
                             </td>
                             <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
-                            <td>{{ admission.email | default_if_none:'' }}</td>
+                            <td>{{ admission.person_information.person.email | default_if_none:'' }}</td>
                             <td title="{{admission.formation.title}}">{{ admission.formation_display }}</td>
+
                             <td>{{ admission.formation.registration_required|yesno|title}}</td>
                             <td title="{{admission.faculty.title}}">{{ admission.get_faculty | default_if_none:''}}</td>
                             <td style="vertical-align: middle;" class="admission-state">
@@ -172,7 +173,13 @@
                                 {% elif admission.is_cancelled %}
                                     <span class="label label-warning show">{% trans admission.state %}</span>
                                 {% elif admission.is_accepted_no_registration_required %}
-                                    <span class="label label-success show">{% trans admission.state %}</span>
+                                    <span class="label label-success show"
+                                        {% if admission.state_reason %}title="{{ admission.state_reason }}"{% endif %}>
+                                        {% if admission.state_reason %}
+                                            <i class="fas fa-info-circle" style="font-size: 14px;padding-right: 10px;"></i>
+                                        {% endif %}
+                                        {% trans admission.state %}
+                                    </span>
                                 {% endif %}
                             </td>
                         </tr>

@@ -92,24 +92,26 @@
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                {% if not continuing_education_training_manager %}
+                    <li>
+                        <a id="btn_activate" style="margin-right:10px;cursor: pointer;">
+                            &nbsp;{% trans 'Activate' %}
+                        </a>
+                    </li>
+                    <li>
+                        <a id="btn_disable" style="margin-right:10px;cursor: pointer;">
+                            &nbsp;{% trans 'Disable' %}
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
+                {% endif %}
                 <li>
-                    <a id="btn_activate" style="margin-right:10px;">
-                        &nbsp;{% trans 'Activate' %}
-                    </a>
-                </li>
-                <li>
-                    <a id="btn_disable" style="margin-right:10px;">
-                        &nbsp;{% trans 'Disable' %}
-                    </a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                    <a id="btn_training_aid_yes" style="margin-right:10px;">
+                    <a id="btn_training_aid_yes" style="margin-right:10px;cursor: pointer;">
                         &nbsp;{% trans 'Training aid' %} <i class="fa fa-arrow-right"></i> {% trans 'Yes' %}
                     </a>
                 </li>
                 <li>
-                    <a id="btn_training_aid_no" style="margin-right:10px;">
+                    <a id="btn_training_aid_no" style="margin-right:10px;cursor: pointer;">
                         &nbsp;{% trans 'Training aid' %} <i class="fa fa-arrow-right"></i> {% trans 'No' %}
                     </a>
                 </li>
@@ -161,8 +163,9 @@
                         {% with most_recent_education_group=formation|get_most_recent_education_group %}
                         <tr>
                             <td>
+                                {% action_disabled formation=formation.continuingeducationtraining as button_disabled_prop%}
                                 <input type="checkbox" name="selected_action" class="selected_object"
-                                       value="{{ formation.id }}"/>
+                                       value="{{ formation.id }}" {{ button_disabled_prop }} />
                             </td>
                             <td>
                                 {% if formation.continuingeducationtraining %}

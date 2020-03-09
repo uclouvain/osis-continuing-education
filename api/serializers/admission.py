@@ -175,8 +175,6 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
             iufc_person = ContinuingEducationPerson.objects.get(person=person)
             validated_data['person_information'] = iufc_person
 
-        formation_data = validated_data.pop('formation', None)
-        validated_data['formation'] = formation_data
         if 'address' in validated_data:
             address_data = validated_data.pop('address')
             address = Address.objects.create(**address_data)

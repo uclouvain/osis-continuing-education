@@ -27,10 +27,8 @@ from rest_framework import serializers
 
 from continuing_education.api.serializers.address import AddressSerializer, AddressPostSerializer
 from continuing_education.api.serializers.admission import AdmissionListSerializer
-from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer
 from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.models.admission import Admission
-from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from reference.api.serializers.country import CountrySerializer
 from reference.models.country import Country
 
@@ -57,6 +55,7 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
     # Display human readable value
     registration_type_text = serializers.CharField(source='get_registration_type_display', read_only=True)
     marital_status_text = serializers.CharField(source='get_marital_status_display', read_only=True)
+    academic_yr = serializers.CharField(source='academic_year', read_only=True)
 
     class Meta:
         model = Admission
@@ -108,6 +107,9 @@ class RegistrationDetailSerializer(RegistrationListSerializer):
             'state',
             'state_text',
             'formation'
+            'high_school_graduation_year',
+            'last_degree_graduation_year',
+            'academic_yr'
         )
 
 
@@ -130,12 +132,13 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
             instance,
             not validated_data['use_address_for_billing']
         )
-        instance.residence_address = self.update_addresses(
-            'residence_address',
-            validated_data,
-            instance,
-            not validated_data['use_address_for_post']
-        )
+        if instance.formation.registration_required:
+            instance.residence_address = self.update_addresses(
+                'residence_address',
+                validated_data,
+                instance,
+                not validated_data['use_address_for_post']
+            )
         instance._original_state = instance.state
         if 'person_information' in validated_data:
             validated_data.pop('person_information')

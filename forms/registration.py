@@ -2,9 +2,12 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
+from continuing_education.business.perms import is_continuing_education_training_manager
 from continuing_education.forms.admission import phone_regex
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.enums import YES_NO_CHOICES
+
+UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR = ['registration_file_received', 'ucl_registration_complete']
 
 
 class RegistrationForm(ModelForm):
@@ -34,10 +37,14 @@ class RegistrationForm(ModelForm):
         widget=forms.TextInput(attrs={'placeholder': '082123456 - 003282123456 - +3282123456'})
     )
 
-    def __init__(self, data, only_billing=False, **kwargs):
+    def __init__(self, data, only_billing=False, user=None, **kwargs):
         super().__init__(data, **kwargs)
         if only_billing:
             self.fields['previous_ucl_registration'].required = False
+
+        if user and is_continuing_education_training_manager(user):
+            for field_name in UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
+                self.fields[field_name].disabled = True
 
     class Meta:
         model = Admission

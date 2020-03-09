@@ -143,3 +143,8 @@ ARCHIVE_STATE_CHOICES = (
     (REGISTRATION_SUBMITTED, _('Registration submitted')),
     (VALIDATED, _('Validated')),
 )
+
+REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR = (
+    (ACCEPTED, _('Accepted')),
+    (REGISTRATION_SUBMITTED, _('Registration submitted')),
+)

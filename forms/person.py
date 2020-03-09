@@ -24,31 +24,44 @@
 #
 ##############################################################################
 from django import forms
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
 from base.models.person import Person
 from continuing_education.forms.common import set_participant_required_fields
 
+FEMALE = 'F'
+MALE = 'M'
+
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'first_name', 'last_name', 'gender',
 ]
 
+IUFC_GENDER_CHOICES = (
+    BLANK_CHOICE_DASH[0],
+    (FEMALE, _('Female')),
+    (MALE, _('Male'))
+)
+
 
 class PersonForm(ModelForm):
     gender = forms.ChoiceField(
-        choices=Person.GENDER_CHOICES,
+        choices=IUFC_GENDER_CHOICES,
     )
 
-    def __init__(self, no_first_name_checked, *args, **kwargs):
+    def __init__(self, selected_person, no_first_name_checked, *args, **kwargs):
 
         super(PersonForm, self).__init__(*args, **kwargs)
 
-        set_participant_required_fields(self.fields,
-                                        ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
-                                        True)
+        if not selected_person:
+            set_participant_required_fields(
+                self.fields,
+                ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
+                True
+            )
 
-        self.fields['gender'].initial = Person.GENDER_CHOICES[2]
+        self.fields['gender'].initial = IUFC_GENDER_CHOICES[0]
         if no_first_name_checked:
             self.fields['first_name'].required = False
 

@@ -44,7 +44,7 @@ class ContinuingEducationTrainingList(generics.ListAPIView):
     """
     name = 'continuing-education-training-list'
     queryset = ContinuingEducationTraining.objects.all().distinct()
-    filter_class = ContinuingEducationTrainingFilter
+    filterset_class = ContinuingEducationTrainingFilter
     search_fields = (
         'education_group__educationgroupyear__acronym',
     )

@@ -69,9 +69,9 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="9">
+                            <th colspan="8">
                                 {% bootstrap_pagination admissions extra=request.GET.urlencode %}
-                            </td>
+                            </th>
                         </tr>
                     </tfoot>
                     {% for admission in admissions %}
@@ -128,12 +128,6 @@
                 {
                     "sEmptyTable": "{% trans 'No data' %}",
                 },
-                // Disable sorting on the first column
-                "aoColumnDefs" : [ {
-                    'bSortable' : false,
-                    'aTargets' : [ 0 ]
-                } ]
-
             } );
         } );
 

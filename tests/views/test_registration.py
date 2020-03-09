@@ -41,37 +41,44 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.forms.registration import RegistrationForm
+from continuing_education.forms.registration import RegistrationForm, UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
 from continuing_education.models.enums import admission_state_choices
-from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
+from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
 class ViewRegistrationTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
-        self.admission_accepted = AdmissionFactory(
+        cls.admission_accepted = AdmissionFactory(
             state=admission_state_choices.ACCEPTED,
-            formation=self.formation
+            formation=cls.formation
         )
-        self.admission_rejected = AdmissionFactory(
+        cls.admission_rejected = AdmissionFactory(
             state=admission_state_choices.REJECTED,
-            formation=self.formation
+            formation=cls.formation
         )
+        cls.admission_validated = AdmissionFactory(
+            state=admission_state_choices.VALIDATED,
+            formation=cls.formation
+        )
+
+    def setUp(self):
+        self.client.force_login(self.manager.user)
 
     def test_list_registrations(self):
         url = reverse('registration')
@@ -120,7 +127,8 @@ class ViewRegistrationTestCase(TestCase):
         # verifying that fields are correctly updated
         for key in form.cleaned_data.keys():
             field_value = self.admission_accepted.__getattribute__(key)
-            self.assertEqual(field_value, admission_dict[key])
+            if key not in UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
+                self.assertEqual(field_value, admission_dict[key])
 
     def test_registration_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
@@ -158,7 +166,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'cancellations.html')
 
-    def test_registration_list_unauthorized(self):
+    def test_registration_list_unauthorized_cancelled_files(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
         self.client.force_login(unauthorized_user)
         url = reverse('cancelled_files')
@@ -167,37 +175,39 @@ class ViewRegistrationTestCase(TestCase):
 
 
 class RegistrationStateChangedTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.faculty_manager = PersonWithPermissionsFactory(
+        cls.faculty_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
         )
-        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group)
-        PersonTraining(person=self.faculty_manager, training=self.formation).save()
+        cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
+        PersonTraining(person=cls.faculty_manager, training=cls.formation).save()
         training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        self.faculty_manager.user.groups.add(training_manager_group)
+        cls.faculty_manager.user.groups.add(training_manager_group)
         group = GroupFactory(name='continuing_education_managers')
-        self.continuing_education_manager = PersonWithPermissionsFactory(
+        cls.continuing_education_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
             'can_validate_registration'
         )
-        self.continuing_education_manager.user.groups.add(group)
+        cls.continuing_education_manager.user.groups.add(group)
         EntityVersionFactory(
-            entity=self.formation.management_entity
+            entity=cls.formation.management_entity
         )
-        self.registration_submitted = AdmissionFactory(
-            formation=self.formation,
+        cls.registration_submitted = AdmissionFactory(
+            formation=cls.formation,
             state=REGISTRATION_SUBMITTED
         )
-        self.registration_validated = AdmissionFactory(
-            formation=self.formation,
+        cls.registration_validated = AdmissionFactory(
+            formation=cls.formation,
             state=VALIDATED
         )
 
@@ -218,7 +228,7 @@ class RegistrationStateChangedTestCase(TestCase):
         self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
-    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self, mock_queues):
+    def test_registration_detail_edit_state_to_validated_as_faculty_manager(self, mock_queue):
         self.client.force_login(self.faculty_manager.user)
         registration = {
             'state': VALIDATED,
@@ -228,7 +238,7 @@ class RegistrationStateChangedTestCase(TestCase):
         data = registration
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=data)
-        mock_queues.assert_called_with(self.registration_submitted)
+        mock_queue.assert_called_with(self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         # state should not be changed and error message should be presented to user
@@ -258,24 +268,38 @@ class RegistrationStateChangedTestCase(TestCase):
 
 
 class ViewRegistrationsTrainingManagerTestCase(TestCase):
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year
+            education_group=cls.education_group,
+            academic_year=cls.academic_year
         )
-        self.formation = ContinuingEducationTrainingFactory(
-            education_group=self.education_group
+        cls.formation = ContinuingEducationTrainingFactory(
+            education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        self.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.training_manager.user.groups.add(group)
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
+
+        valid_state = [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]
+        cls.registrations = []
+        for valid_state in valid_state:
+            cls.registrations.append(AdmissionFactory(
+                formation=cls.formation,
+                state=valid_state
+            ))
+
+        for invalid_state in admission_state_choices.STATE_CHOICES:
+            if invalid_state[0] not in [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]:
+                AdmissionFactory(
+                    formation=cls.formation,
+                    state=invalid_state[0]
+                )
+
+    def setUp(self):
         self.client.force_login(self.training_manager.user)
-        self.registration = AdmissionFactory(
-            formation=self.formation,
-            state=REGISTRATION_SUBMITTED,
-        )
 
     def test_list_with_no_registrations_visible(self):
         url = reverse('registration')
@@ -289,16 +313,20 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         url = reverse('registration')
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertCountEqual(response.context['admissions'], [self.registration])
-        self.assertEqual(response.context['admissions_number'], 1)
+        self.assertCountEqual(response.context['admissions'],
+                              self.registrations)
+        self.assertEqual(response.context['admissions_number'], 3)
         self.assertTemplateUsed(response, 'registrations.html')
 
 
 class ViewRegistrationCacheTestCase(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        self.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager.user.groups.add(group)
+
+    def setUp(self):
         self.client.force_login(self.manager.user)
         self.addCleanup(cache.clear)
 

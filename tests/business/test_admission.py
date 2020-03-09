@@ -36,7 +36,7 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
     check_required_field_for_participant, _get_attachments
@@ -108,8 +108,8 @@ class TestAdmission(TestCase):
     def test_get_managers_mail_mail_missing(self):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
-        manager = PersonFactory(last_name="AAA", email=None)
-        manager_2 = PersonFactory(last_name="BBB")
+        manager = PersonFactory(last_name="AAA", email="")
+        manager_2 = PersonFactory(last_name="BBB", email="")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=manager, training=cet)
         PersonTrainingFactory(person=manager_2, training=cet)
@@ -324,14 +324,15 @@ class SendEmailTest(TestCase):
 
 
 class SendEmailSettingsTest(TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
-        self.manager = PersonFactory(last_name="AAA")
-        self.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
-        self.cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=self.manager, training=self.cet)
-        self.admission = AdmissionFactory(formation=self.cet)
+        cls.manager = PersonFactory(last_name="AAA")
+        cls.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
+        cls.cet = ContinuingEducationTrainingFactory(education_group=ed)
+        PersonTrainingFactory(person=cls.manager, training=cls.cet)
+        cls.admission = AdmissionFactory(formation=cls.cet)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_email_setting_false(self, mock_send_mail):
@@ -392,7 +393,7 @@ class SendEmailSettingsTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_email_email_missing(self, mock_send_mail):
-        self.manager_without_email = PersonFactory(last_name="AAA", email=None)
+        self.manager_without_email = PersonFactory(last_name="AAA", email="")
         self.manager_without_email.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
         PersonTrainingFactory(person=self.manager_without_email, training=self.cet)
 

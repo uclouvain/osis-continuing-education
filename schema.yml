@@ -538,53 +538,64 @@ components:
         vat_number:
           type: string
 
-        national_registry_number:
-          type: string
-        id_card_number:
-          type: string
-        passport_number:
-          type: string
-        marital_status:
-          $ref: '#/components/schemas/MaritalStatusEnum'
-        marital_status_text:
-          type: string
-          readOnly: true
-        spouse_name:
-          type: string
-        children_number:
-          type: integer
-        previous_ucl_registration:
-          type: boolean
-        previous_noma:
-          type: string
-        use_address_for_post:
-          type: boolean
-        residence_address:
-           $ref: '#/components/schemas/AddressSerializer'
-        residence_phone:
-          type: string
-        ucl_registration_complete:
-          type: boolean
-        noma:
-          type: string
-        payment_complete:
-          type: boolean
-        formation_spreading:
-          type: boolean
-        prior_experience_validation:
-          type: boolean
-        assessment_presented:
-          type: boolean
-        assessment_succeeded:
-          type: boolean
-        sessions:
-          type: boolean
-        reduced_rates:
-          type: boolean
-        spreading_payments:
-          type: boolean
-        condition_of_acceptance:
-          type: string
+            national_registry_number:
+              type: string
+            id_card_number:
+              type: string
+            passport_number:
+              type: string
+            marital_status:
+              $ref: '#/components/schemas/MaritalStatusEnum'
+            marital_status_text:
+              type: string
+            spouse_name:
+              type: string
+            children_number:
+              type: integer
+            previous_ucl_registration:
+              type: boolean
+            previous_noma:
+              type: string
+            use_address_for_post:
+              type: boolean
+            residence_address:
+               $ref: '#/components/schemas/AddressSerializer'
+            residence_phone:
+              type: string
+            ucl_registration_complete:
+              type: boolean
+            noma:
+              type: string
+            payment_complete:
+              type: boolean
+            formation_spreading:
+              type: boolean
+            prior_experience_validation:
+              type: boolean
+            assessment_presented:
+              type: boolean
+            assessment_succeeded:
+              type: boolean
+            registration_file_received:
+              type: boolean
+            archived:
+              type: boolean
+            diploma_produced:
+              type: boolean
+            sessions:
+              type: boolean
+            reduced_rates:
+              type: boolean
+            spreading_payments:
+              type: boolean
+            high_school_graduation_year:
+              type: integer
+            last_degree_graduation_year:
+              type: integer
+            academic_yr:
+              type: string
+            condition_of_acceptance:
+              type: string
 
     RegistrationPostSerializer:
       allOf:
