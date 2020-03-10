@@ -32,6 +32,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import ucl_registration_state_choices
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -80,7 +81,7 @@ def save_role_registered_in_admission(data):
     data = json.loads(data)
     if data['success']:
         admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
-        admission.ucl_registration_complete = True
+        admission.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
         admission.save()
 
 

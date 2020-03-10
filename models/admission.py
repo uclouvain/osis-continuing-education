@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
 from continuing_education.business.perms import is_continuing_education_manager
-from continuing_education.models.enums import admission_state_choices, enums
+from continuing_education.models.enums import admission_state_choices, enums, ucl_registration_state_choices
 from continuing_education.models.person_training import PersonTraining
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -356,10 +356,14 @@ class Admission(Model):
     )
 
     # Student Sheet
-    ucl_registration_complete = models.BooleanField(
-        default=False,
+    ucl_registration_complete = models.CharField(
+        max_length=50,
+        blank=True,
+        choices=ucl_registration_state_choices.STATE_CHOICES,
+        default=ucl_registration_state_choices.INIT_STATE,
         verbose_name=_("UCLouvain registration complete")
     )
+
     noma = models.CharField(
         max_length=255,
         blank=True,
