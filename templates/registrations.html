@@ -155,7 +155,13 @@
                             <td title="{{ admission.faculty.title }}">{{ admission.get_faculty | default_if_none:'' }}</td>
                             <td style="vertical-align: middle;" class="admission-state">
                                 {% if admission.is_accepted %}
-                                    <span class="label label-default show">{% trans admission.state %}</span>
+                                    <span class="label label-success show"
+                                        {% if admission.condition_of_acceptance %}title="{{ admission.condition_of_acceptance }}"{% endif %}">
+                                        {% if admission.condition_of_acceptance %}
+                                            <i class="fas fa-info-circle" style="font-size: 14px;padding-right: 10px;"></i>
+                                        {% endif %}
+                                        {% trans admission.state %}
+                                    </span>
                                 {% elif admission.is_validated %}
                                     <span class="label label-success show">{% trans admission.state %}</span>
                                 {% elif admission.is_registration_submitted %}

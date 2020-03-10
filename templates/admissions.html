@@ -174,8 +174,8 @@
                                     <span class="label label-warning show">{% trans admission.state %}</span>
                                 {% elif admission.is_accepted_no_registration_required %}
                                     <span class="label label-success show"
-                                        {% if admission.state_reason %}title="{{ admission.state_reason }}"{% endif %}>
-                                        {% if admission.state_reason %}
+                                        {% if admission.condition_of_acceptance %}title="{{ admission.condition_of_acceptance }}"{% endif %}>
+                                        {% if admission.condition_of_acceptance %}
                                             <i class="fas fa-info-circle" style="font-size: 14px;padding-right: 10px;"></i>
                                         {% endif %}
                                         {% trans admission.state %}
