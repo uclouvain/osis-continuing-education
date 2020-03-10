@@ -1079,9 +1079,6 @@ msgstr ""
 msgid "UCLouvain registration complete"
 msgstr ""
 
-msgid "UCLouvain registration fulfilled"
-msgstr ""
-
 msgid "Unarchive"
 msgstr ""
 
