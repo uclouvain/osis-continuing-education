@@ -70,10 +70,12 @@ class AdmissionForm(ModelForm):
 
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
-
-        starting_year = AcademicYear.objects.current().year
-        self.fields['academic_year'].queryset = AcademicYear.objects.filter(year__gte=starting_year - 2)\
-            .order_by('year')
+        try:
+            starting_year = AcademicYear.objects.current().year
+            self.fields['academic_year'].queryset = AcademicYear.objects.filter(year__gte=starting_year - 2)\
+                .order_by('year')
+        except AttributeError:
+            self.fields['academic_year'].queryset = AcademicYear.objects.none()
 
         if user and not user.groups.filter(name='continuing_education_managers').exists():
             self.fields['formation'].queryset = self.fields['formation'].queryset.filter(

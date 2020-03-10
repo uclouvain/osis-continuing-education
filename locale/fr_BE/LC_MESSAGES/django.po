@@ -1027,7 +1027,7 @@ msgid "The programme is already complete"
 msgstr "Le programme est d’ores et déjà complet"
 
 msgid "The registration must be submitted to be validated."
-msgstr "L'inscription doit être soumise pour êter validée"
+msgstr "L'inscription doit être soumise pour être validée"
 
 msgid "The registrations must be validated to mark diploma as produced."
 msgstr ""
