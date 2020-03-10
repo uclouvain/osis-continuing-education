@@ -52,14 +52,11 @@
                 <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
             </button>
             <h3>
-                {% if admission.person_information.person.first_name %}
-                    {{ admission.person_information.person.last_name }},
-                    {{ admission.person_information.person.first_name }}
-                {% else %}
-                    {{ admission.person_information.person.last_name }}
-                {% endif %}
-                &mdash; {{ admission.formation.acronym }} &mdash; {{ admission.formation.academic_year }}
+                {{ admission.person_information.person.last_name | default_if_none:'-' }}, {{ admission.person_information.person.first_name | default_if_none:'-' }}
             </h3>
+            <h4>
+                {{ admission.formation }}
+            </h4>
         {% else %}
             <a class="btn btn-default pull-right" id="cancel" href="{% url 'admission' %}">
                 <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Cancel' %}
@@ -185,6 +182,11 @@
                 <div class="row">
                     {% bootstrap_field admission_form.formation form_group_class="form-group col-md-12" label=_("Formation") %}
                 </div>
+                {% if continuing_education_manager %}
+                    <div class="row">
+                        {% bootstrap_field admission_form.academic_year form_group_class="form-group col-md-12" label=_("Academic year") %}
+                    </div>
+                {% endif %}
             </div>
         </div>
 

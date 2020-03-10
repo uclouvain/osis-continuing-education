@@ -62,8 +62,19 @@ class AdmissionForm(ModelForm):
         empty_label=_("New person")
     )
 
+    academic_year = forms.ModelChoiceField(
+        queryset=AcademicYear.objects.all(),
+        label=_('Academic year'),
+        required=True
+    )
+
     def __init__(self, data, user=None, **kwargs):
         super().__init__(data, **kwargs)
+
+        starting_year = AcademicYear.objects.current().year
+        self.fields['academic_year'].queryset = AcademicYear.objects.filter(year__gte=starting_year - 2)\
+            .order_by('year')
+
         if user and not user.groups.filter(name='continuing_education_managers').exists():
             self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
                 managers=user.person
@@ -74,6 +85,7 @@ class AdmissionForm(ModelForm):
         model = Admission
         fields = [
             'formation',
+            'academic_year',
 
             # Contact
             'person_information',
