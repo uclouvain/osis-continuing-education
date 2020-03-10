@@ -248,7 +248,7 @@ class RegistrationStateChangedTestCase(TestCase):
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(response.status_code, 302)
         self.assertIn(
-            gettext(_("Continuing education managers only are allowed to validate a registration")),
+            gettext(_("Continuing education managers and student workers only are allowed to validate a registration")),
             str(messages_list[0])
         )
 
