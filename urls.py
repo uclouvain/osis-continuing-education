@@ -79,7 +79,6 @@ urlpatterns = [
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^paper_registrations_file_received', tasks.paper_registrations_file_received,
             name='paper_registrations_file_received'),
-        url(r'^registrations_fulfilled', tasks.registrations_fulfilled, name='registrations_fulfilled'),
 
 
 

@@ -7,17 +7,13 @@
             <div class="alert alert-info" style="display:inline-block;">
                 <i class="fa fa-info-circle"></i>
                 {% trans "This page contains the registrations submitted by the participants. " %}
-                {% if user_is_continuing_education_student_worker %}
-                    {% trans "Registrations for which the step 'Registration file received' has to be validated." %}
-                {% else %}
-                    {% trans "Registrations for which the steps 'UCLouvain registration complete' and/or 'Registration file received' have to be validated." %}
-                {% endif %}
+                {% trans "Registrations for which the step 'Registration file received' has to be validated." %}
             </div>
         </div>
         <div class="col-md-2">
             <div class="dropdown  text-right" style="margin-right: 10px;" id="div_registration_actions_btn">
                 <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false" id="btn_tasks_registrations_actions">
+                        aria-expanded="false" id="btn_tasks_registrations_actions">
                     <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
                     <span class="caret"></span>
                 </button>
@@ -36,7 +32,9 @@
     {% if registrations_to_validate %}
         <div class="row">
             <div class="col-md-6">
-                <strong style="margin-left:10px;color:grey;"> {{ to_validate_count }} {% if to_validate_count > 1 %}{% trans 'Registrations to process'|lower %}{% else %}{% trans 'Registration to process'|lower %}{% endif %} </strong>
+                <strong style="margin-left:10px;color:grey;"> {{ to_validate_count }}
+                    {% if to_validate_count > 1 %}{% trans 'Registrations to process'|lower %}{% else %}
+                        {% trans 'Registration to process'|lower %}{% endif %} </strong>
             </div>
         </div>
     {% endif %}
@@ -57,40 +55,33 @@
             <th>{% trans 'First name' %}</th>
             <th>{% trans 'Email' %}</th>
             <th>{% trans 'Formation' %}</th>
-            <th>{% trans 'UCLouvain registration complete' %}</th>
             <th>{% trans 'Registration file received' %}</th>
         </tr>
         </thead>
         <tbody>
-            {% for admission in registrations_to_validate %}
-                <tr>
-                    <td>
-                        <input type="checkbox" name="selected_registrations_to_validate" class="selected_registrations_to_validate" value="{{ admission.id }}" />
-                    </td>
-                    <td>
-                        <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
-                            {{ admission.person_information.person.last_name }}
-                        </a>
-                    </td>
-                    <td>{{ admission.person_information.person.first_name }}</td>
-                    <td>{{ admission.person_information.person.email }}</td>
-                    <td>{{ admission.formation }}</td>
-                    <td style="vertical-align: middle;">
-                        {% if admission.ucl_registration_complete %}
-                                <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
-                        {% else %}
-                                <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
-                        {% endif %}
-                    </td>
-                    <td style="vertical-align: middle;">
-                        {% if admission.registration_file_received %}
-                            <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
-                        {% else %}
-                            <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
+        {% for admission in registrations_to_validate %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="selected_registrations_to_validate"
+                           class="selected_registrations_to_validate" value="{{ admission.id }}"/>
+                </td>
+                <td>
+                    <a href="{% url 'admission_detail' admission_id=admission.id %}#registration">
+                        {{ admission.person_information.person.last_name }}
+                    </a>
+                </td>
+                <td>{{ admission.person_information.person.first_name }}</td>
+                <td>{{ admission.person_information.person.email }}</td>
+                <td>{{ admission.formation }}</td>
+                <td style="vertical-align: middle;">
+                    {% if admission.registration_file_received %}
+                        <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
+                    {% else %}
+                        <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 </form>
@@ -99,26 +90,26 @@
 
 {% block script %}
     <script>
-        $("#id_check_all_registrations_to_validate").click(function(){
+        $("#id_check_all_registrations_to_validate").click(function () {
             $('input:checkbox.selected_registrations_to_validate').not(this).prop('checked', this.checked);
         });
 
 
-        $('#tab_registrations_to_validate').DataTable( {
-            "order": [[ 1, "asc" ]],
+        $('#tab_registrations_to_validate').DataTable({
+            "order": [[1, "asc"]],
             "paging": false,
             "info": false,
             "bFilter": false,
             "language":
-            {
-                "sEmptyTable": "{% trans 'No data' %}",
-            },
+                {
+                    "sEmptyTable": "{% trans 'No data' %}",
+                },
             // Disable sorting on the first column
-            "aoColumnDefs" : [ {
-                'bSortable' : false,
-                'aTargets' : [ 0 ]
-            } ]
-        } );
+            "aoColumnDefs": [{
+                'bSortable': false,
+                'aTargets': [0]
+            }]
+        });
     </script>
     <script src="{% static 'js/task_registration_menu.js' %}"></script>
 {% endblock %}
