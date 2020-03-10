@@ -22,14 +22,6 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
-                    {% if continuing_education_manager %}
-                        <li>
-                            <a id="btn_UCLOUVAIN_registrations_fulfilled" style="margin-right:10px;"
-                               data-toggle="modal" data-target="#registrations_registration_fulfilled_modal">
-                                {% trans 'UCLouvain registration fulfilled' %}
-                            </a>
-                        </li>
-                    {% endif %}
                     <li>
                         <a id="btn_paper_registrations_file_received" style="margin-right:10px;"
                            data-toggle="modal" data-target="#registrations_to_validate_modal">
@@ -104,7 +96,6 @@
 </form>
 
 {% include "fragment/tasks/registrations_to_validate_modal.html" %}
-{% include "fragment/tasks/registrations_registration_fulfilled_modal.html" %}
 
 {% block script %}
     <script>

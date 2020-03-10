@@ -1152,9 +1152,6 @@ msgstr "Formations"
 msgid "UCLouvain registration complete"
 msgstr "Inscription au rôle"
 
-msgid "UCLouvain registration fulfilled"
-msgstr "Inscription au rôle OK"
-
 msgid "Unarchive"
 msgstr "Désarchiver"
 
