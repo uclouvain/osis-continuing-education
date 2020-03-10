@@ -35,12 +35,12 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 
 
 class ViewUpdateTasksTestCase(TestCase):
@@ -171,21 +171,8 @@ class ViewUpdateTasksTestCase(TestCase):
 
         self.assertRedirects(response, reverse('list_tasks'))
 
-    def test_registrations_fulfilled(self):
-        post_data = {
-            "selected_registrations_to_validate":
-                [str(registration.pk) for registration in self.registrations_to_validate]
-        }
-        response = self.client.post(reverse('registrations_fulfilled'), data=post_data)
-
-        for registration in self.registrations_to_validate:
-            registration.refresh_from_db()
-            self.assertTrue(registration.ucl_registration_complete)
-
-        self.assertRedirects(response, reverse('list_tasks'))
-
     def test_process_registrations_incorrect_state(self):
-        reverses = ['registrations_fulfilled', 'paper_registrations_file_received']
+        reverses = ['paper_registrations_file_received']
         post_data = {
             "selected_registrations_to_validate":
                 [str(self.registration_not_to_validate.pk)]
@@ -288,18 +275,6 @@ class UpdateTasksPermissionsTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_registrations_fulfilled_without_permission(self):
-        post_data = {
-            "selected_registrations_to_validate":
-                [str(registration.pk) for registration in self.registrations_to_validate]
-        }
-        response = self.client.post(reverse('registrations_fulfilled'), data=post_data)
-
-        for registration in self.registrations_to_validate:
-            registration.refresh_from_db()
-            self.assertEqual(registration.state, admission_state_choices.REGISTRATION_SUBMITTED)
-
-        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_mark_diplomas_produced_without_permission(self):
         post_data = {
@@ -371,17 +346,6 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_registrations_fulfilled_denied(self):
-        post_data = {
-            "selected_registrations_to_validate":
-                [str(self.registration_to_validate.pk)]
-        }
-        response = self.client.post(
-            reverse('registrations_fulfilled'),
-            data=post_data
-        )
-        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
-
 
 class ViewTasksStudentWorkerTestCase(TestCase):
     @classmethod
@@ -418,17 +382,6 @@ class ViewTasksStudentWorkerTestCase(TestCase):
         }
         response = self.client.post(
             reverse('mark_diplomas_produced'),
-            data=post_data
-        )
-        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
-
-    def test_edit_uclouvain_registration_denied(self):
-        post_data = {
-            "selected_registrations_to_validate":
-                [str(self.registration_to_validate.pk)]
-        }
-        response = self.client.post(
-            reverse('registrations_fulfilled'),
             data=post_data
         )
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
