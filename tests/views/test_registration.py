@@ -49,7 +49,6 @@ from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP, MANA
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 
 
 class ViewRegistrationTestCase(TestCase):
@@ -209,31 +208,22 @@ class RegistrationStateChangedTestCase(TestCase):
             formation=cls.formation,
             state=VALIDATED
         )
-        group_student_worker = GroupFactory(name=STUDENT_WORKERS_GROUP)
-        cls.student_worker = PersonFactory()
+
         cls.student_worker = PersonWithPermissionsFactory(
             'can_access_admission',
             'can_edit_received_file_field',
-            'can_validate_registration'
+            'can_validate_registration', groups=STUDENT_WORKERS_GROUP
         )
-        cls.student_worker.user.groups.add(group_student_worker)
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
-    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager_or_student_worker(self,
-                                                                                                           mock_queue):
-        users = [self.continuing_education_manager.user, self.student_worker.user]
-        for user in users:
-            # To ensure state is correct before changing state to 'Validated'
-            self.registration_submitted.state = "Registration submitted"
-            self.registration_submitted.save()
-            #
-            self.client.force_login(user)
-            url = reverse('admission_detail', args=[self.registration_submitted.pk])
-            response = self.client.post(url, data=self._data_form_to_validate())
-            mock_queue.assert_called_with(self.registration_submitted)
-            self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
-            self.registration_submitted.refresh_from_db()
-            self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
+    def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self, mock_queue):
+        self.client.force_login(self.continuing_education_manager.user)
+        url = reverse('admission_detail', args=[self.registration_submitted.pk])
+        response = self.client.post(url, data=self._data_form_to_validate())
+        mock_queue.assert_called_with(self.registration_submitted)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
+        self.registration_submitted.refresh_from_db()
+        self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
     def test_registration_detail_edit_state_to_validated_as_faculty_manager(self, mock_queue):
@@ -349,3 +339,4 @@ class ViewRegistrationCacheTestCase(TestCase):
 
 def _build_unauthorized_user():
     return User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
+
