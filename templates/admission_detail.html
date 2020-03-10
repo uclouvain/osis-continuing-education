@@ -48,10 +48,28 @@
             <input type="hidden" name="opened_tab" id="opened_tab">
             <div class="btn-group pull-right">
                 {% if user_is_continuing_education_student_worker %}
-                    <button id="button-state" type="button" class="btn btn-default"
-                            style="margin-right: 10px;">
-                        {% if admission.state %}{% trans admission.state %}{% endif %}
-                    </button>
+                    {% if admission.state == "Registration submitted" %}
+                        <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
+                        <div class="btn-group">
+                            <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button"
+                                    class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                                    aria-expanded="false" {% if not admission.state == "Registration submitted" %} disabled {% endif %}>
+                                <span class="caret"></span>
+                                <span class="sr-only">{% trans 'State' %}</span>
+                            </button>
+                            <ul class="dropdown-menu" style="left: -10px;">
+                                <li>
+                                    <a value="Validated" href="#" class="state-admission"
+                                       id="lnk_state_admission_Validated">{% trans 'Validated' %}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <button id="button-state" type="button" class="btn btn-default"
+                                style="margin-right: 10px;">
+                            {% if admission.state %}{% trans admission.state %}{% endif %}
+                        </button>
+                    {% endif %}
                     {% if admission.registration_file_received %}
                         <a href="{% url 'receive_file_procedure' admission.id %}"
                            title="{% trans 'Registration file received' %}"
