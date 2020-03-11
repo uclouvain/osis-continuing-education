@@ -103,6 +103,7 @@
                 </div>
             {% endif %}
             <form id="admissions_form" method="post" action="
+
                     {% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
                 {% csrf_token %}
 
@@ -124,7 +125,7 @@
                         <th class="searchable">{% trans 'State' %}</th>
                         <th class="searchable">{% trans 'Received file' %}</th>
                         <th class="searchable">{% trans 'Paid' %}</th>
-                        <th class="searchable">{% trans 'UCLouvain registration complete' %}</th>
+                        <th class="searchable">{% trans 'Injection statut' %}</th>
                         <!-- Hidden before being sure it won't be used anymore -->
                         <th class="searchable"
                             style="visibility: hidden; display: none;">{% trans 'Diploma produced' %}</th>
@@ -156,11 +157,12 @@
                             <td style="vertical-align: middle;" class="admission-state">
                                 {% if admission.is_accepted %}
                                     <span class="label label-success show"
-                                        {% if admission.condition_of_acceptance %}title="{{ admission.condition_of_acceptance }}"{% endif %}">
-                                        {% if admission.condition_of_acceptance %}
-                                            <i class="fas fa-info-circle" style="font-size: 14px;padding-right: 10px;"></i>
-                                        {% endif %}
-                                        {% trans admission.state %}
+                                          {% if admission.condition_of_acceptance %}title="{{ admission.condition_of_acceptance }}"
+                                          {% endif %}">
+                                    {% if admission.condition_of_acceptance %}
+                                        <i class="fas fa-info-circle" style="font-size: 14px;padding-right: 10px;"></i>
+                                    {% endif %}
+                                    {% trans admission.state %}
                                     </span>
                                 {% elif admission.is_validated %}
                                     <span class="label label-success show">{% trans admission.state %}</span>
@@ -185,10 +187,9 @@
                                 {% endif %}
                             </td>
                             <td style="vertical-align: middle;">
-                                {% if admission.ucl_registration_complete %}
-                                    <span class="badge fixed_width success-color">{% trans 'Yes' %}</span>
-                                {% else %}
-                                    <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
+                                {% trans "Initial state" as initState %}
+                                {% if admission.get_ucl_registration_complete_display != initState %}
+                                    {{ admission.get_ucl_registration_complete_display }}
                                 {% endif %}
                             </td>
                             <!-- Hidden before being sure it won't be used anymore -->

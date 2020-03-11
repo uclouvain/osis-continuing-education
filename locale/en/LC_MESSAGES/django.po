@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-25 11:37+0100\n"
+"POT-Creation-Date: 2020-03-11 15:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -439,6 +439,19 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
+#, python-format
+msgid "Folder injection into EPC failed : %(reasons)s"
+msgstr ""
+
+msgid "Folder injection into EPC succeeded : UCLouvain registration completed"
+msgstr ""
+
+msgid "Folder injection into EPC succeeded : UCLouvain registration on demand"
+msgstr ""
+
+msgid "Folder sended to EPC : waiting for response"
+msgstr ""
+
 msgid ""
 "For that formation a list of participants has to be sent to the UCLouvain "
 "insurance department"
@@ -521,6 +534,12 @@ msgid "In all fields"
 msgstr ""
 
 msgid "Inactive"
+msgstr ""
+
+msgid "Initial state"
+msgstr ""
+
+msgid "Injection statut"
 msgstr ""
 
 msgid "Invoice"
@@ -663,6 +682,9 @@ msgid ""
 msgstr ""
 
 msgid "Notify participant by email"
+msgstr ""
+
+msgid "On demand"
 msgstr ""
 
 msgid "Other"
@@ -837,11 +859,6 @@ msgid ""
 "validated."
 msgstr ""
 
-msgid ""
-"Registrations for which the steps 'UCLouvain registration complete' and/or "
-"'Registration file received' have to be validated."
-msgstr ""
-
 msgid "Registrations list"
 msgstr ""
 
@@ -879,6 +896,9 @@ msgid "Send notification email"
 msgstr ""
 
 msgid "Send notification emails"
+msgstr ""
+
+msgid "Sended"
 msgstr ""
 
 msgid "Separated"
@@ -1027,11 +1047,6 @@ msgstr ""
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
 "Are you sure ?"
-msgstr ""
-
-msgid ""
-"This will mark all selected registrations with UCLouvain registration "
-"completed. Are you sure ?"
 msgstr ""
 
 msgid ""
