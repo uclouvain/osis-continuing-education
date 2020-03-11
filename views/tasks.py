@@ -34,13 +34,12 @@ from django.views.decorators.http import require_http_methods
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.business.perms import is_not_student_worker, is_student_worker, \
-    is_continuing_education_training_manager, is_iufc_manager, can_edit_paper_registration_received, \
-    can_edit_ucl_registration_complete
+    is_continuing_education_training_manager, is_iufc_manager, can_edit_paper_registration_received
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
-    UCL_REGISTRATION_COMPLETE, REGISTRATION_FILE_RECEIVED
+    REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
 
 
@@ -60,7 +59,7 @@ def list_tasks(request):
 
     registrations_to_validate = all_admissions.filter(
         state=admission_state_choices.REGISTRATION_SUBMITTED,
-    ).filter(Q(registration_file_received=False) | Q(ucl_registration_complete=False))
+    ).filter(registration_file_received=False)
 
     admissions_to_accept = all_admissions.filter(
         Q(state=admission_state_choices.SUBMITTED) | Q(state=admission_state_choices.WAITING)
@@ -150,20 +149,9 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
 @login_required
 @user_passes_test(can_edit_paper_registration_received)
 def paper_registrations_file_received(request):
-    return _update_registrations("registration_file_received", request)
-
-
-@require_http_methods(['POST'])
-@login_required
-@user_passes_test(can_edit_ucl_registration_complete)
-def registrations_fulfilled(request):
-    return _update_registrations("ucl_registration_complete", request)
-
-
-def _update_registrations(field_to_update, request):
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:
-        _update_registration_field_for_list(selected_registration_ids, field_to_update, request.user)
+        _update_registration_field_for_list(selected_registration_ids, "registration_file_received", request.user)
         msg = _('Successfully processed %s registration(s).') % len(selected_registration_ids)
         display_success_messages(request, msg)
     else:
@@ -181,6 +169,3 @@ def _update_registration_field_for_list(registrations_ids_list, field_to_update,
         if field_to_update == 'registration_file_received':
             registration.registration_file_received = True
             save_and_create_revision(user, get_revision_messages(REGISTRATION_FILE_RECEIVED), registration)
-        if field_to_update == 'ucl_registration_complete':
-            registration.ucl_registration_complete = True
-            save_and_create_revision(user, get_revision_messages(UCL_REGISTRATION_COMPLETE), registration)
