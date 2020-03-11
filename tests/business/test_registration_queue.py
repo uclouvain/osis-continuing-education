@@ -144,14 +144,14 @@ class RegistrationQueueTestCase(TestCase):
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
-        self.assertTrue(self.admission.ucl_registration_complete)
+        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.REGISTERED)
 
     def test_save_role_registered_in_admission_no_change_if_queue_fail(self):
         self.basic_response['success'] = False
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
-        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.INIT_STATE)
+        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.REJECTED)
 
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
@@ -161,3 +161,4 @@ class RegistrationQueueTestCase(TestCase):
         self.assertTrue(mock_send.called)
         self.assertEqual('NAME', mock_send.call_args_list[0][0][0])
         self.assertEqual(get_json_for_epc(self.admission), mock_send.call_args_list[0][0][1])
+        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.SENDED)
