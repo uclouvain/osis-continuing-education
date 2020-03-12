@@ -208,16 +208,27 @@ class RegistrationStateChangedTestCase(TestCase):
             formation=cls.formation,
             state=VALIDATED
         )
-
+        group_student = GroupFactory(name=MANAGERS_GROUP)
         cls.student_worker = PersonWithPermissionsFactory(
             'can_access_admission',
             'can_edit_received_file_field',
-            'can_validate_registration', groups=STUDENT_WORKERS_GROUP
+            'can_validate_registration'
         )
+        cls.student_worker.user.groups.add(group_student)
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
     def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self, mock_queue):
         self.client.force_login(self.continuing_education_manager.user)
+        url = reverse('admission_detail', args=[self.registration_submitted.pk])
+        response = self.client.post(url, data=self._data_form_to_validate())
+        mock_queue.assert_called_with(self.registration_submitted)
+        self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
+        self.registration_submitted.refresh_from_db()
+        self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
+
+    @patch('continuing_education.views.admission.send_admission_to_queue')
+    def test_registration_detail_edit_state_to_validated_as_student_worker(self, mock_queue):
+        self.client.force_login(self.student_worker.user)
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=self._data_form_to_validate())
         mock_queue.assert_called_with(self.registration_submitted)
