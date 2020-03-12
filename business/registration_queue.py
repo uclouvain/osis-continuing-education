@@ -32,6 +32,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from continuing_education.models.admission import Admission
+from continuing_education.models.enums import ucl_registration_state_choices
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -78,10 +79,12 @@ def format_address_for_json(address):
 
 def save_role_registered_in_admission(data):
     data = json.loads(data)
+    admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
-        admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
-        admission.ucl_registration_complete = True
-        admission.save()
+        admission.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
+    else:
+        admission.ucl_registration_complete = ucl_registration_state_choices.REJECTED
+    admission.save()
 
 
 def send_admission_to_queue(admission):
@@ -97,5 +100,6 @@ def send_admission_to_queue(admission):
         channel = connect.channel()
         queue_name = settings.QUEUES.get('QUEUES_NAME').get('IUFC_TO_EPC')
         send_message(queue_name, data, connect, channel)
+        admission.ucl_registration_complete = ucl_registration_state_choices.SENDED
     except (RuntimeError, pika.exceptions.ConnectionClosed, pika.exceptions.ChannelClosed, pika.exceptions.AMQPError):
         logger.exception('Could not send admission json with uuid {} in queue'.format(admission.uuid))

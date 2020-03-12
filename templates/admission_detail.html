@@ -165,7 +165,7 @@
                 {{ admission.state_reason }}
             </div>
         {% endif %}
-        {% if admission.is_accepted %}
+        {% if admission.is_accepted or admission.is_accepted_no_registration_required %}
             <div class="alert alert-info" role="alert">
                 {% if admission.condition_of_acceptance %}
                     <strong>{% trans 'Condition of acceptance' %} : </strong>

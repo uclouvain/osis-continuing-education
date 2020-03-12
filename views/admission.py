@@ -47,6 +47,7 @@ from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
     ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
 from continuing_education.forms.person import PersonForm
+from continuing_education.models.admission import is_continuing_education_manager
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models.address import Address
@@ -279,7 +280,7 @@ def admission_form(request, admission_id=None):
             'base_person_form': base_person_form,
             'state': state,
             'states': states,
-            'selected_person': selected_person
+            'selected_person': selected_person,
         }
     )
 

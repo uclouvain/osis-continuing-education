@@ -35,7 +35,7 @@ from django.test import TestCase
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -176,7 +176,7 @@ class RegistrationStateChangedTestCase(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -202,11 +202,13 @@ class RegistrationStateChangedTestCase(TestCase):
         )
         cls.registration_submitted = AdmissionFactory(
             formation=cls.formation,
-            state=REGISTRATION_SUBMITTED
+            state=REGISTRATION_SUBMITTED,
+            academic_year=cls.academic_year
         )
         cls.registration_validated = AdmissionFactory(
             formation=cls.formation,
-            state=VALIDATED
+            state=VALIDATED,
+            academic_year=cls.academic_year
         )
         group_student = GroupFactory(name=MANAGERS_GROUP)
         cls.student_worker = PersonWithPermissionsFactory(
@@ -273,7 +275,8 @@ class RegistrationStateChangedTestCase(TestCase):
         return {
             'state': VALIDATED,
             'formation': self.formation.pk,
-            'person_information': self.registration_submitted.person_information.pk
+            'person_information': self.registration_submitted.person_information.pk,
+            'academic_year': self.registration_submitted.academic_year.pk
         }
 
 
