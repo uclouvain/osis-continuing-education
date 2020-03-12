@@ -304,8 +304,8 @@ msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
 msgid ""
-"Continuing education managers only are allowed to validate a registration"
-msgstr "Seuls les gestionnaires IUFC peuvent valider une inscription"
+"Continuing education managers and student workers only are allowed to validate a registration"
+msgstr "Seuls les gestionnaires IUFC et les jobistes peuvent valider une inscription"
 
 msgid "Country"
 msgstr "Pays"

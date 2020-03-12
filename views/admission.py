@@ -315,7 +315,7 @@ def _validate_admission(request, adm_form):
     else:
         display_error_messages(
             request,
-            _("Continuing education managers only are allowed to validate a registration")
+            _("Continuing education managers and student workers only are allowed to validate a registration")
         )
 
 

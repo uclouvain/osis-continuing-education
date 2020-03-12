@@ -275,7 +275,6 @@ class UpdateTasksPermissionsTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-
     def test_mark_diplomas_produced_without_permission(self):
         post_data = {
             "selected_diplomas_to_produce":
