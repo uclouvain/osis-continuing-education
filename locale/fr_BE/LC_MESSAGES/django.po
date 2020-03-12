@@ -1353,18 +1353,3 @@ msgstr "l'adresse du domicile légal mentionnée précédemment"
 
 msgid "unarchived"
 msgstr "non-archivé"
-
-#~ msgid ""
-#~ "Registrations for which the steps 'UCLouvain registration complete' and/"
-#~ "or 'Registration file received' have to be validated."
-#~ msgstr ""
-#~ "Inscriptions pour lesquelles l'étape 'dossier reçu' et/ou 'inscription au "
-#~ "rôle' sont à valider."
-
-#~ msgid ""
-#~ "This will mark all selected registrations with UCLouvain registration "
-#~ "completed. Are you sure ?"
-#~ msgstr ""
-#~ "Les inscriptions sélectionnées vont être traitées. Le champ 'inscription "
-#~ "au rôle' va être modifié comme 'oui'. Êtes-vous certain·e de vouloir "
-#~ "continuer ?"
