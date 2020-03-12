@@ -149,20 +149,11 @@ def admission_detail(request, admission_id):
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
 
-    if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED:
-        display_warning_messages(request, _('Folder sended to EPC : waiting for response'))
-    elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED:
-        display_error_messages(request, _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''})
-    elif admission.ucl_registration_complete == ucl_registration_state_choices.ON_DEMAND:
-        display_info_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration on demand'))
-    elif admission.ucl_registration_complete == ucl_registration_state_choices.REGISTERED:
-        display_success_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration completed'))
+    _display_adapted_ucl_registration_message(admission, request)
 
     return render(
         request, "admission_detail.html",
         {
-
-
             'admission': admission,
             'files': files,
             'states': states,
@@ -179,6 +170,17 @@ def admission_detail(request, admission_id):
             'opened_tab': request.GET.get('opened_tab'),
         }
     )
+
+
+def _display_adapted_ucl_registration_message(admission, request):
+    if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED:
+        display_warning_messages(request, _('Folder sended to EPC : waiting for response'))
+    elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED:
+        display_error_messages(request, _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''})
+    elif admission.ucl_registration_complete == ucl_registration_state_choices.ON_DEMAND:
+        display_info_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration on demand'))
+    elif admission.ucl_registration_complete == ucl_registration_state_choices.REGISTERED:
+        display_success_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration completed'))
 
 
 def _change_state(request, forms, accepted_states, admission):
