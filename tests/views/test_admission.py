@@ -408,10 +408,12 @@ class AdmissionStateChangedTestCase(TestCase):
             entity=education_group_year.management_entity
         )
         cls.admission = AdmissionFactory(
+            academic_year=cls.academic_year,
             formation=cls.formation,
             state=random.choice(admission_state_choices.STATE_CHOICES)[0]
         )
         cls.admission_submitted = AdmissionFactory(
+            academic_year=cls.academic_year,
             formation=cls.formation,
             state=SUBMITTED
         )
