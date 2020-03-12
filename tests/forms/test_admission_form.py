@@ -48,35 +48,40 @@ ANY_REASON = 'Anything'
 class TestAdmissionForm(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.current_academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
-            academic_year=cls.academic_year
+            academic_year=cls.current_academic_year
         )
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
-        PersonTraining(person=cls.manager, training=cls.formation).save()
+        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager.user.groups.add(group)
+        PersonTraining(person=cls.training_manager, training=cls.formation).save()
+
+        group_manager = GroupFactory(name='continuing_education_managers')
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission',
+                                                   'can_validate_registration', 'can_create_json')
+        cls.manager.user.groups.add(group_manager)
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
-        admission = AdmissionFactory(formation=self.formation)
+        self.client.force_login(self.training_manager.user)
+        admission = AdmissionFactory(formation=self.formation,
+                                     academic_year=self.current_academic_year)
         self.data = admission.__dict__
         self.data['formation'] = admission.formation.pk
+        self.data['academic_year'] = admission.academic_year.pk
 
     def test_valid_form_for_managers(self):
-        group = GroupFactory(name='continuing_education_managers')
-        self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
         form = AdmissionForm(data=self.data, user=self.manager.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_valid_form_for_training_managers(self):
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.training_manager.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_not_valid_wrong_phone_format(self):
@@ -91,7 +96,7 @@ class TestAdmissionForm(TestCase):
         short_numbers = ['0032123', '+321234', '0123456']
         long_numbers = ['003212345678912456', '+3212345678912345', '01234567891234567']
         self.data['phone_mobile'] = random.choice(wrong_numbers + short_numbers + long_numbers)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.training_manager.user)
         self.assertFalse(form.is_valid(), form.errors)
         self.assertDictEqual(
             form.errors,
@@ -107,7 +112,7 @@ class TestAdmissionForm(TestCase):
 class TestRejectedAdmissionForm(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
