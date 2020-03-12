@@ -182,11 +182,9 @@
                 <div class="row">
                     {% bootstrap_field admission_form.formation form_group_class="form-group col-md-12" label=_("Formation") %}
                 </div>
-                {% if continuing_education_manager %}
-                    <div class="row">
-                        {% bootstrap_field admission_form.academic_year form_group_class="form-group col-md-12" label=_("Academic year") %}
-                    </div>
-                {% endif %}
+                <div class="row">
+                    {% bootstrap_field admission_form.academic_year form_group_class="form-group col-md-12" label=_("Academic year") %}
+                </div>
             </div>
         </div>
 

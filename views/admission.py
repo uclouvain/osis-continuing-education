@@ -281,7 +281,6 @@ def admission_form(request, admission_id=None):
             'state': state,
             'states': states,
             'selected_person': selected_person,
-            'continuing_education_manager': is_continuing_education_manager(request.user)
         }
     )
 

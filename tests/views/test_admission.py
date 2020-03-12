@@ -40,7 +40,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -67,7 +67,7 @@ FILE_CONTENT = "test-content"
 class ViewAdmissionTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -100,12 +100,14 @@ class ViewAdmissionTestCase(TestCase):
             formation=cls.formation,
             state=SUBMITTED,
             person_information__person__gender='M',
+            academic_year=cls.academic_year,
         )
         a_person_information = ContinuingEducationPersonFactory(person__gender='M')
         cls.admission_no_admission_required = AdmissionFactory(
             formation=cls.formation_no_registration_required,
             state=ACCEPTED_NO_REGISTRATION_REQUIRED,
             person_information=a_person_information,
+            academic_year=cls.academic_year,
         )
 
         cls.file = SimpleUploadedFile(
@@ -223,6 +225,7 @@ class ViewAdmissionTestCase(TestCase):
             'professional_personal_interests': 'abcd',
             'formation': self.formation.pk,
             'awareness_ucl_website': True,
+            'academic_year': self.admission.academic_year.id,
         }
         data = admission.copy()
         # Data to update
@@ -322,7 +325,7 @@ class ViewAdmissionTestCase(TestCase):
 class InvoiceNotificationEmailTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -388,7 +391,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
 class AdmissionStateChangedTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         education_group_year = EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -494,7 +497,7 @@ class ViewAdmissionCacheTestCase(TestCase):
 class BillingEditTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

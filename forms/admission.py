@@ -7,6 +7,7 @@ from base.models.academic_year import AcademicYear
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
+from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
 from continuing_education.forms.common import CountryChoiceField
 from continuing_education.forms.common import set_participant_required_fields
@@ -16,6 +17,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
+
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
@@ -64,8 +66,7 @@ class AdmissionForm(ModelForm):
 
     academic_year = forms.ModelChoiceField(
         queryset=AcademicYear.objects.all(),
-        label=_('Academic year'),
-        required=True
+        label=_('Academic year')
     )
 
     def __init__(self, data, user=None, **kwargs):
@@ -76,6 +77,13 @@ class AdmissionForm(ModelForm):
                 .order_by('year')
         except AttributeError:
             self.fields['academic_year'].queryset = AcademicYear.objects.none()
+
+        if user and is_continuing_education_manager(user):
+            self.fields['academic_year'].disabled = False
+            self.fields['academic_year'].required = True
+        else:
+            self.fields['academic_year'].disabled = True
+            self.fields['academic_year'].required = False
 
         if user and not user.groups.filter(name='continuing_education_managers').exists():
             self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
