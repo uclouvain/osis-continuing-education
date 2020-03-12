@@ -54,9 +54,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 class ViewRegistrationTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission', groups=[MANAGERS_GROUP])
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
