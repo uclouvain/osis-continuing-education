@@ -294,7 +294,7 @@ def admission_form(request, admission_id=None):
             'base_person_form': base_person_form,
             'state': state,
             'states': states,
-            'selected_person': selected_person
+            'selected_person': selected_person,
         }
     )
 
@@ -329,7 +329,7 @@ def _validate_admission(request, adm_form):
     else:
         display_error_messages(
             request,
-            _("Continuing education managers only are allowed to validate a registration")
+            _("Continuing education managers and student workers only are allowed to validate a registration")
         )
 
 

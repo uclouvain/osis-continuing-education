@@ -295,7 +295,7 @@ msgid "Continuing education list"
 msgstr ""
 
 msgid ""
-"Continuing education managers only are allowed to validate a registration"
+"Continuing education managers and student workers only are allowed to validate a registration"
 msgstr ""
 
 msgid "Country"
