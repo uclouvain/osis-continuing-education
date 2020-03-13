@@ -104,6 +104,9 @@
             {% endif %}
             <form id="admissions_form" method="post" action="
 
+
+
+
                     {% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
                 {% csrf_token %}
 
@@ -187,9 +190,17 @@
                                 {% endif %}
                             </td>
                             <td style="vertical-align: middle;">
-                                {% trans "Initial state" as initState %}
-                                {% if admission.get_ucl_registration_complete_display != initState %}
+                                {% if admission.ucl_registration_complete != ucl_registration_state_choices.INIT_STATE %}
                                     {{ admission.get_ucl_registration_complete_display }}
+                                {% endif %}
+                                {% if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED %}
+                                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                                {% elif admission.ucl_registration_complete == ucl_registration_state_choices.REGISTERED %}
+                                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                                    {% elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED %}
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    {% elif admission.ucl_registration_complete == ucl_registration_state_choices.ON_DEMAND %}
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 {% endif %}
                             </td>
                             <!-- Hidden before being sure it won't be used anymore -->

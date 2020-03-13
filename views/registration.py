@@ -39,7 +39,7 @@ from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
-from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums import admission_state_choices, ucl_registration_state_choices
 from continuing_education.views.common import get_object_list, save_and_create_revision, \
     get_appropriate_revision_message
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -65,7 +65,8 @@ def list_registrations(request):
         'admissions': get_object_list(request, admission_list),
         'admissions_number': len(admission_list),
         'search_form': search_form,
-        'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker
+        'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
+        'ucl_registration_state_choices': ucl_registration_state_choices
     })
 
 
