@@ -54,6 +54,14 @@ STATE_CHANGED_MESSAGE = _('State : %(old_state)s ► %(new_state)s')
 MAIL = {'icon': 'far fa-envelope-open', 'text': ''}
 MAIL_MESSAGE = _('Mail sent to %(receiver)s')
 
+UCL_REGISTRATION_SENDED = {'icon': 'glyphicon glyphicon-time', 'text': _('Folder sended to EPC : waiting for response')}
+UCL_REGISTRATION_REJECTED = {'icon': 'glyphicon glyphicon-remove',
+                             'text': _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''}}
+UCL_REGISTRATION_REGISTERED = {'icon': 'glyphicon glyphicon-ok-circle',
+                               'text': _('Folder injection into EPC succeeded : UCLouvain registration completed')}
+UCL_REGISTRATION_ON_DEMAND = {'icon': 'glyphicon glyphicon-question-sign',
+                              'text': _('Folder injection into EPC succeeded : UCLouvain registration on demand')}
+
 VERSION_MESSAGES = [
     UCL_REGISTRATION_COMPLETE['text'],
     REGISTRATION_FILE_RECEIVED['text'],
@@ -66,6 +74,10 @@ VERSION_MESSAGES = [
     SUBMITTED_ADMISSION['text'],
     _('Mail sent to '),
     ' ► ',
+    UCL_REGISTRATION_SENDED['text'],
+    UCL_REGISTRATION_REJECTED['text'],
+    UCL_REGISTRATION_REGISTERED['text'],
+    UCL_REGISTRATION_ON_DEMAND['text'],
 ]
 
 
@@ -96,10 +108,8 @@ def save_and_create_revision(user, message, admission=None):
         if admission:
             admission.save()
         reversion.set_user(user)
-        reversion.set_comment(
-            (existing_message + " <br> &nbsp; " if existing_message else '') + message if message
-            else existing_message
-        )
+        append_message = existing_message + " <br> &nbsp; " if existing_message else ''
+        reversion.set_comment(append_message + message if message else existing_message)
 
 
 def _get_icon(message):
