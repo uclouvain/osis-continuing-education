@@ -97,6 +97,9 @@ class AdmissionFile(Model):
         max_length=20
     )
 
+    class Meta:
+        default_permissions = []
+
     def save(self, *args, **kwargs):
         if not (self.size and self.name):
             self.size = self.path.size

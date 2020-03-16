@@ -518,6 +518,7 @@ class Admission(Model):
         return education_group_year.management_entity
 
     class Meta:
+        default_permissions = ['view', 'change', ]
         ordering = ('formation', 'person_information',)
         permissions = (
             ("validate_registration", "Validate IUFC registration file"),

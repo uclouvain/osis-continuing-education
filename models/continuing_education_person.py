@@ -46,3 +46,4 @@ class ContinuingEducationPerson(Model):
 
     class Meta:
         ordering = ('person__last_name', 'person__first_name')
+        default_permissions = []

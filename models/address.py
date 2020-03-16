@@ -36,3 +36,6 @@ class Address(Model):
         verbose_name=_("Country"),
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        default_permissions = []

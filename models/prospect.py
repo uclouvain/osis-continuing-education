@@ -74,5 +74,8 @@ class Prospect(Model):
         verbose_name=_("Formation")
     )
 
+    class Meta:
+        default_permissions = []
+
     def __str__(self):
         return "{} - {} {}".format(self.id, self.first_name, self.name)
