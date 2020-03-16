@@ -46,7 +46,7 @@ from continuing_education.forms.registration import RegistrationForm, \
     UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
 from continuing_education.models.enums import admission_state_choices, ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
-from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -235,18 +235,16 @@ class RegistrationStateChangedTestCase(TestCase):
         cls.faculty_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
+            groups=[TRAINING_MANAGERS_GROUP]
         )
         cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         PersonTraining(person=cls.faculty_manager, training=cls.formation).save()
-        training_manager_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.faculty_manager.user.groups.add(training_manager_group)
-        group = GroupFactory(name=MANAGERS_GROUP)
         cls.continuing_education_manager = PersonWithPermissionsFactory(
             'can_access_admission',
             'change_admission',
-            'can_validate_registration'
+            'can_validate_registration',
+            groups=[MANAGERS_GROUP]
         )
-        cls.continuing_education_manager.user.groups.add(group)
         EntityVersionFactory(
             entity=cls.formation.management_entity
         )
@@ -260,13 +258,12 @@ class RegistrationStateChangedTestCase(TestCase):
             state=VALIDATED,
             academic_year=cls.academic_year
         )
-        group_student = GroupFactory(name=MANAGERS_GROUP)
         cls.student_worker = PersonWithPermissionsFactory(
             'can_access_admission',
             'can_edit_received_file_field',
-            'can_validate_registration'
+            'can_validate_registration',
+            groups=[STUDENT_WORKERS_GROUP]
         )
-        cls.student_worker.user.groups.add(group_student)
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
     def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self, mock_queue):

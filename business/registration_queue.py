@@ -106,6 +106,7 @@ def send_admission_to_queue(request, admission):
         queue_name = settings.QUEUES.get('QUEUES_NAME').get('IUFC_TO_EPC')
         send_message(queue_name, data, connect, channel)
         admission.ucl_registration_complete = ucl_registration_state_choices.SENDED
+        admission.save()
     except (RuntimeError, pika.exceptions.ConnectionClosed, pika.exceptions.ChannelClosed, pika.exceptions.AMQPError):
         logger.exception(_('Could not send admission json with uuid %(uuid)s in queue') % {'uuid': admission.uuid})
         display_error_messages(

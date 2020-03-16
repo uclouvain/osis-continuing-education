@@ -26,47 +26,23 @@
 import json
 from unittest import mock
 
+from django.http import HttpResponseRedirect
 from django.test import TestCase, override_settings, RequestFactory
+from django.urls import reverse
 
-from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
     save_role_registered_in_admission, send_admission_to_queue
 from continuing_education.models.enums import ucl_registration_state_choices
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
-from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
-@override_settings(
-    QUEUES={
-        'QUEUE_USER': 'USER',
-        'QUEUE_PASSWORD': 'PASSWORD',
-        'QUEUE_URL': 'URL',
-        'QUEUE_PORT': 0000,
-        'QUEUE_CONTEXT_ROOT': 'CONTEXT_ROOT',
-        'QUEUES_NAME': {
-            'IUFC_TO_EPC': 'NAME'
-        }
-    }
-)
-class RegistrationQueueTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
-        cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
-
+class PrepareJSONTestCase(TestCase):
     def setUp(self):
-        self.admission = AdmissionFactory(
-            formation=self.formation,
-            ucl_registration_complete=ucl_registration_state_choices.INIT_STATE
-        )
-        self.basic_response = {
-            'message': 'TEST',
-            'success': True,
-            'student_case_uuid': str(self.admission.uuid),
-            'registration_id': self.admission.id
-        }
+        self.admission = AdmissionFactory()
+        EducationGroupYearFactory(education_group=self.admission.formation.education_group)
 
     def test_get_json_for_epc(self):
         result = get_json_for_epc(self.admission)
@@ -140,6 +116,17 @@ class RegistrationQueueTestCase(TestCase):
         }
         self.assertDictEqual(result, expected_result)
 
+
+class SaveRoleRegisteredTestCase(TestCase):
+    def setUp(self):
+        self.admission = AdmissionFactory()
+        self.basic_response = {
+            'message': 'TEST',
+            'success': True,
+            'student_case_uuid': str(self.admission.uuid),
+            'registration_id': self.admission.id
+        }
+
     def test_save_role_registered_in_admission_if_queue_success(self):
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
@@ -153,6 +140,25 @@ class RegistrationQueueTestCase(TestCase):
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.REJECTED)
 
+
+@override_settings(
+    QUEUES={
+        'QUEUE_USER': 'USER',
+        'QUEUE_PASSWORD': 'PASSWORD',
+        'QUEUE_URL': 'URL',
+        'QUEUE_PORT': 0000,
+        'QUEUE_CONTEXT_ROOT': 'CONTEXT_ROOT',
+        'QUEUES_NAME': {
+            'IUFC_TO_EPC': 'NAME'
+        }
+    }
+)
+class SendAdmissionToQueueTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.admission = AdmissionFactory()
+        EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
+
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
     def test_send_admission_to_queue(self, mock_send, mock_pika):
@@ -162,3 +168,42 @@ class RegistrationQueueTestCase(TestCase):
         self.assertEqual('NAME', mock_send.call_args_list[0][0][0])
         self.assertEqual(get_json_for_epc(self.admission), mock_send.call_args_list[0][0][1])
         self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.SENDED)
+
+
+class SendingAdmissionViewTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.continuing_education_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+            'can_validate_registration',
+            groups=[MANAGERS_GROUP]
+        )
+        cls.admission = AdmissionFactory()
+        EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
+        cls.url = reverse('injection_to_epc', args=[cls.admission.pk])
+
+    def setUp(self):
+        self.client.force_login(self.continuing_education_manager.user)
+
+    def test_sending_admission_to_queue(self):
+        response = self.client.get(self.url)
+        self.assertEqual(HttpResponseRedirect.status_code, response.status_code)
+        self.admission.refresh_from_db()
+        self.assertEqual(ucl_registration_state_choices.SENDED, self.admission.ucl_registration_complete)
+
+    def test_sending_admission_to_queue_unlogged(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/login/?next={}".format(self.url))
+
+    def test_sending_admission_to_queue_but_no_iufc_manager(self):
+        continuing_education_training_manager = PersonWithPermissionsFactory(
+            'can_access_admission',
+            'change_admission',
+            'can_validate_registration',
+            groups=[TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP]
+        )
+        self.client.force_login(continuing_education_training_manager.user)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/login/?next={}".format(self.url))
