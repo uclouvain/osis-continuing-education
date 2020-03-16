@@ -51,9 +51,11 @@
                     {% if admission.state == "Registration submitted" %}
                         <button id="button-state" type="button" class="btn btn-default">{% trans 'State' %}</button>
                         <div class="btn-group">
-                            <button id="button-state-caret" style="height:34px !important; margin-right: 10px;" type="button"
+                            <button id="button-state-caret" style="height:34px !important; margin-right: 10px;"
+                                    type="button"
                                     class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false" {% if not admission.state == "Registration submitted" %} disabled {% endif %}>
+                                    aria-expanded="false" {% if not admission.state == "Registration submitted" %}
+                                    disabled {% endif %}>
                                 <span class="caret"></span>
                                 <span class="sr-only">{% trans 'State' %}</span>
                             </button>
@@ -81,7 +83,7 @@
                         <a href="{% url 'receive_file_procedure' admission.id %}"
                            title="{% trans 'Unreceived file' %}"
                            class="btn btn-default">
-                            <i class="fa fa-folder-minus" v
+                            <i class="fa fa-folder-minus"
                                style="font-size: larger"></i>&nbsp;{% trans 'Mark as received file' %}
                         </a>
                     {% endif %}
@@ -116,6 +118,7 @@
                         {% if admission.archived %}
                             <a href="{% url 'archive_procedure' admission.id %}"
                                title="
+
                                        {% trans 'Admission archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
                                class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
                                {% if admission.is_draft %}disabled{% endif %}>
@@ -124,11 +127,13 @@
                         {% else %}
                             <a href="{% url 'archive_procedure' admission.id %}"
                                title="
+
                                        {% trans 'Admission is not archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
                                class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
                                {% if admission.is_draft %}disabled{% endif %}>
                                 <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
                             </a>
+
                         {% endif %}
                     </div>
 
@@ -177,23 +182,36 @@
         {% endif %}
         {% if admission.state_reason %}
             {% if admission.is_cancelled or admission.is_cancelled_no_registration_required %}
-            <div class="alert alert-info" role="alert">
-                <strong>{% trans 'Cancel state reason' %}: </strong>
-                {{ admission.state_reason }}
-            </div>
+                <div class="alert alert-info" role="alert">
+                    <strong>{% trans 'Cancel state reason' %}: </strong>
+                    {{ admission.state_reason }}
+                </div>
             {% endif %}
         {% endif %}
         <ul id="tabs" class="nav nav-tabs">
-          <li role="presentation" id="tab_admission" {% if opened_tab == 'tab_admission' or not opened_tab %}class="active"{% endif %}><a href="#admission" role="tab" data-toggle="tab">{% trans 'Admission' context 'continuing_education'  %}</a></li>
-          {% if admission.formation.registration_required %}
-            <li role="presentation" id="tab_registration" {% if opened_tab == 'tab_registration' %}class="active"{% endif %}><a href="#registration" role="tab" data-toggle="tab">{% trans 'Registration' %}</a></li>
-          {% else %}
-              <li role="presentation" id="tab_billing" {% if opened_tab == 'tab_billing' %}class="active"{% endif %}><a href="#billing" role="tab" data-toggle="tab">{% trans 'Billing' %}</a></li>
-          {% endif %}
-          {% if not user_is_continuing_education_student_worker%}
-              <li role="presentation" id="tab_documents" {% if opened_tab == 'tab_documents' %}class="active"{% endif %}><a href="#documents" role="tab" data-toggle="tab">{% trans 'Documents' %}</a></li>
-          {% endif %}
-        <li role="presentation" id="tab_history" {% if opened_tab == 'tab_history' %}class="active"{% endif %}><a href="#history" role="tab" data-toggle="tab">{% trans 'History' %}</a></li>
+            <li role="presentation" id="tab_admission"
+                {% if opened_tab == 'tab_admission' or not opened_tab %}class="active"{% endif %}><a href="#admission"
+                                                                                                     role="tab"
+                                                                                                     data-toggle="tab">{% trans 'Admission' context 'continuing_education' %}</a>
+            </li>
+            {% if admission.formation.registration_required %}
+                <li role="presentation" id="tab_registration"
+                    {% if opened_tab == 'tab_registration' %}class="active"{% endif %}><a href="#registration"
+                                                                                          role="tab"
+                                                                                          data-toggle="tab">{% trans 'Registration' %}</a>
+                </li>
+            {% else %}
+                <li role="presentation" id="tab_billing" {% if opened_tab == 'tab_billing' %}class="active"{% endif %}>
+                    <a href="#billing" role="tab" data-toggle="tab">{% trans 'Billing' %}</a></li>
+            {% endif %}
+            {% if not user_is_continuing_education_student_worker %}
+                <li role="presentation" id="tab_documents"
+                    {% if opened_tab == 'tab_documents' %}class="active"{% endif %}><a href="#documents" role="tab"
+                                                                                       data-toggle="tab">{% trans 'Documents' %}</a>
+                </li>
+            {% endif %}
+            <li role="presentation" id="tab_history" {% if opened_tab == 'tab_history' %}class="active"{% endif %}><a
+                    href="#history" role="tab" data-toggle="tab">{% trans 'History' %}</a></li>
         </ul>
         <div class="tab-content">
             {% csrf_token %}
@@ -203,24 +221,27 @@
                 {% include "fragment/tab_admission.html" %}
             </div>
             {% if admission.formation.registration_required %}
-                <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_registration' %}active{% endif %}" id="registration">
+                <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_registration' %}active{% endif %}"
+                     id="registration">
                     {% include "fragment/tab_registration.html" %}
                 </div>
             {% else %}
-                <div role="tabpanel" class="tab-pane" {% if opened_tab == 'tab_billing' %}active{% endif %}" id="billing">
-                    {% include "fragment/section_billing.html" %}
+                <div role="tabpanel" class="tab-pane" {% if opened_tab == 'tab_billing' %}active{% endif %}"
+                id="billing">
+                {% include "fragment/section_billing.html" %}
                 </div>
             {% endif %}
-            {% if not user_is_continuing_education_student_worker%}
-                <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_documents' %}active{% endif %}" id="documents">
-                    {% include "fragment/tab_documents.html" %}
-                </div>
-            {% endif %}
-            <div role="tabpanel"
-                 class="tab-pane {% if opened_tab == 'tab_history' %}active{% endif %}" id="history">
-                {% include "fragment/tab_history.html" %}
+        {% if not user_is_continuing_education_student_worker %}
+            <div role="tabpanel" class="tab-pane {% if opened_tab == 'tab_documents' %}active{% endif %}"
+                 id="documents">
+                {% include "fragment/tab_documents.html" %}
             </div>
+        {% endif %}
+        <div role="tabpanel"
+             class="tab-pane {% if opened_tab == 'tab_history' %}active{% endif %}" id="history">
+            {% include "fragment/tab_history.html" %}
         </div>
+    </div>
     </div>
 {% endblock %}
 

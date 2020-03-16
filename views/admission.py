@@ -36,7 +36,8 @@ from django.views.decorators.http import require_GET
 
 from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
-from base.views.common import display_success_messages, display_error_messages
+from base.views.common import display_success_messages, display_error_messages, display_info_messages, \
+    display_warning_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, save_state_changed_and_send_email, \
     check_required_field_for_participant
 from continuing_education.business.perms import is_not_student_worker
@@ -47,14 +48,14 @@ from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
     ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
 from continuing_education.forms.person import PersonForm
-from continuing_education.models.admission import is_continuing_education_manager
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.enums import admission_state_choices, file_category_choices
+from continuing_education.models.enums import admission_state_choices, file_category_choices, \
+    ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.file import AdmissionFile
@@ -148,6 +149,8 @@ def admission_detail(request, admission_id):
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
 
+    _display_adapted_ucl_registration_message(admission, request)
+
     return render(
         request, "admission_detail.html",
         {
@@ -167,6 +170,17 @@ def admission_detail(request, admission_id):
             'opened_tab': request.GET.get('opened_tab'),
         }
     )
+
+
+def _display_adapted_ucl_registration_message(admission, request):
+    if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED:
+        display_warning_messages(request, _('Folder sended to EPC : waiting for response'))
+    elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED:
+        display_error_messages(request, _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''})
+    elif admission.ucl_registration_complete == ucl_registration_state_choices.ON_DEMAND:
+        display_info_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration on demand'))
+    elif admission.ucl_registration_complete == ucl_registration_state_choices.REGISTERED:
+        display_success_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration completed'))
 
 
 def _change_state(request, forms, accepted_states, admission):

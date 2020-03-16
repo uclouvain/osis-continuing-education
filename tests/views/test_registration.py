@@ -27,6 +27,7 @@ from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.http import HttpResponse
@@ -42,10 +43,10 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm, \
-    UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
-from continuing_education.models.enums import admission_state_choices
+    UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
+from continuing_education.models.enums import admission_state_choices, ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
-from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP, MANAGERS_GROUP, TRAINING_MANAGERS_GROUP
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -54,7 +55,10 @@ from continuing_education.tests.factories.continuing_education_training import C
 class ViewRegistrationTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission', groups=[MANAGERS_GROUP])
+        cls.manager = PersonWithPermissionsFactory(
+            'can_access_admission', 'change_admission',
+            groups=[MANAGERS_GROUP]
+        )
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
@@ -127,8 +131,56 @@ class ViewRegistrationTestCase(TestCase):
         # verifying that fields are correctly updated
         for key in form.cleaned_data.keys():
             field_value = self.admission_accepted.__getattribute__(key)
-            if key not in UN_UPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
+            if key not in UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
                 self.assertEqual(field_value, admission_dict[key])
+
+    def test_uclouvain_registration_rejected(self):
+        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.REJECTED
+        self.admission_validated.save()
+
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
+        response = self.client.get(url)
+
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(gettext(_("Folder injection into EPC failed : %(reasons)s") % {'reasons': ''}), msg)
+        self.assertEqual(msg_level[0], messages.ERROR)
+
+    def test_uclouvain_registration_on_demand(self):
+        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.ON_DEMAND
+        self.admission_validated.save()
+
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
+        response = self.client.get(url)
+
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(gettext(_("Folder injection into EPC succeeded : UCLouvain registration on demand")), msg)
+        self.assertEqual(msg_level[0], messages.INFO)
+
+    def test_uclouvain_registration_registered(self):
+        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
+        self.admission_validated.save()
+
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
+        response = self.client.get(url)
+
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(gettext(_('Folder injection into EPC succeeded : UCLouvain registration completed')), msg)
+        self.assertEqual(msg_level[0], messages.SUCCESS)
+
+    def test_uclouvain_registration_sended(self):
+        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.SENDED
+        self.admission_validated.save()
+
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
+        response = self.client.get(url)
+
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(gettext(_("Folder sended to EPC : waiting for response")), msg)
+        self.assertEqual(msg_level[0], messages.WARNING)
 
     def test_registration_list_unauthorized(self):
         self.client.force_login(_build_unauthorized_user())

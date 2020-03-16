@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-25 11:37+0100\n"
+"POT-Creation-Date: 2020-03-11 15:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -461,6 +461,21 @@ msgstr "Dossiers annulés"
 msgid "First name"
 msgstr "Prénom"
 
+#, python-format
+msgid "Folder injection into EPC failed : %(reasons)s"
+msgstr "Injection du dossier dans EPC échouée : %(reasons)s"
+
+msgid "Folder injection into EPC succeeded : UCLouvain registration completed"
+msgstr ""
+"Injection du dossier dans EPC réussie : inscription UCLouvain complétée"
+
+msgid "Folder injection into EPC succeeded : UCLouvain registration on demand"
+msgstr ""
+"Injection du dossier dans EPC réussie : inscription UCLouvain en demande"
+
+msgid "Folder sended to EPC : waiting for response"
+msgstr "Dossier envoyé à EPC : en attente de réponse"
+
 msgid ""
 "For that formation a list of participants has to be sent to the UCLouvain "
 "insurance department"
@@ -550,6 +565,12 @@ msgstr "Dans tous les champs"
 
 msgid "Inactive"
 msgstr "Inactif"
+
+msgid "Initial state"
+msgstr "Etat initial"
+
+msgid "Injection status"
+msgstr "Etat de l'injection"
 
 msgid "Invoice"
 msgstr "Facture"
@@ -697,6 +718,9 @@ msgstr ""
 
 msgid "Notify participant by email"
 msgstr "Notifier le participant par email"
+
+msgid "On demand"
+msgstr "En demande"
 
 msgid "Other"
 msgstr "Autre"
@@ -874,11 +898,6 @@ msgid ""
 "validated."
 msgstr "Inscriptions pour lesquelles l'étape 'dossier reçu' est à valider."
 
-msgid ""
-"Registrations for which the steps 'UCLouvain registration complete' and/or "
-"'Registration file received' have to be validated."
-msgstr "Inscriptions pour lesquelles l'étape 'dossier reçu' et/ou 'inscription au rôle' sont à valider."
-
 msgid "Registrations list"
 msgstr "Liste des inscriptions"
 
@@ -917,6 +936,9 @@ msgstr "Envoyer un email de notification"
 
 msgid "Send notification emails"
 msgstr "Envoyer les emails de notification"
+
+msgid "Sended"
+msgstr "Envoyé"
 
 msgid "Separated"
 msgstr "Séparé"
@@ -1089,13 +1111,6 @@ msgid ""
 msgstr ""
 "Le diplôme va être indiqué comme \"produit\" pour les inscriptions "
 "sélectionnées. Êtes-vous certain·e de vouloir continuer ?"
-
-msgid ""
-"This will mark all selected registrations with UCLouvain registration "
-"completed. Are you sure ?"
-msgstr ""
-"Les inscriptions sélectionnées vont être traitées. Le champ 'inscription au "
-"rôle' va être modifié comme 'oui'. Êtes-vous certain·e de vouloir continuer ?"
 
 msgid ""
 "This will mark that the paper admission file has been received for all "
