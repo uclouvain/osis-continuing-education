@@ -133,12 +133,7 @@
                                {% if admission.is_draft %}disabled{% endif %}>
                                 <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
                             </a>
-                            <a href="{% url 'archive_procedure' admission.id %}"
-                               title="{% trans 'Send to EPC' %}"
-                               class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
-                               {% if admission.is_draft %}disabled{% endif %}>
-                                <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
-                            </a>
+
                         {% endif %}
                     </div>
 
