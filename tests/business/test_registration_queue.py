@@ -174,9 +174,9 @@ class SendingAdmissionViewTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.continuing_education_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration',
+            'validate_registration',
             groups=[MANAGERS_GROUP]
         )
         cls.admission = AdmissionFactory()
@@ -199,9 +199,9 @@ class SendingAdmissionViewTestCase(TestCase):
 
     def test_sending_admission_to_queue_but_no_iufc_manager(self):
         continuing_education_training_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration',
+            'validate_registration',
             groups=[TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP]
         )
         self.client.force_login(continuing_education_training_manager.user)
