@@ -40,12 +40,11 @@ from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.search import ADMISSION_STATE_CHOICES
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm, \
-    REGISTRATION_STATE_CHOICES, REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR, STATE_TO_DISPLAY
+    REGISTRATION_STATE_CHOICES, STATE_TO_DISPLAY
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
@@ -56,7 +55,7 @@ from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -683,15 +682,7 @@ class TestContinuingEducationManagerFilterForm(TestCase):
     def test_managers_filter_by_faculty(self):
         self._assert_results_count_equal({'faculty': self.faculty.id}, [self.training_managers[0]])
 
-    def test_get_state_choices_for_continuing_education_manager(self):
-        form = RegistrationFilterForm(data={}, user=self.continuing_education_manager.user)
-        self.assertTrue(form.is_valid())
-        self.assertCountEqual(
-            form.fields['state'].choices,
-            [ALL_CHOICE] + sorted(REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR, key=itemgetter(1))
-        )
-
-    def test_get_state_choices_for_continuing_education_training_managers(self):
+    def test_get_state_choices(self):
         form = RegistrationFilterForm(data={}, user=self.training_managers[0].user)
         self.assertTrue(form.is_valid())
         self.assertCountEqual(form.fields['state'].choices,

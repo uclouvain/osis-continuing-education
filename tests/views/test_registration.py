@@ -46,7 +46,7 @@ from continuing_education.forms.registration import RegistrationForm, \
     UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
 from continuing_education.models.enums import admission_state_choices, ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
-from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP
+from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -89,7 +89,7 @@ class ViewRegistrationTestCase(TestCase):
         response = self.client.get(url)
         admissions = response.context['admissions']
         for admission in admissions:
-            self.assertEqual(admission.state, admission_state_choices.ACCEPTED)
+            self.assertIn(admission.state, [admission_state_choices.ACCEPTED, admission_state_choices.VALIDATED])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
 
@@ -235,18 +235,16 @@ class RegistrationStateChangedTestCase(TestCase):
         cls.faculty_manager = PersonWithPermissionsFactory(
             'view_admission',
             'change_admission',
+            groups=[TRAINING_MANAGERS_GROUP]
         )
         cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         PersonTraining(person=cls.faculty_manager, training=cls.formation).save()
-        training_manager_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.faculty_manager.user.groups.add(training_manager_group)
-        group = GroupFactory(name=MANAGERS_GROUP)
         cls.continuing_education_manager = PersonWithPermissionsFactory(
             'view_admission',
             'change_admission',
-            'validate_registration'
+            'validate_registration',
+            groups=[MANAGERS_GROUP]
         )
-        cls.continuing_education_manager.user.groups.add(group)
         EntityVersionFactory(
             entity=cls.formation.management_entity
         )
@@ -260,20 +258,19 @@ class RegistrationStateChangedTestCase(TestCase):
             state=VALIDATED,
             academic_year=cls.academic_year
         )
-        group_student = GroupFactory(name=MANAGERS_GROUP)
         cls.student_worker = PersonWithPermissionsFactory(
             'view_admission',
             'change_received_file_state',
-            'validate_registration'
+            'validate_registration',
+            groups=[STUDENT_WORKERS_GROUP]
         )
-        cls.student_worker.user.groups.add(group_student)
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
     def test_registration_detail_edit_state_to_validated_as_continuing_education_manager(self, mock_queue):
         self.client.force_login(self.continuing_education_manager.user)
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=self._data_form_to_validate())
-        mock_queue.assert_called_with(self.registration_submitted)
+        mock_queue.assert_called_with(response.wsgi_request, self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
@@ -283,7 +280,7 @@ class RegistrationStateChangedTestCase(TestCase):
         self.client.force_login(self.student_worker.user)
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=self._data_form_to_validate())
-        mock_queue.assert_called_with(self.registration_submitted)
+        mock_queue.assert_called_with(response.wsgi_request, self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         self.assertEqual(self.registration_submitted.state, VALIDATED, 'state')
@@ -293,7 +290,7 @@ class RegistrationStateChangedTestCase(TestCase):
         self.client.force_login(self.faculty_manager.user)
         url = reverse('admission_detail', args=[self.registration_submitted.pk])
         response = self.client.post(url, data=self._data_form_to_validate())
-        mock_queue.assert_called_with(self.registration_submitted)
+        mock_queue.assert_called_with(response.wsgi_request, self.registration_submitted)
         self.assertRedirects(response, reverse('admission_detail', args=[self.registration_submitted.pk]))
         self.registration_submitted.refresh_from_db()
         # state should not be changed and error message should be presented to user
@@ -403,4 +400,3 @@ class ViewRegistrationCacheTestCase(TestCase):
 
 def _build_unauthorized_user():
     return User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
-

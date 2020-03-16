@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-11 15:45+0100\n"
+"POT-Creation-Date: 2020-03-16 11:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -295,7 +295,12 @@ msgid "Continuing education list"
 msgstr ""
 
 msgid ""
-"Continuing education managers and student workers only are allowed to validate a registration"
+"Continuing education managers and student workers only are allowed to "
+"validate a registration"
+msgstr ""
+
+#, python-format
+msgid "Could not send admission json with uuid %(uuid)s in queue"
 msgstr ""
 
 msgid "Country"
@@ -539,6 +544,9 @@ msgstr ""
 msgid "Initial state"
 msgstr ""
 
+msgid "Inject into EPC"
+msgstr ""
+
 msgid "Injection status"
 msgstr ""
 
@@ -735,6 +743,9 @@ msgstr ""
 msgid ""
 "Phone number must start with 0 or 00 or '+' followed by at least 7 digits "
 "and up to 15 digits."
+msgstr ""
+
+msgid "Please ensure that you have made the necessary corrections."
 msgstr ""
 
 msgid "Please select at least one admission to process."
@@ -1062,6 +1073,9 @@ msgid ""
 "is an invoice available."
 msgstr ""
 
+msgid "This will set the ucl registration state to Sended."
+msgstr ""
+
 msgid "This will unarchive all selected archives. Are you sure ?"
 msgstr ""
 
@@ -1250,6 +1264,9 @@ msgid "managers"
 msgstr ""
 
 msgid "not received"
+msgstr ""
+
+msgid "reasons"
 msgstr ""
 
 msgid "received"

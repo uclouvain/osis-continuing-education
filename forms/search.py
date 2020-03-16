@@ -18,7 +18,7 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_training import CONTINUING_EDUCATION_TRAINING_TYPES, \
     ContinuingEducationTraining
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_STATE_CHOICES, \
-    ADMISSION_STATE_CHOICES, REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR
+    ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.person_training import PersonTraining
@@ -177,12 +177,8 @@ class RegistrationFilterForm(AdmissionFilterForm):
 
     def __init__(self, *args, user=None, **kwargs):
         super(RegistrationFilterForm, self).__init__(*args, **kwargs)
-        if user and user.groups.filter(name='continuing_education_managers').exists():
-            self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES_FOR_CONTINUING_EDUCATION_MGR)
-            self.states_filter = STATE_FOR_REGISTRATION_CONTINUING_MANAGER
-        else:
-            self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES)
-            self.states_filter = STATE_FOR_REGISTRATION
+        self.fields['state'].choices = _get_state_choices(REGISTRATION_STATE_CHOICES)
+        self.states_filter = STATE_FOR_REGISTRATION
         _build_formation_choices(self.fields['formation'], self.states_filter)
 
     def get_registrations(self):

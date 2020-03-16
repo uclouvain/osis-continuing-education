@@ -507,12 +507,8 @@ class BillingEditTestCase(TestCase):
             education_group=cls.education_group,
             registration_required=False
         )
-        group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
-        group = GroupFactory(name=STUDENT_WORKERS_GROUP)
-        cls.student_worker = PersonWithPermissionsFactory('view_admission')
-        cls.student_worker.user.groups.add(group)
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission', groups=[MANAGERS_GROUP])
+        cls.student_worker = PersonWithPermissionsFactory('view_admission', groups=[STUDENT_WORKERS_GROUP])
         EntityVersionFactory(
             entity=cls.formation.management_entity
         )

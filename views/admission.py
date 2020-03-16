@@ -168,6 +168,7 @@ def admission_detail(request, admission_id):
             'version': version_list,
             'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
             'opened_tab': request.GET.get('opened_tab'),
+            'injection_not_rejected': admission.ucl_registration_complete != ucl_registration_state_choices.REJECTED
         }
     )
 
@@ -304,7 +305,7 @@ def _new_state_management(request, adm_form, admission, new_state):
         save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         _validate_admission(request, adm_form)
-        send_admission_to_queue(admission)
+        send_admission_to_queue(request, admission)
     query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
     return redirect(
         reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param

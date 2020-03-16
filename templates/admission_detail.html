@@ -118,7 +118,6 @@
                         {% if admission.archived %}
                             <a href="{% url 'archive_procedure' admission.id %}"
                                title="
-
                                        {% trans 'Admission archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
                                class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
                                {% if admission.is_draft %}disabled{% endif %}>
@@ -127,13 +126,19 @@
                         {% else %}
                             <a href="{% url 'archive_procedure' admission.id %}"
                                title="
-
                                        {% trans 'Admission is not archived' %}{% if admission.is_draft %}. {% trans "Impossible to archive/unarchive while in draft state" %}{% endif %}"
                                class="btn btn-default {% if admission.is_draft %}disabled{% endif %}"
                                {% if admission.is_draft %}disabled{% endif %}>
                                 <i class="fa fa-folder-open"></i>&nbsp;{% trans 'Archive' %}
                             </a>
-
+                            {% if admission.is_validated %}
+                                <a title="{% trans 'Inject into EPC' %}"
+                                   class="btn btn-default {% if injection_not_rejected %}disabled{% endif %}"
+                                   {% if injection_not_rejected %}disabled{% endif %}
+                                    data-toggle="modal" data-target="#injection_modal">
+                                    <i class="glyphicon glyphicon-repeat"></i>&nbsp;{% trans 'Inject into EPC' %}
+                                </a>
+                            {% endif %}
                         {% endif %}
                     </div>
 
@@ -243,6 +248,7 @@
         </div>
     </div>
     </div>
+    {% include "fragment/injection_modal.html" %}
 {% endblock %}
 
 
