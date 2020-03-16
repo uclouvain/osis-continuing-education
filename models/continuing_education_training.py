@@ -156,3 +156,4 @@ class ContinuingEducationTraining(Model):
 
     class Meta:
         ordering = ('education_group', )
+        default_permissions = []
