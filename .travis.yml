@@ -13,8 +13,8 @@ install:
   - cd /tmp
   - git clone https://github.com/uclouvain/osis.git
   - cd osis
-  - git submodule init
-  - git submodule update
+  - git submodule update --init -- osis_common
+  - git submodule update --init -- continuing_education
   - pip install -r requirements.txt
   - rm -Rf continuing_education
   - ln -s $PROJECT_DIR continuing_education

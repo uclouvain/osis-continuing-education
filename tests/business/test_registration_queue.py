@@ -198,11 +198,15 @@ class SendingAdmissionViewTestCase(TestCase):
     def setUp(self):
         self.client.force_login(self.continuing_education_manager.user)
 
-    def test_sending_admission_to_queue(self):
+    @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
+    @mock.patch('continuing_education.business.registration_queue.send_message')
+    def test_sending_admission_to_queue(self, mock_send, mock_pika):
         response = self.client.get(self.url)
         self.assertEqual(HttpResponseRedirect.status_code, response.status_code)
         self.admission.refresh_from_db()
         self.assertEqual(ucl_registration_state_choices.SENDED, self.admission.ucl_registration_complete)
+        self.assertTrue(mock_send.called)
+        self.assertEqual('NAME', mock_send.call_args_list[0][0][0])
 
     def test_sending_admission_to_queue_unlogged(self):
         self.client.logout()
