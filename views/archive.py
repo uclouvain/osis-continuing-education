@@ -41,7 +41,7 @@ from continuing_education.views.common import get_object_list, FILE_ARCHIVED, sa
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_archives(request):
@@ -64,7 +64,7 @@ def list_archives(request):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def archive_procedure(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
@@ -78,7 +78,7 @@ def archive_procedure(request, admission_id):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def archives_procedure(request):
     new_archive_status = True
@@ -140,7 +140,7 @@ def _switch_archived_state(user, admission_id):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def unarchives_procedure(request):
     return change_archive_status(False, request)

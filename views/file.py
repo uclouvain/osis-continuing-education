@@ -79,7 +79,7 @@ def _upload_file(request, admission):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 def download_file(request, admission_id, file_id):
     file = AdmissionFile.objects.get(pk=file_id)
     filename = file.name.split('/')[-1]
@@ -89,7 +89,7 @@ def download_file(request, admission_id, file_id):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 def delete_file(request, admission_id, file_id):
     file = AdmissionFile.objects.filter(id=file_id)
     try:

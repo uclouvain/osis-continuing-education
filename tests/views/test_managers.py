@@ -45,9 +45,9 @@ class ManagerListTestCase(TestCase):
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
         cls.manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration'
+            'validate_registration'
         )
         cls.manager.employee = True
         cls.manager.user.groups.add(group)
@@ -158,7 +158,7 @@ class ViewManagerCacheTestCase(TestCase):
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
         cls.manager = PersonWithPermissionsFactory(
-            'can_access_admission', 'change_admission','can_validate_registration'
+            'view_admission', 'change_admission', 'validate_registration'
         )
         cls.manager.user.groups.add(group)
 

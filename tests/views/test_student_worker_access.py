@@ -40,8 +40,8 @@ from continuing_education.tests.factories.continuing_education_training import C
 class ViewsLimitedForStudentWorker(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.student = PersonWithPermissionsFactory('can_access_admission', 'can_edit_received_file_field',
-                                                    groups=[STUDENT_WORKERS_GROUP])
+        cls.student = PersonWithPermissionsFactory('view_admission', 'change_received_file_state',
+                                                   groups=[STUDENT_WORKERS_GROUP])
         cls.admission = AdmissionFactory()
 
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -55,7 +55,7 @@ class ViewsLimitedForStudentWorker(TestCase):
             active=True
         )
         cls.training_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
             employee=True, groups=['continuing_education_training_managers']
         )

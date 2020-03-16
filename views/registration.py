@@ -46,7 +46,7 @@ from continuing_education.views.home import is_continuing_education_student_work
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET, user=request.user)
@@ -138,7 +138,7 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
 
 
 @login_required
-@permission_required('continuing_education.can_edit_received_file_field', raise_exception=True)
+@permission_required('continuing_education.change_received_file_state', raise_exception=True)
 def receive_files_procedure(request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
     redirection = request.META.get('HTTP_REFERER')
@@ -170,7 +170,7 @@ def _set_success_message(request, is_plural, received_file_state=True):
 
 
 @login_required
-@permission_required('continuing_education.can_edit_received_file_field', raise_exception=True)
+@permission_required('continuing_education.change_received_file_state', raise_exception=True)
 def receive_file_procedure(request, admission_id):
     redirection = request.META.get('HTTP_REFERER')
     admission = _switch_received_file_state(admission_id)
@@ -190,7 +190,7 @@ def _switch_received_file_state(admission_id):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def list_cancelled(request):
     admission_list = Admission.objects.filter(state__in=[

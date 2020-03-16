@@ -34,7 +34,7 @@ from continuing_education.views.common import get_object_list
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def list_prospects(request):
     prospects_list = list(Prospect.objects.all())
@@ -45,7 +45,7 @@ def list_prospects(request):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def prospect_details(request, prospect_id):
     prospect = get_object_or_404(Prospect, pk=prospect_id)
@@ -55,7 +55,7 @@ def prospect_details(request, prospect_id):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def prospect_xls(request):
     return create_xls(request.user)
