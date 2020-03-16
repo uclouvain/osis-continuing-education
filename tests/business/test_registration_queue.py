@@ -170,6 +170,18 @@ class SendAdmissionToQueueTestCase(TestCase):
         self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.SENDED)
 
 
+@override_settings(
+    QUEUES={
+        'QUEUE_USER': 'USER',
+        'QUEUE_PASSWORD': 'PASSWORD',
+        'QUEUE_URL': 'URL',
+        'QUEUE_PORT': 0000,
+        'QUEUE_CONTEXT_ROOT': 'CONTEXT_ROOT',
+        'QUEUES_NAME': {
+            'IUFC_TO_EPC': 'NAME'
+        }
+    }
+)
 class SendingAdmissionViewTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
