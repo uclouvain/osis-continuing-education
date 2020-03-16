@@ -38,6 +38,8 @@ from base.views.common import display_error_messages
 from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import ucl_registration_state_choices
+from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
+    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -87,9 +89,10 @@ def save_role_registered_in_admission(data):
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
         admission.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REGISTERED), admission)
     else:
         admission.ucl_registration_complete = ucl_registration_state_choices.REJECTED
-    admission.save()
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REJECTED), admission)
 
 
 def send_admission_to_queue(request, admission):
@@ -106,7 +109,7 @@ def send_admission_to_queue(request, admission):
         queue_name = settings.QUEUES.get('QUEUES_NAME').get('IUFC_TO_EPC')
         send_message(queue_name, data, connect, channel)
         admission.ucl_registration_complete = ucl_registration_state_choices.SENDED
-        admission.save()
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_SENDED), admission, request.user)
     except (RuntimeError, pika.exceptions.ConnectionClosed, pika.exceptions.ChannelClosed, pika.exceptions.AMQPError):
         logger.exception(_('Could not send admission json with uuid %(uuid)s in queue') % {'uuid': admission.uuid})
         display_error_messages(

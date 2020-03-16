@@ -168,4 +168,4 @@ def _update_registration_field_for_list(registrations_ids_list, field_to_update,
     for registration in registrations_list:
         if field_to_update == 'registration_file_received':
             registration.registration_file_received = True
-            save_and_create_revision(user, get_revision_messages(REGISTRATION_FILE_RECEIVED), registration)
+            save_and_create_revision(get_revision_messages(REGISTRATION_FILE_RECEIVED), registration, user)

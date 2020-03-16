@@ -176,5 +176,5 @@ class AdmissionPostSerializer(AdmissionDetailSerializer):
         admission = Admission(**validated_data)
         admission.residence_address = admission.address
         admission.billing_address = admission.address
-        save_and_create_revision(self.context.get('request').user, get_revision_messages(ADMISSION_CREATION), admission)
+        save_and_create_revision(get_revision_messages(ADMISSION_CREATION), admission, self.context.get('request').user)
         return admission

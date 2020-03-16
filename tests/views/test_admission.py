@@ -306,8 +306,11 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(len(version_list), 0)
         i = 1
         for msg in VERSION_MESSAGES:
-            save_and_create_revision(self.training_manager.user, get_revision_messages({'icon': '', 'text': msg}),
-                                     self.admission)
+            save_and_create_revision(
+                get_revision_messages({'icon': '', 'text': msg}),
+                self.admission,
+                self.training_manager.user
+            )
             version_list = get_versions(self.admission)
             self.assertEqual(len(version_list), i)
             i += 1
