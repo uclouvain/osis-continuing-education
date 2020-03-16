@@ -569,7 +569,7 @@ msgstr "Inactif"
 msgid "Initial state"
 msgstr "Etat initial"
 
-msgid "Injection statut"
+msgid "Injection status"
 msgstr "Etat de l'injection"
 
 msgid "Invoice"

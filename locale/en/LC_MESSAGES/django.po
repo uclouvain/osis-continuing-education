@@ -539,7 +539,7 @@ msgstr ""
 msgid "Initial state"
 msgstr ""
 
-msgid "Injection statut"
+msgid "Injection status"
 msgstr ""
 
 msgid "Invoice"
