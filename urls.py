@@ -86,5 +86,5 @@ urlpatterns = [
         url(r'^delete/(?P<training>[0-9]+)/(?P<manager>[0-9]+)',
             managers.delete_person_training, name='delete_person_training')
     ])),
-    url(r'^injection/(?P<admission_id>[0-9]+)/', registration_queue.sending_admission_to_queue, name='injection_to_epc')
+    url(r'^injection/(?P<admission_id>[0-9]+)/', registration_queue.inject_admission_to_epc, name='injection_to_epc')
 ]

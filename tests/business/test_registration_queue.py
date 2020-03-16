@@ -200,7 +200,7 @@ class SendingAdmissionViewTestCase(TestCase):
 
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
-    def test_sending_admission_to_queue(self, mock_send, mock_pika):
+    def test_inject_admission_to_epc(self, mock_send, mock_pika):
         response = self.client.get(self.url)
         self.assertEqual(HttpResponseRedirect.status_code, response.status_code)
         self.admission.refresh_from_db()
@@ -208,12 +208,12 @@ class SendingAdmissionViewTestCase(TestCase):
         self.assertTrue(mock_send.called)
         self.assertEqual('NAME', mock_send.call_args_list[0][0][0])
 
-    def test_sending_admission_to_queue_unlogged(self):
+    def test_inject_admission_to_epc_unlogged(self):
         self.client.logout()
         response = self.client.get(self.url)
         self.assertRedirects(response, "/login/?next={}".format(self.url))
 
-    def test_sending_admission_to_queue_but_no_iufc_manager(self):
+    def test_inject_admission_to_epc_but_no_iufc_manager(self):
         continuing_education_training_manager = PersonWithPermissionsFactory(
             'view_admission',
             'change_admission',

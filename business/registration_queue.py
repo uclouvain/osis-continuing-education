@@ -116,7 +116,7 @@ def send_admission_to_queue(request, admission):
 
 @login_required
 @user_passes_test(is_continuing_education_manager)
-def sending_admission_to_queue(request, admission_id):
+def inject_admission_to_epc(request, admission_id):
     redirection = request.META.get('HTTP_REFERER')
     admission = Admission.objects.get(id=admission_id)
     send_admission_to_queue(request, admission)
