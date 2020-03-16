@@ -103,10 +103,6 @@
                 </div>
             {% endif %}
             <form id="admissions_form" method="post" action="
-
-
-
-
                     {% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
                 {% csrf_token %}
 
