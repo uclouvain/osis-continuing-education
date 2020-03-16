@@ -34,7 +34,7 @@ class UploadFileTestCase(TestCase):
             education_group=self.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        self.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         self.manager.user.groups.add(group)
         self.client.force_login(self.manager.user)
         self.admission = AdmissionFactory(
@@ -230,7 +230,7 @@ class DeleteFileTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
         cls.admission = AdmissionFactory(
             formation=cls.formation,

@@ -44,7 +44,7 @@ from continuing_education.views.home import is_continuing_education_student_work
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 def list_tasks(request):
     is_continuing_education_mgr = is_continuing_education_manager(request.user)
     is_continuing_education_training_mgr = is_continuing_education_training_manager(request.user)

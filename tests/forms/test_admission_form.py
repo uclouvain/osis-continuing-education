@@ -58,13 +58,12 @@ class TestAdmissionForm(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         PersonTraining(person=cls.training_manager, training=cls.formation).save()
 
         group_manager = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission',
-                                                   'can_validate_registration', 'can_create_json')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission', 'validate_registration')
         cls.manager.user.groups.add(group_manager)
 
     def setUp(self):

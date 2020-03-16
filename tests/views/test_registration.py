@@ -56,7 +56,7 @@ class ViewRegistrationTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.manager = PersonWithPermissionsFactory(
-            'can_access_admission', 'change_admission',
+            'view_admission', 'change_admission',
             groups=[MANAGERS_GROUP]
         )
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -233,16 +233,16 @@ class RegistrationStateChangedTestCase(TestCase):
             academic_year=cls.academic_year
         )
         cls.faculty_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
             groups=[TRAINING_MANAGERS_GROUP]
         )
         cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
         PersonTraining(person=cls.faculty_manager, training=cls.formation).save()
         cls.continuing_education_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration',
+            'validate_registration',
             groups=[MANAGERS_GROUP]
         )
         EntityVersionFactory(
@@ -259,9 +259,9 @@ class RegistrationStateChangedTestCase(TestCase):
             academic_year=cls.academic_year
         )
         cls.student_worker = PersonWithPermissionsFactory(
-            'can_access_admission',
-            'can_edit_received_file_field',
-            'can_validate_registration',
+            'view_admission',
+            'change_received_file_state',
+            'validate_registration',
             groups=[STUDENT_WORKERS_GROUP]
         )
 
@@ -340,7 +340,7 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
 
         valid_state = [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]
@@ -383,7 +383,7 @@ class ViewRegistrationCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
 
     def setUp(self):
@@ -400,4 +400,3 @@ class ViewRegistrationCacheTestCase(TestCase):
 
 def _build_unauthorized_user():
     return User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
-

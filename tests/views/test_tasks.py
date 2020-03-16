@@ -47,7 +47,7 @@ class ViewUpdateTasksTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
@@ -97,7 +97,7 @@ class ViewUpdateTasksTestCase(TestCase):
             formation=cls.formation
         )
         training_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(training_group)
 
     def setUp(self):
@@ -245,7 +245,7 @@ class ViewUpdateTasksTestCase(TestCase):
 class UpdateTasksPermissionsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.person_without_change_perm = PersonWithPermissionsFactory('can_access_admission')
+        cls.person_without_change_perm = PersonWithPermissionsFactory('view_admission')
 
         cls.registrations_to_validate = [
             AdmissionFactory(state=admission_state_choices.REGISTRATION_SUBMITTED) for _ in range(2)
@@ -316,7 +316,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         cls.registration_to_validate = AdmissionFactory(
             formation=cls.formation,

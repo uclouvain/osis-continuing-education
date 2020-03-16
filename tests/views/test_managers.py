@@ -35,9 +35,9 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 
 
 class ManagerListTestCase(TestCase):
@@ -45,9 +45,9 @@ class ManagerListTestCase(TestCase):
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
         cls.manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration'
+            'validate_registration'
         )
         cls.manager.employee = True
         cls.manager.user.groups.add(group)
@@ -158,7 +158,7 @@ class ViewManagerCacheTestCase(TestCase):
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
         cls.manager = PersonWithPermissionsFactory(
-            'can_access_admission', 'change_admission','can_validate_registration'
+            'view_admission', 'change_admission', 'validate_registration'
         )
         cls.manager.user.groups.add(group)
 
