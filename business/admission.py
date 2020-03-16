@@ -47,7 +47,7 @@ def save_state_changed_and_send_email(admission, connected_user=None):
     mails = _get_managers_mails(admission.formation)
     condition_of_acceptance, registration_required = None, None
     state_message = get_valid_state_change_message(admission)
-    save_and_create_revision(connected_user, get_revision_messages(state_message), admission)
+    save_and_create_revision(get_revision_messages(state_message), admission, connected_user)
     if admission.state in (SUBMITTED, REGISTRATION_SUBMITTED):
         send_submission_email_to_admission_managers(admission, connected_user)
         send_submission_email_to_participant(admission, connected_user)
@@ -89,7 +89,7 @@ def save_state_changed_and_send_email(admission, connected_user=None):
     )
 
     MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
-    save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
+    save_and_create_revision(get_revision_messages(MAIL), admission, connected_user)
 
 
 def _get_datas_from_admission(admission):
@@ -137,7 +137,7 @@ def send_submission_email_to_admission_managers(admission, connected_user):
         'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]) if receivers else '',
     }
 
-    save_and_create_revision(connected_user, get_revision_messages(MAIL) if receivers else '', admission)
+    save_and_create_revision(get_revision_messages(MAIL) if receivers else '', admission, connected_user)
 
 
 def _get_admission_managers_email_receivers(admission):
@@ -184,7 +184,7 @@ def send_submission_email_to_participant(admission, connected_user):
         connected_user=connected_user
     )
     MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email}
-    save_and_create_revision(connected_user, get_revision_messages(MAIL), admission)
+    save_and_create_revision(get_revision_messages(MAIL), admission, connected_user)
 
 
 def _get_template_reference(admission, receiver, suffix):
@@ -218,7 +218,7 @@ def send_invoice_uploaded_email(admission):
         ],
     )
     MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
-    save_and_create_revision(None, get_revision_messages(MAIL), admission)
+    save_and_create_revision(get_revision_messages(MAIL), admission)
 
 
 def send_email(template_references, receivers, data, connected_user=None):

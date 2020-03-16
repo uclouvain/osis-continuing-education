@@ -102,12 +102,13 @@ def get_object_list(request, objects):
     return object_list
 
 
-def save_and_create_revision(user, message, admission=None):
+def save_and_create_revision(message, admission=None, user=None):
     with reversion.create_revision():
         existing_message = reversion.get_comment()
         if admission:
             admission.save()
-        reversion.set_user(user)
+        if user:
+            reversion.set_user(user)
         append_message = existing_message + " <br> &nbsp; " if existing_message else ''
         reversion.set_comment(append_message + message if message else existing_message)
 

@@ -89,10 +89,10 @@ def save_role_registered_in_admission(data):
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
         admission.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
-        save_and_create_revision(None, get_revision_messages(UCL_REGISTRATION_REGISTERED), admission)
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REGISTERED), admission)
     else:
         admission.ucl_registration_complete = ucl_registration_state_choices.REJECTED
-        save_and_create_revision(None, get_revision_messages(UCL_REGISTRATION_REJECTED), admission)
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REJECTED), admission)
 
 
 def send_admission_to_queue(request, admission):
@@ -109,7 +109,7 @@ def send_admission_to_queue(request, admission):
         queue_name = settings.QUEUES.get('QUEUES_NAME').get('IUFC_TO_EPC')
         send_message(queue_name, data, connect, channel)
         admission.ucl_registration_complete = ucl_registration_state_choices.SENDED
-        save_and_create_revision(request.user, get_revision_messages(UCL_REGISTRATION_SENDED), admission)
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_SENDED), admission, request.user)
     except (RuntimeError, pika.exceptions.ConnectionClosed, pika.exceptions.ChannelClosed, pika.exceptions.AMQPError):
         logger.exception(_('Could not send admission json with uuid %(uuid)s in queue') % {'uuid': admission.uuid})
         display_error_messages(

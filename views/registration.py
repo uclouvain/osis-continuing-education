@@ -106,7 +106,7 @@ def registration_edit(request, admission_id):
         admission.billing_address = billing_address
         admission.residence_address = residence_address
         message = get_appropriate_revision_message(registration_form)
-        save_and_create_revision(request.user, message, admission)
+        save_and_create_revision(message, admission, request.user)
 
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:

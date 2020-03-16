@@ -122,9 +122,8 @@ def _set_archived_state(user, admission, archived_state):
     if admission:
         admission.archived = archived_state
         save_and_create_revision(
-            user,
             get_revision_messages(FILE_ARCHIVED) if admission.archived else get_revision_messages(FILE_UNARCHIVED),
-            admission
+            admission, user
         )
 
 

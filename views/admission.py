@@ -275,7 +275,7 @@ def admission_form(request, admission_id=None):
         if admission_id:
             admission.save()
         else:
-            save_and_create_revision(request.user, get_revision_messages(ADMISSION_CREATION), admission)
+            save_and_create_revision(get_revision_messages(ADMISSION_CREATION), admission, request.user)
         if admission.state == DRAFT:
             return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
