@@ -69,7 +69,7 @@ from osis_common.decorators.ajax import ajax_required
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 @cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
@@ -91,7 +91,7 @@ def list_admissions(request):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
@@ -199,7 +199,7 @@ def _change_state(request, forms, accepted_states, admission):
 
 
 @login_required
-@permission_required('continuing_education.can_access_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def send_invoice_notification_mail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
@@ -324,7 +324,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 
 
 def _validate_admission(request, adm_form):
-    if request.user.has_perm("continuing_education.can_validate_registration"):
+    if request.user.has_perm("continuing_education.validate_registration"):
         save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         display_error_messages(
@@ -360,7 +360,7 @@ def validate_field(request, admission_id):
 
 
 def _get_states_choices(accepted_states, admission, request):
-    if not request.user.has_perm('continuing_education.can_validate_registration') \
+    if not request.user.has_perm('continuing_education.validate_registration') \
             and admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
         return []
     else:

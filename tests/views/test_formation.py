@@ -92,10 +92,10 @@ class ViewFormationTestCase(TestCase):
             education_group_type=continuing_education_group_type
         )
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
         group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         cls.entity_version = EntityVersionFactory(
             entity=cls.formation_AAAA.management_entity,
@@ -238,7 +238,7 @@ class ViewFormationTestCase(TestCase):
 class FormationActivateTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.current_acad_year = create_current_academic_year()
         cls.next_acad_year = AcademicYearFactory(year=cls.current_acad_year.year + 1)
 
@@ -363,7 +363,7 @@ class FormationActivateTestCase(TestCase):
 class FormationAidTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
 
         cls.education_group_1 = EducationGroupFactory()
         cls.continuing_education_training_1 = ContinuingEducationTrainingFactory(
@@ -410,7 +410,7 @@ class ViewFormationCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
 
     def setUp(self):

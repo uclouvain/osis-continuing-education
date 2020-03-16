@@ -68,7 +68,7 @@ class ViewArchiveTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
         EntityVersionFactory(
             entity=cls.formation_1.management_entity
@@ -214,7 +214,7 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         cls.admission = AdmissionFactory(
             formation=cls.formation,
@@ -257,7 +257,7 @@ class ViewArchiveCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
 
     def setUp(self):

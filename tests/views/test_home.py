@@ -34,7 +34,7 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 class ViewHomeTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.url = reverse('continuing_education')
 
     def setUp(self):

@@ -38,7 +38,7 @@ from continuing_education.tests.factories.prospect import ProspectFactory
 class ProspectListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
 
     def setUp(self):
         self.client.force_login(self.manager.user)
@@ -87,7 +87,7 @@ class ProspectListTestCase(TestCase):
 class ProspectDetailsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.prospect = ProspectFactory()
         EducationGroupYearFactory(education_group=cls.prospect.formation.education_group)
 

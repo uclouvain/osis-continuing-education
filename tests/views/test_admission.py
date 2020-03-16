@@ -88,10 +88,10 @@ class ViewAdmissionTestCase(TestCase):
             registration_required=False
         )
         group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
         group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         EntityVersionFactory(
             entity=cls.formation.management_entity
@@ -335,7 +335,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
 
         cls.admission = AdmissionFactory(
@@ -401,9 +401,9 @@ class AdmissionStateChangedTestCase(TestCase):
             education_group=cls.education_group
         )
         cls.manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration'
+            'validate_registration'
         )
         group = GroupFactory(name='continuing_education_managers')
         group.user_set.add(cls.manager.user)
@@ -479,7 +479,7 @@ class ViewAdmissionCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
 
     def setUp(self):
@@ -508,10 +508,10 @@ class BillingEditTestCase(TestCase):
             registration_required=False
         )
         group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('can_access_admission', 'change_admission')
+        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.manager.user.groups.add(group)
         group = GroupFactory(name=STUDENT_WORKERS_GROUP)
-        cls.student_worker = PersonWithPermissionsFactory('can_access_admission')
+        cls.student_worker = PersonWithPermissionsFactory('view_admission')
         cls.student_worker.user.groups.add(group)
         EntityVersionFactory(
             entity=cls.formation.management_entity

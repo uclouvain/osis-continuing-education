@@ -42,7 +42,7 @@ from continuing_education.views.common import get_object_list, display_errors
 
 
 @login_required
-@permission_required('continuing_education.can_validate_registration', raise_exception=True)
+@permission_required('continuing_education.validate_registration', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 @cache_filter()
 def list_managers(request):
@@ -82,7 +82,7 @@ def list_managers(request):
 
 
 @login_required
-@permission_required('continuing_education.can_validate_registration', raise_exception=True)
+@permission_required('continuing_education.validate_registration', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def delete_person_training(request, training, manager):
     redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))

@@ -653,7 +653,7 @@ class TestContinuingEducationManagerFilterForm(TestCase):
         self.training_managers = []
         for _ in range(1, 2):
             training_manager = PersonWithPermissionsFactory(
-                'can_access_admission',
+                'view_admission',
                 'change_admission',
             )
             training_manager.user.groups.add(training_manager_group)
@@ -664,9 +664,9 @@ class TestContinuingEducationManagerFilterForm(TestCase):
 
         manager_group = GroupFactory(name='continuing_education_managers')
         self.continuing_education_manager = PersonWithPermissionsFactory(
-            'can_access_admission',
+            'view_admission',
             'change_admission',
-            'can_validate_registration'
+            'validate_registration'
         )
         self.continuing_education_manager.user.groups.add(manager_group)
         self.client.force_login(self.continuing_education_manager.user)
