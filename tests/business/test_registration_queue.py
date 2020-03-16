@@ -26,7 +26,7 @@
 import json
 from unittest import mock
 
-from django.test import TestCase, override_settings
+from django.test import TestCase, override_settings, RequestFactory
 
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
@@ -156,7 +156,7 @@ class RegistrationQueueTestCase(TestCase):
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
     def test_send_admission_to_queue(self, mock_send, mock_pika):
-        send_admission_to_queue(self.admission)
+        send_admission_to_queue(RequestFactory(), self.admission)
         self.assertTrue(mock_pika.called)
         self.assertTrue(mock_send.called)
         self.assertEqual('NAME', mock_send.call_args_list[0][0][0])

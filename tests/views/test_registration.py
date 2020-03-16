@@ -89,7 +89,7 @@ class ViewRegistrationTestCase(TestCase):
         response = self.client.get(url)
         admissions = response.context['admissions']
         for admission in admissions:
-            self.assertEqual(admission.state, admission_state_choices.ACCEPTED)
+            self.assertIn(admission.state, [admission_state_choices.ACCEPTED, admission_state_choices.VALIDATED])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'registrations.html')
 

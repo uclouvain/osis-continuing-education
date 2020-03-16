@@ -26,6 +26,7 @@
 from django.conf.urls import url, include
 
 import continuing_education.views.file
+from continuing_education.business import registration_queue
 from continuing_education.views import (home, admission, registration, archive, formation, prospect, tasks, managers)
 from continuing_education.views.autocomplete.continuing_education_training import \
     ContinuingEducationTrainingAutocomplete
@@ -54,8 +55,6 @@ urlpatterns = [
         url(r'^change_received_file_state/(?P<admission_id>[0-9]+)/', registration.receive_file_procedure,
             name='receive_file_procedure'),
         url(r'^cancelled/', registration.list_cancelled, name='cancelled_files'),
-
-
     ])),
     url(r'^archive/', include([
         url(r'^$', archive.list_archives, name='archive'),
@@ -68,7 +67,6 @@ urlpatterns = [
         url(r'^list/update/', formation.update_formations, name='update_formations'),
         url(r'^(?P<formation_id>[0-9]+)/', formation.formation_detail, name='formation_detail'),
         url(r'^edit/(?P<formation_id>[0-9]+)/', formation.formation_edit, name='formation_edit'),
-
     ])),
     url(r'^prospects/', include([
         url(r'^$', prospect.list_prospects, name='prospects'),
@@ -79,9 +77,6 @@ urlpatterns = [
         url(r'^$', tasks.list_tasks, name='list_tasks'),
         url(r'^paper_registrations_file_received', tasks.paper_registrations_file_received,
             name='paper_registrations_file_received'),
-
-
-
         url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
         url(r'^process_admissions', tasks.process_admissions, name='process_admissions'),
     ])),
@@ -91,4 +86,5 @@ urlpatterns = [
         url(r'^delete/(?P<training>[0-9]+)/(?P<manager>[0-9]+)',
             managers.delete_person_training, name='delete_person_training')
     ])),
+    url(r'^injection/(?P<admission_id>[0-9]+)/', registration_queue.sending_admission_to_queue, name='injection_to_epc')
 ]

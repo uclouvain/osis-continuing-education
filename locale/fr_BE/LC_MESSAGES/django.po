@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-11 15:45+0100\n"
+"POT-Creation-Date: 2020-03-16 11:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -304,8 +304,14 @@ msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
 msgid ""
-"Continuing education managers and student workers only are allowed to validate a registration"
-msgstr "Seuls les gestionnaires IUFC et les jobistes peuvent valider une inscription"
+"Continuing education managers and student workers only are allowed to "
+"validate a registration"
+msgstr ""
+"Seuls les gestionnaires IUFC et les jobistes peuvent valider une inscription"
+
+#, python-format
+msgid "Could not send admission json with uuid %(uuid)s in queue"
+msgstr ""
 
 msgid "Country"
 msgstr "Pays"
@@ -569,6 +575,9 @@ msgstr "Inactif"
 msgid "Initial state"
 msgstr "Etat initial"
 
+msgid "Inject into EPC"
+msgstr "Injecter dans EPC"
+
 msgid "Injection status"
 msgstr "Etat de l'injection"
 
@@ -773,6 +782,9 @@ msgid ""
 msgstr ""
 "Le numéro de téléphone doit commencer par 0 ou 00 ou '+' suivi de minimum 7 "
 "chiffres et jusqu'à 15 chiffres."
+
+msgid "Please ensure that you have made the necessary corrections."
+msgstr "Veuillez vous assurer d'avoir fait les corrections nécessaires."
 
 msgid "Please select at least one admission to process."
 msgstr "Veuillez sélectionner au moins une admission à traiter"
@@ -1131,6 +1143,9 @@ msgstr ""
 "Un email de notification sera envoyé au participant, indiquant qu'une "
 "facture est disponible."
 
+msgid "This will set the ucl registration state to Sended."
+msgstr "L'état de l'inscription au rôle va revenir au statut 'Envoyé'."
+
 msgid "This will unarchive all selected archives. Are you sure ?"
 msgstr ""
 "Les archives sélectionnées vont être désarchivées. Êtes-vous certain·e de "
@@ -1344,6 +1359,9 @@ msgstr "gestionnaires"
 
 msgid "not received"
 msgstr "non reçu"
+
+msgid "reasons"
+msgstr "raisons"
 
 msgid "received"
 msgstr "reçu"

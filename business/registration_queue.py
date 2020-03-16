@@ -29,8 +29,13 @@ import logging
 import pika
 import pika.exceptions
 from django.conf import settings
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 
+from base.views.common import display_error_messages
+from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import ucl_registration_state_choices
 from osis_common.queue.queue_sender import send_message
@@ -87,7 +92,7 @@ def save_role_registered_in_admission(data):
     admission.save()
 
 
-def send_admission_to_queue(admission):
+def send_admission_to_queue(request, admission):
     data = get_json_for_epc(admission)
     credentials = pika.PlainCredentials(settings.QUEUES.get('QUEUE_USER'),
                                         settings.QUEUES.get('QUEUE_PASSWORD'))
@@ -102,4 +107,16 @@ def send_admission_to_queue(admission):
         send_message(queue_name, data, connect, channel)
         admission.ucl_registration_complete = ucl_registration_state_choices.SENDED
     except (RuntimeError, pika.exceptions.ConnectionClosed, pika.exceptions.ChannelClosed, pika.exceptions.AMQPError):
-        logger.exception('Could not send admission json with uuid {} in queue'.format(admission.uuid))
+        logger.exception(_('Could not send admission json with uuid %(uuid)s in queue') % {'uuid': admission.uuid})
+        display_error_messages(
+            request, _('Could not send admission json with uuid %(uuid)s in queue') % {'uuid': admission.uuid}
+        )
+
+
+@login_required
+@user_passes_test(is_continuing_education_manager)
+def sending_admission_to_queue(request, admission_id):
+    redirection = request.META.get('HTTP_REFERER')
+    admission = Admission.objects.get(id=admission_id)
+    send_admission_to_queue(request, admission)
+    return HttpResponseRedirect(redirection)
