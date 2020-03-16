@@ -18,7 +18,6 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
 
-
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
     'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
