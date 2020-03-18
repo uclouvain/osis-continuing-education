@@ -42,7 +42,7 @@ from continuing_education.views.common import get_object_list, display_errors
 
 
 @login_required
-@permission_required('continuing_education.validate_registration', raise_exception=True)
+@permission_required('continuing_education.validate_registration', raise_exception=True)   # Fix use another permission
 @user_passes_test(is_not_student_worker)
 @cache_filter()
 def list_managers(request):

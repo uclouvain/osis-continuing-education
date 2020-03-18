@@ -26,13 +26,14 @@
 import itertools
 from collections import OrderedDict
 
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
+from rules.contrib.views import permission_required, objectgetter
 
 from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
@@ -218,7 +219,9 @@ def _invoice_file_exists_for_admission(admission):
 
 
 @login_required
-@permission_required('continuing_education.change_admission', raise_exception=True)
+@permission_required('continuing_education.change_admission',
+                     fn=objectgetter(Admission, 'admission_id'),
+                     raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
@@ -325,7 +328,7 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
 
 
 def _validate_admission(request, adm_form):
-    if request.user.has_perm("continuing_education.validate_registration"):
+    if request.user.has_perm("continuing_education.validate_registration", adm_form.instance):
         save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
         display_error_messages(
@@ -336,7 +339,9 @@ def _validate_admission(request, adm_form):
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission", raise_exception=True)
+@permission_required("continuing_education.change_admission",
+                     fn=objectgetter(Admission, 'admission_id'),
+                     raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def validate_field(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
@@ -361,16 +366,16 @@ def validate_field(request, admission_id):
 
 
 def _get_states_choices(accepted_states, admission, request):
-    if not request.user.has_perm('continuing_education.validate_registration') \
-            and admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
+    if not request.user.has_perm('continuing_education.validate_registration', admission):
         return []
     else:
-        return [] if admission and admission.is_draft() else accepted_states.get('choices', ())
+        return [] if admission and admission.is_admission_draft() else accepted_states.get('choices', ())
 
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission", raise_exception=True)
+@permission_required("continuing_education.change_admission", fn=objectgetter(Admission, 'admission_id'),
+                     raise_exception=True)
 @user_passes_test(is_not_student_worker)
 @require_GET
 def get_formation_information(request):
@@ -380,7 +385,8 @@ def get_formation_information(request):
 
 
 @login_required
-@permission_required('continuing_education.change_admission', raise_exception=True)
+@permission_required('continuing_education.change_admission', fn=objectgetter(Admission, 'admission_id'),
+                     raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def billing_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
