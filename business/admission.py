@@ -122,7 +122,7 @@ def send_submission_email_to_admission_managers(admission, connected_user):
                 'state': _(admission.state),
                 'formation_link': formation_url,
                 'admission_data': _get_formatted_admission_data(admission),
-                'attachment': True if attachments else None,
+                'attachment_removed': attachments is None,
             },
             'subject': {
                 'formation': admission.formation.acronym,
@@ -312,10 +312,10 @@ def _build_validation_msg(extra, key, meta, response):
         response[key] = meta.get_field(key).verbose_name
 
 
-def _get_attachments(id, max_size):
+def _get_attachments(admission_id, max_size):
     tot_size = 0
     attachments = []
-    for file in AdmissionFile.objects.all().filter(admission=id):
+    for file in AdmissionFile.objects.all().filter(admission=admission_id):
         tot_size += file.size
         attachments.append((file.name, file.path.read()))
     if tot_size < max_size:

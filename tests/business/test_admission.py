@@ -36,7 +36,6 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
     check_required_field_for_participant, _get_attachments
@@ -47,10 +46,12 @@ from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
 from continuing_education.models.enums.groups import MANAGERS_GROUP
+from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -283,13 +284,18 @@ class SendEmailTest(TestCase):
         self.assertEqual(len(args.get('receivers')), 1)
         self.assertIsNone(args.get('attachment'))
 
-    def test_attachments_too_big(self):
+    def test_get_attachments_with_attachment_size_nok(self):
         max_size_to_check = self.admission_file.size - 1
         self.assertIsNone(_get_attachments(self.admission.id, max_size_to_check))
 
-    def test_attachments(self):
+    def test_get_attachments_with_attachment_size_ok(self):
         max_size_to_check = self.admission_file.size + 1
         self.assertEqual(len(_get_attachments(self.admission.id, max_size_to_check)), 1)
+
+    def test_get_attachments_without_attachment(self):
+        max_size_to_check = self.admission_file.size - 1
+        AdmissionFile.objects.all().delete()
+        self.assertListEqual(_get_attachments(self.admission.id, max_size_to_check), [])
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_admission_accepted_with_condition(self, mock_send):
