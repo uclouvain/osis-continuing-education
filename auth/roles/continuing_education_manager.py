@@ -12,8 +12,8 @@ class ContinuingEducationManagerAdmin(OsisModelAdmin):
 
 class ContinuingEducationManager(osis_role_models.RoleModel):
     class Meta:
-        verbose_name = _("Continuing Education Manager")
-        verbose_name_plural = _("Continuing Education Managers")
+        verbose_name = _("Continuing education manager")
+        verbose_name_plural = _("Continuing education managers")
         group_name = "continuing_education_managers"
 
     @classmethod
@@ -21,5 +21,8 @@ class ContinuingEducationManager(osis_role_models.RoleModel):
         return rules.RuleSet({
             'continuing_education.view_admission': rules.always_allow,
             'continuing_education.change_admission': ~predicates.is_admission_draft,
-            'continuing_education.validate_registration': predicates.is_registration_submitted
+            'continuing_education.validate_registration': predicates.is_registration_submitted,
+            'continuing_education.view_persontraining': rules.always_allow,
+            'continuing_education.add_persontraining': rules.always_allow,
+            'continuing_education.delete_persontraining': rules.always_allow,
         })

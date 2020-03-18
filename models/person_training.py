@@ -50,4 +50,4 @@ class PersonTraining(Model):
 
     class Meta:
         unique_together = ("person", "training")
-        default_permissions = []
+        default_permissions = ['view', 'add', 'delete']

@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -32,7 +32,6 @@ from django.utils.translation import gettext_lazy as _
 from base.models.person import Person
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
@@ -42,8 +41,7 @@ from continuing_education.views.common import get_object_list, display_errors
 
 
 @login_required
-@permission_required('continuing_education.validate_registration', raise_exception=True)   # Fix use another permission
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.view_persontraining', raise_exception=True)
 @cache_filter()
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
@@ -82,8 +80,7 @@ def list_managers(request):
 
 
 @login_required
-@permission_required('continuing_education.validate_registration', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.delete_persontraining', raise_exception=True)
 def delete_person_training(request, training, manager):
     redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
 
