@@ -45,8 +45,8 @@ from continuing_education.views.common import get_object_list, display_errors
 @cache_filter()
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
-    person_training_form = PersonTrainingForm(request.POST or None)
     trainings = ContinuingEducationTraining.objects.all().select_related('education_group')
+    person_training_form = PersonTrainingForm()
 
     if search_form.is_valid():
         managers = search_form.get_managers()
@@ -55,7 +55,21 @@ def list_managers(request):
             user__groups__name=TRAINING_MANAGERS_GROUP
         ).order_by('last_name')
 
+    for manager in managers:
+        manager.trainings = trainings.filter(managers=manager).distinct()
+
+    return render(request, "managers.html", {
+        'managers': get_object_list(request, managers),
+        'search_form': search_form,
+        'person_training_form': person_training_form
+    })
+
+
+@login_required
+@permission_required('continuing_education.add_persontraining', raise_exception=True)
+def add_person_training(request):
     errors = []
+    person_training_form = PersonTrainingForm(request.POST or None)
     if person_training_form.is_valid():
         person = person_training_form.cleaned_data['person']
         _append_user_to_training_managers(person.user)
@@ -68,15 +82,7 @@ def list_managers(request):
     else:
         errors.append(person_training_form.errors)
         display_errors(request, errors)
-
-    for manager in managers:
-        manager.trainings = trainings.filter(managers=manager).distinct()
-
-    return render(request, "managers.html", {
-        'managers': get_object_list(request, managers),
-        'search_form': search_form,
-        'person_training_form': person_training_form
-    })
+    return redirect(list_managers)
 
 
 @login_required
