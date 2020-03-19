@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import datetime
 from django.test import TestCase
 
 from base.tests.factories.academic_year import AcademicYearFactory
@@ -36,6 +37,9 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
+
+IDX_COL_MAIL = 2
+IDX_COL_BIRTHDATE = 6
 
 CITY_NAME = 'Moignelée'
 COUNTRY_NAME = 'Algérie'
@@ -54,9 +58,9 @@ class TestXlsCommon(TestCase):
         )
         algeria = CountryFactory(name=COUNTRY_NAME)
         cls.address = AddressFactory(city=CITY_NAME,
-                                      country=algeria,
-                                      location='Street',
-                                      postal_code='5500')
+                                     country=algeria,
+                                     location='Street',
+                                     postal_code='5500')
 
         cls.registration = AdmissionFactory(
             formation=cls.formation,
@@ -65,7 +69,8 @@ class TestXlsCommon(TestCase):
             payment_complete=False,
             citizenship=algeria,
             person_information=ContinuingEducationPersonFactory(birth_location=CITY_NAME,
-                                                                birth_country=algeria),
+                                                                birth_country=algeria,
+                                                                birth_date=datetime.datetime(1977, 4, 22)),
             address=cls.address,
             billing_address=cls.address,
             residence_address=cls.address
@@ -84,3 +89,17 @@ class TestXlsCommon(TestCase):
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
+
+    def test_birth_date(self):
+        result = extract_xls_data_from_admission(self.registration)
+        self.assertEqual(result[IDX_COL_BIRTHDATE], self.registration.person_information.birth_date)
+
+        result = extract_xls_data_from_registration(self.registration)
+        self.assertEqual(result[IDX_COL_BIRTHDATE], self.registration.person_information.birth_date)
+
+    def test_email(self):
+        result = extract_xls_data_from_admission(self.registration)
+        self.assertEqual(result[IDX_COL_MAIL], self.registration.person_information.person.email)
+
+        result = extract_xls_data_from_registration(self.registration)
+        self.assertEqual(result[IDX_COL_MAIL], self.registration.person_information.person.email)

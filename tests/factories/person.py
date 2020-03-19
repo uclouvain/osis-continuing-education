@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+import datetime
 import factory
 
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
@@ -39,3 +39,5 @@ class ContinuingEducationPersonFactory(factory.DjangoModelFactory):
     # Identification
     birth_location = factory.Faker('city')
     birth_country = factory.SubFactory(CountryFactory)
+    birth_date = factory.fuzzy.FuzzyDate(datetime.datetime(1977, 1, 1),
+                                         datetime.datetime(2001, 3, 1))
