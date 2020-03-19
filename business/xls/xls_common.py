@@ -75,11 +75,11 @@ def extract_xls_data_from_admission(admission):
     return [
         admission.person_information.person.last_name,
         admission.person_information.person.first_name,
-        admission.email,
+        admission.person_information.person.email,
         _(admission.state) if admission.state else '',
         admission.person_information.person.get_gender_display() if admission.person_information.person.gender else '',
         admission.citizenship.name.upper() if admission.citizenship else '',
-        admission.person_information.person.birth_date,
+        admission.person_information.birth_date,
         admission.person_information.birth_location.upper() if admission.person_information.birth_location else '',
         admission.person_information.birth_country.name.upper() if admission.person_information.birth_country else '',
         admission.phone_mobile,
