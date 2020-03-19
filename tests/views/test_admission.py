@@ -57,6 +57,7 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
 from reference.tests.factories.country import CountryFactory
@@ -510,7 +511,7 @@ class BillingEditTestCase(TestCase):
             education_group=cls.education_group,
             registration_required=False
         )
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission', groups=[MANAGERS_GROUP])
+        cls.manager = ContinuingEducationManagerFactory()
         cls.student_worker = PersonWithPermissionsFactory('view_admission', groups=[STUDENT_WORKERS_GROUP])
         EntityVersionFactory(
             entity=cls.formation.management_entity
@@ -523,7 +524,7 @@ class BillingEditTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_billing_edit(self):
         url = reverse('billing_edit', args=[self.admission.id])

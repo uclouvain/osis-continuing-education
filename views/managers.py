@@ -41,8 +41,8 @@ from continuing_education.views.common import get_object_list, display_errors
 
 
 @login_required
-@permission_required('continuing_education.view_persontraining', raise_exception=True)
 @cache_filter()
+@permission_required('continuing_education.view_persontraining', raise_exception=True)
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
     trainings = ContinuingEducationTraining.objects.all().select_related('education_group')

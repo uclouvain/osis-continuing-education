@@ -58,7 +58,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices, file_category_choices, \
     ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
+    ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
     ADMISSION_CREATION, get_revision_messages
@@ -67,6 +67,7 @@ from continuing_education.views.file import _get_file_category_choices_with_disa
 from continuing_education.views.home import is_continuing_education_student_worker
 from continuing_education.views.registration import _update_or_create_specific_address
 from osis_common.decorators.ajax import ajax_required
+from osis_common.utils.models import get_object_or_none
 
 
 @login_required
@@ -218,10 +219,12 @@ def _invoice_file_exists_for_admission(admission):
     return AdmissionFile.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
 
 
+def admission_getter(request, *view_args, **view_kwargs):
+    return get_object_or_none(Admission, id=view_kwargs.get('admission_id'))
+
+
 @login_required
-@permission_required('continuing_education.change_admission',
-                     fn=objectgetter(Admission, 'admission_id'),
-                     raise_exception=True)
+@permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
@@ -339,8 +342,7 @@ def _validate_admission(request, adm_form):
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission",
-                     fn=objectgetter(Admission, 'admission_id'),
+@permission_required("continuing_education.change_admission", fn=objectgetter(Admission, 'admission_id'),
                      raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def validate_field(request, admission_id):
@@ -369,13 +371,12 @@ def _get_states_choices(accepted_states, admission, request):
     if not request.user.has_perm('continuing_education.validate_registration', admission):
         return []
     else:
-        return [] if admission and admission.is_admission_draft() else accepted_states.get('choices', ())
+        return [] if admission and admission.is_draft() else accepted_states.get('choices', ())
 
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission", fn=objectgetter(Admission, 'admission_id'),
-                     raise_exception=True)
+@permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 @require_GET
 def get_formation_information(request):
