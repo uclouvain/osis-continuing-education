@@ -23,8 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
-from osis_role.tests.factories.role_model import RoleModelFactory
+from osis_role.contrib.tests.factories import RoleModelFactory
 
 
 class ContinuingEducationManagerFactory(RoleModelFactory):
