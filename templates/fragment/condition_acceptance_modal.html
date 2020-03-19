@@ -53,16 +53,3 @@
         </div>
     </div>
 </div>
-
-{% block script %}
-    <script>
-        enable_or_disable_confirm_button();
-        $('.accept_anac select').change(function (e) {
-            enable_or_disable_confirm_button()
-        });
-
-        function enable_or_disable_confirm_button() {
-            document.getElementById("add_condition_acceptance").disabled = $('.accept_anac select').val() === '';
-        }
-    </script>
-{% endblock %}
