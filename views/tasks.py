@@ -38,6 +38,7 @@ from continuing_education.business.perms import is_not_student_worker, is_studen
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import SUBMITTED, WAITING
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
     REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -48,12 +49,9 @@ from continuing_education.views.home import is_continuing_education_student_work
 def list_tasks(request):
     is_continuing_education_mgr = is_continuing_education_manager(request.user)
     is_continuing_education_training_mgr = is_continuing_education_training_manager(request.user)
-    if not is_continuing_education_mgr and not is_continuing_education_training_mgr \
-            and not is_student_worker(request.user):
+    if not any([is_continuing_education_mgr, is_continuing_education_training_mgr, is_student_worker(request.user)]):
         raise PermissionDenied
-    all_admissions = Admission.objects.select_related(
-        'person_information__person', 'formation__education_group'
-    )
+    all_admissions = Admission.objects.select_related('person_information__person', 'formation__education_group')
     if not is_student_worker(request.user):
         all_admissions = filter_authorized_admissions(request.user, all_admissions)
 
@@ -103,7 +101,6 @@ def mark_diplomas_produced(request):
 
 def _mark_diplomas_produced_list(registrations_ids_list):
     registrations_list = Admission.objects.filter(id__in=registrations_ids_list)
-
     registrations_list_states = registrations_list.values_list('state', flat=True)
     if not all(state == admission_state_choices.VALIDATED for state in registrations_list_states):
         raise PermissionDenied(_('The registrations must be validated to mark diploma as produced.'))
@@ -133,8 +130,7 @@ def process_admissions(request):
 def _process_admissions_list(request, registrations_ids_list, new_status):
     admissions_list = Admission.objects.filter(id__in=registrations_ids_list)
     admissions_list_states = admissions_list.values_list('state', flat=True)
-    if not all(state == admission_state_choices.SUBMITTED or admission_state_choices.WAITING
-               for state in admissions_list_states):
+    if not all(state in [SUBMITTED, WAITING] for state in admissions_list_states):
         raise PermissionDenied(_('The admission must be submitted or waiting to be accepted.'))
 
     for admission in admissions_list:

@@ -58,19 +58,18 @@ def list_formations(request):
 
     if request.GET.get('xls_status') == "xls_formations":
         return create_xls(request.user, formation_list, search_form)
-    continuing_education_training_manager = is_continuing_education_training_manager(request.user)
     trainings_managing = list(
-        PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True).distinct(
-            'training')) if continuing_education_training_manager else None
-    return render(request, "formations.html",
-                  {
-                      'formations': get_object_list(request, formation_list),
-                      'formations_number': len(formation_list),
-                      'search_form': search_form,
-                      'continuing_education_training_manager': continuing_education_training_manager,
-                      'trainings_managing': trainings_managing
-                  }
-                  )
+        PersonTraining.objects.filter(
+            person=request.user.person
+        ).values_list('training', flat=True).distinct('training')
+    ) if is_continuing_education_training_manager(request.user) else None
+    return render(request, "formations.html", {
+        'formations': get_object_list(request, formation_list),
+        'formations_number': len(formation_list),
+        'search_form': search_form,
+        'continuing_education_training_manager': is_continuing_education_training_manager(request.user),
+        'trainings_managing': trainings_managing
+    })
 
 
 @login_required
@@ -168,8 +167,7 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
 @permission_required('continuing_education.view_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def formation_detail(request, formation_id):
-    formation = ContinuingEducationTraining.objects.filter(
-        education_group__id=formation_id).first()
+    formation = ContinuingEducationTraining.objects.filter(education_group__id=formation_id).first()
     if formation:
         can_edit_formation = _can_edit_formation(request, formation)
         return render(
@@ -179,8 +177,7 @@ def formation_detail(request, formation_id):
                 'can_edit_formation': can_edit_formation,
             }
         )
-    else:
-        raise Http404()
+    raise Http404()
 
 
 def _can_edit_formation(request, formation):
@@ -211,6 +208,5 @@ def formation_edit(request, formation_id):
                 'address_form': address_form
             }
         )
-    else:
-        display_error_messages(request, _("You are not authorized to edit this training"))
-        return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
+    display_error_messages(request, _("You are not authorized to edit this training"))
+    return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))

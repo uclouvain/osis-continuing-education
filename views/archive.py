@@ -94,9 +94,8 @@ def change_archive_status(new_archive_status, request):
     if selected_admissions_id:
         _mark_folders_as_archived(request, selected_admissions_id, new_archive_status)
         return redirect(reverse('archive'))
-    else:
-        _set_error_message(request)
-        return HttpResponseRedirect(redirection)
+    _set_error_message(request)
+    return HttpResponseRedirect(redirection)
 
 
 def _mark_folders_as_archived(request, selected_admissions_id, new_archive_status):

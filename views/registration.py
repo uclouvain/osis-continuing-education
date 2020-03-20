@@ -88,7 +88,7 @@ def registration_edit(request, admission_id):
     residence_address_form = AddressForm(request.POST or None, instance=admission.residence_address, prefix="residence")
 
     errors = []
-    if registration_form.is_valid() and billing_address_form.is_valid() and residence_address_form.is_valid():
+    if all([registration_form.is_valid(), billing_address_form.is_valid(), residence_address_form.is_valid()]):
         billing_address = _update_or_create_specific_address(
             admission.address,
             billing_address,
@@ -107,7 +107,6 @@ def registration_edit(request, admission_id):
         admission.residence_address = residence_address
         message = get_appropriate_revision_message(registration_form)
         save_and_create_revision(message, admission, request.user)
-
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission_id}) + "#registration")
     else:
         errors.append(registration_form.errors)
@@ -130,11 +129,8 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
         return admission_address
     elif specific_address == admission_address:
         # We must create a new specific address, not update the admission's address.
-        specific_address = Address.objects.create(**specific_address_form.cleaned_data)
-        return specific_address
-    else:
-        specific_address = specific_address_form.save()
-        return specific_address
+        return Address.objects.create(**specific_address_form.cleaned_data)
+    return specific_address_form.save()
 
 
 @login_required
@@ -145,9 +141,8 @@ def receive_files_procedure(request):
     if selected_admissions_id:
         _mark_folders_as_received(request, selected_admissions_id, True)
         return redirect(reverse('registration'))
-    else:
-        _set_error_message(request)
-        return HttpResponseRedirect(redirection)
+    _set_error_message(request)
+    return HttpResponseRedirect(redirection)
 
 
 def _mark_folders_as_received(request, selected_admissions_ids, new_received_file_state):

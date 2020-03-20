@@ -46,7 +46,7 @@ from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
-    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
+    ConditionAcceptanceAdmissionForm, CancelAdmissionForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
@@ -109,16 +109,9 @@ def admission_detail(request, admission_id):
     if not user_is_continuing_education_student_worker:
         can_access_admission(request.user, admission)
 
-    files = AdmissionFile.objects.filter(admission=admission_id)
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
-    states = _get_states_choices(accepted_states, admission, request)
 
-    adm_form = AdmissionForm(
-        request.POST or None,
-        instance=admission,
-    )
-
-    version_list = get_versions(admission)
+    adm_form = AdmissionForm(request.POST or None, instance=admission)
 
     if request.method == 'POST' and request.FILES:
         return _upload_file(request, admission)
@@ -129,20 +122,11 @@ def admission_detail(request, admission_id):
         prefix='rejected',
     )
 
-    waiting_adm_form = WaitingAdmissionForm(
-        request.POST or None,
-        instance=admission,
-    )
+    waiting_adm_form = WaitingAdmissionForm(request.POST or None, instance=admission)
 
-    condition_acceptance_adm_form = ConditionAcceptanceAdmissionForm(
-        request.POST or None,
-        instance=admission,
-    )
+    condition_acceptance_adm_form = ConditionAcceptanceAdmissionForm(request.POST or None, instance=admission)
 
-    cancel_adm_form = CancelAdmissionForm(
-        request.POST or None,
-        instance=admission,
-    )
+    cancel_adm_form = CancelAdmissionForm(request.POST or None, instance=admission)
 
     admission._original_state = admission.state
     if adm_form.is_valid():
@@ -155,8 +139,8 @@ def admission_detail(request, admission_id):
         request, "admission_detail.html",
         {
             'admission': admission,
-            'files': files,
-            'states': states,
+            'files': AdmissionFile.objects.filter(admission=admission_id),
+            'states': _get_states_choices(accepted_states, admission, request),
             'admission_form': adm_form,
             'rejected_adm_form': rejected_adm_form,
             'waiting_adm_form': waiting_adm_form,
@@ -165,7 +149,7 @@ def admission_detail(request, admission_id):
             'invoice': file_category_choices.INVOICE,
             'condition_acceptance_adm_form': condition_acceptance_adm_form,
             'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
-            'version': version_list,
+            'version': get_versions(admission),
             'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
             'opened_tab': request.GET.get('opened_tab'),
             'injection_not_rejected': admission.ucl_registration_complete != ucl_registration_state_choices.REJECTED
@@ -187,10 +171,11 @@ def _display_adapted_ucl_registration_message(admission, request):
 def _change_state(request, forms, accepted_states, admission):
     adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form = forms
     new_state = adm_form.instance.state
-    if new_state == ACCEPTED and not admission.formation.registration_required:
-        new_state = ACCEPTED_NO_REGISTRATION_REQUIRED
-    if new_state == CANCELLED and not admission.formation.registration_required:
-        new_state = CANCELLED_NO_REGISTRATION_REQUIRED
+    if not admission.formation.registration_required:
+        if new_state == ACCEPTED:
+            new_state = ACCEPTED_NO_REGISTRATION_REQUIRED
+        if new_state == CANCELLED:
+            new_state = CANCELLED_NO_REGISTRATION_REQUIRED
     if new_state in accepted_states.get('states', []):
         _save_form_with_provided_reason(
             waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form, cancel_adm_form
@@ -221,14 +206,11 @@ def _invoice_file_exists_for_admission(admission):
 @permission_required('continuing_education.change_admission', raise_exception=True)
 @user_passes_test(is_not_student_worker)
 def admission_form(request, admission_id=None):
-    admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
-    if admission:
-        can_access_admission(request.user, admission)
-        if admission.is_draft():
-            raise PermissionDenied
+    admission = admission_id and get_object_or_404(Admission, pk=admission_id)
+    _manage_enter_admission_form_view(admission, request)
     selected_person = bool(request.POST.get('person_information', False))
-    states = admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ()) if admission else None
-    base_person = admission.person_information.person if admission else None
+    states = admission and admission_state_choices.NEW_ADMIN_STATE[admission.state].get('choices', ())
+    base_person = admission and admission.person_information.person
     base_person_form = PersonForm(
         data=request.POST or None,
         instance=base_person,
@@ -237,15 +219,13 @@ def admission_form(request, admission_id=None):
     )
     person_information = ContinuingEducationPerson.objects.filter(person=base_person).first()
     # TODO :: get last admission address if it exists instead of None
-    address = admission.address if admission else None
+    address = admission and admission.address
     state = admission.state if admission else SUBMITTED
     adm_form = AdmissionForm(
         data=request.POST or None,
         user=request.user,
         instance=admission,
-        initial={
-            'state': state
-        }
+        initial={'state': state}
     )
     person_form = ContinuingEducationPersonForm(
         data=request.POST or None,
@@ -253,13 +233,9 @@ def admission_form(request, admission_id=None):
         selected_person=selected_person
     )
     address_form = AddressForm(request.POST or None, instance=address)
-    state = admission.state if admission else None
-    if adm_form.is_valid() and person_form.is_valid() and address_form.is_valid() and base_person_form.is_valid():
-        if address:
-            address = address_form.save()
-        else:
-            address = Address(**address_form.cleaned_data)
-            address.save()
+    state = admission and admission.state
+    if all([adm_form.is_valid(), person_form.is_valid(), address_form.is_valid(), base_person_form.is_valid()]):
+        _manage_addresses(address, address_form, admission)
 
         person = person_form.save(commit=False)
         base_person = base_person_form.save()
@@ -267,22 +243,14 @@ def admission_form(request, admission_id=None):
         person.save()
 
         admission = adm_form.save(commit=False)
-        admission.address = address
-        admission.billing_address = address
-        admission.residence_address = address
         if not admission.person_information:
             admission.person_information = person
-        if admission_id:
-            admission.save()
-        else:
-            save_and_create_revision(get_revision_messages(ADMISSION_CREATION), admission, request.user)
+        _create_and_make_revision_or_save_admission(admission, admission_id, request)
         if admission.state == DRAFT:
             return redirect(reverse('admission'))
         return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}))
-
-    else:
-        errors = list(itertools.product(adm_form.errors, person_form.errors, address_form.errors))
-        display_errors(request, errors)
+    errors = list(itertools.product(adm_form.errors, person_form.errors, address_form.errors))
+    display_errors(request, errors)
 
     return render(
         request,
@@ -300,6 +268,31 @@ def admission_form(request, admission_id=None):
     )
 
 
+def _manage_enter_admission_form_view(admission, request):
+    if admission:
+        can_access_admission(request.user, admission)
+        if admission.is_draft():
+            raise PermissionDenied
+
+
+def _create_and_make_revision_or_save_admission(admission, admission_id, request):
+    if admission_id:
+        admission.save()
+    else:
+        save_and_create_revision(get_revision_messages(ADMISSION_CREATION), admission, request.user)
+
+
+def _manage_addresses(address, address_form, admission):
+    if address:
+        address = address_form.save()
+    else:
+        address = Address(**address_form.cleaned_data)
+        address.save()
+    admission.address = address
+    admission.billing_address = address
+    admission.residence_address = address
+
+
 def _new_state_management(request, adm_form, admission, new_state):
     if new_state != VALIDATED:
         save_state_changed_and_send_email(adm_form.instance, request.user)
@@ -307,9 +300,7 @@ def _new_state_management(request, adm_form, admission, new_state):
         _validate_admission(request, adm_form)
         send_admission_to_queue(request, admission)
     query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
-    return redirect(
-        reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param
-    )
+    return redirect( reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param)
 
 
 def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
@@ -341,22 +332,14 @@ def _validate_admission(request, adm_form):
 def validate_field(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     response = {}
-    response.update(check_required_field_for_participant(admission.address,
-                                                         Address._meta,
-                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS,
-                                                         _('Contact address')))
-    response.update(check_required_field_for_participant(admission.billing_address,
-                                                         Address._meta,
-                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS,
-                                                         _('Billing address')))
-    response.update(check_required_field_for_participant(admission.residence_address,
-                                                         Address._meta,
-                                                         ADDRESS_PARTICIPANT_REQUIRED_FIELDS,
-                                                         _('Residence address')))
-
-    response.update(check_required_field_for_participant(admission,
-                                                         Admission._meta,
-                                                         ADMISSION_PARTICIPANT_REQUIRED_FIELDS))
+    for_datas = [
+        (admission.address, _('Contact address')), (admission.billing_address, _('Billing address')),
+        (admission.residence_address, _('Residence address')), (admission, None),
+    ]
+    for address, label in for_datas:
+        response.update(check_required_field_for_participant(
+            address, Address._meta, ADDRESS_PARTICIPANT_REQUIRED_FIELDS,  label
+        ))
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
 
 
@@ -395,7 +378,7 @@ def billing_edit(request, admission_id):
     billing_address_form = AddressForm(request.POST or None, instance=admission.billing_address, prefix="billing")
 
     errors = []
-    if registration_form.is_valid() and billing_address_form.is_valid():
+    if all([registration_form.is_valid(), billing_address_form.is_valid()]):
         billing_address = _update_or_create_specific_address(
             address,
             billing_address,
