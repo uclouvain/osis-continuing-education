@@ -235,14 +235,13 @@ def admission_form(request, admission_id=None):
     address_form = AddressForm(request.POST or None, instance=address)
     state = admission and admission.state
     if all([adm_form.is_valid(), person_form.is_valid(), address_form.is_valid(), base_person_form.is_valid()]):
-        _manage_addresses(address, address_form, admission)
-
         person = person_form.save(commit=False)
         base_person = base_person_form.save()
         person.person_id = base_person.pk
         person.save()
 
         admission = adm_form.save(commit=False)
+        _manage_addresses(address, address_form, admission)
         if not admission.person_information:
             admission.person_information = person
         _create_and_make_revision_or_save_admission(admission, admission_id, request)
