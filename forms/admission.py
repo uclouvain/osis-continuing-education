@@ -185,13 +185,13 @@ class RejectedAdmissionForm(ModelForm):
         self.fields['other_reason'].disabled = True
         self.fields['other_reason'].initial = ''
 
-    def save(self, *args, **kwargs):
+    def save(self):
         instance = super().save(commit=False)
         if self.cleaned_data["rejected_reason"] == OTHER:
             instance.state_reason = self.cleaned_data["other_reason"]
         else:
             instance.state_reason = self.cleaned_data["rejected_reason"]
-        instance.save(*args, **kwargs)
+        instance.save()
         return instance
 
 
@@ -237,13 +237,13 @@ class WaitingAdmissionForm(ModelForm):
         self.fields['other_reason'].disabled = True
         self.fields['other_reason'].initial = ''
 
-    def save(self, *args, **kwargs):
+    def save(self):
         instance = super().save(commit=False)
         if self.cleaned_data["waiting_reason"] == OTHER:
             instance.state_reason = self.cleaned_data["other_reason"]
         else:
             instance.state_reason = self.cleaned_data["waiting_reason"]
-        instance.save(*args, **kwargs)
+        instance.save()
         return instance
 
 
@@ -301,13 +301,13 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
         self.fields['condition_of_acceptance_existing'].initial = not self.instance.condition_of_acceptance
         self.fields['condition_of_acceptance'].disabled = self.instance.condition_of_acceptance
 
-    def save(self, *args, **kwargs):
+    def save(self):
         instance = super().save(commit=False)
         if eval(self.cleaned_data["condition_of_acceptance_existing"]):
             instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
         else:
             instance.condition_of_acceptance = ''
-        instance.save(*args, **kwargs)
+        instance.save()
         return instance
 
 
@@ -319,8 +319,8 @@ class CancelAdmissionForm(ModelForm):
             'state_reason',
         ]
 
-    def save(self, *args, **kwargs):
+    def save(self):
         instance = super().save(commit=False)
         instance.condition_of_acceptance = ''
-        instance.save(*args, **kwargs)
+        instance.save()
         return instance
