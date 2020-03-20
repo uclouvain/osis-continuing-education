@@ -46,7 +46,7 @@ from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
-    ConditionAcceptanceAdmissionForm, CancelAdmissionForm
+    ConditionAcceptanceAdmissionForm, CancelAdmissionForm, ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
@@ -338,7 +338,9 @@ def validate_field(request, admission_id):
     ]
     for address, label in for_datas:
         response.update(check_required_field_for_participant(
-            address, Address._meta, ADDRESS_PARTICIPANT_REQUIRED_FIELDS,  label
+            address, Address._meta,
+            ADDRESS_PARTICIPANT_REQUIRED_FIELDS if label else ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
+            label
         ))
     return JsonResponse(OrderedDict(sorted(response.items(), key=lambda x: x[1])), safe=False)
 
