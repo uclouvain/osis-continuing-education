@@ -36,8 +36,7 @@ def is_continuing_education_manager(user):
 def is_not_student_worker(user):
     if user.groups.filter(name=STUDENT_WORKERS_GROUP).exists():
         raise PermissionDenied
-    else:
-        return True
+    return True
 
 
 def is_student_worker(user):
@@ -48,8 +47,7 @@ def can_edit_paper_registration_received(user):
     if (is_continuing_education_manager(user) and user.has_perm("continuing_education.change_admission")) \
             or is_student_worker(user):
         return True
-    else:
-        raise PermissionDenied
+    raise PermissionDenied
 
 
 def is_continuing_education_training_manager(user):
@@ -64,5 +62,4 @@ def is_iufc_manager(user):
 def can_edit_ucl_registration_complete(user):
     if user.groups.filter(name=MANAGERS_GROUP).exists():
         return True
-    else:
-        raise PermissionDenied
+    raise PermissionDenied

@@ -12,6 +12,5 @@ def set_participant_required_fields(fields, list_required_fields_for_participant
 
 class CountryChoiceField(forms.ModelChoiceField):
     def __init__(self, queryset, *args, **kwargs):
-
         super().__init__(queryset, *args, **kwargs)
         self.widget.attrs['style'] = 'text-transform: uppercase;'

@@ -44,7 +44,6 @@ MAX_DOCUMENTS_SIZE = 20000000
 
 def save_state_changed_and_send_email(admission, connected_user=None):
     person = admission.person_information.person
-    mails = _get_managers_mails(admission.formation)
     condition_of_acceptance, registration_required = None, None
     state_message = get_valid_state_change_message(admission)
     save_and_create_revision(get_revision_messages(state_message), admission, connected_user)
@@ -69,7 +68,7 @@ def save_state_changed_and_send_email(admission, connected_user=None):
                 'formation': admission.formation,
                 'state': _(admission.state),
                 'reason': admission.state_reason if admission.state_reason else '-',
-                'mails': mails,
+                'mails': _get_managers_mails(admission.formation),
                 'original_state': _(admission._original_state),
                 'condition_of_acceptance': condition_of_acceptance,
                 'registration_required': registration_required
@@ -78,13 +77,7 @@ def save_state_changed_and_send_email(admission, connected_user=None):
                 'state': _(admission.state)
             }
         },
-        receivers=[
-            message_config.create_receiver(
-                person.id,
-                person.email,
-                None
-            )
-        ],
+        receivers=[message_config.create_receiver(person.id, person.email, None)],
         connected_user=connected_user
     )
 
@@ -175,11 +168,7 @@ def send_submission_email_to_participant(admission, connected_user):
             'subject': {}
         },
         receivers=[
-            message_config.create_receiver(
-                participant.id,
-                participant.email,
-                None
-            )
+            message_config.create_receiver(participant.id, participant.email, None)
         ],
         connected_user=connected_user
     )
@@ -196,7 +185,6 @@ def _get_template_reference(admission, receiver, suffix):
 
 def send_invoice_uploaded_email(admission):
     participant = admission.person_information.person
-    mails = _get_managers_mails(admission.formation)
     send_email(
         template_references={
             'html': 'iufc_participant_invoice_uploaded_html',
@@ -205,16 +193,12 @@ def send_invoice_uploaded_email(admission):
         data={
             'template': {
                 'formation': admission.formation.acronym,
-                'mails': mails
+                'mails': _get_managers_mails(admission.formation)
             },
             'subject': {}
         },
         receivers=[
-            message_config.create_receiver(
-                participant.id,
-                participant.email,
-                None
-            )
+            message_config.create_receiver(participant.id, participant.email, None)
         ],
     )
     MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
@@ -229,12 +213,9 @@ def send_email(template_references, receivers, data, connected_user=None):
         receivers,
         data['template'],
         data['subject'],
-        data.get('attachment', None)
+        data.get('attachment')
     )
-    message_service.send_messages(
-        message_content=message_content,
-        connected_user=connected_user
-    )
+    message_service.send_messages(message_content=message_content, connected_user=connected_user)
 
 
 def _get_continuing_education_managers():
@@ -275,10 +256,8 @@ def get_management_faculty(education_group_yr):
         entity = EntityVersion.objects.filter(entity=management_entity).first()
         if entity and entity.entity_type == FACULTY:
             return management_entity
-        else:
-            return _get_faculty_parent(management_entity)
-    else:
-        return None
+        return _get_faculty_parent(management_entity)
+    return None
 
 
 def _get_faculty_parent(management_entity):
@@ -288,9 +267,8 @@ def _get_faculty_parent(management_entity):
 
 
 def _get_managers_mails(formation):
-    managers_mail = formation.managers.exclude(email="")\
-        .order_by('last_name').\
-        values_list('email', flat=True) if formation else []
+    managers_mail = formation.managers.exclude(email="").order_by('last_name').values_list('email', flat=True) \
+        if formation else []
     return _(" or ").join(managers_mail)
 
 
