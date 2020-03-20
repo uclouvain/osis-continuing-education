@@ -63,9 +63,7 @@ class PersonTrainingForm(ModelForm):
     def clean(self):
         try:
             PersonTraining.objects.get(person=self.cleaned_data['person'], training=self.cleaned_data['training'])
-        except PersonTraining.DoesNotExist:
-            pass
-        except KeyError:
+        except (PersonTraining.DoesNotExist, KeyError):
             pass
         else:
             raise ValidationError({'person': [_('Manager is already assigned on this training')]})
@@ -74,10 +72,6 @@ class PersonTrainingForm(ModelForm):
         return self.cleaned_data
 
     def save(self, commit=True):
-        instance = super(PersonTrainingForm, self).save(commit=False)
-        if commit:
-            instance.save()
-        instance.person.user.groups.add(
-            Group.objects.get(name=TRAINING_MANAGERS_GROUP)
-        )
+        instance = super(PersonTrainingForm, self).save(commit=commit)
+        instance.person.user.groups.add(Group.objects.get(name=TRAINING_MANAGERS_GROUP))
         return instance

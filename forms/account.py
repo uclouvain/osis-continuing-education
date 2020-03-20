@@ -18,15 +18,10 @@ class ContinuingEducationPersonForm(ModelForm):
     )
 
     def __init__(self, selected_person, *args, **kwargs):
-
         super(ContinuingEducationPersonForm, self).__init__(*args, **kwargs)
 
         if not selected_person:
-            set_participant_required_fields(
-                self.fields,
-                ADMISSION_PARTICIPANT_REQUIRED_FIELDS,
-                True
-            )
+            set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS, True)
 
     class Meta:
         model = ContinuingEducationPerson

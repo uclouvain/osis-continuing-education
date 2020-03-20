@@ -72,22 +72,18 @@ class AdmissionForm(ModelForm):
         super().__init__(data, **kwargs)
         try:
             starting_year = AcademicYear.objects.current().year
-            self.fields['academic_year'].queryset = AcademicYear.objects.filter(year__gte=starting_year - 2)\
-                .order_by('year')
+            self.fields['academic_year'].queryset = AcademicYear.objects.filter(
+                year__gte=starting_year - 2
+            ).order_by('year')
         except AttributeError:
             self.fields['academic_year'].queryset = AcademicYear.objects.none()
 
-        if user and is_continuing_education_manager(user):
-            self.fields['academic_year'].disabled = False
-            self.fields['academic_year'].required = True
-        else:
-            self.fields['academic_year'].disabled = True
-            self.fields['academic_year'].required = False
+        is_iufc_manager = user and is_continuing_education_manager(user)
+        self.fields['academic_year'].disabled = not is_iufc_manager
+        self.fields['academic_year'].required = is_iufc_manager
 
         if user and not user.groups.filter(name='continuing_education_managers').exists():
-            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
-                managers=user.person
-            )
+            self.fields['formation'].queryset = self.fields['formation'].queryset.filter(managers=user.person)
         set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
 
     class Meta:
@@ -147,7 +143,6 @@ class AdmissionForm(ModelForm):
 
 
 class RejectedAdmissionForm(ModelForm):
-
     rejected_reason = forms.ChoiceField(
         choices=REJECTED_REASON_CHOICES,
         required=True,
@@ -190,18 +185,17 @@ class RejectedAdmissionForm(ModelForm):
         self.fields['other_reason'].disabled = True
         self.fields['other_reason'].initial = ''
 
-    def save(self):
+    def save(self, *args, **kwargs):
         instance = super().save(commit=False)
         if self.cleaned_data["rejected_reason"] == OTHER:
             instance.state_reason = self.cleaned_data["other_reason"]
         else:
             instance.state_reason = self.cleaned_data["rejected_reason"]
-        instance.save()
+        instance.save(*args, **kwargs)
         return instance
 
 
 class WaitingAdmissionForm(ModelForm):
-
     waiting_reason = forms.ChoiceField(
         choices=WAITING_REASON_CHOICES_SHORTENED_DISPLAY,
         required=True,
@@ -221,7 +215,6 @@ class WaitingAdmissionForm(ModelForm):
         ]
 
     def __init__(self, data, **kwargs):
-
         super().__init__(data, **kwargs)
 
         if data is None:
@@ -244,13 +237,13 @@ class WaitingAdmissionForm(ModelForm):
         self.fields['other_reason'].disabled = True
         self.fields['other_reason'].initial = ''
 
-    def save(self):
+    def save(self, *args, **kwargs):
         instance = super().save(commit=False)
         if self.cleaned_data["waiting_reason"] == OTHER:
             instance.state_reason = self.cleaned_data["other_reason"]
         else:
             instance.state_reason = self.cleaned_data["waiting_reason"]
-        instance.save()
+        instance.save(*args, **kwargs)
         return instance
 
 
@@ -305,26 +298,20 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
 
     def _accepted_state_init(self):
         self.fields['condition_of_acceptance'].initial = self.instance.condition_of_acceptance
+        self.fields['condition_of_acceptance_existing'].initial = not self.instance.condition_of_acceptance
+        self.fields['condition_of_acceptance'].disabled = self.instance.condition_of_acceptance
 
-        if not self.instance.condition_of_acceptance:
-            self.fields['condition_of_acceptance_existing'].initial = False
-            self.fields['condition_of_acceptance'].disabled = True
-        else:
-            self.fields['condition_of_acceptance_existing'].initial = True
-            self.fields['condition_of_acceptance'].disabled = False
-
-    def save(self):
+    def save(self, *args, **kwargs):
         instance = super().save(commit=False)
         if eval(self.cleaned_data["condition_of_acceptance_existing"]):
             instance.condition_of_acceptance = self.cleaned_data["condition_of_acceptance"]
         else:
             instance.condition_of_acceptance = ''
-        instance.save()
+        instance.save(*args, **kwargs)
         return instance
 
 
 class CancelAdmissionForm(ModelForm):
-
     class Meta:
         model = Admission
         fields = [
@@ -332,8 +319,8 @@ class CancelAdmissionForm(ModelForm):
             'state_reason',
         ]
 
-    def save(self):
+    def save(self, *args, **kwargs):
         instance = super().save(commit=False)
         instance.condition_of_acceptance = ''
-        instance.save()
+        instance.save(*args, **kwargs)
         return instance

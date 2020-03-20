@@ -464,7 +464,7 @@ class Admission(Model):
             self._get_awareness_values(field)
             for field in Admission._meta.get_fields()
             if 'awareness_' in field.name and self._get_awareness_values(field)
-            ]
+        ]
         return ", ".join(list_awareness)
 
     def _get_awareness_values(self, field):
@@ -474,8 +474,11 @@ class Admission(Model):
             return "{} : {}".format(_('Other'), getattr(self, field.name))
 
     def _has_awareness_other(self, field):
-        return isinstance(getattr(self, field.name), str) and field.name == "awareness_other" and len(
-            getattr(self, field.name)) > 0
+        return all([
+            isinstance(getattr(self, field.name), str),
+            field.name == "awareness_other",
+            len(getattr(self, field.name)) > 0
+        ])
 
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
@@ -562,8 +565,10 @@ def can_access_admission(user, admission):
 
 def _build_address(address):
     if address:
-        return "{} - {} {} {}".format(address.location if address.location else '',
-                                      address.postal_code if address.postal_code else '',
-                                      address.city.upper() if address.city else '',
-                                      "- {}".format(address.country.name.upper()) if address.country else '')
+        return "{} - {} {} {}".format(
+            address.location or '',
+            address.postal_code or '',
+            address.city.upper() if address.city else '',
+            "- {}".format(address.country.name.upper()) if address.country else ''
+        )
     return ''

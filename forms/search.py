@@ -150,7 +150,6 @@ def search_admissions_with_free_text(free_text, qs):
 
 
 class RegistrationFilterForm(AdmissionFilterForm):
-
     ucl_registration_complete = forms.ChoiceField(
         choices=BOOLEAN_CHOICES,
         required=False,
@@ -236,9 +235,8 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
         if a_state is None or a_state == '':
             a_state = STATES_FOR_ARCHIVE
-        else:
-            if a_state == ACCEPTED:
-                a_state = [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]
+        elif a_state == ACCEPTED:
+            a_state = [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]
 
         qs = get_queryset_by_faculty_formation(
             self.cleaned_data['faculty'],
@@ -254,23 +252,14 @@ class ArchiveFilterForm(AdmissionFilterForm):
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
     qs = Admission.objects.all()
-
     if states:
         if isinstance(states, list):
-            qs = Admission.objects.filter(
-                state__in=states
-            )
+            qs = Admission.objects.filter(state__in=states)
         else:
-            qs = Admission.objects.filter(
-                state=states
-            )
+            qs = Admission.objects.filter(state=states)
 
     if faculty:
-        qs = _get_filter_entity_management(
-            qs,
-            faculty.acronym,
-            True
-        )
+        qs = _get_filter_entity_management(qs, faculty.acronym, True)
 
     if formation:
         qs = qs.filter(formation=formation)
@@ -325,16 +314,13 @@ class FormationFilterForm(AdmissionFilterForm):
 
         qs = _build_active_parameter(qs, self.cleaned_data.get('state'))
         if faculty:
-            qs = _get_formation_filter_entity_management(
-                qs,
-                faculty.acronym,
-                True
-            )
+            qs = _get_formation_filter_entity_management(qs, faculty.acronym, True)
 
         if acronym:
             qs = qs.filter(
                 Q(educationgroupyear__acronym__icontains=acronym) |
-                Q(educationgroupyear__partial_acronym__icontains=acronym))
+                Q(educationgroupyear__partial_acronym__icontains=acronym)
+            )
 
         if title:
             qs = qs.filter(educationgroupyear__title__icontains=title)
@@ -377,8 +363,9 @@ class ManagerFilterForm(BootstrapForm):
     )
 
     faculty = FacultyModelChoiceField(
-        queryset=entity_version.find_latest_version(datetime.now())
-                               .filter(entity_type=entity_type.FACULTY).order_by('acronym'),
+        queryset=entity_version.find_latest_version(datetime.now()).filter(
+            entity_type=entity_type.FACULTY
+        ).order_by('acronym'),
         widget=forms.Select(),
         empty_label=pgettext("plural", "All"),
         required=False,
@@ -399,21 +386,17 @@ class ManagerFilterForm(BootstrapForm):
         super(ManagerFilterForm, self).__init__(*args, **kwargs)
 
     def get_managers(self):
-        training = self.cleaned_data.get('training', None)
-        person = self.cleaned_data.get('person', None)
-        faculty = self.cleaned_data.get('faculty', None)
+        training = self.cleaned_data.get('training')
+        person = self.cleaned_data.get('person')
+        faculty = self.cleaned_data.get('faculty')
         qs = Person.objects.filter(user__groups__name='continuing_education_training_managers').order_by('last_name')
         if training:
             qs = qs.filter(
-                id__in=PersonTraining.objects.filter(
-                    training=training
-                ).values_list('person__id')
+                id__in=PersonTraining.objects.filter(training=training).values_list('person__id')
             )
         if person:
             qs = qs.filter(
-                id__in=PersonTraining.objects.filter(
-                    person=person
-                ).values_list('person__id')
+                id__in=PersonTraining.objects.filter(person=person).values_list('person__id')
             )
         if faculty:
             entity = EntityVersion.objects.filter(id=faculty.id).first().entity
@@ -421,8 +404,6 @@ class ManagerFilterForm(BootstrapForm):
                 education_group__educationgroupyear__management_entity=entity
             )
             qs = qs.filter(
-                id__in=PersonTraining.objects.filter(
-                    training__in=trainings_by_faculty
-                ).values_list('person__id')
+                id__in=PersonTraining.objects.filter(training__in=trainings_by_faculty).values_list('person__id')
             )
         return qs
