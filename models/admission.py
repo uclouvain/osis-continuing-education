@@ -474,11 +474,8 @@ class Admission(Model):
             return "{} : {}".format(_('Other'), getattr(self, field.name))
 
     def _has_awareness_other(self, field):
-        return all([
-            isinstance(getattr(self, field.name), str),
-            field.name == "awareness_other",
-            len(getattr(self, field.name)) > 0
-        ])
+        return isinstance(getattr(self, field.name), str) and field.name == "awareness_other" and \
+               len(getattr(self, field.name)) > 0
 
     def is_draft(self):
         return self.state == admission_state_choices.DRAFT
