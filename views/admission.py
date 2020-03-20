@@ -300,7 +300,7 @@ def _new_state_management(request, adm_form, admission, new_state):
         _validate_admission(request, adm_form)
         send_admission_to_queue(request, admission)
     query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
-    return redirect( reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param)
+    return redirect(reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param)
 
 
 def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_state, condition_acceptance_adm_form,
