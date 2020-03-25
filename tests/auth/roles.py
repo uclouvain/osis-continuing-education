@@ -51,15 +51,15 @@ class TestRoles(TestCase):
 
     def test_is_continuing_education_training_manager(self):
         self.assertTrue(is_continuing_education_training_manager(self.training_manager.user))
-        self.assertFalse(is_continuing_education_training_manager(self.manager.user))
+        self.assertFalse(is_continuing_education_training_manager(self.manager.person.user))
         self.assertFalse(is_continuing_education_training_manager(self.student_worker.user))
 
     def test_is_continuing_education_student_worker(self):
         self.assertFalse(is_continuing_education_student_worker(self.training_manager.user))
-        self.assertFalse(is_continuing_education_student_worker(self.manager.user))
+        self.assertFalse(is_continuing_education_student_worker(self.manager.person.user))
         self.assertTrue(is_continuing_education_student_worker(self.student_worker.user))
 
     def test_is_continuing_education_manager(self):
         self.assertFalse(is_continuing_education_manager(self.training_manager.user))
-        self.assertTrue(is_continuing_education_manager(self.manager.user))
+        self.assertTrue(is_continuing_education_manager(self.manager.person.user))
         self.assertFalse(is_continuing_education_manager(self.student_worker.user))

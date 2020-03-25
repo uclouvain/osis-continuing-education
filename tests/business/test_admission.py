@@ -160,7 +160,7 @@ class SendEmailTest(TestCase):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
         self.manager = PersonFactory(last_name="AAA")
-        self.manager.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
+        self.manager.person.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=self.manager, training=cet)
         PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)

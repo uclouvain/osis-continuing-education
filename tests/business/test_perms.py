@@ -27,9 +27,9 @@
 from django.test import TestCase
 
 from base.tests.factories.group import GroupFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.business import perms
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 
 
 class PermsTestCase(TestCase):
@@ -49,20 +49,15 @@ class PermsTestCase(TestCase):
 
     def test_is_continuing_education_training_manager(self):
         self.assertTrue(perms.is_continuing_education_training_manager(self.training_manager.user))
-        self.assertFalse(perms.is_continuing_education_training_manager(self.manager.user))
+        self.assertFalse(perms.is_continuing_education_training_manager(self.manager.person.user))
         self.assertFalse(perms.is_continuing_education_training_manager(self.student_worker.user))
 
-    def test_is_iufc_manager(self):
-        self.assertTrue(perms.is_iufc_manager(self.training_manager.user))
-        self.assertTrue(perms.is_iufc_manager(self.manager.user))
-        self.assertFalse(perms.is_iufc_manager(self.student_worker.user))
-
     def test_is_student_worker(self):
-        self.assertFalse(perms.is_student_worker(self.training_manager.user))
-        self.assertFalse(perms.is_student_worker(self.manager.user))
-        self.assertTrue(perms.is_student_worker(self.student_worker.user))
+        self.assertFalse(perms.is_continuing_education_student_worker(self.training_manager.user))
+        self.assertFalse(perms.is_continuing_education_student_worker(self.manager.person.user))
+        self.assertTrue(perms.is_continuing_education_student_worker(self.student_worker.user))
 
     def test_is_continuing_education_manager(self):
         self.assertFalse(perms.is_continuing_education_manager(self.training_manager.user))
-        self.assertTrue(perms.is_continuing_education_manager(self.manager.user))
+        self.assertTrue(perms.is_continuing_education_manager(self.manager.person.user))
         self.assertFalse(perms.is_continuing_education_manager(self.student_worker.user))

@@ -27,6 +27,6 @@
 from osis_role.contrib.tests.factories import RoleModelFactory
 
 
-class ContinuingEducationManagerFactory(RoleModelFactory):
+class ContinuingEducationStudentWorkerFactory(RoleModelFactory):
     class Meta:
-        model = 'continuing_education.ContinuingEducationManager'
+        model = 'continuing_education.ContinuingEducationStudentWorker'

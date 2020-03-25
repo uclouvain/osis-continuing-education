@@ -48,10 +48,10 @@ class TestContinuingEducationTrainingFormForm(TestCase):
 
     def test_valid_form_for_continuing_education_managers(self):
         self.manager = PersonWithPermissionsFactory(groups='continuing_education_managers')
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         data = self.formation.__dict__
         data['formation'] = self.formation.pk
-        form = ContinuingEducationTrainingForm(data=data, user=self.manager.user)
+        form = ContinuingEducationTrainingForm(data=data, user=self.manager.person.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_disabled_fields_for_training_managers(self):

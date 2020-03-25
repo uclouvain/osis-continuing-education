@@ -36,11 +36,10 @@ class ContinuingEducationManager(osis_role_models.RoleModel):
             'continuing_education.set_training_active': rules.always_allow,
             'continuing_education.mark_diploma_produced': rules.always_allow,
             'continuing_education.send_notification': rules.always_allow,
-            'continuing_education.view_training': rules.always_allow,
-            'continuing_education.change_training': rules.always_allow,
+            'continuing_education.view_continuingeducationtraining': rules.always_allow,
+            'continuing_education.change_continuingeducationtraining': rules.always_allow,
             'continuing_education.view_prospect': rules.always_allow,
             'continuing_education.export_prospect': rules.always_allow,
-
         })
 
 

@@ -45,7 +45,7 @@ from continuing_education.views.common import get_object_list
 
 
 @login_required
-@permission_required('continuing_education.view_training', raise_exception=True)
+@permission_required('continuing_education.view_continuingeducationtraining', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_formations(request):
     formation_list = []
@@ -73,7 +73,7 @@ def list_formations(request):
 
 
 @login_required
-@permission_required('continuing_education.change_training', raise_exception=True)
+@permission_required('continuing_education.change_continuingeducationtraining', raise_exception=True)
 def update_formations(request):
     redirect_url = request.META.get('HTTP_REFERER', reverse('formation'))
 
@@ -163,7 +163,7 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
 
 
 @login_required
-@permission_required('continuing_education.view_training', raise_exception=True)
+@permission_required('continuing_education.view_continuingeducationtraining', raise_exception=True)
 def formation_detail(request, formation_id):
     formation = ContinuingEducationTraining.objects.filter(
         education_group__id=formation_id).first()
@@ -187,7 +187,7 @@ def _can_edit_formation(request, formation):
 
 
 @login_required
-@permission_required('continuing_education.change_training', raise_exception=True)
+@permission_required('continuing_education.change_continuingeducationtraining', raise_exception=True)
 def formation_edit(request, formation_id):
     formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
     if _can_edit_formation(request, formation):

@@ -3,7 +3,7 @@ from rules import predicate
 
 @predicate(bind=True)
 def is_admission_draft(self, user, admission):
-    return admission.is_draft()
+    return admission and admission.is_draft()
 
 
 @predicate(bind=True)

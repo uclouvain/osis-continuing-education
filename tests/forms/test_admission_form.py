@@ -75,8 +75,8 @@ class TestAdmissionForm(TestCase):
         self.data['academic_year'] = admission.academic_year.pk
 
     def test_valid_form_for_managers(self):
-        self.client.force_login(self.manager.user)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.client.force_login(self.manager.person.user)
+        form = AdmissionForm(data=self.data, user=self.manager.person.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_valid_form_for_training_managers(self):

@@ -58,6 +58,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.views.admission import admission_detail
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
 from reference.tests.factories.country import CountryFactory
@@ -89,10 +90,9 @@ class ViewAdmissionTestCase(TestCase):
             registration_required=False
         )
         group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
         group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission', 'export_admission')
         cls.training_manager.user.groups.add(group)
         EntityVersionFactory(
             entity=cls.formation.management_entity
@@ -130,7 +130,7 @@ class ViewAdmissionTestCase(TestCase):
         }
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -338,9 +338,8 @@ class InvoiceNotificationEmailTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+
+        cls.manager = ContinuingEducationManagerFactory()
 
         cls.admission = AdmissionFactory(
             formation=cls.formation,
@@ -353,7 +352,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
         cls.url = reverse('send_invoice_notification_mail', args=[cls.admission.pk])
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_mail_with_invoice(self, mock_send_mail):
@@ -404,13 +403,7 @@ class AdmissionStateChangedTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        cls.manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration'
-        )
-        group = GroupFactory(name='continuing_education_managers')
-        group.user_set.add(cls.manager.user)
+        cls.manager = ContinuingEducationManagerFactory()
         EntityVersionFactory(
             entity=education_group_year.management_entity
         )
@@ -426,7 +419,7 @@ class AdmissionStateChangedTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
     @patch('continuing_education.business.admission._get_continuing_education_managers')
@@ -448,7 +441,7 @@ class AdmissionStateChangedTestCase(TestCase):
             data['rejected_reason'] = DONT_MEET_ADMISSION_REQUIREMENTS
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data=data)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
+        self.assertRedirects(response, reverse(admission_detail, args=[self.admission.pk]))
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.state, admission['state'], 'state')
         if self.admission.state == admission_state_choices.VALIDATED:
@@ -482,12 +475,11 @@ class AdmissionStateChangedTestCase(TestCase):
 class ViewAdmissionCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         self.addCleanup(cache.clear)
 
     def test_cached_filters(self):

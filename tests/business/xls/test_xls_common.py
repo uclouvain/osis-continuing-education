@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import datetime
+
 from django.test import TestCase
 
 from base.tests.factories.academic_year import AcademicYearFactory

@@ -49,6 +49,7 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from continuing_education.views.formation import _set_error_message
 
 STR_TRUE = "True"
@@ -91,11 +92,12 @@ class ViewFormationTestCase(TestCase):
             academic_year=current_acad_year,
             education_group_type=continuing_education_group_type
         )
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
         group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory(
+            'view_admission', 'change_admission',
+            'view_continuingeducationtraining', 'change_continuingeducationtraining'
+        )
         cls.training_manager.user.groups.add(group)
         cls.entity_version = EntityVersionFactory(
             entity=cls.formation_AAAA.management_entity,
@@ -105,7 +107,7 @@ class ViewFormationTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_current_year_formation_list(self):
         response = self.client.get(reverse('formation'))
@@ -202,7 +204,7 @@ class ViewFormationTestCase(TestCase):
         self.assertEqual(msg[0], _('You are not authorized to edit this training'))
 
     def test_context_manager_contents(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         response = self.client.get(reverse('formation'))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['continuing_education_training_manager'])
@@ -238,7 +240,7 @@ class ViewFormationTestCase(TestCase):
 class FormationActivateTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.manager = ContinuingEducationManagerFactory()
         cls.current_acad_year = create_current_academic_year()
         cls.next_acad_year = AcademicYearFactory(year=cls.current_acad_year.year + 1)
 
@@ -253,7 +255,7 @@ class FormationActivateTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_formation_list_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
@@ -363,8 +365,7 @@ class FormationActivateTestCase(TestCase):
 class FormationAidTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-
+        cls.manager = ContinuingEducationManagerFactory()
         cls.education_group_1 = EducationGroupFactory()
         cls.continuing_education_training_1 = ContinuingEducationTrainingFactory(
             education_group=cls.education_group_1,
@@ -373,7 +374,7 @@ class FormationAidTestCase(TestCase):
         cls.education_group_2 = EducationGroupFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_set_training_aid(self):
         data = {
@@ -409,12 +410,10 @@ class FormationAidTestCase(TestCase):
 class ViewFormationCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         self.addCleanup(cache.clear)
 
     def test_cached_filters(self):

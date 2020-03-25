@@ -151,14 +151,10 @@ class ManagerListTestCase(TestCase):
 class ViewManagerCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory(
-            'view_admission', 'change_admission', 'validate_registration'
-        )
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         self.addCleanup(cache.clear)
 
     def test_cached_filters(self):

@@ -31,10 +31,10 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from base.models.person import Person
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 

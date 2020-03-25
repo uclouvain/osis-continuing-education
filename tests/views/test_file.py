@@ -10,8 +10,6 @@ from django.utils.translation import gettext, gettext_lazy as _
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
 from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_NAME_LENGTH, ALLOWED_EXTENSIONS, \
@@ -19,6 +17,7 @@ from continuing_education.models.file import AdmissionFile, MAX_ADMISSION_FILE_N
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from continuing_education.tests.views.test_admission import FILE_CONTENT
 
 
@@ -33,10 +32,9 @@ class UploadFileTestCase(TestCase):
         self.formation = ContinuingEducationTrainingFactory(
             education_group=self.education_group
         )
-        group = GroupFactory(name='continuing_education_managers')
-        self.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        self.manager.user.groups.add(group)
-        self.client.force_login(self.manager.user)
+
+        self.manager = ContinuingEducationManagerFactory()
+        self.client.force_login(self.manager.person.user)
         self.admission = AdmissionFactory(
             formation=self.formation,
             state=SUBMITTED
@@ -58,7 +56,7 @@ class UploadFileTestCase(TestCase):
             format='multipart'
         )
 
-        self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager.person)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertEqual(response.status_code, 302)
@@ -81,7 +79,7 @@ class UploadFileTestCase(TestCase):
             },
             format='multipart'
         )
-        self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager)
+        self.assertEqual(AdmissionFile.objects.get(name=self.admission_file.name).uploaded_by, self.manager.person)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]) + '#documents')
         messages_list = [str(msg) for msg in list(messages.get_messages(response.wsgi_request))]
         self.assertEqual(response.status_code, 302)
@@ -229,9 +227,8 @@ class DeleteFileTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+
+        cls.manager = ContinuingEducationManagerFactory()
         cls.admission = AdmissionFactory(
             formation=cls.formation,
             state=SUBMITTED
@@ -241,7 +238,7 @@ class DeleteFileTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_delete_file(self):
         self.assertEqual(AdmissionFile.objects.all().count(), 1)
