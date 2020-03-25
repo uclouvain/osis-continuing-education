@@ -2,6 +2,7 @@ import rules
 from django.utils.translation import gettext_lazy as _
 
 from continuing_education.auth import predicates
+from continuing_education.models.enums.groups import MANAGERS_GROUP
 from osis_common.models.osis_model_admin import OsisModelAdmin
 from osis_role.contrib import models as osis_role_models
 
@@ -26,3 +27,7 @@ class ContinuingEducationManager(osis_role_models.RoleModel):
             'continuing_education.add_persontraining': rules.always_allow,
             'continuing_education.delete_persontraining': rules.always_allow,
         })
+
+
+def is_continuing_education_manager(user):
+    return user.groups.filter(name=MANAGERS_GROUP).exists()
