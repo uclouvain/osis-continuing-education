@@ -75,7 +75,7 @@ class Prospect(Model):
     )
 
     class Meta:
-        default_permissions = []
+        default_permissions = ['view', 'export']
 
     def __str__(self):
         return "{} - {} {}".format(self.id, self.first_name, self.name)

@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -32,7 +32,6 @@ from django.utils.translation import gettext_lazy as _
 
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
@@ -72,7 +71,6 @@ def list_registrations(request):
 
 @login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
 def registration_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     can_access_admission(request.user, admission)
@@ -190,8 +188,7 @@ def _switch_received_file_state(admission_id):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.cancel_admission', raise_exception=True)
 def list_cancelled(request):
     admission_list = Admission.objects.filter(state__in=[
         admission_state_choices.CANCELLED,

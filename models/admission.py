@@ -32,7 +32,6 @@ from django.db.models import Manager, Model
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
-from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices, enums, ucl_registration_state_choices
 from continuing_education.models.person_training import PersonTraining
 
@@ -496,7 +495,9 @@ class Admission(Model):
         return self.state == admission_state_choices.WAITING
 
     def is_registration_submitted(self):
-        return self.state == admission_state_choices.REGISTRATION_SUBMITTED
+        return self.state == admission_state_choices.REGISTRATION_SUBMITTED or \
+               hasattr(self, '_original_state') and \
+               getattr(self, '_original_state') == admission_state_choices.REGISTRATION_SUBMITTED
 
     def is_validated(self):
         return self.state == admission_state_choices.VALIDATED
@@ -518,11 +519,15 @@ class Admission(Model):
         return education_group_year.management_entity
 
     class Meta:
-        default_permissions = ['view', 'change', ]
+        default_permissions = ['view', 'change', 'archive', 'export', 'cancel']
         ordering = ('formation', 'person_information',)
         permissions = (
             ("validate_registration", "Validate IUFC registration file"),
             ("change_received_file_state", "Change received file state"),
+            ("link_admission_to_academic_year", "Link an admission to an academic year"),
+            ("inject_admission_to_epc", "Inject an admission to EPC"),
+            ("mark_diploma_produced", "Mark an admission diploma has been produced"),
+            ("send_notification", "Send a notification related to an admission")
         )
 
 
@@ -549,7 +554,7 @@ def get_formation_display(partial_acronym, acronym, title, academic_year):
 
 
 def filter_authorized_admissions(user, admission_list):
-    if not is_continuing_education_manager(user):
+    if not user.has_perm('continuing_education.manage_all_trainings'):
         person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
         admission_list = admission_list.filter(formation_id__in=person_trainings)
     return admission_list
