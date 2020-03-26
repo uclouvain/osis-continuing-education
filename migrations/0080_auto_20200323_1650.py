@@ -7,7 +7,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0508_auto_20200318_1251'),
         ('continuing_education', '0079_continuingeducationmanager'),
     ]
 
