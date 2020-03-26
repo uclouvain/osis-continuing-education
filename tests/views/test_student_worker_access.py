@@ -83,7 +83,6 @@ class ViewsLimitedForStudentWorker(TestCase):
         ]
         for url in urls:
             response = self.client.get(url)
-            print(url)
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
             self.assertTemplateUsed(response, 'access_denied.html')
 
