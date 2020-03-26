@@ -25,7 +25,7 @@
 ##############################################################################
 from django.contrib import messages
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext
@@ -38,19 +38,14 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 
 
 class ManagerListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration'
-        )
-        cls.manager.employee = True
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
+        cls.manager.person.employee = True
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
@@ -66,7 +61,7 @@ class ManagerListTestCase(TestCase):
         cls.training_manager.user.groups.add(cls.training_manager_group)
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_managers_list(self):
         response = self.client.get(reverse('list_managers'))
@@ -81,9 +76,9 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('list_managers'), data=data)
+        response = self.client.post(reverse('add_person_training'), data=data)
         self.assertEqual(PersonTraining.objects.count(), 1)
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
         messages_list = list(messages.get_messages(response.wsgi_request))
         success_msg = gettext('Successfully assigned %(manager)s to the training %(training)s') % {
@@ -100,9 +95,9 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('list_managers'), data=data)
+        response = self.client.post(reverse('add_person_training'), data=data)
         self.assertEqual(list(employee.user.groups.all()), [self.training_manager_group])
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
     def test_manager_already_assigned_to_training(self):
         PersonTraining(person=self.training_manager, training=self.formation).save()
@@ -111,9 +106,9 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': self.training_manager.pk
         }
-        response = self.client.post(reverse('list_managers'), data)
+        response = self.client.post(reverse('add_person_training'), data)
         self.assertEqual(PersonTraining.objects.count(), 1)
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertIn(
             gettext("Manager is already assigned on this training"),
@@ -127,8 +122,8 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('list_managers'), data)
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        response = self.client.post(reverse('add_person_training'), data)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
         self.assertEqual(PersonTraining.objects.count(), 0)
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertIn(
