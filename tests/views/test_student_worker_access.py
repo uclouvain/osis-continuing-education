@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -83,8 +82,10 @@ class ViewsLimitedForStudentWorker(TestCase):
             reverse('cancelled_files'),
         ]
         for url in urls:
-            with self.assertRaises(PermissionDenied):
-                self.client.get(url)
+            response = self.client.get(url)
+            print(url)
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+            self.assertTemplateUsed(response, 'access_denied.html')
 
     def test_post_access(self):
         urls = [

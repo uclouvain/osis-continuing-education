@@ -118,7 +118,7 @@ def send_admission_to_queue(request, admission):
 
 
 @login_required
-@permission_required('inject_admission_to_epc')
+@permission_required('continuing_education.inject_admission_to_epc')
 def inject_admission_to_epc(request, admission_id):
     redirection = request.META.get('HTTP_REFERER')
     admission = Admission.objects.get(id=admission_id)

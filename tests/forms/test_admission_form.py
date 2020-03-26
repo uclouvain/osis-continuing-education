@@ -40,6 +40,7 @@ from continuing_education.models.enums.admission_state_choices import REJECTED, 
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from reference.models import country
 
 ANY_REASON = 'Anything'
@@ -61,10 +62,7 @@ class TestAdmissionForm(TestCase):
         cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(group)
         PersonTraining(person=cls.training_manager, training=cls.formation).save()
-
-        group_manager = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission', 'validate_registration')
-        cls.manager.user.groups.add(group_manager)
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
         self.client.force_login(self.training_manager.user)

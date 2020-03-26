@@ -87,7 +87,7 @@ def list_tasks(request):
 @login_required
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
-@permission_required('continuing_education.mark_diploma_produced', raise_exception=True)
+@permission_required('continuing_education.mark_diploma_produced')
 def mark_diplomas_produced(request):
     selected_registration_ids = request.POST.getlist("selected_diplomas_to_produce", default=[])
     if selected_registration_ids:
