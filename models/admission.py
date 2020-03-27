@@ -265,7 +265,7 @@ class Admission(Model):
         verbose_name=_("Registration type")
     )
     use_address_for_billing = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Use address for billing")
     )
     billing_address = models.ForeignKey(
@@ -337,7 +337,7 @@ class Admission(Model):
 
     # Post
     use_address_for_post = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Use address for post")
     )
     residence_address = models.ForeignKey(
