@@ -75,7 +75,10 @@ class Prospect(Model):
     )
 
     class Meta:
-        default_permissions = ['view', 'export']
+        default_permissions = ['view']
+        permissions = (
+            ("export_prospect", "Export a prospect into XLSX file"),
+        )
 
     def __str__(self):
         return "{} - {} {}".format(self.id, self.first_name, self.name)

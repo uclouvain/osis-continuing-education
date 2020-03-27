@@ -76,7 +76,7 @@ class AdmissionForm(ModelForm):
         except AttributeError:
             self.fields['academic_year'].queryset = AcademicYear.objects.none()
 
-        if user and user.has_perm('continuing_education.link_admission_to_academic_year'):
+        if user and user.has_perm('continuing_education.link_admission_to_academic_year', obj=self.instance):
             self.fields['academic_year'].disabled = False
             self.fields['academic_year'].required = True
         else:

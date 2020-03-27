@@ -51,7 +51,8 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    admission_getter
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices, \
@@ -66,7 +67,6 @@ from continuing_education.views.file import _get_file_category_choices_with_disa
 from continuing_education.views.home import is_continuing_education_student_worker
 from continuing_education.views.registration import _update_or_create_specific_address
 from osis_common.decorators.ajax import ajax_required
-from osis_common.utils.models import get_object_or_none
 
 
 @login_required
@@ -219,10 +219,6 @@ def send_invoice_notification_mail(request, admission_id):
 
 def _invoice_file_exists_for_admission(admission):
     return AdmissionFile.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
-
-
-def admission_getter(request, *view_args, **view_kwargs):
-    return get_object_or_none(Admission, id=view_kwargs.get('admission_id'))
 
 
 @login_required
