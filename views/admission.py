@@ -204,7 +204,6 @@ def _change_state(request, forms, accepted_states, admission):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
 @permission_required('continuing_education.send_notification', raise_exception=True)
 def send_invoice_notification_mail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
