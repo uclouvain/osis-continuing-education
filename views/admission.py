@@ -81,13 +81,20 @@ def list_admissions(request):
     admission_list = filter_authorized_admissions(request.user, admission_list)
 
     if request.GET.get('xls_status') == "xls_admissions":
-        return create_xls(request.user, admission_list, search_form)
+        return export_admissions(request, admission_list, search_form)
 
     return render(request, "admissions.html", {
         'admissions': get_object_list(request, admission_list),
         'admissions_number': len(admission_list),
         'search_form': search_form,
     })
+
+
+@login_required
+@permission_required('continuing_education.export_admission')
+def export_admissions(request, admission_list, search_form):
+    if request.GET.get('xls_status') == "xls_admissions":
+        return create_xls(request.user, admission_list, search_form)
 
 
 @login_required
