@@ -31,15 +31,17 @@ from django.test import TestCase, override_settings, RequestFactory
 from django.urls import reverse
 
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
     save_role_registered_in_admission, send_admission_to_queue
 from continuing_education.models.enums import ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import VALIDATED
-from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_student_worker import \
+    ContinuingEducationStudentWorkerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class PrepareJSONTestCase(TestCase):
@@ -213,13 +215,14 @@ class SendingAdmissionViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertRedirects(response, "/login/?next={}".format(self.url))
 
-    def test_inject_admission_to_epc_but_no_iufc_manager(self):
-        continuing_education_training_manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration',
-            groups=[TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP]
-        )
-        self.client.force_login(continuing_education_training_manager.user)
+    def test_inject_admission_to_epc_refused_to_training_manager(self):
+        continuing_education_training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(continuing_education_training_manager.person.user)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/login/?next={}".format(self.url))
+
+    def test_inject_admission_to_epc_refused_to_student_worker(self):
+        student_worker = ContinuingEducationStudentWorkerFactory()
+        self.client.force_login(student_worker.person.user)
         response = self.client.get(self.url)
         self.assertRedirects(response, "/login/?next={}".format(self.url))

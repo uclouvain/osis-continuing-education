@@ -37,17 +37,20 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED
-from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class ViewUpdateTasksTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.manager = ContinuingEducationManagerFactory()
+        cls.training_manager = ContinuingEducationTrainingManagerFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
@@ -95,9 +98,6 @@ class ViewUpdateTasksTestCase(TestCase):
             state=admission_state_choices.DRAFT,
             formation=cls.formation
         )
-        training_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.training_manager.user.groups.add(training_group)
 
     def setUp(self):
         self.client.force_login(self.manager.person.user)
@@ -110,7 +110,7 @@ class ViewUpdateTasksTestCase(TestCase):
         self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
 
     def test_list_tasks_html_content_for_manager(self):
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
         response = self.client.get(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertTemplateUsed(response, 'tasks.html')
@@ -220,7 +220,7 @@ class ViewUpdateTasksTestCase(TestCase):
                 [str(registration.pk) for registration in self.admissions_to_accept],
             "new_state": "Accepted"
         }
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
         response = self.client.post(reverse('process_admissions'), data=post_data)
         for registration in self.admissions_to_accept:
             registration.refresh_from_db()
@@ -314,9 +314,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.training_manager.user.groups.add(group)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory()
         cls.registration_to_validate = AdmissionFactory(
             formation=cls.formation,
             state=REGISTRATION_SUBMITTED,
@@ -331,7 +329,7 @@ class ViewTasksTrainingManagerTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
 
     def test_paper_registrations_file_received_denied(self):
         post_data = {

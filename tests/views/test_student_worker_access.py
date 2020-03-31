@@ -30,17 +30,19 @@ from rest_framework import status
 from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_student_worker import \
     ContinuingEducationStudentWorkerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class ViewsLimitedForStudentWorker(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.student = ContinuingEducationStudentWorkerFactory()
+        cls.training_manager = ContinuingEducationTrainingManagerFactory()
         cls.admission = AdmissionFactory()
 
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -52,11 +54,6 @@ class ViewsLimitedForStudentWorker(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group,
             active=True
-        )
-        cls.training_manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            employee=True, groups=['continuing_education_training_managers']
         )
 
     def setUp(self):
@@ -75,7 +72,7 @@ class ViewsLimitedForStudentWorker(TestCase):
             reverse('formation'),
             reverse('update_formations'),
             reverse('list_managers'),
-            reverse('delete_person_training', args=[self.formation.id, self.training_manager.id]),
+            reverse('delete_person_training', args=[self.formation.id, self.training_manager.person.id]),
             reverse('prospects'),
             reverse('registration_edit', args=[self.admission.id]),
             reverse('formation_detail', args=[1]),

@@ -36,8 +36,6 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING, SUBMITTED, \
     ACCEPTED_NO_REGISTRATION_REQUIRED
@@ -45,6 +43,8 @@ from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 from continuing_education.views.archive import _switch_archived_state, _mark_as_archived
 
 
@@ -213,16 +213,14 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission', 'archive_admission')
-        cls.training_manager.user.groups.add(group)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory()
         cls.admission = AdmissionFactory(
             formation=cls.formation,
             state=SUBMITTED,
         )
 
     def setUp(self):
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
 
     def test_list_with_no_archive_visible(self):
         self.admission.archived = True
@@ -234,7 +232,7 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
     def test_list_with_archive(self):
         self.admission.archived = True
         self.admission.save()
-        PersonTraining(training=self.admission.formation, person=self.training_manager).save()
+        PersonTraining(training=self.admission.formation, person=self.training_manager.person).save()
         response = self.client.post(reverse('archive'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['archives'].object_list, [self.admission])
@@ -246,7 +244,7 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_archive_procedure_authorized(self):
-        PersonTraining(training=self.admission.formation, person=self.training_manager).save()
+        PersonTraining(training=self.admission.formation, person=self.training_manager.person).save()
         response = self.client.post(
             reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
         )
