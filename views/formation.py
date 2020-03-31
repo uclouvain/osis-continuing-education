@@ -25,16 +25,18 @@
 ##############################################################################
 import ast
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from rules.contrib.views import permission_required, objectgetter
 
 from base.models.education_group import EducationGroup
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.perms import is_continuing_education_training_manager
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
@@ -187,7 +189,11 @@ def _can_edit_formation(request, formation):
 
 
 @login_required
-@permission_required('continuing_education.change_continuingeducationtraining', raise_exception=True)
+@permission_required(
+    'continuing_education.change_continuingeducationtraining',
+    fn=objectgetter(ContinuingEducationTraining, 'formation_id'),
+    raise_exception=True
+)
 def formation_edit(request, formation_id):
     formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
     if _can_edit_formation(request, formation):

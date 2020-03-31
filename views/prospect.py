@@ -24,8 +24,9 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
+from rules.contrib.views import permission_required, objectgetter
 
 from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.models.prospect import Prospect
@@ -43,7 +44,11 @@ def list_prospects(request):
 
 
 @login_required
-@permission_required('continuing_education.view_prospect', raise_exception=True)
+@permission_required(
+    'continuing_education.view_prospect',
+    fn=objectgetter(Prospect, 'prospect_id'),
+    raise_exception=True
+)
 def prospect_details(request, prospect_id):
     prospect = get_object_or_404(Prospect, pk=prospect_id)
     return render(request, "prospect_details.html", {
