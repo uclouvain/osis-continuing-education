@@ -26,7 +26,7 @@
 import itertools
 from collections import OrderedDict
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -41,7 +41,6 @@ from base.views.common import display_success_messages, display_error_messages, 
     display_warning_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, save_state_changed_and_send_email, \
     check_required_field_for_participant
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.registration_queue import send_admission_to_queue
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
@@ -52,7 +51,8 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    admission_getter
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices, \
@@ -67,12 +67,10 @@ from continuing_education.views.file import _get_file_category_choices_with_disa
 from continuing_education.views.home import is_continuing_education_student_worker
 from continuing_education.views.registration import _update_or_create_specific_address
 from osis_common.decorators.ajax import ajax_required
-from osis_common.utils.models import get_object_or_none
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.export_admission', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
@@ -93,7 +91,11 @@ def list_admissions(request):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
+@permission_required(
+    'continuing_education.view_admission',
+    fn=objectgetter(Admission, 'admission_id'),
+    raise_exception=True
+)
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
 
@@ -202,8 +204,7 @@ def _change_state(request, forms, accepted_states, admission):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.send_notification', raise_exception=True)
 def send_invoice_notification_mail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     if _invoice_file_exists_for_admission(admission):
@@ -219,13 +220,8 @@ def _invoice_file_exists_for_admission(admission):
     return AdmissionFile.objects.filter(admission=admission, file_category=file_category_choices.INVOICE).exists()
 
 
-def admission_getter(request, *view_args, **view_kwargs):
-    return get_object_or_none(Admission, id=view_kwargs.get('admission_id'))
-
-
 @login_required
 @permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
-@user_passes_test(is_not_student_worker)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     if admission:
@@ -310,8 +306,7 @@ def _new_state_management(request, adm_form, admission, new_state):
     if new_state != VALIDATED:
         save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
-        _validate_admission(request, adm_form)
-        send_admission_to_queue(request, admission)
+        _validate_admission(request, admission, adm_form)
     query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
     return redirect(
         reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param
@@ -330,9 +325,10 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
         cancel_adm_form.save()
 
 
-def _validate_admission(request, adm_form):
+def _validate_admission(request, admission, adm_form):
     if request.user.has_perm("continuing_education.validate_registration", adm_form.instance):
         save_state_changed_and_send_email(adm_form.instance, request.user)
+        send_admission_to_queue(request, admission)
     else:
         display_error_messages(
             request,
@@ -344,7 +340,6 @@ def _validate_admission(request, adm_form):
 @login_required
 @permission_required("continuing_education.change_admission", fn=objectgetter(Admission, 'admission_id'),
                      raise_exception=True)
-@user_passes_test(is_not_student_worker)
 def validate_field(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     response = {}
@@ -377,7 +372,6 @@ def _get_states_choices(accepted_states, admission, request):
 @ajax_required
 @login_required
 @permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
 @require_GET
 def get_formation_information(request):
     formation_id = request.GET.get('formation_id', None)
@@ -388,7 +382,6 @@ def get_formation_information(request):
 @login_required
 @permission_required('continuing_education.change_admission', fn=objectgetter(Admission, 'admission_id'),
                      raise_exception=True)
-@user_passes_test(is_not_student_worker)
 def billing_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     can_access_admission(request.user, admission)

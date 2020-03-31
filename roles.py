@@ -1,4 +1,5 @@
-from continuing_education.auth.roles import continuing_education_manager
+from continuing_education.auth.roles import continuing_education_manager, continuing_education_student_worker
 from osis_role import role
 
 role.role_manager.register(continuing_education_manager.ContinuingEducationManager)
+role.role_manager.register(continuing_education_student_worker.ContinuingEducationStudentWorker)

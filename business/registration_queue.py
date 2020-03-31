@@ -29,14 +29,14 @@ import logging
 import pika
 import pika.exceptions
 from django.conf import settings
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from rules.contrib.views import permission_required
 
 from base.views.common import display_error_messages
-from continuing_education.business.perms import is_continuing_education_manager
-from continuing_education.models.admission import Admission
+from continuing_education.models.admission import Admission, admission_getter
 from continuing_education.models.enums import ucl_registration_state_choices
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
     UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED
@@ -118,7 +118,7 @@ def send_admission_to_queue(request, admission):
 
 
 @login_required
-@user_passes_test(is_continuing_education_manager)
+@permission_required('continuing_education.inject_admission_to_epc', fn=admission_getter)
 def inject_admission_to_epc(request, admission_id):
     redirection = request.META.get('HTTP_REFERER')
     admission = Admission.objects.get(id=admission_id)

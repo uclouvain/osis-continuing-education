@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+
 from osis_role.contrib.tests.factories import RoleModelFactory
 
 

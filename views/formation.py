@@ -25,7 +25,7 @@
 ##############################################################################
 import ast
 
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -34,8 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from base.models.education_group import EducationGroup
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
-from continuing_education.business.perms import is_not_student_worker, is_continuing_education_manager, \
-    is_continuing_education_training_manager
+from continuing_education.business.perms import is_continuing_education_training_manager
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
@@ -46,8 +45,7 @@ from continuing_education.views.common import get_object_list
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.view_continuingeducationtraining', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_formations(request):
     formation_list = []
@@ -62,20 +60,20 @@ def list_formations(request):
     trainings_managing = list(
         PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True).distinct(
             'training')) if continuing_education_training_manager else None
-    return render(request, "formations.html",
-                  {
-                      'formations': get_object_list(request, formation_list),
-                      'formations_number': len(formation_list),
-                      'search_form': search_form,
-                      'continuing_education_training_manager': continuing_education_training_manager,
-                      'trainings_managing': trainings_managing
-                  }
-                  )
+    return render(
+        request, "formations.html",
+        {
+            'formations': get_object_list(request, formation_list),
+            'formations_number': len(formation_list),
+            'search_form': search_form,
+            'continuing_education_training_manager': continuing_education_training_manager,
+            'trainings_managing': trainings_managing
+        }
+    )
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.change_continuingeducationtraining', raise_exception=True)
 def update_formations(request):
     redirect_url = request.META.get('HTTP_REFERER', reverse('formation'))
 
@@ -165,8 +163,7 @@ def _update_training_aid_value(request, selected_formations_ids, new_training_ai
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.view_continuingeducationtraining', raise_exception=True)
 def formation_detail(request, formation_id):
     formation = ContinuingEducationTraining.objects.filter(
         education_group__id=formation_id).first()
@@ -183,14 +180,14 @@ def formation_detail(request, formation_id):
         raise Http404()
 
 
+# TODO : move this logic into predicate for continuing_education_training_managers
 def _can_edit_formation(request, formation):
     person_trainings = PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True)
-    return formation.id in person_trainings or is_continuing_education_manager(request.user)
+    return formation.id in person_trainings or request.user.has_perm('continuing_education.manage_all_trainings')
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.change_continuingeducationtraining', raise_exception=True)
 def formation_edit(request, formation_id):
     formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
     if _can_edit_formation(request, formation):

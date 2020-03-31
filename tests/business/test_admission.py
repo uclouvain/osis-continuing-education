@@ -45,7 +45,6 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
-from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -53,6 +52,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
@@ -159,10 +159,9 @@ class SendEmailTest(TestCase):
     def setUp(self):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
-        self.manager = PersonFactory(last_name="AAA")
-        self.manager.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
+        self.manager = ContinuingEducationManagerFactory()
         cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=self.manager, training=cet)
+        PersonTrainingFactory(person=self.manager.person, training=cet)
         PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)
         self.admission = AdmissionFactory(formation=cet)
         uploaded_file = SimpleUploadedFile(

@@ -24,18 +24,16 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404
 
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.view_prospect', raise_exception=True)
 def list_prospects(request):
     prospects_list = list(Prospect.objects.all())
     return render(request, "prospects.html", {
@@ -45,8 +43,7 @@ def list_prospects(request):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.view_prospect', raise_exception=True)
 def prospect_details(request, prospect_id):
     prospect = get_object_or_404(Prospect, pk=prospect_id)
     return render(request, "prospect_details.html", {
@@ -55,7 +52,6 @@ def prospect_details(request, prospect_id):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.export_prospect', raise_exception=True)
 def prospect_xls(request):
     return create_xls(request.user)

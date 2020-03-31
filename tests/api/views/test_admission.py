@@ -40,7 +40,6 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
@@ -52,6 +51,7 @@ from continuing_education.models.enums.admission_state_choices import SUBMITTED,
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 

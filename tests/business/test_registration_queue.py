@@ -36,8 +36,10 @@ from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
     save_role_registered_in_admission, send_admission_to_queue
 from continuing_education.models.enums import ucl_registration_state_choices
-from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.admission_state_choices import VALIDATED
+from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 
 
 class PrepareJSONTestCase(TestCase):
@@ -188,18 +190,13 @@ class SendAdmissionToQueueTestCase(TestCase):
 class SendingAdmissionViewTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.continuing_education_manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration',
-            groups=[MANAGERS_GROUP]
-        )
-        cls.admission = AdmissionFactory()
+        cls.continuing_education_manager = ContinuingEducationManagerFactory()
+        cls.admission = AdmissionFactory(state=VALIDATED)
         EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
         cls.url = reverse('injection_to_epc', args=[cls.admission.pk])
 
     def setUp(self):
-        self.client.force_login(self.continuing_education_manager.user)
+        self.client.force_login(self.continuing_education_manager.person.user)
 
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')

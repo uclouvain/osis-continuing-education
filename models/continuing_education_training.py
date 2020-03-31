@@ -156,4 +156,8 @@ class ContinuingEducationTraining(Model):
 
     class Meta:
         ordering = ('education_group', )
-        default_permissions = []
+        default_permissions = ['view', 'change']
+        permissions = (
+            ("manage_all_trainings", "Manage all continuing education trainings"),
+            ("set_training_active", "Set a continuing education training as active"),
+        )

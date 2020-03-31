@@ -23,7 +23,6 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -32,16 +31,16 @@ from base.tests.factories.academic_year import AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_student_worker import \
+    ContinuingEducationStudentWorkerFactory
 
 
 class ViewsLimitedForStudentWorker(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.student = PersonWithPermissionsFactory('view_admission', 'change_received_file_state',
-                                                   groups=[STUDENT_WORKERS_GROUP])
+        cls.student = ContinuingEducationStudentWorkerFactory()
         cls.admission = AdmissionFactory()
 
         cls.academic_year = AcademicYearFactory(year=2018)
@@ -61,26 +60,27 @@ class ViewsLimitedForStudentWorker(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.student.user)
+        self.client.force_login(self.student.person.user)
 
     def test_get_access(self):
-        urls = [reverse('admission'),
-                reverse('send_invoice_notification_mail', args=[self.admission.id]),
-                reverse('admission_new', ),
-                reverse('admission_edit', args=[self.admission.id]),
-                reverse('validate_field', args=[self.admission.id]),
-                reverse('archive'),
-                reverse('unarchives_procedure'),
-                reverse('archive_procedure', args=[self.admission.id]),
-                reverse('formation'),
-                reverse('update_formations'),
-                reverse('list_managers'),
-                reverse('delete_person_training', args=[self.formation.id, self.training_manager.id]),
-                reverse('prospects'),
-                reverse('registration_edit', args=[self.admission.id]),
-                reverse('formation_detail', args=[1]),
-                reverse('cancelled_files'),
-                ]
+        urls = [
+            reverse('admission'),
+            reverse('send_invoice_notification_mail', args=[self.admission.id]),
+            reverse('admission_new', ),
+            reverse('admission_edit', args=[self.admission.id]),
+            reverse('validate_field', args=[self.admission.id]),
+            reverse('archive'),
+            reverse('unarchives_procedure'),
+            reverse('archive_procedure', args=[self.admission.id]),
+            reverse('formation'),
+            reverse('update_formations'),
+            reverse('list_managers'),
+            reverse('delete_person_training', args=[self.formation.id, self.training_manager.id]),
+            reverse('prospects'),
+            reverse('registration_edit', args=[self.admission.id]),
+            reverse('formation_detail', args=[1]),
+            reverse('cancelled_files'),
+        ]
         for url in urls:
             response = self.client.get(url)
             self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -44,6 +44,7 @@ from continuing_education.models.enums.admission_state_choices import ACCEPTED, 
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from continuing_education.views.archive import _switch_archived_state, _mark_as_archived
 
 
@@ -67,9 +68,8 @@ class ViewArchiveTestCase(TestCase):
         cls.formation_2 = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+
+        cls.manager = ContinuingEducationManagerFactory()
         EntityVersionFactory(
             entity=cls.formation_1.management_entity
         )
@@ -95,12 +95,12 @@ class ViewArchiveTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_switch_archived_state(self):
-        admision_changed = _switch_archived_state(self.manager.user, self.admission_archived.id)
+        admision_changed = _switch_archived_state(self.manager.person.user, self.admission_archived.id)
         self.assertFalse(admision_changed.archived)
-        admision_changed = _switch_archived_state(self.manager.user, self.registration_1_unarchived.id)
+        admision_changed = _switch_archived_state(self.manager.person.user, self.registration_1_unarchived.id)
         self.assertTrue(admision_changed.archived)
 
     def test_error_message_no_admission_selected(self):
@@ -133,11 +133,11 @@ class ViewArchiveTestCase(TestCase):
         self.assertEqual(msg[0], _('Please select at least one file to archive'))
 
     def test_mark_as_archived(self):
-        _mark_as_archived(self.manager.user, self.registration_1_unarchived.id)
+        _mark_as_archived(self.manager.person.user, self.registration_1_unarchived.id)
         ad = Admission.objects.get(id=self.registration_1_unarchived.id)
         self.assertTrue(ad.archived)
 
-        _mark_as_archived(self.manager.user, self.admission_archived.id)
+        _mark_as_archived(self.manager.person.user, self.admission_archived.id)
         ad = Admission.objects.get(id=self.admission_archived.id)
         self.assertTrue(ad.archived)
 
@@ -214,7 +214,7 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
             education_group=cls.education_group
         )
         group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission', 'archive_admission')
         cls.training_manager.user.groups.add(group)
         cls.admission = AdmissionFactory(
             formation=cls.formation,
@@ -256,12 +256,10 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
 class ViewArchiveCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         self.addCleanup(cache.clear)
 
     def test_cached_filters(self):
