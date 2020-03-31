@@ -170,7 +170,9 @@ def formation_detail(request, formation_id):
     formation = ContinuingEducationTraining.objects.filter(
         education_group__id=formation_id).first()
     if formation:
-        can_edit_formation = _can_edit_formation(request, formation)
+        can_edit_formation = request.user.has_perm(
+            'continuing_education.change_continuingeducationtraining', obj=formation
+        )
         return render(
             request, "formation_detail.html",
             {
@@ -182,12 +184,6 @@ def formation_detail(request, formation_id):
         raise Http404()
 
 
-# TODO : move this logic into predicate for continuing_education_training_managers
-def _can_edit_formation(request, formation):
-    person_trainings = PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True)
-    return formation.id in person_trainings or request.user.has_perm('continuing_education.manage_all_trainings')
-
-
 @login_required
 @permission_required(
     'continuing_education.change_continuingeducationtraining',
@@ -196,24 +192,20 @@ def _can_edit_formation(request, formation):
 )
 def formation_edit(request, formation_id):
     formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
-    if _can_edit_formation(request, formation):
-        form = ContinuingEducationTrainingForm(request.POST or None, user=request.user, instance=formation)
-        address_form = AddressForm(request.POST or None, instance=formation.postal_address)
-        if all([form.is_valid(), address_form.is_valid()]):
-            address = address_form.save()
-            formation = form.save(commit=False)
-            formation.postal_address = address
-            formation.save()
-            return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
-        return render(
-            request,
-            "formation_form.html",
-            {
-                'formation': formation,
-                'form': form,
-                'address_form': address_form
-            }
-        )
-    else:
-        display_error_messages(request, _("You are not authorized to edit this training"))
+    form = ContinuingEducationTrainingForm(request.POST or None, user=request.user, instance=formation)
+    address_form = AddressForm(request.POST or None, instance=formation.postal_address)
+    if all([form.is_valid(), address_form.is_valid()]):
+        address = address_form.save()
+        formation = form.save(commit=False)
+        formation.postal_address = address
+        formation.save()
         return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
+    return render(
+        request,
+        "formation_form.html",
+        {
+            'formation': formation,
+            'form': form,
+            'address_form': address_form
+        }
+    )
