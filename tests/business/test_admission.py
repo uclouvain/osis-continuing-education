@@ -45,7 +45,6 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
-from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -161,7 +160,6 @@ class SendEmailTest(TestCase):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
         self.manager = ContinuingEducationManagerFactory()
-        self.manager.person.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         PersonTrainingFactory(person=self.manager.person, training=cet)
         PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)

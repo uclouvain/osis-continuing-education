@@ -14,7 +14,7 @@ class ContinuingEducationStudentWorkerAdmin(OsisModelAdmin):
 class ContinuingEducationStudentWorker(osis_role_models.RoleModel):
     class Meta:
         verbose_name = _("Continuing education student worker")
-        verbose_name_plural = _("Continuing education student worker")
+        verbose_name_plural = _("Continuing education student workers")
         group_name = "continuing_education_student_workers"
 
     @classmethod
