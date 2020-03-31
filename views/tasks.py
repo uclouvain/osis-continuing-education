@@ -35,8 +35,9 @@ from rules.contrib.views import permission_required
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.auth.roles.continuing_education_manager import is_continuing_education_manager
 from continuing_education.auth.roles.continuing_education_student_worker import is_continuing_education_student_worker
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
 from continuing_education.business.admission import save_state_changed_and_send_email
-from continuing_education.business.perms import is_continuing_education_training_manager
 from continuing_education.models.admission import Admission, filter_authorized_admissions
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \

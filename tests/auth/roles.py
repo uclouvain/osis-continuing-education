@@ -30,7 +30,8 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonFactory
 from continuing_education.auth.roles.continuing_education_manager import is_continuing_education_manager
 from continuing_education.auth.roles.continuing_education_student_worker import is_continuing_education_student_worker
-from continuing_education.business.perms import is_continuing_education_training_manager
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
 from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP, MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 
 
@@ -51,15 +52,15 @@ class TestRoles(TestCase):
 
     def test_is_continuing_education_training_manager(self):
         self.assertTrue(is_continuing_education_training_manager(self.training_manager.user))
-        self.assertFalse(is_continuing_education_training_manager(self.manager.person.user))
+        self.assertFalse(is_continuing_education_training_manager(self.manager.user))
         self.assertFalse(is_continuing_education_training_manager(self.student_worker.user))
 
     def test_is_continuing_education_student_worker(self):
         self.assertFalse(is_continuing_education_student_worker(self.training_manager.user))
-        self.assertFalse(is_continuing_education_student_worker(self.manager.person.user))
+        self.assertFalse(is_continuing_education_student_worker(self.manager.user))
         self.assertTrue(is_continuing_education_student_worker(self.student_worker.user))
 
     def test_is_continuing_education_manager(self):
         self.assertFalse(is_continuing_education_manager(self.training_manager.user))
-        self.assertTrue(is_continuing_education_manager(self.manager.person.user))
+        self.assertTrue(is_continuing_education_manager(self.manager.user))
         self.assertFalse(is_continuing_education_manager(self.student_worker.user))

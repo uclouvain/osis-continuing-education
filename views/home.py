@@ -31,7 +31,8 @@ from django.shortcuts import render
 
 from continuing_education.auth.roles.continuing_education_manager import is_continuing_education_manager
 from continuing_education.auth.roles.continuing_education_student_worker import is_continuing_education_student_worker
-from continuing_education.business.perms import is_continuing_education_training_manager
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
 
 
 def can_access_continuing_education(f):
