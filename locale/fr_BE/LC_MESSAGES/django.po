@@ -754,10 +754,8 @@ msgstr "Pas de données"
 msgid "No document available"
 msgstr "Aucun document disponible"
 
-#, fuzzy
-#| msgid "Error"
 msgid "No error"
-msgstr "Erreur"
+msgstr "Pas d'erreur"
 
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
