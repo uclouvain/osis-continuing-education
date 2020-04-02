@@ -56,7 +56,7 @@ MAIL_MESSAGE = _('Mail sent to %(receiver)s')
 
 UCL_REGISTRATION_SENDED = {'icon': 'glyphicon glyphicon-time', 'text': _('Folder sended to EPC : waiting for response')}
 UCL_REGISTRATION_REJECTED = {'icon': 'glyphicon glyphicon-remove',
-                             'text': _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''}}
+                             'text': _('Folder injection into EPC failed : ')}
 UCL_REGISTRATION_REGISTERED = {'icon': 'glyphicon glyphicon-ok-circle',
                                'text': _('Folder injection into EPC succeeded : UCLouvain registration completed')}
 UCL_REGISTRATION_ON_DEMAND = {'icon': 'glyphicon glyphicon-question-sign',

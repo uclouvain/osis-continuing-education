@@ -32,14 +32,14 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, gettext
 
 from base.views.common import display_error_messages
 from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.admission import Admission
-from continuing_education.models.enums import ucl_registration_state_choices
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
-    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED
+    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED, UCL_REGISTRATION_ON_DEMAND
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -88,10 +88,19 @@ def save_role_registered_in_admission(data):
     data = json.loads(data)
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
-        admission.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
-        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REGISTERED), admission)
+        registration_status = data.get('registration_status')
+        admission.ucl_registration_complete = registration_status
+        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_ON_DEMAND), admission)
+        if registration_status == UCLRegistrationState.INSCRIT.name:
+            admission.ucl_registration_complete = UCLRegistrationState.INSCRIT.name
+            save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REGISTERED), admission)
+        elif registration_status == UCLRegistrationState.DEMANDE.name:
+            admission.ucl_registration_complete = UCLRegistrationState.DEMANDE.name
+            save_and_create_revision(get_revision_messages(UCL_REGISTRATION_ON_DEMAND), admission)
     else:
-        admission.ucl_registration_complete = ucl_registration_state_choices.REJECTED
+        admission.ucl_registration_complete = UCLRegistrationState.REJECTED.name
+        admission.ucl_registration_error = data['message']
+        UCL_REGISTRATION_REJECTED['text'] += gettext(data['message'])
         save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REJECTED), admission)
 
 
@@ -108,7 +117,7 @@ def send_admission_to_queue(request, admission):
         channel = connect.channel()
         queue_name = settings.QUEUES.get('QUEUES_NAME').get('IUFC_TO_EPC')
         send_message(queue_name, data, connect, channel)
-        admission.ucl_registration_complete = ucl_registration_state_choices.SENDED
+        admission.ucl_registration_complete = UCLRegistrationState.SENDED.name
         save_and_create_revision(get_revision_messages(UCL_REGISTRATION_SENDED), admission, request.user)
     except (RuntimeError, pika.exceptions.ConnectionClosed, pika.exceptions.ChannelClosed, pika.exceptions.AMQPError):
         logger.exception(_('Could not send admission json with uuid %(uuid)s in queue') % {'uuid': admission.uuid})

@@ -44,9 +44,10 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm, \
     UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
-from continuing_education.models.enums import admission_state_choices, ucl_registration_state_choices
+from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -135,7 +136,7 @@ class ViewRegistrationTestCase(TestCase):
                 self.assertEqual(field_value, admission_dict[key])
 
     def test_uclouvain_registration_rejected(self):
-        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.REJECTED
+        self.admission_validated.ucl_registration_complete = UCLRegistrationState.REJECTED.name
         self.admission_validated.save()
 
         url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
@@ -147,7 +148,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(msg_level[0], messages.ERROR)
 
     def test_uclouvain_registration_on_demand(self):
-        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.ON_DEMAND
+        self.admission_validated.ucl_registration_complete = UCLRegistrationState.DEMANDE.name
         self.admission_validated.save()
 
         url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
@@ -159,7 +160,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(msg_level[0], messages.INFO)
 
     def test_uclouvain_registration_registered(self):
-        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.REGISTERED
+        self.admission_validated.ucl_registration_complete = UCLRegistrationState.INSCRIT.name
         self.admission_validated.save()
 
         url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
@@ -171,7 +172,7 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(msg_level[0], messages.SUCCESS)
 
     def test_uclouvain_registration_sended(self):
-        self.admission_validated.ucl_registration_complete = ucl_registration_state_choices.SENDED
+        self.admission_validated.ucl_registration_complete = UCLRegistrationState.SENDED.name
         self.admission_validated.save()
 
         url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-16 11:47+0100\n"
+"POT-Creation-Date: 2020-04-02 15:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -230,11 +230,20 @@ msgstr "Annuler les admissions sélectionnées ?"
 msgid "Cancel state reason"
 msgstr "Motif d'état d'annulation"
 
+msgid "Cancellation (ETD)"
+msgstr "Annulation (ETD)"
+
+msgid "Cancellation (UNIV)"
+msgstr "Annulation (UNIV)"
+
 msgid "Cancelled"
 msgstr "Annulé"
 
 msgid "Cancelled (no registration required)"
 msgstr "Annulé"
+
+msgid "Cessation"
+msgstr "Cessation"
 
 msgid "Change made"
 msgstr "Changement effectué"
@@ -312,6 +321,7 @@ msgstr ""
 #, python-format
 msgid "Could not send admission json with uuid %(uuid)s in queue"
 msgstr ""
+"Impossible d'envoyer le json de l'admission avec uuid %(uuid)s dans la queue"
 
 msgid "Country"
 msgstr "Pays"
@@ -325,8 +335,14 @@ msgstr "Employeur actuel"
 msgid "Current occupation"
 msgstr "Fonction actuelle"
 
+msgid "Cycle"
+msgstr "Cycle"
+
 msgid "Datetime"
 msgstr "Date/Heure"
+
+msgid "Death"
+msgstr "Décès"
 
 msgid "Delete document"
 msgstr "Supprimer le document"
@@ -411,6 +427,12 @@ msgstr "Email"
 msgid "Employee"
 msgstr "Employé"
 
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Exclusion"
+msgstr "Exclusion"
+
 msgid "Faculty"
 msgstr "Faculté"
 
@@ -437,6 +459,8 @@ msgid ""
 "File extension '%(extension)s' is not allowed. Allowed extensions are: "
 "'%(allowed_extensions)s'."
 msgstr ""
+"Extension de fichier '%(extension)s' non autorisée. Les extensions "
+"autorisées sont: '%(allowed_extensions)s'."
 
 msgid "File is now"
 msgstr "Le dossier est maintenant"
@@ -466,6 +490,9 @@ msgstr "Dossiers annulés"
 
 msgid "First name"
 msgstr "Prénom"
+
+msgid "Folder injection into EPC failed : "
+msgstr "Injection du dossier dans EPC échouée : "
 
 #, python-format
 msgid "Folder injection into EPC failed : %(reasons)s"
@@ -553,6 +580,9 @@ msgstr "Je souhaite recevoir mon courrier :"
 msgid "ID card number"
 msgstr "Numéro de carte d'identité"
 
+msgid "IP Cancellation"
+msgstr "Annulation IP"
+
 msgid "Identification"
 msgstr "Identification"
 
@@ -580,6 +610,12 @@ msgstr "Injecter dans EPC"
 
 msgid "Injection status"
 msgstr "Etat de l'injection"
+
+msgid "Intention cancellation"
+msgstr "Annulation intention"
+
+msgid "Internet re-registration"
+msgstr "Reinscription internet"
 
 msgid "Invoice"
 msgstr "Facture"
@@ -655,6 +691,24 @@ msgstr "Indiquer le diplôme produit pour les inscriptions sélectionnées ?"
 msgid "Married"
 msgstr "Marié"
 
+msgid "Missing birth country"
+msgstr "Pays de naissance manquant"
+
+msgid "Missing citizenship"
+msgstr "Nationalité manquante"
+
+msgid "Missing first name"
+msgstr "Prénom manquant"
+
+msgid "Missing name"
+msgstr "Nom manquant"
+
+msgid "Missing program"
+msgstr "Programme manquant"
+
+msgid "Missing year"
+msgstr "Année manquante"
+
 msgid "Mobile phone"
 msgstr "GSM"
 
@@ -663,6 +717,9 @@ msgstr "Motivation"
 
 msgid "NOMA"
 msgstr "NOMA"
+
+msgid "NOMA creation failed"
+msgstr "Création du NOMA échouée"
 
 msgid "Name"
 msgstr "Nom"
@@ -690,6 +747,11 @@ msgstr "Pas de données"
 
 msgid "No document available"
 msgstr "Aucun document disponible"
+
+#, fuzzy
+#| msgid "Error"
+msgid "No error"
+msgstr "Erreur"
 
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
@@ -857,6 +919,9 @@ msgstr "Liste des prospects"
 msgid "Prospects_list"
 msgstr "Liste_des_prospects"
 
+msgid "Provisional"
+msgstr "Provisoire"
+
 msgid "Public"
 msgstr "Public"
 
@@ -875,14 +940,25 @@ msgstr "Dossier reçu"
 msgid "Reduced rates"
 msgstr "Droits réduits"
 
+msgid "Refusal"
+msgstr "Refus"
+
 msgid "Refusal state reason"
 msgstr "Motif d'état de refus"
+
+msgid "Register intention"
+msgstr "Intention inscription"
 
 msgid "Registered"
 msgstr "Inscrit"
 
 msgid "Registration"
 msgstr "Inscription"
+
+#, fuzzy
+#| msgid "Registration to process"
+msgid "Registration already processed"
+msgstr "Inscription à traiter"
 
 msgid "Registration file received"
 msgstr "Dossier d'inscription reçu"
@@ -1164,6 +1240,15 @@ msgstr ""
 msgid "To submit an admission, its state must be DRAFT."
 msgstr "Pour soumettre une admission, son état doit être Brouillon."
 
+msgid "Too long address"
+msgstr "Adresse trop longue"
+
+msgid "Too long first name"
+msgstr "Prénom trop long"
+
+msgid "Too long name"
+msgstr "Nom trop long"
+
 msgid "Training"
 msgstr "Formation"
 
@@ -1182,11 +1267,17 @@ msgstr "Formations"
 msgid "UCLouvain registration complete"
 msgstr "Inscription au rôle"
 
+msgid "UCLouvain registration error"
+msgstr "Erreur lors de l'inscription"
+
 msgid "Unarchive"
 msgstr "Désarchiver"
 
 msgid "Unconditionally"
 msgstr "Sans condition"
+
+msgid "Uninformed"
+msgstr "Non renseigné"
 
 msgid "Unknown birth place"
 msgstr "Lieu de naissance inconnu"
@@ -1226,6 +1317,9 @@ msgstr "Numéro de TVA"
 
 msgid "Validated"
 msgstr "Validé"
+
+msgid "Valued crédits"
+msgstr "Crédits valorisés"
 
 msgid "Waiting"
 msgstr "En attente"

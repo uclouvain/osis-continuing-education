@@ -28,7 +28,8 @@ import random
 import factory
 
 from base.tests.factories.academic_year import AcademicYearFactory
-from continuing_education.models.enums import admission_state_choices, enums, ucl_registration_state_choices
+from continuing_education.models.enums import admission_state_choices, enums
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
@@ -134,7 +135,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     residence_phone = _get_fake_phone_number(),
 
     # Student Sheet
-    ucl_registration_complete = factory.fuzzy.FuzzyChoice(get_enum_keys(ucl_registration_state_choices.STATE_CHOICES))
+    ucl_registration_complete = factory.fuzzy.FuzzyChoice(get_enum_keys(UCLRegistrationState.choices()))
     noma = factory.Faker('isbn10')
     payment_complete = factory.fuzzy.FuzzyChoice([True, False])
     formation_spreading = factory.fuzzy.FuzzyChoice([True, False])

@@ -35,8 +35,8 @@ from base.tests.factories.person import PersonWithPermissionsFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
     save_role_registered_in_admission, send_admission_to_queue
-from continuing_education.models.enums import ucl_registration_state_choices
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.tests.factories.admission import AdmissionFactory
 
 
@@ -125,21 +125,23 @@ class SaveRoleRegisteredTestCase(TestCase):
             'message': 'TEST',
             'success': True,
             'student_case_uuid': str(self.admission.uuid),
-            'registration_id': self.admission.id
+            'registration_id': self.admission.id,
+            'registration_status': 'INSCRIT'
         }
 
     def test_save_role_registered_in_admission_if_queue_success(self):
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
-        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.REGISTERED)
+        self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.INSCRIT.name)
 
     def test_save_role_registered_in_admission_no_change_if_queue_fail(self):
         self.basic_response['success'] = False
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
-        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.REJECTED)
+        self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.REJECTED.name)
+        self.assertEqual(self.admission.ucl_registration_error, self.basic_response['message'])
 
 
 @override_settings(
@@ -170,7 +172,7 @@ class SendAdmissionToQueueTestCase(TestCase):
         self.assertTrue(mock_send.called)
         self.assertEqual('NAME', mock_send.call_args_list[0][0][0])
         self.assertEqual(get_json_for_epc(self.admission), mock_send.call_args_list[0][0][1])
-        self.assertEqual(self.admission.ucl_registration_complete, ucl_registration_state_choices.SENDED)
+        self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.SENDED.name)
 
 
 @override_settings(
@@ -207,7 +209,7 @@ class SendingAdmissionViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(HttpResponseRedirect.status_code, response.status_code)
         self.admission.refresh_from_db()
-        self.assertEqual(ucl_registration_state_choices.SENDED, self.admission.ucl_registration_complete)
+        self.assertEqual(UCLRegistrationState.SENDED.name, self.admission.ucl_registration_complete)
         self.assertTrue(mock_send.called)
         self.assertEqual('NAME', mock_send.call_args_list[0][0][0])
 
