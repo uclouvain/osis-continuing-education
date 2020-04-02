@@ -39,7 +39,7 @@ from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
-    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED, UCL_REGISTRATION_ON_DEMAND
+    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REJECTED, REGISTRATIONS_UCL_MESSAGES
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -89,14 +89,10 @@ def save_role_registered_in_admission(data):
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
         registration_status = data.get('registration_status')
-        admission.ucl_registration_complete = registration_status
-        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_ON_DEMAND), admission)
-        if registration_status == UCLRegistrationState.INSCRIT.name:
-            admission.ucl_registration_complete = UCLRegistrationState.INSCRIT.name
-            save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REGISTERED), admission)
-        elif registration_status == UCLRegistrationState.DEMANDE.name:
-            admission.ucl_registration_complete = UCLRegistrationState.DEMANDE.name
-            save_and_create_revision(get_revision_messages(UCL_REGISTRATION_ON_DEMAND), admission)
+        if registration_status in [UCLRegistrationState.INSCRIT.name, UCLRegistrationState.DEMANDE.name]:
+            admission.ucl_registration_complete = registration_status
+            message = REGISTRATIONS_UCL_MESSAGES[registration_status]
+            save_and_create_revision(get_revision_messages(message), admission)
     else:
         admission.ucl_registration_complete = UCLRegistrationState.REJECTED.name
         admission.ucl_registration_error = data['message']

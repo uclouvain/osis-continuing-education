@@ -37,6 +37,7 @@ from reversion.models import Version
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, VALIDATED, REGISTRATION_SUBMITTED, \
     SUBMITTED
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 
 UCL_REGISTRATION_COMPLETE = {'icon': 'fas fa-university', 'text': _('UCLouvain registration complete')}
 REGISTRATION_FILE_RECEIVED = {'icon': 'fas fa-receipt', 'text': _('Registration file received')}
@@ -61,6 +62,13 @@ UCL_REGISTRATION_REGISTERED = {'icon': 'glyphicon glyphicon-ok-circle',
                                'text': _('Folder injection into EPC succeeded : UCLouvain registration completed')}
 UCL_REGISTRATION_ON_DEMAND = {'icon': 'glyphicon glyphicon-question-sign',
                               'text': _('Folder injection into EPC succeeded : UCLouvain registration on demand')}
+
+REGISTRATIONS_UCL_MESSAGES = {
+    UCLRegistrationState.SENDED: UCL_REGISTRATION_SENDED,
+    UCLRegistrationState.REJECTED: UCL_REGISTRATION_REJECTED,
+    UCLRegistrationState.DEMANDE: UCL_REGISTRATION_ON_DEMAND,
+    UCLRegistrationState.INSCRIT: UCL_REGISTRATION_REGISTERED
+}
 
 VERSION_MESSAGES = [
     UCL_REGISTRATION_COMPLETE['text'],
