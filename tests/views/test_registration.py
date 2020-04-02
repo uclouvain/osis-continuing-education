@@ -47,6 +47,7 @@ from continuing_education.forms.registration import RegistrationForm, \
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -137,6 +138,7 @@ class ViewRegistrationTestCase(TestCase):
 
     def test_uclouvain_registration_rejected(self):
         self.admission_validated.ucl_registration_complete = UCLRegistrationState.REJECTED.name
+        self.admission_validated.ucl_registration_error = UCLRegistrationError.IUFC_NOM_TROP_LONG.name
         self.admission_validated.save()
 
         url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
@@ -144,7 +146,12 @@ class ViewRegistrationTestCase(TestCase):
 
         msg_level = [m.level for m in get_messages(response.wsgi_request)]
         msg = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn(gettext(_("Folder injection into EPC failed : %(reasons)s") % {'reasons': ''}), msg)
+        self.assertIn(
+            gettext(_("Folder injection into EPC failed : %(reasons)s") % {
+                'reasons': self.admission_validated.get_ucl_registration_error_display()
+            }),
+            msg
+        )
         self.assertEqual(msg_level[0], messages.ERROR)
 
     def test_uclouvain_registration_on_demand(self):

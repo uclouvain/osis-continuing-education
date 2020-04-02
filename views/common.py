@@ -64,10 +64,10 @@ UCL_REGISTRATION_ON_DEMAND = {'icon': 'glyphicon glyphicon-question-sign',
                               'text': _('Folder injection into EPC succeeded : UCLouvain registration on demand')}
 
 REGISTRATIONS_UCL_MESSAGES = {
-    UCLRegistrationState.SENDED: UCL_REGISTRATION_SENDED,
-    UCLRegistrationState.REJECTED: UCL_REGISTRATION_REJECTED,
-    UCLRegistrationState.DEMANDE: UCL_REGISTRATION_ON_DEMAND,
-    UCLRegistrationState.INSCRIT: UCL_REGISTRATION_REGISTERED
+    UCLRegistrationState.SENDED.name: UCL_REGISTRATION_SENDED,
+    UCLRegistrationState.REJECTED.name: UCL_REGISTRATION_REJECTED,
+    UCLRegistrationState.DEMANDE.name: UCL_REGISTRATION_ON_DEMAND,
+    UCLRegistrationState.INSCRIT.name: UCL_REGISTRATION_REGISTERED
 }
 
 VERSION_MESSAGES = [
