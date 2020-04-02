@@ -39,7 +39,6 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, WAITING, SUBMITTED, \
     ACCEPTED_NO_REGISTRATION_REQUIRED
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
@@ -232,7 +231,8 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
     def test_list_with_archive(self):
         self.admission.archived = True
         self.admission.save()
-        PersonTraining(training=self.admission.formation, person=self.training_manager.person).save()
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.formation)
+        self.client.force_login(training_manager.person.user)
         response = self.client.post(reverse('archive'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['archives'].object_list, [self.admission])
@@ -244,7 +244,8 @@ class ViewArchiveTrainingManagerTestCase(TestCase):
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_archive_procedure_authorized(self):
-        PersonTraining(training=self.admission.formation, person=self.training_manager.person).save()
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.formation)
+        self.client.force_login(training_manager.person.user)
         response = self.client.post(
             reverse('archive_procedure', kwargs={'admission_id': self.admission.pk})
         )

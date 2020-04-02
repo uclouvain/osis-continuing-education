@@ -36,13 +36,12 @@ from base.models.education_group import EducationGroup
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.auth.roles.continuing_education_training_manager import \
-    is_continuing_education_training_manager
+    is_continuing_education_training_manager, ContinuingEducationTrainingManager
 from continuing_education.business.xls.xls_formation import create_xls
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.forms.search import FormationFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list
 
 
@@ -60,8 +59,11 @@ def list_formations(request):
         return create_xls(request.user, formation_list, search_form)
     continuing_education_training_manager = is_continuing_education_training_manager(request.user)
     trainings_managing = list(
-        PersonTraining.objects.filter(person=request.user.person).values_list('training', flat=True).distinct(
-            'training')) if continuing_education_training_manager else None
+        ContinuingEducationTrainingManager.objects.filter(
+            person=request.user.person
+        ).values_list('training', flat=True).distinct(
+            'training')
+    ) if continuing_education_training_manager else None
     return render(
         request, "formations.html",
         {

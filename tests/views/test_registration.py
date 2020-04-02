@@ -40,14 +40,10 @@ from base.tests.factories.academic_year import AcademicYearFactory, create_curre
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.registration import RegistrationForm, \
     UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
 from continuing_education.models.enums import admission_state_choices, ucl_registration_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
-from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
@@ -234,9 +230,8 @@ class RegistrationStateChangedTestCase(TestCase):
             education_group=cls.education_group,
             academic_year=cls.academic_year
         )
-        cls.faculty_manager = ContinuingEducationTrainingManagerFactory()
         cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
-        PersonTraining(person=cls.faculty_manager.person, training=cls.formation).save()
+        cls.faculty_manager = ContinuingEducationTrainingManagerFactory(training=cls.formation)
         cls.continuing_education_manager = ContinuingEducationManagerFactory()
         EntityVersionFactory(
             entity=cls.formation.management_entity
@@ -325,9 +320,7 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.training_manager.user.groups.add(group)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.formation)
 
         valid_state = [REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED]
         cls.registrations = []
@@ -345,9 +338,11 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
                 )
 
     def setUp(self):
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
 
     def test_list_with_no_registrations_visible(self):
+        training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(training_manager.person.user)
         url = reverse('registration')
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
@@ -355,12 +350,10 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         self.assertTemplateUsed(response, 'registrations.html')
 
     def test_list_with_registrations(self):
-        PersonTraining(training=self.formation, person=self.training_manager).save()
         url = reverse('registration')
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertCountEqual(response.context['admissions'],
-                              self.registrations)
+        self.assertCountEqual(response.context['admissions'], self.registrations)
         self.assertEqual(response.context['admissions_number'], 3)
         self.assertTemplateUsed(response, 'registrations.html')
 

@@ -46,7 +46,6 @@ from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from continuing_education.tests.factories.roles.continuing_education_training_manager import \
     ContinuingEducationTrainingManagerFactory
@@ -177,8 +176,8 @@ class ViewFormationTestCase(TestCase):
             self.assertEqual(field_value, cet_dict[key])
 
     def test_training_manager_can_edit_training(self):
-        self.client.force_login(self.training_manager.person.user)
-        PersonTrainingFactory(person=self.training_manager.person, training=self.continuing_education_training)
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.continuing_education_training)
+        self.client.force_login(training_manager.person.user)
         url = reverse('formation_edit', args=[self.continuing_education_training.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponseBase.status_code)
@@ -198,15 +197,12 @@ class ViewFormationTestCase(TestCase):
         self.assertIsNone(response.context['trainings_managing'])
 
     def test_context_trainer_manager_contents(self):
-        training_manager_person_training = PersonTrainingFactory(
-            person=self.training_manager.person,
-            training=self.continuing_education_training
-        )
-        self.client.force_login(self.training_manager.person.user)
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.continuing_education_training)
+        self.client.force_login(training_manager.person.user)
         response = self.client.get(reverse('formation'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['continuing_education_training_manager'])
-        self.assertCountEqual(response.context['trainings_managing'], [training_manager_person_training.training.id])
+        self.assertCountEqual(response.context['trainings_managing'], [training_manager.training.id])
 
     def test_set_error_message_no_formation_inactivated(self):
         input_values = [None, 'New state']

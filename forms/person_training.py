@@ -32,9 +32,9 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
 from base.models.person import Person
+from continuing_education.auth.roles.continuing_education_training_manager import ContinuingEducationTrainingManager
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
-from continuing_education.models.person_training import PersonTraining
 
 
 class PersonTrainingForm(ModelForm):
@@ -50,7 +50,7 @@ class PersonTrainingForm(ModelForm):
     )
 
     class Meta:
-        model = PersonTraining
+        model = ContinuingEducationTrainingManager
 
         fields = [
             'person',
@@ -62,8 +62,11 @@ class PersonTrainingForm(ModelForm):
 
     def clean(self):
         try:
-            PersonTraining.objects.get(person=self.cleaned_data['person'], training=self.cleaned_data['training'])
-        except PersonTraining.DoesNotExist:
+            ContinuingEducationTrainingManager.objects.get(
+                person=self.cleaned_data['person'],
+                training=self.cleaned_data['training']
+            )
+        except ContinuingEducationTrainingManager.DoesNotExist:
             pass
         except KeyError:
             pass

@@ -35,7 +35,8 @@ from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    admission_getter
 from continuing_education.views.common import get_object_list, FILE_ARCHIVED, save_and_create_revision, \
     FILE_UNARCHIVED, get_revision_messages
 
@@ -69,7 +70,7 @@ def export_archives(request, archive_list, search_form):
 
 
 @login_required
-@permission_required('continuing_education.archive_admission', raise_exception=True)
+@permission_required('continuing_education.archive_admission', fn=admission_getter, raise_exception=True)
 def archive_procedure(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     can_access_admission(request.user, admission)

@@ -33,11 +33,11 @@ from rules.contrib.views import permission_required
 from base.models.person import Person
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages
+from continuing_education.auth.roles.continuing_education_training_manager import ContinuingEducationTrainingManager
 from continuing_education.forms.person_training import PersonTrainingForm
 from continuing_education.forms.search import ManagerFilterForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.views.common import get_object_list, display_errors
 
 
@@ -91,7 +91,7 @@ def add_person_training(request):
 def delete_person_training(request, training, manager):
     redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
 
-    person_training = get_object_or_404(PersonTraining, training=training, person=manager)
+    person_training = get_object_or_404(ContinuingEducationTrainingManager, training=training, person=manager)
     success_msg = _('Successfully desassigned %(manager)s from the training %(training)s') % {
         "manager": person_training.person,
         "training": person_training.training.acronym

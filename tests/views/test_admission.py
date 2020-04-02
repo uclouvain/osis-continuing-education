@@ -51,7 +51,6 @@ from continuing_education.models.enums import file_category_choices, admission_s
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
@@ -91,7 +90,7 @@ class ViewAdmissionTestCase(TestCase):
             registration_required=False
         )
         cls.manager = ContinuingEducationManagerFactory()
-        cls.training_manager = ContinuingEducationTrainingManagerFactory()
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.formation)
         EntityVersionFactory(
             entity=cls.formation.management_entity
         )
@@ -138,7 +137,8 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(len(response.context['admissions'].object_list), 2)
 
     def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
-        self.client.force_login(self.training_manager.person.user)
+        other_training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(other_training_manager.person.user)
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -146,8 +146,8 @@ class ViewAdmissionTestCase(TestCase):
         self.assertTemplateUsed(response, 'admissions.html')
 
     def test_list_admissions_filtered_by_training_manager_with_admission(self):
-        PersonTraining(person=self.training_manager.person, training=self.formation).save()
-        self.client.force_login(self.training_manager.person.user)
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.formation)
+        self.client.force_login(training_manager.person.user)
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -173,7 +173,8 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_admission_detail_access_denied(self):
-        self.client.force_login(self.training_manager.person.user)
+        other_training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(other_training_manager.person.user)
         url = reverse('admission_detail', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

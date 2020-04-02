@@ -32,8 +32,8 @@ from django.db.models import Manager, Model
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
+from continuing_education.auth.roles.continuing_education_training_manager import ContinuingEducationTrainingManager
 from continuing_education.models.enums import admission_state_choices, enums, ucl_registration_state_choices
-from continuing_education.models.person_training import PersonTraining
 from osis_common.utils.models import get_object_or_none
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -559,7 +559,9 @@ def get_formation_display(partial_acronym, acronym, title, academic_year):
 
 def filter_authorized_admissions(user, admission_list):
     if not user.has_perm('continuing_education.manage_all_trainings'):
-        person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
+        person_trainings = ContinuingEducationTrainingManager.objects.filter(
+            person=user.person
+        ).values_list('training', flat=True)
         admission_list = admission_list.filter(formation_id__in=person_trainings)
     return admission_list
 

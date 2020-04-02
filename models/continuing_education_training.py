@@ -83,7 +83,7 @@ class ContinuingEducationTraining(Model):
         help_text=_("Comma-separated addresses - Leave empty if no address"),
     )
 
-    managers = models.ManyToManyField(Person, through='PersonTraining')
+    managers = models.ManyToManyField(Person, through='ContinuingEducationTrainingManager')
 
     postal_address = models.ForeignKey(Address, default=None, blank=True, null=True, on_delete=models.CASCADE)
 

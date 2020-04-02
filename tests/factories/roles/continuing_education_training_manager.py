@@ -23,10 +23,14 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import factory
 
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from osis_role.contrib.tests.factories import RoleModelFactory
 
 
 class ContinuingEducationTrainingManagerFactory(RoleModelFactory):
     class Meta:
         model = 'continuing_education.ContinuingEducationTrainingManager'
+
+    training = factory.SubFactory(ContinuingEducationTrainingFactory)
