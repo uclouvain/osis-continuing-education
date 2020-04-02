@@ -43,7 +43,7 @@ from continuing_education.views.common import get_object_list, display_errors
 
 @login_required
 @cache_filter()
-@permission_required('continuing_education.view_persontraining', raise_exception=True)
+@permission_required('continuing_education.view_continuingeducationtrainingmanager', raise_exception=True)
 def list_managers(request):
     search_form = ManagerFilterForm(data=request.GET)
     trainings = ContinuingEducationTraining.objects.all().select_related('education_group')
@@ -67,8 +67,8 @@ def list_managers(request):
 
 
 @login_required
-@permission_required('continuing_education.add_persontraining', raise_exception=True)
-def add_person_training(request):
+@permission_required('continuing_education.add_continuingeducationtrainingmanager', raise_exception=True)
+def add_continuing_education_training_manager(request):
     errors = []
     person_training_form = PersonTrainingForm(request.POST or None)
     if person_training_form.is_valid():
@@ -87,8 +87,8 @@ def add_person_training(request):
 
 
 @login_required
-@permission_required('continuing_education.delete_persontraining', raise_exception=True)
-def delete_person_training(request, training, manager):
+@permission_required('continuing_education.delete_continuingeducationtrainingmanager', raise_exception=True)
+def delete_continuing_education_training_manager(request, training, manager):
     redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
 
     person_training = get_object_or_404(ContinuingEducationTrainingManager, training=training, person=manager)

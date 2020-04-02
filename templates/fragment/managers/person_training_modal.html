@@ -36,7 +36,7 @@
         </div>
         <div class="panel-default">
             <div class="panel-body">
-                <form action="{% url 'add_person_training' %}" id="person_training_form" method="POST" class="post-form">
+                <form action="{% url 'add_continuing_education_training_manager' %}" id="person_training_form" method="POST" class="post-form">
                     {% csrf_token %}
                     {% bootstrap_field person_training_form.person form_group_class="form-group" label=_("Manager") id='person_field' %}
                     {% bootstrap_field person_training_form.training form_group_class="form-group" label=_("Training") %}

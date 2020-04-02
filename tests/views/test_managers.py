@@ -74,7 +74,7 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('add_person_training'), data=data)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data=data)
         self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 2)
         self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
@@ -93,7 +93,7 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('add_person_training'), data=data)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data=data)
         self.assertEqual(list(employee.user.groups.values_list('name', flat=True)), [self.training_manager.group_name])
         self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
@@ -103,7 +103,7 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': self.training_manager.person.pk
         }
-        response = self.client.post(reverse('add_person_training'), data)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data)
         self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 1)
         self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
         messages_list = list(messages.get_messages(response.wsgi_request))
@@ -120,7 +120,7 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('add_person_training'), data)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data)
         self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
         self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=training).count(), 0)
         messages_list = list(messages.get_messages(response.wsgi_request))
@@ -135,7 +135,7 @@ class ManagerListTestCase(TestCase):
             self.formation.pk,
             self.training_manager.person.pk
         ]
-        response = self.client.get(reverse('delete_person_training', args=args))
+        response = self.client.get(reverse('delete_continuing_education_training_manager', args=args))
         self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 0)
         messages_list = list(messages.get_messages(response.wsgi_request))
         success_msg = gettext('Successfully desassigned %(manager)s from the training %(training)s') % {

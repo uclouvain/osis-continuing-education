@@ -72,7 +72,10 @@ class ViewsLimitedForStudentWorker(TestCase):
             reverse('formation'),
             reverse('update_formations'),
             reverse('list_managers'),
-            reverse('delete_person_training', args=[self.formation.id, self.training_manager.person.id]),
+            reverse(
+                'delete_continuing_education_training_manager',
+                args=[self.formation.id, self.training_manager.person.id]
+            ),
             reverse('prospects'),
             reverse('registration_edit', args=[self.admission.id]),
             reverse('formation_detail', args=[1]),
