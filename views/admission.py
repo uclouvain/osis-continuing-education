@@ -177,11 +177,23 @@ def _display_adapted_ucl_registration_message(admission, request):
     if admission.ucl_registration_complete == UCLRegistrationState.SENDED.name:
         display_warning_messages(request, _('Folder sended to EPC : waiting for response'))
     elif admission.ucl_registration_complete == UCLRegistrationState.REJECTED.name:
-        display_error_messages(request, _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''})
+        display_error_messages(
+            request,
+            _('Folder injection into EPC failed : %(reasons)s') % {
+                'reasons': admission.get_ucl_registration_error_display()
+            }
+        )
     elif admission.ucl_registration_complete == UCLRegistrationState.DEMANDE.name:
         display_info_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration on demand'))
     elif admission.ucl_registration_complete == UCLRegistrationState.INSCRIT.name:
         display_success_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration completed'))
+    elif admission.ucl_registration_complete != UCLRegistrationState.INIT_STATE.name:
+        display_info_messages(
+            request,
+            _('Folder injection into EPC succeeded : UCLouvain registration status : %(status)s') % {
+                'status': admission.get_ucl_registration_complete_display()
+            }
+        )
 
 
 def _change_state(request, forms, accepted_states, admission):

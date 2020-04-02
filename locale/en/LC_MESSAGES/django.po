@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-02 15:07+0200\n"
+"POT-Creation-Date: 2020-04-02 17:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -476,6 +476,12 @@ msgid "Folder injection into EPC succeeded : UCLouvain registration completed"
 msgstr ""
 
 msgid "Folder injection into EPC succeeded : UCLouvain registration on demand"
+msgstr ""
+
+#, python-format
+msgid ""
+"Folder injection into EPC succeeded : UCLouvain registration status : "
+"%(status)s"
 msgstr ""
 
 msgid "Folder sended to EPC : waiting for response"

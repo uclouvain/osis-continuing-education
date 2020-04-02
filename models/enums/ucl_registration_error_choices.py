@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from osis_common.utils.enumerations import ChoiceEnum
+from base.models.utils.utils import ChoiceEnum
 
 
 class UCLRegistrationError(ChoiceEnum):
