@@ -39,7 +39,8 @@ from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
-    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REJECTED, REGISTRATIONS_UCL_MESSAGES, UCL_REGISTRATION_STATE_CHANGED
+    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REJECTED, UCL_REGISTRATION_STATE_CHANGED, \
+    UCL_REGISTRATION_REGISTERED
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -91,7 +92,7 @@ def save_role_registered_in_admission(data):
         registration_status = data.get('registration_status')
         admission.ucl_registration_complete = registration_status
         if registration_status == UCLRegistrationState.INSCRIT.name:
-            message = REGISTRATIONS_UCL_MESSAGES[registration_status]
+            message = UCL_REGISTRATION_REGISTERED
         else:
             UCL_REGISTRATION_STATE_CHANGED['text'] += admission.get_ucl_registration_complete_display()
             message = UCL_REGISTRATION_STATE_CHANGED

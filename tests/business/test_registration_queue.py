@@ -38,6 +38,8 @@ from continuing_education.business.registration_queue import get_json_for_epc, f
 from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.views.common import UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED, \
+    UCL_REGISTRATION_STATE_CHANGED
 
 
 class PrepareJSONTestCase(TestCase):
@@ -129,17 +131,30 @@ class SaveRoleRegisteredTestCase(TestCase):
             'registration_status': 'INSCRIT'
         }
 
-    def test_save_role_registered_in_admission_if_queue_success(self):
+    @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
+    def test_save_role_registered_in_admission_if_queue_success(self, mock_get):
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
+        mock_get.assert_called_once_with(UCL_REGISTRATION_REGISTERED)
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.INSCRIT.name)
 
-    def test_save_role_registered_in_admission_no_change_if_queue_fail(self):
+    @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
+    def test_save_role_registered_in_admission_if_queue_success_and_other_statut(self, mock_get):
+        self.basic_response['registration_status'] = 'DECES'
+        data = json.dumps(self.basic_response)
+        save_role_registered_in_admission(data)
+        mock_get.assert_called_once_with(UCL_REGISTRATION_STATE_CHANGED)
+        self.admission.refresh_from_db()
+        self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.DECES.name)
+
+    @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
+    def test_save_role_registered_in_admission_no_change_if_queue_fail(self, mock_get):
         self.basic_response['success'] = False
         data = json.dumps(self.basic_response)
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
+        mock_get.assert_called_once_with(UCL_REGISTRATION_REJECTED)
         self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.REJECTED.name)
         self.assertEqual(self.admission.ucl_registration_error, self.basic_response['message'])
 
