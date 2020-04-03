@@ -103,6 +103,7 @@
                 </div>
             {% endif %}
             <form id="admissions_form" method="post" action="
+
                     {% if user_is_continuing_education_student_worker %}{% url 'receive_files_procedure' %}{% else %}{% url 'archives_procedure' %}{% endif %}">
                 {% csrf_token %}
 
@@ -186,16 +187,16 @@
                                 {% endif %}
                             </td>
                             <td style="vertical-align: middle;">
-                                {% if admission.ucl_registration_complete != ucl_registration_state_choices.INIT_STATE %}
+                                {% if admission.ucl_registration_complete != ucl_registration_state_choices.INIT_STATE.name %}
                                     {{ admission.get_ucl_registration_complete_display }}
                                 {% endif %}
-                                {% if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED %}
+                                {% if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED.name %}
                                     <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-                                {% elif admission.ucl_registration_complete == ucl_registration_state_choices.REGISTERED %}
+                                {% elif admission.ucl_registration_complete == ucl_registration_state_choices.INSCRIT.name %}
                                     <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
-                                    {% elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED %}
+                                {% elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED.name %}
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                    {% elif admission.ucl_registration_complete == ucl_registration_state_choices.ON_DEMAND %}
+                                {% elif admission.ucl_registration_complete == ucl_registration_state_choices.DEMANDE.name %}
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                                 {% endif %}
                             </td>

@@ -54,10 +54,10 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.enums import admission_state_choices, file_category_choices, \
-    ucl_registration_state_choices
+from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
     REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
     ADMISSION_CREATION, get_revision_messages
@@ -168,20 +168,32 @@ def admission_detail(request, admission_id):
             'version': version_list,
             'MAX_UPLOAD_SIZE': MAX_UPLOAD_SIZE,
             'opened_tab': request.GET.get('opened_tab'),
-            'injection_not_rejected': admission.ucl_registration_complete != ucl_registration_state_choices.REJECTED
+            'injection_not_rejected': admission.ucl_registration_complete != UCLRegistrationState.REJECTED.name
         }
     )
 
 
 def _display_adapted_ucl_registration_message(admission, request):
-    if admission.ucl_registration_complete == ucl_registration_state_choices.SENDED:
+    if admission.ucl_registration_complete == UCLRegistrationState.SENDED.name:
         display_warning_messages(request, _('Folder sended to EPC : waiting for response'))
-    elif admission.ucl_registration_complete == ucl_registration_state_choices.REJECTED:
-        display_error_messages(request, _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''})
-    elif admission.ucl_registration_complete == ucl_registration_state_choices.ON_DEMAND:
+    elif admission.ucl_registration_complete == UCLRegistrationState.REJECTED.name:
+        display_error_messages(
+            request,
+            _('Folder injection into EPC failed : %(reasons)s') % {
+                'reasons': admission.get_ucl_registration_error_display()
+            }
+        )
+    elif admission.ucl_registration_complete == UCLRegistrationState.DEMANDE.name:
         display_info_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration on demand'))
-    elif admission.ucl_registration_complete == ucl_registration_state_choices.REGISTERED:
+    elif admission.ucl_registration_complete == UCLRegistrationState.INSCRIT.name:
         display_success_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration completed'))
+    elif admission.ucl_registration_complete != UCLRegistrationState.INIT_STATE.name:
+        display_info_messages(
+            request,
+            _('Folder injection into EPC succeeded : UCLouvain registration status : %(status)s') % {
+                'status': admission.get_ucl_registration_complete_display()
+            }
+        )
 
 
 def _change_state(request, forms, accepted_states, admission):

@@ -37,6 +37,7 @@ from reversion.models import Version
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, VALIDATED, REGISTRATION_SUBMITTED, \
     SUBMITTED
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 
 UCL_REGISTRATION_COMPLETE = {'icon': 'fas fa-university', 'text': _('UCLouvain registration complete')}
 REGISTRATION_FILE_RECEIVED = {'icon': 'fas fa-receipt', 'text': _('Registration file received')}
@@ -56,11 +57,17 @@ MAIL_MESSAGE = _('Mail sent to %(receiver)s')
 
 UCL_REGISTRATION_SENDED = {'icon': 'glyphicon glyphicon-time', 'text': _('Folder sended to EPC : waiting for response')}
 UCL_REGISTRATION_REJECTED = {'icon': 'glyphicon glyphicon-remove',
-                             'text': _('Folder injection into EPC failed : %(reasons)s') % {'reasons': ''}}
+                             'text': _('Folder injection into EPC failed : ')}
 UCL_REGISTRATION_REGISTERED = {'icon': 'glyphicon glyphicon-ok-circle',
                                'text': _('Folder injection into EPC succeeded : UCLouvain registration completed')}
-UCL_REGISTRATION_ON_DEMAND = {'icon': 'glyphicon glyphicon-question-sign',
-                              'text': _('Folder injection into EPC succeeded : UCLouvain registration on demand')}
+UCL_REGISTRATION_STATE_CHANGED = {'icon': 'glyphicon glyphicon-question-sign',
+                                  'text': _('Folder injection into EPC succeeded : UCLouvain registration state : ')}
+
+REGISTRATIONS_UCL_MESSAGES = {
+    UCLRegistrationState.SENDED.name: UCL_REGISTRATION_SENDED,
+    UCLRegistrationState.REJECTED.name: UCL_REGISTRATION_REJECTED,
+    UCLRegistrationState.INSCRIT.name: UCL_REGISTRATION_REGISTERED,
+}
 
 VERSION_MESSAGES = [
     UCL_REGISTRATION_COMPLETE['text'],
@@ -77,7 +84,7 @@ VERSION_MESSAGES = [
     UCL_REGISTRATION_SENDED['text'],
     UCL_REGISTRATION_REJECTED['text'],
     UCL_REGISTRATION_REGISTERED['text'],
-    UCL_REGISTRATION_ON_DEMAND['text'],
+    UCL_REGISTRATION_STATE_CHANGED['text'],
 ]
 
 
