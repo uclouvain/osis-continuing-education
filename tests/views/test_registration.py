@@ -190,6 +190,20 @@ class ViewRegistrationTestCase(TestCase):
         self.assertIn(gettext(_("Folder sended to EPC : waiting for response")), msg)
         self.assertEqual(msg_level[0], messages.WARNING)
 
+    def test_uclouvain_registration_other_state(self):
+        self.admission_validated.ucl_registration_complete = UCLRegistrationState.DECES.name
+        self.admission_validated.save()
+
+        url = reverse('admission_detail', kwargs={'admission_id': self.admission_validated.pk})
+        response = self.client.get(url)
+
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(gettext(_('Folder injection into EPC succeeded : UCLouvain registration status : %(status)s') % {
+            'status': UCLRegistrationState.DECES.value
+        }), msg)
+        self.assertEqual(msg_level[0], messages.INFO)
+
     def test_registration_list_unauthorized(self):
         self.client.force_login(_build_unauthorized_user())
         url = reverse('registration')
