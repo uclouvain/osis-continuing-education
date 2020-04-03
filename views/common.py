@@ -60,14 +60,13 @@ UCL_REGISTRATION_REJECTED = {'icon': 'glyphicon glyphicon-remove',
                              'text': _('Folder injection into EPC failed : ')}
 UCL_REGISTRATION_REGISTERED = {'icon': 'glyphicon glyphicon-ok-circle',
                                'text': _('Folder injection into EPC succeeded : UCLouvain registration completed')}
-UCL_REGISTRATION_ON_DEMAND = {'icon': 'glyphicon glyphicon-question-sign',
-                              'text': _('Folder injection into EPC succeeded : UCLouvain registration on demand')}
+UCL_REGISTRATION_STATE_CHANGED = {'icon': 'glyphicon glyphicon-question-sign',
+                                  'text': _('Folder injection into EPC succeeded : UCLouvain registration state : ')}
 
 REGISTRATIONS_UCL_MESSAGES = {
     UCLRegistrationState.SENDED.name: UCL_REGISTRATION_SENDED,
     UCLRegistrationState.REJECTED.name: UCL_REGISTRATION_REJECTED,
-    UCLRegistrationState.DEMANDE.name: UCL_REGISTRATION_ON_DEMAND,
-    UCLRegistrationState.INSCRIT.name: UCL_REGISTRATION_REGISTERED
+    UCLRegistrationState.INSCRIT.name: UCL_REGISTRATION_REGISTERED,
 }
 
 VERSION_MESSAGES = [
@@ -85,7 +84,7 @@ VERSION_MESSAGES = [
     UCL_REGISTRATION_SENDED['text'],
     UCL_REGISTRATION_REJECTED['text'],
     UCL_REGISTRATION_REGISTERED['text'],
-    UCL_REGISTRATION_ON_DEMAND['text'],
+    UCL_REGISTRATION_STATE_CHANGED['text'],
 ]
 
 

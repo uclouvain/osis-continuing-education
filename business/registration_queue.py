@@ -32,14 +32,14 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _, gettext
+from django.utils.translation import gettext_lazy as _
 
 from base.views.common import display_error_messages
 from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
-    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REJECTED, REGISTRATIONS_UCL_MESSAGES
+    UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REJECTED, REGISTRATIONS_UCL_MESSAGES, UCL_REGISTRATION_STATE_CHANGED
 from osis_common.queue.queue_sender import send_message
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
@@ -89,15 +89,19 @@ def save_role_registered_in_admission(data):
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
         registration_status = data.get('registration_status')
-        if registration_status in [UCLRegistrationState.INSCRIT.name, UCLRegistrationState.DEMANDE.name]:
-            admission.ucl_registration_complete = registration_status
+        admission.ucl_registration_complete = registration_status
+        if registration_status == UCLRegistrationState.INSCRIT.name:
             message = REGISTRATIONS_UCL_MESSAGES[registration_status]
-            save_and_create_revision(get_revision_messages(message), admission)
+        else:
+            UCL_REGISTRATION_STATE_CHANGED['text'] += admission.get_ucl_registration_complete_display()
+            message = UCL_REGISTRATION_STATE_CHANGED
     else:
         admission.ucl_registration_complete = UCLRegistrationState.REJECTED.name
         admission.ucl_registration_error = data['message']
-        UCL_REGISTRATION_REJECTED['text'] += gettext(data['message'])
-        save_and_create_revision(get_revision_messages(UCL_REGISTRATION_REJECTED), admission)
+        UCL_REGISTRATION_REJECTED['text'] += admission.get_ucl_registration_error_display()
+        message = UCL_REGISTRATION_REJECTED
+
+    save_and_create_revision(get_revision_messages(message), admission)
 
 
 def send_admission_to_queue(request, admission):

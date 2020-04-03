@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-02 17:05+0200\n"
+"POT-Creation-Date: 2020-04-03 11:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -506,6 +506,11 @@ msgid "Folder injection into EPC succeeded : UCLouvain registration on demand"
 msgstr ""
 "Injection du dossier dans EPC réussie : inscription UCLouvain en demande"
 
+msgid "Folder injection into EPC succeeded : UCLouvain registration state : "
+msgstr ""
+"Injection du dossier dans EPC réussie : statut de l'inscription : "
+
+#, python-format
 msgid ""
 "Folder injection into EPC succeeded : UCLouvain registration status : "
 "%(status)s"
@@ -959,10 +964,8 @@ msgstr "Inscrit"
 msgid "Registration"
 msgstr "Inscription"
 
-#, fuzzy
-#| msgid "Registration to process"
 msgid "Registration already processed"
-msgstr "Inscription à traiter"
+msgstr "Inscription déja traitée"
 
 msgid "Registration file received"
 msgstr "Dossier d'inscription reçu"

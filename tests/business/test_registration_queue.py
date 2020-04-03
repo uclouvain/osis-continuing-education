@@ -122,7 +122,7 @@ class SaveRoleRegisteredTestCase(TestCase):
     def setUp(self):
         self.admission = AdmissionFactory()
         self.basic_response = {
-            'message': 'TEST',
+            'message': 'IUFC_NO_ERROR',
             'success': True,
             'student_case_uuid': str(self.admission.uuid),
             'registration_id': self.admission.id,

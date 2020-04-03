@@ -371,6 +371,7 @@ class Admission(Model):
         null=True,
         blank=True,
         choices=UCLRegistrationError.choices(),
+        default=UCLRegistrationError.IUFC_NO_ERROR.name,
         verbose_name=_("UCLouvain registration error")
     )
 
