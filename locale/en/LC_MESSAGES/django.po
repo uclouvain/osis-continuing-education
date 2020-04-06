@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-16 11:47+0100\n"
+"POT-Creation-Date: 2020-04-03 11:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -225,11 +225,20 @@ msgstr ""
 msgid "Cancel state reason"
 msgstr ""
 
+msgid "Cancellation (ETD)"
+msgstr ""
+
+msgid "Cancellation (UNIV)"
+msgstr ""
+
 msgid "Cancelled"
 msgstr ""
 
 msgid "Cancelled (no registration required)"
 msgstr "Cancelled"
+
+msgid "Cessation"
+msgstr ""
 
 msgid "Change made"
 msgstr ""
@@ -315,7 +324,13 @@ msgstr ""
 msgid "Current occupation"
 msgstr ""
 
+msgid "Cycle"
+msgstr ""
+
 msgid "Datetime"
+msgstr ""
+
+msgid "Death"
 msgstr ""
 
 msgid "Delete document"
@@ -390,6 +405,12 @@ msgstr ""
 msgid "Employee"
 msgstr ""
 
+msgid "Error"
+msgstr ""
+
+msgid "Exclusion"
+msgstr ""
+
 msgid "Faculty"
 msgstr ""
 
@@ -444,6 +465,9 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
+msgid "Folder injection into EPC failed : "
+msgstr ""
+
 #, python-format
 msgid "Folder injection into EPC failed : %(reasons)s"
 msgstr ""
@@ -452,6 +476,15 @@ msgid "Folder injection into EPC succeeded : UCLouvain registration completed"
 msgstr ""
 
 msgid "Folder injection into EPC succeeded : UCLouvain registration on demand"
+msgstr ""
+
+msgid "Folder injection into EPC succeeded : UCLouvain registration state : "
+msgstr ""
+
+#, python-format
+msgid ""
+"Folder injection into EPC succeeded : UCLouvain registration status : "
+"%(status)s"
 msgstr ""
 
 msgid "Folder sended to EPC : waiting for response"
@@ -526,6 +559,9 @@ msgstr ""
 msgid "ID card number"
 msgstr ""
 
+msgid "IP Cancellation"
+msgstr ""
+
 msgid "Identification"
 msgstr ""
 
@@ -548,6 +584,12 @@ msgid "Inject into EPC"
 msgstr ""
 
 msgid "Injection status"
+msgstr ""
+
+msgid "Intention cancellation"
+msgstr ""
+
+msgid "Internet re-registration"
 msgstr ""
 
 msgid "Invoice"
@@ -623,6 +665,24 @@ msgstr ""
 msgid "Married"
 msgstr ""
 
+msgid "Missing birth country"
+msgstr ""
+
+msgid "Missing citizenship"
+msgstr ""
+
+msgid "Missing first name"
+msgstr ""
+
+msgid "Missing name"
+msgstr ""
+
+msgid "Missing program"
+msgstr ""
+
+msgid "Missing year"
+msgstr ""
+
 msgid "Mobile phone"
 msgstr ""
 
@@ -630,6 +690,9 @@ msgid "Motivation"
 msgstr ""
 
 msgid "NOMA"
+msgstr ""
+
+msgid "NOMA creation failed"
 msgstr ""
 
 msgid "Name"
@@ -657,6 +720,9 @@ msgid "No data"
 msgstr ""
 
 msgid "No document available"
+msgstr ""
+
+msgid "No error"
 msgstr ""
 
 msgid "No file chosen"
@@ -817,6 +883,9 @@ msgstr ""
 msgid "Prospects_list"
 msgstr ""
 
+msgid "Provisional"
+msgstr ""
+
 msgid "Public"
 msgstr ""
 
@@ -835,13 +904,22 @@ msgstr ""
 msgid "Reduced rates"
 msgstr ""
 
+msgid "Refusal"
+msgstr ""
+
 msgid "Refusal state reason"
+msgstr ""
+
+msgid "Register intention"
 msgstr ""
 
 msgid "Registered"
 msgstr ""
 
 msgid "Registration"
+msgstr ""
+
+msgid "Registration already processed"
 msgstr ""
 
 msgid "Registration file received"
@@ -1090,6 +1168,15 @@ msgstr ""
 msgid "To submit an admission, its state must be DRAFT."
 msgstr ""
 
+msgid "Too long address"
+msgstr ""
+
+msgid "Too long first name"
+msgstr ""
+
+msgid "Too long name"
+msgstr ""
+
 msgid "Training"
 msgstr ""
 
@@ -1108,10 +1195,16 @@ msgstr ""
 msgid "UCLouvain registration complete"
 msgstr ""
 
+msgid "UCLouvain registration error"
+msgstr ""
+
 msgid "Unarchive"
 msgstr ""
 
 msgid "Unconditionally"
+msgstr ""
+
+msgid "Uninformed"
 msgstr ""
 
 msgid "Unknown birth place"
@@ -1149,6 +1242,9 @@ msgid "VAT number"
 msgstr ""
 
 msgid "Validated"
+msgstr ""
+
+msgid "Valued crédits"
 msgstr ""
 
 msgid "Waiting"

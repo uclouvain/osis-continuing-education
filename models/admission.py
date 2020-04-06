@@ -33,7 +33,9 @@ from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
 from continuing_education.auth.roles.continuing_education_training_manager import ContinuingEducationTrainingManager
-from continuing_education.models.enums import admission_state_choices, enums, ucl_registration_state_choices
+from continuing_education.models.enums import admission_state_choices, enums
+from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
+from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from osis_common.utils.models import get_object_or_none
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -265,7 +267,7 @@ class Admission(Model):
         verbose_name=_("Registration type")
     )
     use_address_for_billing = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Use address for billing")
     )
     billing_address = models.ForeignKey(
@@ -337,7 +339,7 @@ class Admission(Model):
 
     # Post
     use_address_for_post = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("Use address for post")
     )
     residence_address = models.ForeignKey(
@@ -359,9 +361,18 @@ class Admission(Model):
     ucl_registration_complete = models.CharField(
         max_length=50,
         blank=True,
-        choices=ucl_registration_state_choices.STATE_CHOICES,
-        default=ucl_registration_state_choices.INIT_STATE,
+        choices=UCLRegistrationState.choices(),
+        default=UCLRegistrationState.INIT_STATE.name,
         verbose_name=_("UCLouvain registration complete")
+    )
+
+    ucl_registration_error = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        choices=UCLRegistrationError.choices(),
+        default=UCLRegistrationError.IUFC_NO_ERROR.name,
+        verbose_name=_("UCLouvain registration error")
     )
 
     noma = models.CharField(
