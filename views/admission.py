@@ -57,9 +57,7 @@ from continuing_education.models.continuing_education_person import ContinuingEd
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED, REGISTRATION_SUBMITTED
-
-REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
+    ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
