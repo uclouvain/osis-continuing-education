@@ -86,10 +86,6 @@ class Migration(migrations.Migration):
             name='managers',
             field=models.ManyToManyField(through='continuing_education.ContinuingEducationTrainingManager', to='base.Person'),
         ),
-        migrations.RunPython(migrate_person_training_into_continuing_education_training_manager),
-        migrations.DeleteModel(
-            name='PersonTraining',
-        ),
         migrations.AddField(
             model_name='continuingeducationtrainingmanager',
             name='training',
@@ -98,5 +94,9 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='continuingeducationtrainingmanager',
             unique_together={('person', 'training')},
+        ),
+        migrations.RunPython(migrate_person_training_into_continuing_education_training_manager),
+        migrations.DeleteModel(
+            name='PersonTraining',
         ),
     ]
