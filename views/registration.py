@@ -81,7 +81,14 @@ def export_registrations(request, admission_list, search_form):
 @login_required
 @permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 def registration_edit(request, admission_id):
-    admission = get_object_or_404(Admission, pk=admission_id)
+    admission = get_object_or_404(
+        Admission.objects.select_related(
+            'billing_address',
+            'residence_address',
+            'address'
+        ),
+        pk=admission_id
+    )
     can_access_admission(request.user, admission)
 
     if admission.is_draft():

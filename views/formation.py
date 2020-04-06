@@ -193,7 +193,10 @@ def formation_detail(request, formation_id):
     raise_exception=True
 )
 def formation_edit(request, formation_id):
-    formation = get_object_or_404(ContinuingEducationTraining, pk=formation_id)
+    formation = get_object_or_404(
+        ContinuingEducationTraining.objects.select_related('postal_address', 'education_group'),
+        pk=formation_id
+    )
     form = ContinuingEducationTrainingForm(request.POST or None, user=request.user, instance=formation)
     address_form = AddressForm(request.POST or None, instance=formation.postal_address)
     if all([form.is_valid(), address_form.is_valid()]):

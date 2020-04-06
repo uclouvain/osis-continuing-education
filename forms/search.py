@@ -399,9 +399,9 @@ class ManagerFilterForm(BootstrapForm):
         super(ManagerFilterForm, self).__init__(*args, **kwargs)
 
     def get_managers(self):
-        training = self.cleaned_data.get('training', None)
-        person = self.cleaned_data.get('person', None)
-        faculty = self.cleaned_data.get('faculty', None)
+        training = self.cleaned_data.get('training')
+        person = self.cleaned_data.get('person')
+        faculty = self.cleaned_data.get('faculty')
         qs = Person.objects.filter(user__groups__name='continuing_education_training_managers').order_by('last_name')
         if training:
             qs = qs.filter(

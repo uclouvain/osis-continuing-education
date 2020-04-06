@@ -91,7 +91,10 @@ def add_continuing_education_training_manager(request):
 def delete_continuing_education_training_manager(request, training, manager):
     redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
 
-    person_training = get_object_or_404(ContinuingEducationTrainingManager, training=training, person=manager)
+    person_training = get_object_or_404(
+        ContinuingEducationTrainingManager.objects.select_related('person', 'training'),
+        training=training, person=manager
+    )
     success_msg = _('Successfully desassigned %(manager)s from the training %(training)s') % {
         "manager": person_training.person,
         "training": person_training.training.acronym

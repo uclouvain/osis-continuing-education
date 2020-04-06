@@ -66,9 +66,7 @@ class PersonTrainingForm(ModelForm):
                 person=self.cleaned_data['person'],
                 training=self.cleaned_data['training']
             )
-        except ContinuingEducationTrainingManager.DoesNotExist:
-            pass
-        except KeyError:
+        except (ContinuingEducationTrainingManager.DoesNotExist, KeyError):
             pass
         else:
             raise ValidationError({'person': [_('Manager is already assigned on this training')]})

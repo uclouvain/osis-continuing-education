@@ -568,9 +568,6 @@ class TestFormationFilterForm(TestCase):
             active=False,
         )
 
-    def setUp(self):
-        pass
-
     def test_get_state_choices(self):
         form = FormationFilterForm(data={})
         self.assertTrue(form.is_valid())
