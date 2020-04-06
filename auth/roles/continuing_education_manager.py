@@ -1,7 +1,7 @@
 import rules
 from django.utils.translation import gettext_lazy as _
 
-from continuing_education.auth import predicates
+from continuing_education.auth.predicates import is_admission_draft, is_registration_submitted
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from osis_common.models.osis_model_admin import OsisModelAdmin
 from osis_role.contrib import models as osis_role_models
@@ -21,14 +21,14 @@ class ContinuingEducationManager(osis_role_models.RoleModel):
     def rule_set(cls):
         return rules.RuleSet({
             'continuing_education.view_admission': rules.always_allow,
-            'continuing_education.change_admission': ~predicates.is_admission_draft,
+            'continuing_education.change_admission': ~is_admission_draft,
             'continuing_education.archive_admission': rules.always_allow,
             'continuing_education.cancel_admission': rules.always_allow,
             'continuing_education.export_admission': rules.always_allow,
-            'continuing_education.validate_registration': predicates.is_registration_submitted,
-            'continuing_education.view_persontraining': rules.always_allow,
-            'continuing_education.add_persontraining': rules.always_allow,
-            'continuing_education.delete_persontraining': rules.always_allow,
+            'continuing_education.validate_registration': is_registration_submitted,
+            'continuing_education.view_continuingeducationtrainingmanager': rules.always_allow,
+            'continuing_education.add_continuingeducationtrainingmanager': rules.always_allow,
+            'continuing_education.delete_continuingeducationtrainingmanager': rules.always_allow,
             'continuing_education.change_received_file_state': rules.always_allow,
             'continuing_education.link_admission_to_academic_year': rules.always_allow,
             'continuing_education.manage_all_trainings': rules.always_allow,

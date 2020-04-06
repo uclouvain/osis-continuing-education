@@ -24,17 +24,19 @@
 #
 ##############################################################################
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.utils.translation import gettext_lazy as _
+from rules.contrib.views import permission_required
 
 from base.utils.cache import cache_filter
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.xls.xls_archive import create_xls
 from continuing_education.forms.search import ArchiveFilterForm
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    admission_getter
 from continuing_education.views.common import get_object_list, FILE_ARCHIVED, save_and_create_revision, \
     FILE_UNARCHIVED, get_revision_messages
 
@@ -52,7 +54,7 @@ def list_archives(request):
     archive_list = filter_authorized_admissions(request.user, archive_list)
 
     if request.GET.get('xls_status') == "xls_archives":
-        return create_xls(request.user, archive_list, search_form)
+        return export_archives(request, archive_list, search_form)
 
     return render(request, "archives.html", {
         'archives': get_object_list(request, archive_list),
@@ -62,7 +64,13 @@ def list_archives(request):
 
 
 @login_required
-@permission_required('continuing_education.archive_admission', raise_exception=True)
+@permission_required('continuing_education.export_admission')
+def export_archives(request, archive_list, search_form):
+    return create_xls(request.user, archive_list, search_form)
+
+
+@login_required
+@permission_required('continuing_education.archive_admission', fn=admission_getter, raise_exception=True)
 def archive_procedure(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     can_access_admission(request.user, admission)

@@ -30,7 +30,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.forms import model_to_dict
-from django.http.response import HttpResponseBase
+from django.http.response import HttpResponseBase, HttpResponseForbidden
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -42,14 +42,13 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 from continuing_education.views.formation import _set_error_message
 
 STR_TRUE = "True"
@@ -93,12 +92,7 @@ class ViewFormationTestCase(TestCase):
             education_group_type=continuing_education_group_type
         )
         cls.manager = ContinuingEducationManagerFactory()
-        group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory(
-            'view_admission', 'change_admission',
-            'view_continuingeducationtraining', 'change_continuingeducationtraining'
-        )
-        cls.training_manager.user.groups.add(group)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory()
         cls.entity_version = EntityVersionFactory(
             entity=cls.formation_AAAA.management_entity,
         )
@@ -182,26 +176,18 @@ class ViewFormationTestCase(TestCase):
             self.assertEqual(field_value, cet_dict[key])
 
     def test_training_manager_can_edit_training(self):
-        self.client.force_login(self.training_manager.user)
-        PersonTrainingFactory(person=self.training_manager, training=self.continuing_education_training)
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.continuing_education_training)
+        self.client.force_login(training_manager.person.user)
         url = reverse('formation_edit', args=[self.continuing_education_training.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponseBase.status_code)
         self.assertTemplateUsed(response, 'formation_form.html')
 
     def test_training_manager_cannot_edit_training(self):
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
         url = reverse('formation_edit', args=[self.continuing_education_training.id])
         response = self.client.get(url)
-        self.assertRedirects(
-            response,
-            reverse('formation_detail', args=[self.continuing_education_training.education_group.id])
-        )
-        msg = [m.message for m in get_messages(response.wsgi_request)]
-        msg_level = [m.level for m in get_messages(response.wsgi_request)]
-        self.assertEqual(len(msg), 1)
-        self.assertIn(messages.ERROR, msg_level)
-        self.assertEqual(msg[0], _('You are not authorized to edit this training'))
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
     def test_context_manager_contents(self):
         self.client.force_login(self.manager.person.user)
@@ -211,13 +197,12 @@ class ViewFormationTestCase(TestCase):
         self.assertIsNone(response.context['trainings_managing'])
 
     def test_context_trainer_manager_contents(self):
-        training_manager_person_training = PersonTrainingFactory(person=self.training_manager,
-                                                                 training=self.continuing_education_training)
-        self.client.force_login(self.training_manager.user)
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.continuing_education_training)
+        self.client.force_login(training_manager.person.user)
         response = self.client.get(reverse('formation'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['continuing_education_training_manager'])
-        self.assertCountEqual(response.context['trainings_managing'], [training_manager_person_training.training.id])
+        self.assertCountEqual(response.context['trainings_managing'], [training_manager.training.id])
 
     def test_set_error_message_no_formation_inactivated(self):
         input_values = [None, 'New state']

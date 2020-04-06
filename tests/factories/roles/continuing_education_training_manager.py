@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2020 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,10 +23,14 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import factory
 
-from continuing_education.models.enums.groups import TRAINING_MANAGERS_GROUP
+from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from osis_role.contrib.tests.factories import RoleModelFactory
 
 
-# TODO: move this in continuing_education_training_manager role
-def is_continuing_education_training_manager(user):
-    return user.groups.filter(name=TRAINING_MANAGERS_GROUP).exists()
+class ContinuingEducationTrainingManagerFactory(RoleModelFactory):
+    class Meta:
+        model = 'continuing_education.ContinuingEducationTrainingManager'
+
+    training = factory.SubFactory(ContinuingEducationTrainingFactory)

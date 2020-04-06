@@ -39,8 +39,6 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_type import EducationGroupTypeFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.search import ADMISSION_STATE_CHOICES
 from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm, \
@@ -51,12 +49,14 @@ from continuing_education.models.continuing_education_training import CONTINUING
 from continuing_education.models.enums.admission_state_choices import ARCHIVE_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, ACCEPTED, \
     REGISTRATION_SUBMITTED, ACCEPTED_NO_REGISTRATION_REQUIRED, VALIDATED
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 from reference.tests.factories.country import CountryFactory
 
 COUNTRY_NAME_WITHOUT_ACCENT = 'Country - e'
@@ -524,48 +524,47 @@ class TestFilterForm(TestCase):
 
 
 class TestFormationFilterForm(TestCase):
-
-    def setUp(self):
-
-        self.title_acronym_12 = 'Acronym 12'
-        self.continuing_education_group_type = EducationGroupTypeFactory(
+    @classmethod
+    def setUpTestData(cls):
+        cls.title_acronym_12 = 'Acronym 12'
+        cls.continuing_education_group_type = EducationGroupTypeFactory(
             name=random.choice(CONTINUING_EDUCATION_TRAINING_TYPES)
         )
 
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.entity_version = create_entity_version("ENTITY_PREV")
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.entity_version = create_entity_version("ENTITY_PREV")
         entity_version_2 = create_entity_version("FAC2")
 
-        self.iufc_education_group_yr_ACRO_10 = EducationGroupYearFactory(
+        cls.iufc_education_group_yr_ACRO_10 = EducationGroupYearFactory(
             acronym="ACRO_10",
-            education_group_type=self.continuing_education_group_type,
+            education_group_type=cls.continuing_education_group_type,
             title='Acronym 10',
-            management_entity=self.entity_version.entity,
-            academic_year=self.academic_year
+            management_entity=cls.entity_version.entity,
+            academic_year=cls.academic_year
         )
-        self.iufc_education_group_yr_ACRO_12 = EducationGroupYearFactory(
+        cls.iufc_education_group_yr_ACRO_12 = EducationGroupYearFactory(
             acronym="ACRO_12",
-            education_group_type=self.continuing_education_group_type,
-            title=self.title_acronym_12,
+            education_group_type=cls.continuing_education_group_type,
+            title=cls.title_acronym_12,
             management_entity=entity_version_2.entity,
-            academic_year=self.academic_year
+            academic_year=cls.academic_year
         )
 
         education_group_not_organized = EducationGroupFactory()
-        self.education_group_yr_not_organized = EducationGroupYearFactory(
+        cls.education_group_yr_not_organized = EducationGroupYearFactory(
             acronym="CODE_12",
-            education_group_type=self.continuing_education_group_type,
+            education_group_type=cls.continuing_education_group_type,
             title="Other title",
-            management_entity=self.entity_version.entity,
+            management_entity=cls.entity_version.entity,
             education_group=education_group_not_organized,
-            academic_year=self.academic_year
+            academic_year=cls.academic_year
         )
-        self.active_continuing_education_training = ContinuingEducationTrainingFactory(
-            education_group=self.iufc_education_group_yr_ACRO_10.education_group,
+        cls.active_continuing_education_training = ContinuingEducationTrainingFactory(
+            education_group=cls.iufc_education_group_yr_ACRO_10.education_group,
             active=True,
         )
-        self.inactive_continuing_education_training = ContinuingEducationTrainingFactory(
-            education_group=self.iufc_education_group_yr_ACRO_12.education_group,
+        cls.inactive_continuing_education_training = ContinuingEducationTrainingFactory(
+            education_group=cls.iufc_education_group_yr_ACRO_12.education_group,
             active=False,
         )
 
@@ -631,44 +630,31 @@ class TestFormationFilterForm(TestCase):
 
 
 class TestContinuingEducationManagerFilterForm(TestCase):
-
-    def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
-        self.education_group = EducationGroupFactory()
-        self.start_date = date.today().replace(year=2010)
-        self.faculty = EntityVersionFactory(
+    @classmethod
+    def setUpTestData(cls):
+        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.education_group = EducationGroupFactory()
+        cls.start_date = date.today().replace(year=2010)
+        cls.faculty = EntityVersionFactory(
             acronym="DRT_NEW",
             entity_type=FACULTY,
-            start_date=self.start_date,
+            start_date=cls.start_date,
             end_date=None,
         )
         EducationGroupYearFactory(
-            education_group=self.education_group,
-            academic_year=self.academic_year,
-            management_entity=self.faculty.entity,
+            education_group=cls.education_group,
+            academic_year=cls.academic_year,
+            management_entity=cls.faculty.entity,
         )
+        cls.formation = ContinuingEducationTrainingFactory(education_group=cls.education_group)
+        cls.training_managers = [
+            ContinuingEducationTrainingManagerFactory(),
+            ContinuingEducationTrainingManagerFactory(training=cls.formation)
+        ]
+        cls.continuing_education_manager = ContinuingEducationManagerFactory()
 
-        training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        self.training_managers = []
-        for _ in range(1, 2):
-            training_manager = PersonWithPermissionsFactory(
-                'view_admission',
-                'change_admission',
-            )
-            training_manager.user.groups.add(training_manager_group)
-            self.training_managers.append(training_manager)
-
-        self.formation = ContinuingEducationTrainingFactory(education_group=self.education_group)
-        PersonTraining(person=self.training_managers[0], training=self.formation).save()
-
-        manager_group = GroupFactory(name='continuing_education_managers')
-        self.continuing_education_manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration'
-        )
-        self.continuing_education_manager.user.groups.add(manager_group)
-        self.client.force_login(self.continuing_education_manager.user)
+    def setUp(self):
+        self.client.force_login(self.continuing_education_manager.person.user)
 
     def test_managers_no_filter(self):
         self._assert_results_count_equal({}, self.training_managers)
@@ -677,13 +663,13 @@ class TestContinuingEducationManagerFilterForm(TestCase):
         self._assert_results_count_equal({'training': self.formation.id}, [self.training_managers[0]])
 
     def test_managers_filter_by_person(self):
-        self._assert_results_count_equal({'person': self.training_managers[0].id}, [self.training_managers[0]])
+        self._assert_results_count_equal({'person': self.training_managers[0].person.id}, [self.training_managers[0]])
 
     def test_managers_filter_by_faculty(self):
         self._assert_results_count_equal({'faculty': self.faculty.id}, [self.training_managers[0]])
 
     def test_get_state_choices(self):
-        form = RegistrationFilterForm(data={}, user=self.training_managers[0].user)
+        form = RegistrationFilterForm(data={}, user=self.training_managers[0].person.user)
         self.assertTrue(form.is_valid())
         self.assertCountEqual(form.fields['state'].choices,
                               [ALL_CHOICE] + sorted(REGISTRATION_STATE_CHOICES, key=itemgetter(1)))
@@ -692,7 +678,7 @@ class TestContinuingEducationManagerFilterForm(TestCase):
         form = ManagerFilterForm(data=data)
         self.assertTrue(form.is_valid())
         results = form.get_managers()
-        self.assertCountEqual(results, expected_results)
+        self.assertEqual(results.count(), len(expected_results))
 
 
 def create_entity_version(an_acronym):

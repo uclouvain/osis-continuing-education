@@ -37,9 +37,9 @@ from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
     ContinuingEducationTrainingPostSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class ContinuingEducationTrainingListCreateTestCase(APITestCase):
@@ -54,8 +54,7 @@ class ContinuingEducationTrainingListCreateTestCase(APITestCase):
             academic_year=cls.academic_year
         )
         cls.continuing_education_training = ContinuingEducationTrainingFactory(education_group=cls.education_group)
-        cls.training_manager = PersonFactory()
-        PersonTraining(person=cls.training_manager, training=cls.continuing_education_training).save()
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.continuing_education_training)
 
     def setUp(self):
         self.client.force_authenticate(user=self.user)

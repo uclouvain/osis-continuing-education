@@ -33,7 +33,8 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class TestContinuingEducationTraining(TestCase):
@@ -56,9 +57,8 @@ class TestContinuingEducationTraining(TestCase):
         a_training.save()
         person_1 = PersonFactory(first_name="Louis", last_name="Lesquoy")
         person_2 = PersonFactory(first_name="Arnaud", last_name="Jadoulle")
-
-        PersonTrainingFactory(person=person_1, training=a_training)
-        PersonTrainingFactory(person=person_2, training=a_training)
+        ContinuingEducationTrainingManagerFactory(person=person_1, training=a_training)
+        ContinuingEducationTrainingManagerFactory(person=person_2, training=a_training)
 
         self.assertEqual(a_training.formation_administrators, "{}, {} - {}, {}".format(person_2.last_name.upper(),
                                                                                        person_2.first_name,

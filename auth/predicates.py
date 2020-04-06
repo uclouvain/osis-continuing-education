@@ -9,3 +9,26 @@ def is_admission_draft(self, user, admission):
 @predicate(bind=True)
 def is_registration_submitted(self, user, registration):
     return registration.is_registration_submitted()
+
+
+@predicate(bind=True)
+def is_new_instance(self, user, admission):
+    return admission.id is None
+
+
+@predicate(bind=True)
+def is_training_manager(self, user, training):
+    if training:
+        return self.context['role_qs'].filter(training=training).exists()
+
+
+@predicate(bind=True)
+def is_admission_training_manager(self, user, admission):
+    if admission:
+        return self.context['role_qs'].filter(training=admission.formation).exists()
+
+
+@predicate(bind=True)
+def is_prospect_training_manager(self, user, prospect):
+    if prospect:
+        return self.context['role_qs'].filter(training=prospect.formation).exists()
