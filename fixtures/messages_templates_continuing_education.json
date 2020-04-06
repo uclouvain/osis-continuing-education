@@ -1,0 +1,202 @@
+[
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_accepted_html",
+    "subject": "Formation Continue UCLouvain - Demande d'admission accept\u00e9e",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>En r&eacute;ponse &agrave; votre demande d&rsquo;admission au programme ({{formation}}), nous avons le plaisir de vous informer que celle-ci a &eacute;t&eacute; accept&eacute;e{% if condition_of_acceptance %} sous la condition suivante : {{condition_of_acceptance}}{% endif %}.</p>\r\n\r\n<p>{% if registration_required %}Vous pouvez &agrave; pr&eacute;sent compl&eacute;ter votre dossier d&#39;inscription sur la plateforme. {% else %}Le&middot;a gestionnaire de la formation reviendra vers vous dans les meilleurs d&eacute;lais.{% endif %}</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question compl&eacute;mentaire, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_accepted_txt",
+    "subject": "Formation Continue UCLouvain - Demande d'admission accept\u00e9e",
+    "template": "Madame, Monsieur, En r&eacute;ponse &agrave; votre demande d&rsquo;admission au programme ({{formation}}), nous avons le plaisir de vous informer que celle-ci a &eacute;t&eacute; accept&eacute;e{% if condition_of_acceptance %} sous la condition suivante : {{condition_of_acceptance}}{% endif %}. {% if registration_required %}Vous pouvez &agrave; pr&eacute;sent compl&eacute;ter votre dossier d&#39;inscription sur la plateforme.{% else %}Le&middot;a gestionnaire de la formation reviendra vers vous dans les meilleurs d&eacute;lais.{% endif %} Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question compl&eacute;mentaire, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_admission_submitted_html",
+    "subject": "Formation Continue UCLouvain - Demande d'admission soumise",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>Nous vous remercions pour votre demande d&#39;admission &agrave; la formation {{formation}}.</p>\r\n\r\n<p>{% for data in admission_data %}{{ data }}</p>\r\n\r\n<p>{% endfor %}</p>\r\n\r\n<p>Nous reviendrons vers vous dans les meilleurs d&eacute;lais. Si vous souhaitez encore modifier votre dossier d&#39;admission ou pour toute question compl&eacute;mentaire, veuillez prendre contact avec le&middot;a gestionnaire de la formation&nbsp;: {{mails}}.</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_admission_submitted_txt",
+    "subject": "Formation Continue UCLouvain - Demande d'admission soumise",
+    "template": "Madame, Monsieur, Nous vous remercions pour votre demande d&#39;admission &agrave; la formation {{formation}}. {% for data in admission_data %}{{ data }} {% endfor %} Nous reviendrons vers vous dans les meilleurs d&eacute;lais. Si vous souhaitez encore modifier votre dossier d&#39;admission ou pour toute question compl&eacute;mentaire, veuillez prendre contact avec le&middot;a gestionnaire de la formation&nbsp;: {{mails}}. Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_admission_registr_submitted_html",
+    "subject": "Formation Continue UCLouvain - Demande d'inscription soumise",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>Votre demande d&rsquo;inscription &agrave; la formation {{ formation }} a &eacute;t&eacute; soumise.</p>\r\n\r\n<p>{% for data in admission_data %}{{ data }}<br />\r\n{% endfor %}</p>\r\n\r\n<p>Le gestionnaire du programme prendra contact avec vous dans les plus brefs d&eacute;lais.</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_admission_registr_submitted_txt",
+    "subject": "Formation Continue UCLouvain - Demande d'inscription soumise",
+    "template": "Madame, Monsieur, Votre demande d&rsquo;inscription &agrave; la formation {{ formation }} a &eacute;t&eacute; soumise. {% for data in admission_data %}{{ data }} {% endfor %} Le gestionnaire du programme prendra contact avec vous dans les plus brefs d&eacute;lais.&nbsp;Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_other_html",
+    "subject": "Formation Continue UCLouvain - Votre demande d'admission a chang\u00e9 d'\u00e9tat",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>Votre demande d&rsquo;admission au certificat ({{formation}}) &eacute;tait en &eacute;tat &#39;{{original_state}}&#39; et est maintenant en &eacute;tat &#39;{{state}}&#39;.</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_other_txt",
+    "subject": "Formation Continue UCLouvain - Votre demande d'admission a chang\u00e9 d'\u00e9tat",
+    "template": "Madame, Monsieur, Votre demande d&rsquo;admission au certificat ({{formation}}), &eacute;tait en &eacute;tat &#39;{{original_state}}&#39; et est maintenant en &eacute;tat &#39;{{state}}&#39;. Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_invoice_uploaded_html",
+    "subject": "Formation Continue UCLouvain - Facture ajout\u00e9e \u00e0 votre dossier",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>Une facture a &eacute;t&eacute; ajout&eacute;e &agrave; votre dossier pour la formation {{formation}}.</p>\r\n\r\n<p>Veuillez consulter et donner le suivi n&eacute;cessaire au(x) document(s) transmis par votre gestionnaire dans votre dossier online.</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_invoice_uploaded_txt",
+    "subject": "Formation Continue UCLouvain - Facture ajout\u00e9e \u00e0 votre dossier",
+    "template": "Madame, Monsieur, Une facture a &eacute;t&eacute; ajout&eacute;e &agrave; votre dossier pour la formation {{formation}}. Veuillez consulter et donner le suivi n&eacute;cessaire au(x) document(s) transmis par votre gestionnaire dans votre dossier online.&nbsp;Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_rejected_html",
+    "subject": "Formation Continue UCLouvain - Demande d'admission refus\u00e9e",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>En r&eacute;ponse &agrave; votre demande d&rsquo;admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_rejected_txt",
+    "subject": "Formation Continue UCLouvain - Demande d'admission refus\u00e9e",
+    "template": "Madame, Monsieur, En r&eacute;ponse &agrave; votre demande d&rsquo;admission au certificat ({{formation}}), nous avons le regret de vous informer que nous ne pouvons pas donner une suite favorable pour la (les) raison(s) suivante(s) : {{reason}} Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_admin_admission_submitted_html",
+    "subject": "{formation} - Nouvelle demande d'admission",
+    "template": "<p>Une demande d&#39;admission pour la formation <a href=\"{{formation_link}}\">{{formation}}</a> a &eacute;t&eacute; soumise par {{last_name}}, {{first_name}}.</p>\r\n&nbsp;\r\n\r\n<p>{% for data in admission_data %}{{ data }}<br />\r\n{% endfor %}</p>\r\n{% if attachment_removed %}\r\n\r\n<p>Les pi&egrave;ces jointes sont trop volumineuses, elles n&#39;ont pas &eacute;t&eacute; attach&eacute;es, mais sont consultables dans l&#39;application.</p>\r\n{% endif %}",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_admin_admission_submitted_txt",
+    "subject": "{formation} - Nouvelle demande d'admission",
+    "template": "Une demande d&#39;admission pour la formation {{formation}} a &eacute;t&eacute; soumise par {{last_name}}, {{first_name}}. {% for data in admission_data %}{{ data }} {% endfor %}{% if attachment_removed %} Les pi&egrave;ces jointes sont trop volumineuses, elles n&#39;ont pas &eacute;t&eacute; attach&eacute;es, mais sont consultables dans l&#39;application.{% endif %} Lien vers le dossier : ({{formation_link}})",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_admin_admission_registr_submitted_html",
+    "subject": "{formation} - Nouvelle demande d'inscription",
+    "template": "<p>Une demande d&#39;inscription pour la formation <a href=\"{{formation_link}}\">{{formation}}</a> a &eacute;t&eacute; soumise par {{last_name}}, {{first_name}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_admin_admission_registr_submitted_txt",
+    "subject": "{formation} - Nouvelle demande d'inscription",
+    "template": "Une demande d&#39;inscription pour la formation {{formation}} a &eacute;t&eacute; soumise par {{last_name}}, {{first_name}}. Lien vers le dossier : ({{formation_link}})",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_waiting_html",
+    "subject": "Formation Continue UCLouvain - Demande d'admission mise en attente",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>En r&eacute;ponse &agrave; votre demande d&rsquo;admission au certificat ({{formation}}), nous vous informons que celle-ci est mise en attente pour la (les) raison(s) suivante(s) :</p>\r\n\r\n<p>{{reason}}</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_waiting_txt",
+    "subject": "Formation Continue UCLouvain - Demande d'admission mise en attente",
+    "template": "Madame, Monsieur, En r&eacute;ponse &agrave; votre demande d&rsquo;admission au certificat ({{formation}}), nous vous informons que celle-ci est mise en attente pour la (les) raison(s) suivante(s) : {{reason}} Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_validated_html",
+    "subject": "Formation Continue UCLouvain - Demande d'inscription valid\u00e9e",
+    "template": "<p>Madame, Monsieur,</p>\r\n\r\n<p>Votre demande d&#39;inscription pour la formation {{formation}} a &eacute;t&eacute; valid&eacute;e.</p>\r\n\r\n<p>Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es.</p>\r\n\r\n<p>Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.</p>",
+    "format": "HTML",
+    "language": "fr-be"
+  }
+},
+{
+  "model": "osis_common.messagetemplate",
+  "fields": {
+    "reference": "iufc_participant_state_changed_validated_txt",
+    "subject": "Formation Continue UCLouvain - Demande d'inscription valid\u00e9e",
+    "template": "Madame, Monsieur, Votre demande d&#39;inscription pour la formation {{formation}} a &eacute;t&eacute; valid&eacute;e. Veuillez, Madame, Monsieur, agr&eacute;er l&rsquo;expression de nos salutations distingu&eacute;es. Pour toute question, veuillez contacter le(s) gestionnaire(s) de votre formation : {{mails}}.",
+    "format": "PLAIN",
+    "language": "fr-be"
+  }
+}
+]
