@@ -86,7 +86,7 @@ def format_address_for_json(address):
 
 
 def save_role_registered_in_admission(data):
-    data = json.loads(data)
+    data = json.loads(data.decode("utf-8"))
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
         registration_status = data.get('registration_status')

@@ -133,7 +133,7 @@ class SaveRoleRegisteredTestCase(TestCase):
 
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_if_queue_success(self, mock_get):
-        data = json.dumps(self.basic_response)
+        data = json.dumps(self.basic_response).encode('utf-8')
         save_role_registered_in_admission(data)
         mock_get.assert_called_once_with(UCL_REGISTRATION_REGISTERED)
         self.admission.refresh_from_db()
@@ -142,7 +142,7 @@ class SaveRoleRegisteredTestCase(TestCase):
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_if_queue_success_and_other_statut(self, mock_get):
         self.basic_response['registration_status'] = 'DECES'
-        data = json.dumps(self.basic_response)
+        data = json.dumps(self.basic_response).encode('utf-8')
         save_role_registered_in_admission(data)
         mock_get.assert_called_once_with(UCL_REGISTRATION_STATE_CHANGED)
         self.admission.refresh_from_db()
@@ -151,7 +151,7 @@ class SaveRoleRegisteredTestCase(TestCase):
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_no_change_if_queue_fail(self, mock_get):
         self.basic_response['success'] = False
-        data = json.dumps(self.basic_response)
+        data = json.dumps(self.basic_response).encode('utf-8')
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
         mock_get.assert_called_once_with(UCL_REGISTRATION_REJECTED)
