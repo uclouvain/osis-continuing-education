@@ -74,9 +74,9 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
             is_transition=False
         ).select_related(
             'offer',
-            'academic_year',
-            'administration_entity',
-            'management_entity'
+            'offer__academic_year',
+            'offer__administration_entity',
+            'offer__management_entity'
         ).first()
         return TrainingListSerializer(
             standard_version,
