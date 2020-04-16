@@ -111,7 +111,7 @@ class ContinuingEducationTraining(Model):
             'academic_year',
             'administration_entity',
             'management_entity'
-        ).latest('academic_year__year')
+        ).prefetch_related('educationgroupversion_set').latest('academic_year__year')
 
     @property
     def acronym(self):

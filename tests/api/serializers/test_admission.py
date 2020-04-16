@@ -45,7 +45,7 @@ class AdmissionDetailSerializerTestCase(TestCase):
         cls.person_information = ContinuingEducationPersonFactory()
         cls.citizenship = CountryFactory()
         cls.academic_year = AcademicYearFactory(year=2018)
-        new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        AcademicYearFactory(year=cls.academic_year.year+1)
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed)
         cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
