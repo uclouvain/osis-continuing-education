@@ -97,7 +97,7 @@ class ProspectDetailsTestCase(TestCase):
     def test_prospect_details(self):
         response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk}))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('prospect_details.html')
+        self.assertTemplateUsed(response, 'prospect_details.html')
         context = response.context[0].dicts[3]
         self.assertEqual(
             context.get('prospect'),
