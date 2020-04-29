@@ -57,7 +57,7 @@ class PrepareJSONTestCase(TestCase):
             'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
             'sex': self.admission.person_information.person.gender,
             'civil_state': self.admission.marital_status,
-            'nationality_iso_code': self.admission.citizenship.name,
+            'nationality_iso_code': self.admission.citizenship.iso_code,
             'mobile_number': self.admission.phone_mobile,
             'telephone_number': self.admission.residence_phone,
             'private_email': self.admission.email,
