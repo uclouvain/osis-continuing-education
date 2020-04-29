@@ -55,7 +55,7 @@ def get_json_for_epc(admission):
         'birth_country_iso_code': admission.person_information.birth_country.iso_code,
         'sex': admission.person_information.person.gender,
         'civil_state': admission.marital_status,
-        'nationality_iso_code': admission.citizenship.name,
+        'nationality_iso_code': admission.citizenship.iso_code,
         'mobile_number': admission.phone_mobile,
         'telephone_number': admission.residence_phone,
         'private_email': admission.email,
