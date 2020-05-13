@@ -1461,21 +1461,8 @@ msgstr "reçu"
 msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
 
-#, fuzzy
-#| msgid "Marital status"
 msgid "status"
-msgstr "Etat civil"
+msgstr "Etat"
 
 msgid "unarchived"
 msgstr "non-archivé"
-
-#~ msgid "Accept all selected admissions ?"
-#~ msgstr "Accepter les admissions sélectionnées ?"
-
-#~ msgid "This will accept all selected admissions. Are you sure ?"
-#~ msgstr ""
-#~ "Les admissions sélectionnées vont être acceptées. Êtes-vous certain·e de "
-#~ "vouloir continuer ?"
-
-#~ msgid "Yes, accept all selected admissions"
-#~ msgstr "Oui, accepter les admissions sélectionnées."
