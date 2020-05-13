@@ -38,6 +38,12 @@
                     {% trans 'You can enter a condition of acceptance' %}
                 </div>
                 <div class="panel-body">
+                    {% if bulk_edit_msg %}
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            {{ bulk_edit_msg }}
+                        </div>
+                    {% endif %}
                     {% bootstrap_field condition_acceptance_adm_form.condition_of_acceptance_existing form_group_class="form-group col-md-12" %}
                     {% bootstrap_field condition_acceptance_adm_form.condition_of_acceptance form_group_class="form-group col-md-12" %}
                     {% bootstrap_field condition_acceptance_adm_form.academic_year form_group_class="form-group col-md-12" field_class="accept_anac" %}

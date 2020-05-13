@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 11:41+0200\n"
+"POT-Creation-Date: 2020-05-13 11:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,9 +37,6 @@ msgid "A problem occured during delete"
 msgstr ""
 
 msgid "Academic year"
-msgstr ""
-
-msgid "Accept all selected admissions ?"
 msgstr ""
 
 msgid "Accept the file"
@@ -1117,7 +1114,7 @@ msgstr ""
 msgid "This page contains the registrations submitted by the participants. "
 msgstr ""
 
-msgid "This will accept all selected admissions. Are you sure ?"
+msgid "This same action will be applied on each selected admission"
 msgstr ""
 
 msgid "This will cancel all selected admissions. Are you sure ?"
@@ -1279,9 +1276,6 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-msgid "Yes, accept all selected admissions"
-msgstr ""
-
 msgid "Yes, cancel all selected admissions"
 msgstr ""
 
@@ -1369,6 +1363,9 @@ msgid "received"
 msgstr ""
 
 msgid "residence address mentioned earlier"
+msgstr ""
+
+msgid "status"
 msgstr ""
 
 msgid "unarchived"

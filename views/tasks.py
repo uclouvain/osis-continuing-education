@@ -35,9 +35,13 @@ from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business.admission import save_state_changed_and_send_email
 from continuing_education.business.perms import is_not_student_worker, is_student_worker, \
     is_continuing_education_training_manager, is_iufc_manager, can_edit_paper_registration_received
+from continuing_education.forms.admission import RejectedAdmissionForm, WaitingAdmissionForm, \
+    ConditionAcceptanceAdmissionForm, CancelAdmissionForm
 from continuing_education.models.admission import Admission, filter_authorized_admissions, \
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
+from continuing_education.models.enums.admission_state_choices import ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED, \
+    CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
     REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -72,6 +76,24 @@ def list_tasks(request):
         assessment_succeeded=True,
         state=admission_state_choices.VALIDATED
     )
+
+    rejected_adm_form = RejectedAdmissionForm(
+        request.POST or None,
+        prefix='rejected',
+    )
+
+    waiting_adm_form = WaitingAdmissionForm(
+        request.POST or None,
+    )
+
+    condition_acceptance_adm_form = ConditionAcceptanceAdmissionForm(
+        request.POST or None,
+    )
+
+    cancel_adm_form = CancelAdmissionForm(
+        request.POST or None,
+    )
+
     return render(request, "tasks.html", {
         'registrations_to_validate': registrations_to_validate,
         'to_validate_count': registrations_to_validate.count(),
@@ -81,6 +103,10 @@ def list_tasks(request):
         'continuing_education_manager': is_continuing_education_mgr,
         'continuing_education_training_manager': is_continuing_education_training_mgr,
         'user_is_continuing_education_student_worker': is_continuing_education_student_worker(request.user),
+        'condition_acceptance_adm_form': condition_acceptance_adm_form,
+        'rejected_adm_form': rejected_adm_form,
+        'waiting_adm_form': waiting_adm_form,
+        'cancel_adm_form': cancel_adm_form,
     })
 
 
@@ -140,7 +166,22 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
     for admission in admissions_list:
         admission._original_state = admission.state
         admission.state = new_status
-        admission.condition_of_acceptance = ''
+
+        if admission.state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]:
+            condition_exists = request.POST.get('condition_of_acceptance_existing') == 'True'
+            admission.condition_of_acceptance = request.POST.get('condition_of_acceptance') if condition_exists else ''
+            admission.academic_year_id = request.POST.get('academic_year')
+
+        if admission.state == admission_state_choices.REJECTED:
+            rejected_reason = request.POST.get('rejected-other_reason') or request.POST.get('rejected-rejected_reason')
+            admission.state_reason = rejected_reason
+
+        if admission.state == admission_state_choices.WAITING:
+            admission.state_reason = request.POST.get('other_reason') or request.POST.get('waiting_reason')
+
+        if admission.state in [CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED]:
+            admission.state_reason = request.POST.get('state_reason')
+
         admission.save()
         save_state_changed_and_send_email(admission, request.user)
 

@@ -33,6 +33,12 @@
                 </h4>
             </div>
             <div class="modal-body">
+                {% if bulk_edit_msg %}
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        {{ bulk_edit_msg }}
+                    </div>
+                {% endif %}
                 {% trans "You will set the state Draft to the admission. It will be visible and editable for the participant as well as not editable for you." %}
             </div>
             <div class="modal-footer">

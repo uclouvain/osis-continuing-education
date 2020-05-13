@@ -99,6 +99,7 @@ class ViewUpdateTasksTestCase(TestCase):
         training_group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
         cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.training_manager.user.groups.add(training_group)
+        cls.reason = "because that's the way it is"
 
     def setUp(self):
         self.client.force_login(self.manager.user)
@@ -215,17 +216,82 @@ class ViewUpdateTasksTestCase(TestCase):
         response = self.client.post(reverse('process_admissions'), data={})
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_process_admissions(self):
+    def test_process_admissions_to_accepted(self):
         post_data = {
             "selected_admissions_to_accept":
                 [str(registration.pk) for registration in self.admissions_to_accept],
-            "new_state": "Accepted"
+            "new_state": admission_state_choices.ACCEPTED,
+            "condition_of_acceptance_existing": True,
+            "condition_of_acceptance": self.reason
         }
         self.client.force_login(self.training_manager.user)
         response = self.client.post(reverse('process_admissions'), data=post_data)
         for registration in self.admissions_to_accept:
             registration.refresh_from_db()
             self.assertEqual(registration.state, admission_state_choices.ACCEPTED)
+            self.assertEqual(registration.condition_of_acceptance, self.reason)
+
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_process_admissions_to_rejected(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.REJECTED,
+            "rejected-rejected_reason": self.reason
+        }
+        self.client.force_login(self.training_manager.user)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
+        for registration in self.admissions_to_accept:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.REJECTED)
+            self.assertEqual(registration.state_reason, self.reason)
+
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_process_admissions_to_waiting(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.WAITING,
+            "waiting_reason": self.reason
+        }
+        self.client.force_login(self.training_manager.user)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
+        for registration in self.admissions_to_accept:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.WAITING)
+            self.assertEqual(registration.state_reason, self.reason)
+
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_process_admissions_to_cancelled(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.CANCELLED,
+            "state_reason": self.reason
+        }
+        self.client.force_login(self.training_manager.user)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
+        for registration in self.admissions_to_accept:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.CANCELLED)
+            self.assertEqual(registration.state_reason, self.reason)
+
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_process_admissions_to_draft(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.DRAFT,
+        }
+        self.client.force_login(self.training_manager.user)
+        response = self.client.post(reverse('process_admissions'), data=post_data)
+        for registration in self.admissions_to_accept:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, admission_state_choices.DRAFT)
 
         self.assertRedirects(response, reverse('list_tasks'))
 

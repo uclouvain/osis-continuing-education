@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 11:41+0200\n"
+"POT-Creation-Date: 2020-05-13 11:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,9 +41,6 @@ msgstr "Un problème est survenu durant la suppression"
 
 msgid "Academic year"
 msgstr "Année académique"
-
-msgid "Accept all selected admissions ?"
-msgstr "Accepter les admissions sélectionnées ?"
 
 msgid "Accept the file"
 msgstr "Accepter le dossier"
@@ -507,8 +504,7 @@ msgstr ""
 "Injection du dossier dans EPC réussie : inscription UCLouvain en demande"
 
 msgid "Folder injection into EPC succeeded : UCLouvain registration state : "
-msgstr ""
-"Injection du dossier dans EPC réussie : statut de l'inscription : "
+msgstr "Injection du dossier dans EPC réussie : statut de l'inscription : "
 
 #, python-format
 msgid ""
@@ -1176,10 +1172,8 @@ msgstr ""
 msgid "This page contains the registrations submitted by the participants. "
 msgstr " Cette page reprend les inscriptions soumises par les participants. "
 
-msgid "This will accept all selected admissions. Are you sure ?"
-msgstr ""
-"Les admissions sélectionnées vont être acceptées. Êtes-vous certain·e de "
-"vouloir continuer ?"
+msgid "This same action will be applied on each selected admission"
+msgstr "Cette action sera appliquée sur chaque admission sélectionnée"
 
 msgid "This will cancel all selected admissions. Are you sure ?"
 msgstr ""
@@ -1364,9 +1358,6 @@ msgstr "Sera définie lors de l'acceptation de l'admission"
 msgid "Yes"
 msgstr "Oui"
 
-msgid "Yes, accept all selected admissions"
-msgstr "Oui, accepter les admissions sélectionnées."
-
 msgid "Yes, cancel all selected admissions"
 msgstr "Oui, annuler les admissions sélectionnées."
 
@@ -1470,5 +1461,21 @@ msgstr "reçu"
 msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
 
+#, fuzzy
+#| msgid "Marital status"
+msgid "status"
+msgstr "Etat civil"
+
 msgid "unarchived"
 msgstr "non-archivé"
+
+#~ msgid "Accept all selected admissions ?"
+#~ msgstr "Accepter les admissions sélectionnées ?"
+
+#~ msgid "This will accept all selected admissions. Are you sure ?"
+#~ msgstr ""
+#~ "Les admissions sélectionnées vont être acceptées. Êtes-vous certain·e de "
+#~ "vouloir continuer ?"
+
+#~ msgid "Yes, accept all selected admissions"
+#~ msgstr "Oui, accepter les admissions sélectionnées."

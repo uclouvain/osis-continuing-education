@@ -38,6 +38,12 @@
                     {% trans 'You can enter a reason to put this admission on hold' %}
                 </div>
                 <div class="panel-body">
+                    {% if bulk_edit_msg %}
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i>
+                            {{ bulk_edit_msg }}
+                        </div>
+                    {% endif %}
                     {% bootstrap_field waiting_adm_form.waiting_reason form_group_class="form-group col-md-12" %}
                     {% bootstrap_field waiting_adm_form.other_reason form_group_class="form-group col-md-12" %}
                     <input type="hidden" id="old_other_reason">
