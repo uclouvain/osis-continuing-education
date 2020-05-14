@@ -177,19 +177,20 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
         raise PermissionDenied(_('Incorrect state'))
 
     for admission in admissions_list:
-        admission._original_state = admission.state
-        admission.state = new_status
+        _update_admission(request, admission, new_status, reason_by_state)
 
-        if admission.state in reason_by_state.keys():
-            reason = reason_by_state[admission.state]
-            if admission.state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]:
-                admission.condition_of_acceptance = reason
-                admission.academic_year_id = request.POST.get('academic_year')
-            elif reason:
-                admission.state_reason = reason
 
-        admission.save()
-        save_state_changed_and_send_email(admission, request.user)
+def _update_admission(request, admission, new_status, reason_by_state):
+    admission._original_state = admission.state
+    admission.state = new_status
+    reason = reason_by_state.get(admission.state)
+    if admission.state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]:
+        admission.condition_of_acceptance = reason
+        admission.academic_year_id = request.POST.get('academic_year')
+    else:
+        admission.state_reason = reason
+    admission.save()
+    save_state_changed_and_send_email(admission, request.user)
 
 
 @require_http_methods(['POST'])

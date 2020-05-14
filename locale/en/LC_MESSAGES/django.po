@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-13 11:01+0200\n"
+"POT-Creation-Date: 2020-05-14 14:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -216,9 +216,6 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-msgid "Cancel all selected admissions ?"
-msgstr ""
-
 msgid "Cancel state reason"
 msgstr ""
 
@@ -241,12 +238,6 @@ msgid "Change made"
 msgstr ""
 
 msgid "Change state on selected admissions to ..."
-msgstr ""
-
-msgid "Change state to DRAFT for all selected admissions ?"
-msgstr ""
-
-msgid "Change state to WAITING for all selected admissions ?"
 msgstr ""
 
 msgid "Check All"
@@ -572,6 +563,9 @@ msgid "In all fields"
 msgstr ""
 
 msgid "Inactive"
+msgstr ""
+
+msgid "Incorrect state"
 msgstr ""
 
 msgid "Initial state"
@@ -954,9 +948,6 @@ msgstr ""
 msgid "Registrations_list"
 msgstr ""
 
-msgid "Reject all selected admissions ?"
-msgstr ""
-
 msgid "Rejected"
 msgstr ""
 
@@ -1101,6 +1092,9 @@ msgstr ""
 msgid "There is no invoice for this admission, notification email not sent"
 msgstr ""
 
+msgid "This action will be applied on all selected admissions"
+msgstr ""
+
 msgid ""
 "This page contains the Registrations for which the diploma must be produced "
 "by IUFC."
@@ -1114,22 +1108,6 @@ msgstr ""
 msgid "This page contains the registrations submitted by the participants. "
 msgstr ""
 
-msgid "This action will be applied on each selected admission"
-msgstr ""
-
-msgid "This will cancel all selected admissions. Are you sure ?"
-msgstr ""
-
-msgid ""
-"This will change the state to DRAFT for all selected admissions. Are you "
-"sure ?"
-msgstr ""
-
-msgid ""
-"This will change the state to WAITING for all selected admissions. Are you "
-"sure ?"
-msgstr ""
-
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
 "Are you sure ?"
@@ -1138,9 +1116,6 @@ msgstr ""
 msgid ""
 "This will mark that the paper admission file has been received for all "
 "selected registrations. Are you sure ?"
-msgstr ""
-
-msgid "This will reject all selected admissions. Are you sure ?"
 msgstr ""
 
 msgid ""
@@ -1276,19 +1251,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-msgid "Yes, cancel all selected admissions"
-msgstr ""
-
-msgid "Yes, change state to DRAFT for all selected admissions"
-msgstr ""
-
-msgid "Yes, change state to WAITING for all selected admissions"
-msgstr ""
-
 msgid "Yes, mark diplomas produced for selected registrations"
-msgstr ""
-
-msgid "Yes, reject all selected admissions"
 msgstr ""
 
 msgid "Yes, unarchive all selected archives"

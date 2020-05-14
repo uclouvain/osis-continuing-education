@@ -38,12 +38,7 @@
                     {% trans 'You can enter a reason to cancel this admission' %}
                 </div>
                 <div class="panel-body">
-                    {% if bulk_edit_msg %}
-                        <div class="alert alert-info">
-                            <i class="fa fa-info-circle"></i>
-                            {{ bulk_edit_msg }}
-                        </div>
-                    {% endif %}
+                    {% include 'blocks/alert/warning.html' with msg=bulk_edit_msg %}
                     {% bootstrap_field cancel_adm_form.state_reason form_group_class="form-group col-md-12" %}
                     <input type="hidden" id="old_cancel_reason">
                 </div>
