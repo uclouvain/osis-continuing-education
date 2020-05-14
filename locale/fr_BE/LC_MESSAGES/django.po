@@ -1172,8 +1172,8 @@ msgstr ""
 msgid "This page contains the registrations submitted by the participants. "
 msgstr " Cette page reprend les inscriptions soumises par les participants. "
 
-msgid "This same action will be applied on each selected admission"
-msgstr "Cette action sera appliquée sur chaque admission sélectionnée"
+msgid "This action will be applied on all selected admissions"
+msgstr "Cette action sera appliquée sur toutes les admissions sélectionnée"
 
 msgid "This will cancel all selected admissions. Are you sure ?"
 msgstr ""
@@ -1462,7 +1462,7 @@ msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
 
 msgid "status"
-msgstr "Etat"
+msgstr "état"
 
 msgid "unarchived"
 msgstr "non-archivé"

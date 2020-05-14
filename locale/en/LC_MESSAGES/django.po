@@ -1114,7 +1114,7 @@ msgstr ""
 msgid "This page contains the registrations submitted by the participants. "
 msgstr ""
 
-msgid "This same action will be applied on each selected admission"
+msgid "This action will be applied on each selected admission"
 msgstr ""
 
 msgid "This will cancel all selected admissions. Are you sure ?"

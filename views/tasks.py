@@ -41,7 +41,7 @@ from continuing_education.models.admission import Admission, filter_authorized_a
     is_continuing_education_manager
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED, \
-    CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED
+    CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED, REJECTED, WAITING
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
     REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -163,24 +163,30 @@ def _process_admissions_list(request, registrations_ids_list, new_status):
                for state in admissions_list_states):
         raise PermissionDenied(_('The admission must be submitted or waiting to be accepted.'))
 
+    condition_exists = request.POST.get('condition_of_acceptance_existing') == 'True'
+    reason_by_state = {
+        ACCEPTED: request.POST.get('condition_of_acceptance') if condition_exists else '',
+        ACCEPTED_NO_REGISTRATION_REQUIRED: request.POST.get('condition_of_acceptance') if condition_exists else '',
+        REJECTED: request.POST.get('rejected-other_reason') or request.POST.get('rejected-rejected_reason'),
+        WAITING: request.POST.get('other_reason') or request.POST.get('waiting_reason'),
+        CANCELLED: request.POST.get('state_reason'),
+        CANCELLED_NO_REGISTRATION_REQUIRED: request.POST.get('state_reason')
+    }
+
+    if new_status not in admission_state_choices.NEW_ADMIN_STATE.keys():
+        raise PermissionDenied(_('Incorrect state'))
+
     for admission in admissions_list:
         admission._original_state = admission.state
         admission.state = new_status
 
-        if admission.state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]:
-            condition_exists = request.POST.get('condition_of_acceptance_existing') == 'True'
-            admission.condition_of_acceptance = request.POST.get('condition_of_acceptance') if condition_exists else ''
-            admission.academic_year_id = request.POST.get('academic_year')
-
-        if admission.state == admission_state_choices.REJECTED:
-            rejected_reason = request.POST.get('rejected-other_reason') or request.POST.get('rejected-rejected_reason')
-            admission.state_reason = rejected_reason
-
-        if admission.state == admission_state_choices.WAITING:
-            admission.state_reason = request.POST.get('other_reason') or request.POST.get('waiting_reason')
-
-        if admission.state in [CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED]:
-            admission.state_reason = request.POST.get('state_reason')
+        if admission.state in reason_by_state.keys():
+            reason = reason_by_state[admission.state]
+            if admission.state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED]:
+                admission.condition_of_acceptance = reason
+                admission.academic_year_id = request.POST.get('academic_year')
+            elif reason:
+                admission.state_reason = reason
 
         admission.save()
         save_state_changed_and_send_email(admission, request.user)
