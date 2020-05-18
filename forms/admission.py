@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
@@ -17,6 +19,8 @@ from continuing_education.models.continuing_education_training import Continuing
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
+
+CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 6, "day": 1}
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
@@ -286,13 +290,7 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
     def __init__(self, data, **kwargs):
         super().__init__(data, **kwargs)
 
-        try:
-            starting_year = AcademicYear.objects.current().year
-            self.fields['academic_year'].queryset = AcademicYear.objects.min_max_years(
-                starting_year - 1, starting_year + 6
-            ).order_by('year')
-        except AttributeError:
-            self.fields['academic_year'].queryset = AcademicYear.objects.none()
+        self.fields['academic_year'].queryset = get_academic_year_to_link_qs()
 
         if data is None:
             # GET
@@ -337,3 +335,15 @@ class CancelAdmissionForm(ModelForm):
         instance.condition_of_acceptance = ''
         instance.save()
         return instance
+
+
+def get_academic_year_to_link_qs():
+    # TODO : Use academic_calendar instead of fixed date
+    today = date.today()
+    switch_date = date(
+        today.year,
+        CONTINUING_EDUCATION_YEAR_SWITCH_DATE.get("month"),
+        CONTINUING_EDUCATION_YEAR_SWITCH_DATE.get("day")
+    )
+    year_to_choose = today.year - 1 if today < switch_date else today.year
+    return AcademicYear.objects.filter(year=year_to_choose)
