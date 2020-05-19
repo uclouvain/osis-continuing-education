@@ -85,7 +85,6 @@ class ViewUpdateTasksTestCase(TestCase):
             diploma_produced=True,
             formation=cls.formation
         )
-
         cls.admissions_to_accept = [
             AdmissionFactory(
                 state=random.choice([admission_state_choices.SUBMITTED, admission_state_choices.WAITING]),
@@ -211,36 +210,6 @@ class ViewUpdateTasksTestCase(TestCase):
 
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
-    def test_process_admissions_denied(self):
-        response = self.client.post(reverse('process_admissions'), data={})
-        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
-
-    def test_process_admissions(self):
-        post_data = {
-            "selected_admissions_to_accept":
-                [str(registration.pk) for registration in self.admissions_to_accept],
-            "new_state": "Accepted"
-        }
-        self.client.force_login(self.training_manager.user)
-        response = self.client.post(reverse('process_admissions'), data=post_data)
-        for registration in self.admissions_to_accept:
-            registration.refresh_from_db()
-            self.assertEqual(registration.state, admission_state_choices.ACCEPTED)
-
-        self.assertRedirects(response, reverse('list_tasks'))
-
-    def test_process_admissions_incorrect_state(self):
-        post_data = {
-            "selected_admissions_to_accept":
-                [str(self.admission_not_to_accept.pk)]
-        }
-        response = self.client.post(reverse('process_admissions'), data=post_data)
-
-        self.admission_not_to_accept.refresh_from_db()
-        self.assertEqual(self.admission_not_to_accept.state, admission_state_choices.DRAFT)
-
-        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
-
 
 class UpdateTasksPermissionsTestCase(TestCase):
     @classmethod
@@ -330,6 +299,17 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             formation=cls.formation,
             state=admission_state_choices.SUBMITTED,
         )
+        cls.admissions_to_accept = [
+            AdmissionFactory(
+                state=random.choice([admission_state_choices.SUBMITTED, admission_state_choices.WAITING]),
+                formation=cls.formation
+            ) for _ in range(2)
+            ]
+        cls.admission_not_to_accept = AdmissionFactory(
+            state=admission_state_choices.DRAFT,
+            formation=cls.formation
+        )
+        cls.reason = "because that's the way it is"
 
     def setUp(self):
         self.client.force_login(self.training_manager.user)
@@ -343,6 +323,79 @@ class ViewTasksTrainingManagerTestCase(TestCase):
             reverse('paper_registrations_file_received'),
             data=post_data
         )
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def test_process_admissions_denied(self):
+        person = PersonFactory()
+        self.client.force_login(person.user)
+        response = self.client.post(reverse('process_admissions'), data={})
+        self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
+
+    def _process_admission_to_state(self, post_data, state, reason_field=None):
+        response = self.client.post(reverse('process_admissions'), data=post_data)
+        for registration in self.admissions_to_accept:
+            registration.refresh_from_db()
+            self.assertEqual(registration.state, state)
+            if reason_field:
+                self.assertEqual(getattr(registration, reason_field), self.reason)
+        self.assertRedirects(response, reverse('list_tasks'))
+
+    def test_process_admissions_to_accepted(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.ACCEPTED,
+            "condition_of_acceptance_existing": True,
+            "condition_of_acceptance": self.reason
+        }
+        self._process_admission_to_state(post_data, admission_state_choices.ACCEPTED, 'condition_of_acceptance')
+
+    def test_process_admissions_to_rejected(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.REJECTED,
+            "rejected-rejected_reason": self.reason
+        }
+        self._process_admission_to_state(post_data, admission_state_choices.REJECTED, 'state_reason')
+
+    def test_process_admissions_to_waiting(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.WAITING,
+            "waiting_reason": self.reason
+        }
+        self._process_admission_to_state(post_data, admission_state_choices.WAITING, 'state_reason')
+
+    def test_process_admissions_to_cancelled(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.CANCELLED,
+            "state_reason": self.reason
+        }
+        self._process_admission_to_state(post_data, admission_state_choices.CANCELLED, 'state_reason')
+
+    def test_process_admissions_to_draft(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(registration.pk) for registration in self.admissions_to_accept],
+            "new_state": admission_state_choices.DRAFT,
+        }
+        self._process_admission_to_state(post_data, admission_state_choices.DRAFT)
+
+    def test_process_admissions_incorrect_state(self):
+        post_data = {
+            "selected_admissions_to_accept":
+                [str(self.admission_not_to_accept.pk)],
+            "new_state": 'incorrect'
+        }
+        response = self.client.post(reverse('process_admissions'), data=post_data)
+
+        self.admission_not_to_accept.refresh_from_db()
+        self.assertEqual(self.admission_not_to_accept.state, admission_state_choices.DRAFT)
+
         self.assertEqual(response.status_code, HttpResponseForbidden.status_code)
 
 
