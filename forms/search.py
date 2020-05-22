@@ -298,7 +298,7 @@ def _get_state_choices(choices):
 
 def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
     entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
-    return qs.filter(formation__education_group__educationgroupyear__management_entity__in=entity_ids)
+    return qs.filter(formation__education_group__educationgroupyear__management_entity__in=entity_ids).distinct()
 
 
 class FormationFilterForm(AdmissionFilterForm):
