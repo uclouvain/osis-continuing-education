@@ -65,6 +65,8 @@ class PersonForm(ModelForm):
         if no_first_name_checked:
             self.fields['first_name'].required = False
 
+        self.fields['email'].required = False
+
     class Meta:
         model = Person
 
