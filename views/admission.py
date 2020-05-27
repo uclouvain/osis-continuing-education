@@ -247,6 +247,7 @@ def admission_form(request, admission_id=None):
         selected_person=selected_person,
         no_first_name_checked=request.POST.get('no_first_name', False)
     )
+    base_person_form.fields.pop('email')
     person_information = ContinuingEducationPerson.objects.filter(person=base_person).first()
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
