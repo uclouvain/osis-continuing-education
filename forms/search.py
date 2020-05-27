@@ -145,7 +145,7 @@ def search_admissions_with_free_text(free_text, qs):
         Q(formation__education_group__educationgroupyear__title__unaccent__icontains=free_text) |
         Q(address__country__name__unaccent__icontains=free_text) |
         Q(address__city__unaccent__icontains=free_text)
-    )
+    ).distinct()
     return qs
 
 
