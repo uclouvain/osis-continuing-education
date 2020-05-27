@@ -214,6 +214,30 @@ class ViewAdmissionTestCase(TestCase):
         created_admission = qs_to_find_new_admissions.first()
         self.assertNotEqual(created_admission.person_information.person.email, new_admission_email)
 
+    def test_admission_new_save_gender_required_if_new_person(self):
+        admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
+        admission.pop("person_information")
+        admission['gender'] = ""
+        response = self.client.post(reverse('admission_new'), data=admission)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'admission_form.html')
+
+    def test_admission_new_save_gender_not_required_if_existing_person(self):
+        admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
+        admission['gender'] = ""
+        admissions = Admission.objects.all()
+        qs_to_find_new_admissions = Admission.objects.all()
+        for a in admissions:
+            qs_to_find_new_admissions = qs_to_find_new_admissions.exclude(pk=a.id)
+        response = self.client.post(reverse('admission_new'), data=admission)
+        created_admission = qs_to_find_new_admissions.first()
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
+
     def test_admission_save_with_error(self):
         admission = model_to_dict(self.admission)
         admission['person_information'] = "no valid pk"
