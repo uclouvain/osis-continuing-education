@@ -37,7 +37,6 @@ from continuing_education.business.admission import send_invoice_uploaded_email
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.exceptions import ManagerFileUploadExceptions
 from continuing_education.models.file import AdmissionFile
-from osis_common.decorators.download import set_download_cookie
 
 
 def _get_file_category_choices_with_disabled_parameter(admission):
@@ -81,7 +80,6 @@ def _upload_file(request, admission):
 
 @login_required
 @permission_required('continuing_education.view_admission', raise_exception=True)
-@set_download_cookie
 def download_file(request, admission_id, file_id):
     file = AdmissionFile.objects.get(pk=file_id)
     filename = file.name.split('/')[-1]
