@@ -34,11 +34,10 @@ from rest_framework import status
 from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.registration import RegistrationListSerializer, \
     RegistrationDetailSerializer, \
@@ -49,6 +48,7 @@ from continuing_education.models.enums.admission_state_choices import ACCEPTED, 
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -62,7 +62,7 @@ class RegistrationListTestCase(APITestCase):
         cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
 
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -82,7 +82,7 @@ class RegistrationListTestCase(APITestCase):
 
         for state in [VALIDATED, ACCEPTED, REGISTRATION_SUBMITTED]:
             cls.education_group = EducationGroupFactory()
-            EducationGroupYearFactory(education_group=cls.education_group)
+            EducationGroupYearFactory(education_group=cls.education_group, academic_year=cls.academic_year)
             AdmissionFactory(
                 person_information=cls.person,
                 state=state,
@@ -151,7 +151,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         GroupFactory(name='continuing_education_managers')
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         cls.user = UserFactory()
         EducationGroupYearFactory(

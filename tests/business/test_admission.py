@@ -32,7 +32,7 @@ from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -60,7 +60,7 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
 class TestAdmission(TestCase):
     def test_get_formatted_admission_data(self):
-        academic_year = AcademicYearFactory(year=2018)
+        academic_year = create_current_academic_year()
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,
@@ -95,7 +95,7 @@ class TestAdmission(TestCase):
 
     def test_get_managers_mail(self):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         manager = PersonFactory(last_name="AAA")
         manager_2 = PersonFactory(last_name="BBB")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
@@ -108,7 +108,7 @@ class TestAdmission(TestCase):
 
     def test_get_managers_mail_mail_missing(self):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         manager = PersonFactory(last_name="AAA", email="")
         manager_2 = PersonFactory(last_name="BBB", email="")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
@@ -158,7 +158,7 @@ class TestAdmission(TestCase):
 class SendEmailTest(TestCase):
     def setUp(self):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         self.manager = PersonFactory(last_name="AAA")
         self.manager.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
         cet = ContinuingEducationTrainingFactory(education_group=ed)
@@ -333,7 +333,7 @@ class SendEmailSettingsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         cls.manager = PersonFactory(last_name="AAA")
         cls.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
         cls.cet = ContinuingEducationTrainingFactory(education_group=ed)

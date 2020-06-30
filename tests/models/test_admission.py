@@ -29,25 +29,25 @@ from django.test import TestCase
 from django.utils.translation import gettext as _
 
 from base.models.enums.entity_type import SCHOOL
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.business.entities import create_entities_hierarchy
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity import EntityFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.models import admission
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
 class TestAdmission(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -117,7 +117,7 @@ class TestAdmissionGetProperties(TestCase):
                                                         end_date=None,
                                                         entity=cls.child_entity,
                                                         start_date=entities['start_date'])
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

@@ -54,7 +54,7 @@ class TestArchiveXls(TestCase):
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
-            academic_year=cls.academic_year
+            academic_year=current_acad_year
         )
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
