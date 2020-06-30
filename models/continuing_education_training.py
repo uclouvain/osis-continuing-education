@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import uuid as uuid
+from datetime import datetime
 
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
@@ -31,7 +32,6 @@ from django.db import models
 from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
-from base.models.academic_year import current_academic_year
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
 from continuing_education.models.address import Address
@@ -106,9 +106,10 @@ class ContinuingEducationTraining(Model):
         super().clean()
 
     def get_most_recent_education_group_year(self):
+        now = datetime.now()
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk,
-            academic_year__year__lte=current_academic_year().year + 2
+            academic_year__year__lte=now.year + 2
         ).select_related(
             'academic_year',
             'administration_entity',
