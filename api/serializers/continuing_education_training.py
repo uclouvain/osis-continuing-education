@@ -68,7 +68,7 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
 
     def get_education_group(self, obj):
         # return last education_group_year
-        education_group = obj.get_most_recent_education_group_year()
+        education_group = obj.get_current_education_group_year()
         standard_version = education_group.educationgroupversion_set.filter(
             version_name='',
             is_transition=False

@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
@@ -17,7 +17,10 @@ class AdmissionListSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(
+            education_group=ed,
+            academic_year=create_current_academic_year()
+        )
 
         cls.admission = AdmissionFactory(
             person_information=cls.person_information,
@@ -44,10 +47,10 @@ class AdmissionDetailSerializerTestCase(TestCase):
     def setUpTestData(cls):
         cls.person_information = ContinuingEducationPersonFactory()
         cls.citizenship = CountryFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
-        new_ac = AcademicYearFactory(year=cls.academic_year.year+1)
+        cls.academic_year = create_current_academic_year()
+        AcademicYearFactory(year=cls.academic_year.year + 1)
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=cls.academic_year)
         cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,
@@ -114,7 +117,10 @@ class AdmissionPostSerializerTestCase(TestCase):
         cls.person_information = ContinuingEducationPersonFactory()
         cls.citizenship = CountryFactory()
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(
+            education_group=ed,
+            academic_year=create_current_academic_year()
+        )
         cls.formation = ContinuingEducationTrainingFactory(education_group=ed)
         cls.admission = AdmissionFactory(
             citizenship=cls.citizenship,

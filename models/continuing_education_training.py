@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import uuid as uuid
-from datetime import datetime
 
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
@@ -32,6 +31,7 @@ from django.db import models
 from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
+from base.models.academic_year import current_academic_year
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
 from continuing_education.models.address import Address
@@ -105,40 +105,39 @@ class ContinuingEducationTraining(Model):
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()
 
-    def get_most_recent_education_group_year(self):
-        now = datetime.now()
+    def get_current_education_group_year(self):
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk,
-            academic_year__year__lte=now.year + 2
+            academic_year__year__gte=current_academic_year().year
         ).select_related(
             'academic_year',
             'administration_entity',
             'management_entity'
-        ).prefetch_related('educationgroupversion_set').latest('academic_year__year')
+        ).prefetch_related('educationgroupversion_set').earliest('academic_year__year')
 
     @property
     def acronym(self):
-        return self.get_most_recent_education_group_year().acronym
+        return self.get_current_education_group_year().acronym
 
     @property
     def partial_acronym(self):
-        return self.get_most_recent_education_group_year().partial_acronym
+        return self.get_current_education_group_year().partial_acronym
 
     @property
     def education_group_type(self):
-        return self.get_most_recent_education_group_year().education_group_type
+        return self.get_current_education_group_year().education_group_type
 
     @property
     def title(self):
-        return self.get_most_recent_education_group_year().title
+        return self.get_current_education_group_year().title
 
     @property
     def academic_year(self):
-        return self.get_most_recent_education_group_year().academic_year
+        return self.get_current_education_group_year().academic_year
 
     @property
     def management_entity(self):
-        return self.get_most_recent_education_group_year().management_entity
+        return self.get_current_education_group_year().management_entity
 
     @property
     def formation_administrators(self):
@@ -146,14 +145,14 @@ class ContinuingEducationTraining(Model):
 
     @property
     def acronym_and_title(self):
-        most_recent_education_group_year = self.get_most_recent_education_group_year()
+        most_recent_education_group_year = self.get_current_education_group_year()
         return "{} - {}".format(most_recent_education_group_year.acronym, most_recent_education_group_year.title)
 
     def get_alternative_notification_email_receivers(self):
         return [adr.strip() for adr in self.alternate_notification_email_addresses.split(',') if adr]
 
     def __str__(self):
-        education_group_year = self.get_most_recent_education_group_year()
+        education_group_year = self.get_current_education_group_year()
         training_aid_mention = " ({})".format(_('Training aid available')) if self.training_aid else ''
         return "{} - {}{}".format(education_group_year.acronym, education_group_year.title, training_aid_mention)
 

@@ -53,7 +53,7 @@ class TestAdmissionXls(TestCase):
         current_acad_year = create_current_academic_year()
         cls.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
         cls.admission = AdmissionFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

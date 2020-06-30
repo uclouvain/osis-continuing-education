@@ -449,7 +449,7 @@ class Admission(Model):
 
     @property
     def formation_display(self):
-        education_group_year = self.formation.get_most_recent_education_group_year()
+        education_group_year = self.formation.get_current_education_group_year()
         return get_formation_display(
             education_group_year.partial_acronym,
             education_group_year.acronym,
@@ -525,7 +525,7 @@ class Admission(Model):
         return self.is_waiting() or self.is_rejected() or self.is_submitted()
 
     def get_faculty(self):
-        education_group_year = self.formation.get_most_recent_education_group_year()
+        education_group_year = self.formation.get_current_education_group_year()
         return education_group_year.management_entity
 
     class Meta:

@@ -36,7 +36,7 @@ from django.test import TestCase
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -61,7 +61,7 @@ class ViewRegistrationTestCase(TestCase):
             'view_admission', 'change_admission',
             groups=[MANAGERS_GROUP]
         )
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -352,7 +352,7 @@ class RegistrationStateChangedTestCase(TestCase):
 class ViewRegistrationsTrainingManagerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
