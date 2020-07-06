@@ -74,7 +74,7 @@ from osis_common.decorators.ajax import ajax_required
 @cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
-    admission_list = []
+    admission_list = Admission.admission_objects.all()
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
 
