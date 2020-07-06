@@ -52,7 +52,7 @@ from continuing_education.views.home import is_continuing_education_student_work
 def list_registrations(request):
     search_form = RegistrationFilterForm(request.GET, user=request.user)
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-    admission_list = []
+    admission_list = Admission.registration_objects.all()
     if search_form.is_valid():
         admission_list = search_form.get_registrations()
 
