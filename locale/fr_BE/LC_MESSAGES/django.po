@@ -1399,7 +1399,7 @@ msgid "archived"
 msgstr "archivé"
 
 msgid "extension"
-msgstr ""
+msgstr "extension"
 
 msgid "managers"
 msgstr "gestionnaires"
