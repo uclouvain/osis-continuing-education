@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2020 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ class TestFilterForm(TestCase):
         cls.education_group_on_faculty = EducationGroupFactory(start_year=cls.current_academic_yr)
         cls.education_group_yr_on_faculty = EducationGroupYearFactory(
             academic_year=cls.next_academic_yr,
-            acronym='E_FORM',
+            acronym='E_FORM_FAC',
             management_entity=cls.fac_3_version_with_child.entity,
             education_group=cls.education_group_on_faculty
         )
@@ -160,7 +160,7 @@ class TestFilterForm(TestCase):
         cls.education_group_on_fac4 = EducationGroupFactory(start_year=cls.current_academic_yr)
         cls.education_group_yr_on_faculty_child = EducationGroupYearFactory(
             academic_year=cls.next_academic_yr,
-            acronym='E_FORM_Child',
+            acronym='E_FORM_fac_Child',
             management_entity=cls.fac_4_version.entity,
             education_group=cls.education_group_on_fac4
         )
