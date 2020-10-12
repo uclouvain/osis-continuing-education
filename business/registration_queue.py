@@ -91,6 +91,7 @@ def save_role_registered_in_admission(data):
     if data['success']:
         registration_status = data.get('registration_status')
         admission.ucl_registration_complete = registration_status
+        admission.noma = data.get('registration_id')
         if registration_status == UCLRegistrationState.INSCRIT.name:
             message = UCL_REGISTRATION_REGISTERED
         else:
