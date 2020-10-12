@@ -16,4 +16,4 @@ class UCLRegistrationError(ChoiceEnum):
     IUFC_PAYS_NAISSANCE_MANQUANT = _('Missing birth country')
     IUFC_INSCRIPTION_DEJA_TRAITEE = _('Registration already processed')
     IUFC_CREATION_NOMA_ECHOUEE = _('NOMA creation failed')
-    IUFC_ERREUR_INCONUE = _('Unknown error: please contact Service Desk for further help')
+    IUFC_ERREUR_INCONNUE = _('Unknown error: please contact Service Desk for further help')
