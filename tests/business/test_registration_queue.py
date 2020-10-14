@@ -131,7 +131,7 @@ class SaveRoleRegisteredTestCase(TestCase):
             'message': 'IUFC_NO_ERROR',
             'success': True,
             'student_case_uuid': str(self.admission.uuid),
-            'registration_id': self.admission.id,
+            'registration_id': '123456789',
             'registration_status': 'INSCRIT'
         }
 
@@ -142,6 +142,7 @@ class SaveRoleRegisteredTestCase(TestCase):
         mock_get.assert_called_once_with(UCL_REGISTRATION_REGISTERED)
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.INSCRIT.name)
+        self.assertEqual(self.admission.noma, '123456789')
 
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_if_queue_success_and_other_statut(self, mock_get):
@@ -151,6 +152,7 @@ class SaveRoleRegisteredTestCase(TestCase):
         mock_get.assert_called_once_with(UCL_REGISTRATION_STATE_CHANGED)
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.DECES.name)
+        self.assertEqual(self.admission.noma, '123456789')
 
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_no_change_if_queue_fail(self, mock_get):
