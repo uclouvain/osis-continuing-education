@@ -158,3 +158,11 @@ form .row{
 .disabled {
     pointer-events: none;
 }
+
+.error_msg_link{
+    color: orangered;
+}
+.error_msg_link:hover, .error_msg_link:focus{
+    color: darkred !important;
+    text-decoration: underline !important;
+}

@@ -31,6 +31,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
 
@@ -179,9 +180,9 @@ def _display_adapted_ucl_registration_message(admission, request):
     elif admission.ucl_registration_complete == UCLRegistrationState.REJECTED.name:
         display_error_messages(
             request,
-            _('Folder injection into EPC failed : %(reasons)s') % {
+            mark_safe(_('Folder injection into EPC failed : %(reasons)s') % {
                 'reasons': admission.get_ucl_registration_error_display()
-            }
+            })
         )
     elif admission.ucl_registration_complete == UCLRegistrationState.DEMANDE.name:
         display_info_messages(request, _('Folder injection into EPC succeeded : UCLouvain registration on demand'))
