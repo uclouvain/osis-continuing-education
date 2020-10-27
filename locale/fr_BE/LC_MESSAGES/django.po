@@ -792,6 +792,9 @@ msgstr "Notifier le participant par email"
 msgid "On demand"
 msgstr "En demande"
 
+msgid "Only alphanumeric characters are allowed."
+msgstr "Uniquement des caractères alphanumériques sont autorisés."
+
 msgid "Other"
 msgstr "Autre"
 

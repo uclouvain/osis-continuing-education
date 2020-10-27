@@ -24,6 +24,7 @@
 #
 ##############################################################################
 from django.test import TestCase
+from django.utils.translation import gettext_lazy as _
 
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
@@ -73,3 +74,33 @@ class TestRegistrationForm(TestCase):
             form = RegistrationForm(data={}, user=person_not_manager.user)
             self.assertFalse(form.fields['registration_file_received'].disabled)
             self.assertFalse(form.fields['ucl_registration_complete'].disabled)
+
+    def test_only_alphanumeric_characters_for_id_card(self):
+        wrong_id = '12-4894'
+        registration = AdmissionFactory(formation=self.formation)
+        data = registration.__dict__
+        data['id_card_number'] = wrong_id
+        form = RegistrationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('id_card_number', form.errors)
+        self.assertIn(_('Only alphanumeric characters are allowed.'), form.errors['id_card_number'])
+
+    def test_only_alphanumeric_characters_for_passeport_number(self):
+        wrong_id = '12-4894'
+        registration = AdmissionFactory(formation=self.formation)
+        data = registration.__dict__
+        data['passport_number'] = wrong_id
+        form = RegistrationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('passport_number', form.errors)
+        self.assertIn(_('Only alphanumeric characters are allowed.'), form.errors['passport_number'])
+
+    def test_only_alphanumeric_characters_for_national_number(self):
+        wrong_id = '12-4894'
+        registration = AdmissionFactory(formation=self.formation)
+        data = registration.__dict__
+        data['national_registry_number'] = wrong_id
+        form = RegistrationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('national_registry_number', form.errors)
+        self.assertIn(_('Only alphanumeric characters are allowed.'), form.errors['national_registry_number'])
