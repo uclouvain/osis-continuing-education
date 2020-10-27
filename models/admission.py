@@ -27,6 +27,7 @@ import uuid as uuid
 
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Manager, Model
 from django.utils.translation import gettext_lazy as _
@@ -66,6 +67,7 @@ class AdmissionAdmin(VersionAdmin, ModelAdmin):
 
 class Admission(Model):
     CONTINUING_EDUCATION_TYPE = 8
+    alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', _('Only alphanumeric characters are allowed.'))
 
     objects = Manager()
     admission_objects = AdmissionManager()
@@ -299,17 +301,20 @@ class Admission(Model):
     national_registry_number = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("National registry number")
+        verbose_name=_("National registry number"),
+        validators=[alphanumeric]
     )
     id_card_number = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("ID card number")
+        verbose_name=_("ID card number"),
+        validators=[alphanumeric]
     )
     passport_number = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Passport number")
+        verbose_name=_("Passport number"),
+        validators=[alphanumeric]
     )
     marital_status = models.CharField(
         max_length=255,
