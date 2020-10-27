@@ -752,6 +752,9 @@ msgstr ""
 msgid "On demand"
 msgstr ""
 
+msgid "Only alphanumeric characters are allowed."
+msgstr ""
+
 msgid "Other"
 msgstr ""
 

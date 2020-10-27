@@ -119,9 +119,9 @@ class AdmissionFactory(factory.DjangoModelFactory):
     vat_number = factory.Faker('ssn')
 
     # Registration
-    national_registry_number = factory.Faker('ssn')
-    id_card_number = factory.Faker('ssn')
-    passport_number = factory.Faker('isbn13')
+    national_registry_number = '123453546'
+    id_card_number = '7897675467'
+    passport_number = '375375375'
 
     marital_status = factory.fuzzy.FuzzyChoice(get_enum_keys(enums.MARITAL_STATUS_CHOICES))
 
