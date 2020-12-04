@@ -27,7 +27,7 @@
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.business.xls.xls_prospect import _prepare_xls_content, _get_titles
@@ -41,7 +41,7 @@ class TestProspectXls(TestCase):
         self.assertEqual(_prepare_xls_content([]), [])
 
     def test_prepare_xls_content(self):
-        self.academic_year = AcademicYearFactory(year=2018)
+        self.academic_year = create_current_academic_year()
         self.education_groups = [EducationGroupFactory() for _ in range(1, 5)]
 
         acronyms = ['AAA', 'BBA', 'CAA', 'INFO2M', 'SBIM2M']

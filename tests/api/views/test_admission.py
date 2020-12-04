@@ -36,11 +36,10 @@ from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
 from base.models.person import Person
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.serializers.admission import AdmissionListSerializer, AdmissionDetailSerializer, \
     AdmissionPostSerializer
@@ -52,6 +51,7 @@ from continuing_education.models.enums.admission_state_choices import SUBMITTED,
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 from reference.tests.factories.country import CountryFactory
 
@@ -62,12 +62,12 @@ class AdmissionListTestCase(APITestCase):
         cls.user = UserFactory()
 
         cls.citizenship = CountryFactory(iso_code='FR')
-        new_country = CountryFactory(iso_code='NL')
+        CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory(
             birth_country=cls.citizenship
         )
         cls.address = AddressFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
 
         cls.url = reverse('continuing_education_api_v1:admission-list', kwargs={'uuid': cls.person.uuid})
 
@@ -156,10 +156,10 @@ class AdmissionCreateTestCase(APITestCase):
         cls.user = UserFactory()
 
         cls.citizenship = CountryFactory(iso_code='FR')
-        new_country = CountryFactory(iso_code='NL')
+        CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory(birth_country=cls.citizenship)
         cls.address = AddressFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
 
         cls.url = reverse('continuing_education_api_v1:admission-create')
 
@@ -278,7 +278,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         GroupFactory(name='continuing_education_managers')
         self.citizenship = CountryFactory()
         self.user = UserFactory()
-        self.academic_year = AcademicYearFactory(year=2018)
+        self.academic_year = create_current_academic_year()
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,

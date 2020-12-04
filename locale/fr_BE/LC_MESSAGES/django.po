@@ -410,7 +410,7 @@ msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 
 msgid "Email"
-msgstr "Email"
+msgstr "Courriel"
 
 msgid "Employee"
 msgstr "Employé"
@@ -1411,7 +1411,7 @@ msgid "archived"
 msgstr "archivé"
 
 msgid "extension"
-msgstr ""
+msgstr "extension"
 
 msgid "managers"
 msgstr "gestionnaires"

@@ -54,7 +54,7 @@ class TestArchiveXls(TestCase):
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
-            academic_year=cls.academic_year
+            academic_year=current_acad_year
         )
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
@@ -108,6 +108,6 @@ def _generate_xls_build_parameter(xls_data, user):
             xls_build.HEADER_TITLES_KEY: ARCHIVE_TITLES,
             xls_build.WORKSHEET_TITLE_KEY: WORKSHEET_TITLE,
             xls_build.STYLED_CELLS: None,
-            xls_build.COLORED_ROWS: None,
+            xls_build.FONT_ROWS: None,
         }]
     }

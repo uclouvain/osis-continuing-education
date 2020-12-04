@@ -53,7 +53,7 @@ class TestAdmissionXls(TestCase):
         current_acad_year = create_current_academic_year()
         cls.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
         cls.admission = AdmissionFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -111,6 +111,6 @@ def _generate_xls_build_parameter(xls_data, user):
             xls_build.HEADER_TITLES_KEY: get_titles_admission(),
             xls_build.WORKSHEET_TITLE_KEY: WORKSHEET_TITLE,
             xls_build.STYLED_CELLS: None,
-            xls_build.COLORED_ROWS: None,
+            xls_build.FONT_ROWS: None,
         }]
     }

@@ -30,6 +30,7 @@ from django.http import HttpResponseRedirect
 from django.test import TestCase, override_settings, RequestFactory
 from django.urls import reverse
 
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from base.tests.factories.user import UserFactory
@@ -45,7 +46,10 @@ from continuing_education.views.common import UCL_REGISTRATION_REGISTERED, UCL_R
 class PrepareJSONTestCase(TestCase):
     def setUp(self):
         self.admission = AdmissionFactory()
-        EducationGroupYearFactory(education_group=self.admission.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=self.admission.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
 
     def test_get_json_for_epc(self):
         result = get_json_for_epc(self.admission)
@@ -177,7 +181,10 @@ class SendAdmissionToQueueTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.admission = AdmissionFactory()
-        EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.admission.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
 
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
@@ -214,7 +221,10 @@ class SendingAdmissionViewTestCase(TestCase):
             groups=[MANAGERS_GROUP]
         )
         cls.admission = AdmissionFactory()
-        EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.admission.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
         cls.url = reverse('injection_to_epc', args=[cls.admission.pk])
 
     def setUp(self):

@@ -30,7 +30,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -51,7 +51,7 @@ class ManagerListTestCase(TestCase):
         )
         cls.manager.employee = True
         cls.manager.user.groups.add(group)
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

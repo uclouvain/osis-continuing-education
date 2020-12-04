@@ -27,7 +27,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
@@ -44,7 +44,7 @@ class ProspectListTestCase(TestCase):
         self.client.force_login(self.manager.user)
 
     def test_prospect_list_ordered_by_formation(self):
-        self.academic_year = AcademicYearFactory(year=2018)
+        self.academic_year = create_current_academic_year()
         self.education_groups = [EducationGroupFactory() for _ in range(1, 3)]
 
         acronyms = ['AAA', 'BBA', 'CAA']
@@ -89,7 +89,10 @@ class ProspectDetailsTestCase(TestCase):
     def setUpTestData(cls):
         cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
         cls.prospect = ProspectFactory()
-        EducationGroupYearFactory(education_group=cls.prospect.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.prospect.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
 
     def setUp(self):
         self.client.force_login(self.manager.user)
