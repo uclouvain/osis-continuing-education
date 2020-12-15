@@ -111,6 +111,22 @@ class TestAdmissionForm(TestCase):
             }
         )
 
+    def test_participant_required_fields(self):
+        self.client.force_login(self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
+        admission_participant_required_fields = [
+            'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
+            'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
+            'professional_status', 'current_occupation', 'current_employer', 'activity_sector', 'motivation',
+            'professional_personal_interests', 'formation', 'email',
+        ]
+        for required_field in admission_participant_required_fields:
+            with self.subTest(required_field=required_field):
+                self.assertEquals(
+                    form.fields[required_field].widget.attrs['class'],
+                    'participant_required'
+                )
+
 
 class TestRejectedAdmissionForm(TestCase):
     @classmethod
