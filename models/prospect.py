@@ -33,7 +33,8 @@ from django.utils.translation import gettext_lazy as _
 
 class ProspectAdmin(ModelAdmin):
     list_display = ('first_name', 'name', 'email', 'postal_code', 'formation')
-    search_fields = ['first_name', 'name', 'email', 'postal_code', 'formation']
+    search_fields = ['first_name', 'name', 'email', 'postal_code',
+                     'formation__education_group__educationgroupyear__acronym']
     raw_id_fields = ('formation',)
 
 

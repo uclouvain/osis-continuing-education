@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 
 class AddressAdmin(ModelAdmin):
     list_display = ('location', 'postal_code', 'city', 'country')
+    search_fields = ['location', 'postal_code', 'city', 'country__name']
+    raw_id_fields = ('country',)
 
 
 class Address(Model):
