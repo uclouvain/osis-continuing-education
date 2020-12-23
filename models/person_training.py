@@ -32,7 +32,7 @@ from django.db.models import Model
 
 class PersonTrainingAdmin(ModelAdmin):
     list_display = ('person', 'training',)
-    search_fields = ['person']
+    search_fields = ['person__first_name', 'person__last_name']
     raw_id_fields = ('person', 'training',)
 
 

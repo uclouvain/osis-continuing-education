@@ -63,6 +63,11 @@ class AdmissionManager(models.Manager):
 
 class AdmissionAdmin(VersionAdmin, ModelAdmin):
     list_display = ('person_information', 'formation', 'state')
+    search_fields = ['person_information__person__first_name', 'person_information__person__last_name',
+                     'formation__education_group__educationgroupyear__acronym']
+    list_filter = ('state', 'academic_year', 'ucl_registration_complete')
+    raw_id_fields = ('person_information', 'formation', 'academic_year', 'citizenship', 'address',
+                     'billing_address', 'residence_address')
 
 
 class Admission(Model):
