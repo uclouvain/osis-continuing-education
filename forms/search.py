@@ -90,9 +90,10 @@ class AdmissionFilterForm(BootstrapForm):
         required=False,
         label=_('Formation')
     )
-    state = forms.ChoiceField(
+    state = forms.MultipleChoiceField(
+        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
         choices=STATE_CHOICES,
-        required=False,
+        required=False
     )
 
     free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
@@ -109,7 +110,7 @@ class AdmissionFilterForm(BootstrapForm):
         _build_formation_choices(self.fields['formation'], STATE_TO_DISPLAY)
 
     def get_admissions(self):
-        a_state = self.cleaned_data.get('state')
+        state_filter = self.cleaned_data.get('state')
         free_text = self.cleaned_data.get('free_text')
         registration_required = self.cleaned_data.get('registration_required')
 
@@ -120,8 +121,11 @@ class AdmissionFilterForm(BootstrapForm):
             False
         )
 
-        if a_state:
-            qs = qs.filter(state=a_state)
+        if state_filter:
+            if isinstance(state_filter, str):
+                qs = qs.filter(state=state_filter)
+            if isinstance(state_filter, list):
+                qs = qs.filter(state__in=state_filter)
 
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
