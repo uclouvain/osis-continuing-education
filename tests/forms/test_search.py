@@ -42,7 +42,7 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.search import ADMISSION_STATE_CHOICES
-from continuing_education.forms.search import AdmissionFilterForm, RegistrationFilterForm, FormationFilterForm, \
+from continuing_education.forms.search import CommonFilterForm, RegistrationFilterForm, FormationFilterForm, \
     ArchiveFilterForm, ALL_CHOICE, ACTIVE, INACTIVE, FORMATION_STATE_CHOICES, NOT_ORGANIZED, ManagerFilterForm, \
     REGISTRATION_STATE_CHOICES, STATE_TO_DISPLAY
 from continuing_education.models.admission import Admission
@@ -215,7 +215,7 @@ class TestFilterForm(TestCase):
         cls.admissions_free_text = []
         cls.country_accent = CountryFactory(name=COUNTRY_NAME_WITH_ACCENT)
         cls.country_without_accent = CountryFactory(name=COUNTRY_NAME_WITHOUT_ACCENT)
-        cls.form = AdmissionFilterForm()
+        cls.form = CommonFilterForm()
         cls.registration_form = RegistrationFilterForm()
 
     def test_queryset_faculty_init(self):
@@ -262,19 +262,19 @@ class TestFilterForm(TestCase):
         )
 
     def test_get_admissions_no_criteria(self):
-        form = AdmissionFilterForm({})
+        form = CommonFilterForm({})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, self.admissions_fac_1_version)
 
     def test_get_admissions_by_formation_criteria(self):
-        form = AdmissionFilterForm({"formation":  self.admissions_fac_1_version[4].formation.id})
+        form = CommonFilterForm({"formation":  self.admissions_fac_1_version[4].formation.id})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertListEqual(list(results), [self.admissions_fac_1_version[4]])
 
     def test_get_admissions_by_faculty_criteria(self):
-        form = AdmissionFilterForm({"faculty": self.fac_1_version.id})
+        form = CommonFilterForm({"faculty": self.fac_1_version.id})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, self.admissions_fac_1_version)
@@ -292,13 +292,13 @@ class TestFilterForm(TestCase):
             ),
             state=SUBMITTED
         )
-        form = AdmissionFilterForm({"faculty": self.fac_3_version_with_child.id})
+        form = CommonFilterForm({"faculty": self.fac_3_version_with_child.id})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, [an_admission_submitted_1, an_admission_submitted_2])
 
     def test_get_admissions_by_faculty_and_formation_criteria(self):
-        form = AdmissionFilterForm({"faculty": self.fac_1_version.id,
+        form = CommonFilterForm({"faculty": self.fac_1_version.id,
                                     "formation": self.admissions_fac_1_version[0].formation.id})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
@@ -307,27 +307,27 @@ class TestFilterForm(TestCase):
         formation_other = ContinuingEducationTrainingFactory()
         formation_other.save()
         adm = AdmissionFactory(state=random.choice(STATE_TO_DISPLAY))
-        form = AdmissionFilterForm({"faculty": self.fac_1_version.id,
+        form = CommonFilterForm({"faculty": self.fac_1_version.id,
                                     "formation": adm.formation.id})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, [])
 
     def test_get_admission_by_state(self):
-        form = AdmissionFilterForm({"state": [REJECTED]})
+        form = CommonFilterForm({"state": [REJECTED]})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, [self.admissions_fac_1_version[1]])
 
     def test_get_admission_by_states(self):
-        form = AdmissionFilterForm({"state": [REJECTED, DRAFT]})
+        form = CommonFilterForm({"state": [REJECTED, DRAFT]})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, [self.admissions_fac_1_version[1], self.admissions_fac_1_version[3]])
 
     def test_get_admissions_by_free_text(self):
         self._create_admissions_for_free_text_search()
-        form = AdmissionFilterForm({"free_text": "testtext"})
+        form = CommonFilterForm({"free_text": "testtext"})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, self.admissions_free_text)
@@ -336,7 +336,7 @@ class TestFilterForm(TestCase):
     def test_get_admissions_by_free_text_country(self):
         admission_accent = self._build_admission_with_accent(SUBMITTED, False)
         country_free_text = "Country - e"
-        form = AdmissionFilterForm({"free_text": country_free_text})
+        form = CommonFilterForm({"free_text": country_free_text})
         form.is_valid()
         results = form.get_admissions()
         self.assertEqual(results.first(), admission_accent)
@@ -347,7 +347,7 @@ class TestFilterForm(TestCase):
             archived=False,
             formation__in=formations_registration_required,
             state__in=[ele for key in ADMISSION_STATE_CHOICES for ele in key])
-        form = AdmissionFilterForm({"registration_required": True})
+        form = CommonFilterForm({"registration_required": True})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, admissions_expected)
@@ -355,7 +355,7 @@ class TestFilterForm(TestCase):
     def test_get_admission_by_no_registration_required(self):
         admission = AdmissionFactory(formation=self.formation_no_registration_required,
                                      state=ACCEPTED_NO_REGISTRATION_REQUIRED)
-        form = AdmissionFilterForm({"registration_required": False})
+        form = CommonFilterForm({"registration_required": False})
         self.assertTrue(form.is_valid())
         results = form.get_admissions()
         self.assertCountEqual(results, [admission])

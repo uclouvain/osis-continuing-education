@@ -75,11 +75,12 @@ from osis_common.decorators.ajax import ajax_required
 @cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
-    admission_list = Admission.admission_objects.all()
+
     if search_form.is_valid():
         admission_list = search_form.get_admissions()
-
-    admission_list = filter_authorized_admissions(request.user, admission_list)
+        admission_list = filter_authorized_admissions(request.user, admission_list)
+    else:
+        admission_list = []
 
     if request.GET.get('xls_status') == "xls_admissions":
         return create_xls(request.user, admission_list, search_form)

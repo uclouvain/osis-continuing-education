@@ -1,3 +1,5 @@
+from dal import autocomplete
+
 from datetime import datetime
 from operator import itemgetter
 
@@ -73,7 +75,7 @@ class FormationModelChoiceField(ModelChoiceField):
         return obj.acronym_and_title
 
 
-class AdmissionFilterForm(BootstrapForm):
+class CommonFilterForm(BootstrapForm):
     faculty = FacultyModelChoiceField(
         queryset=entity_version.find_latest_version(datetime.now())
                                .filter(entity_type=entity_type.FACULTY).order_by('acronym'),
@@ -90,11 +92,6 @@ class AdmissionFilterForm(BootstrapForm):
         required=False,
         label=_('Formation')
     )
-    state = forms.MultipleChoiceField(
-        widget=forms.SelectMultiple(attrs={'class': 'form-control'}),
-        choices=STATE_CHOICES,
-        required=False
-    )
 
     free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
 
@@ -104,14 +101,12 @@ class AdmissionFilterForm(BootstrapForm):
         label=_('Registration required')
     )
 
-    def __init__(self, *args, **kwargs):
-        super(AdmissionFilterForm, self).__init__(*args, **kwargs)
-        self.fields['state'].choices = _get_state_choices(ADMISSION_STATE_CHOICES)
+    def __init__(self, data=None, *args, **kwargs):
+        super(CommonFilterForm, self).__init__(data, *args, **kwargs)
         _build_formation_choices(self.fields['formation'], STATE_TO_DISPLAY)
 
     def get_admissions(self):
         state_filter = self.cleaned_data.get('state')
-        print(state_filter)
         free_text = self.cleaned_data.get('free_text')
         registration_required = self.cleaned_data.get('registration_required')
 
@@ -139,12 +134,6 @@ class AdmissionFilterForm(BootstrapForm):
             'formation__education_group'
         )
 
-    def clean_state(self):
-        state = self.cleaned_data.get('state')
-        if isinstance(state, list) and '' in state:
-            return None
-        return state
-
 
 def search_admissions_with_free_text(free_text, qs):
     qs = qs.filter(
@@ -160,7 +149,22 @@ def search_admissions_with_free_text(free_text, qs):
     return qs
 
 
-class RegistrationFilterForm(AdmissionFilterForm):
+class AdmissionFilterForm(CommonFilterForm):
+
+    def __init__(self, data=None, *args, **kwargs):
+        state_default_attrs = {}
+        if data.get('state') is None:
+            state_default_attrs = {'checked': True}
+        super(AdmissionFilterForm, self).__init__(data, *args, **kwargs)
+        choices = sorted(ADMISSION_STATE_CHOICES, key=itemgetter(1))
+
+        self.fields['state'] = forms.MultipleChoiceField(
+            widget=forms.CheckboxSelectMultiple(attrs=state_default_attrs),
+            choices=choices
+        )
+
+
+class RegistrationFilterForm(CommonFilterForm):
 
     ucl_registration_complete = forms.ChoiceField(
         choices=BOOLEAN_CHOICES,
@@ -226,7 +230,7 @@ class RegistrationFilterForm(AdmissionFilterForm):
         )
 
 
-class ArchiveFilterForm(AdmissionFilterForm):
+class ArchiveFilterForm(CommonFilterForm):
     state = forms.ChoiceField(
         choices=STATE_CHOICES,
         required=False
@@ -312,7 +316,7 @@ def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_su
     return qs.filter(formation__education_group__educationgroupyear__management_entity__in=entity_ids).distinct()
 
 
-class FormationFilterForm(AdmissionFilterForm):
+class FormationFilterForm(CommonFilterForm):
     acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
     title = forms.CharField(max_length=50, required=False, label=_('Title'))
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
