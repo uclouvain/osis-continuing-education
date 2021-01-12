@@ -111,6 +111,7 @@ class AdmissionFilterForm(BootstrapForm):
 
     def get_admissions(self):
         state_filter = self.cleaned_data.get('state')
+        print(state_filter)
         free_text = self.cleaned_data.get('free_text')
         registration_required = self.cleaned_data.get('registration_required')
 
@@ -137,6 +138,12 @@ class AdmissionFilterForm(BootstrapForm):
             'person_information__person',
             'formation__education_group'
         )
+
+    def clean_state(self):
+        state = self.cleaned_data.get('state')
+        if isinstance(state, list) and '' in state:
+            return None
+        return state
 
 
 def search_admissions_with_free_text(free_text, qs):
