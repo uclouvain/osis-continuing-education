@@ -479,7 +479,8 @@ class AdmissionStateChangedTestCase(TestCase):
         admission = {
             'state': new_state,
             'formation': self.formation.pk,
-            'person_information': self.admission.person_information.pk
+            'person_information': self.admission.person_information.pk,
+            'email': 'test@gmail.com'
         }
         data = admission
         if new_state == REJECTED:
@@ -497,7 +498,8 @@ class AdmissionStateChangedTestCase(TestCase):
         admission_draft = {
             'formation': self.formation.pk,
             'state': DRAFT,
-            'person_information': self.admission.person_information.pk
+            'person_information': self.admission.person_information.pk,
+            'email': 'test@gmail.com'
         }
         url = reverse('admission_detail', args=[self.admission_submitted.pk])
         response = self.client.post(url, data=admission_draft)
