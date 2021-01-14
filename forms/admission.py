@@ -93,6 +93,7 @@ class AdmissionForm(ModelForm):
                 managers=user.person
             )
         set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
+        self.fields['email'].required = True
 
     class Meta:
         model = Admission
