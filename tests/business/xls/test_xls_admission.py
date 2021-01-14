@@ -37,7 +37,7 @@ from continuing_education.business.xls.xls_admission import XLS_DESCRIPTION, XLS
     WORKSHEET_TITLE, \
     create_xls, prepare_xls_content
 from continuing_education.business.xls.xls_common import get_titles_admission
-from continuing_education.forms.search import AdmissionFilterForm
+from continuing_education.forms.search import CommonFilterForm
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -77,7 +77,7 @@ class TestAdmissionXls(TestCase):
         self.assertEqual(prepare_xls_content([]), [])
 
     def test_generate_xls_data_with_an_admission(self):
-        a_form = AdmissionFilterForm({"faculty": self.entity_version.id})
+        a_form = CommonFilterForm({"faculty": self.entity_version.id})
         self.assertTrue(a_form.is_valid())
         found_admissions = a_form.get_admissions()
         create_xls(self.user, found_admissions, None)
