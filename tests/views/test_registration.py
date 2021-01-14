@@ -345,7 +345,8 @@ class RegistrationStateChangedTestCase(TestCase):
             'state': VALIDATED,
             'formation': self.formation.pk,
             'person_information': self.registration_submitted.person_information.pk,
-            'academic_year': self.registration_submitted.academic_year.pk
+            'academic_year': self.registration_submitted.academic_year.pk,
+            'email': 'test@gmail.com'
         }
 
 

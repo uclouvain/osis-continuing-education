@@ -127,6 +127,11 @@ class TestAdmissionForm(TestCase):
                     'participant_required'
                 )
 
+    def test_manager_email_field_required(self):
+        self.client.force_login(self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.assertTrue(form.fields['email'].required)
+
 
 class TestRejectedAdmissionForm(TestCase):
     @classmethod
