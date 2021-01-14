@@ -1,4 +1,3 @@
-from dal import autocomplete
 
 from datetime import datetime
 from operator import itemgetter
@@ -153,14 +152,16 @@ class AdmissionFilterForm(CommonFilterForm):
 
     def __init__(self, data=None, *args, **kwargs):
         state_default_attrs = {}
-        if data.get('state') is None:
+        if data is None or data.get('state') is None:
+            #  If no state pre-selected, all states are selected by default
             state_default_attrs = {'checked': True}
         super(AdmissionFilterForm, self).__init__(data, *args, **kwargs)
         choices = sorted(ADMISSION_STATE_CHOICES, key=itemgetter(1))
 
         self.fields['state'] = forms.MultipleChoiceField(
             widget=forms.CheckboxSelectMultiple(attrs=state_default_attrs),
-            choices=choices
+            choices=choices,
+            required=False
         )
 
 
