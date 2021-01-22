@@ -25,6 +25,7 @@
 ##############################################################################
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -53,6 +54,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from osis_common.messaging import message_config
 from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
@@ -387,12 +389,12 @@ class SendEmailSettingsTest(TestCase):
                 {
                     'receiver_person_id': None,
                     'receiver_email': "jane.doe@test.be",
-                    'receiver_lang': None
+                    'receiver_lang': message_config.DEFAULT_LANG
                 },
                 {
                     'receiver_person_id': None,
                     'receiver_email': "test2@domain.com",
-                    'receiver_lang': None
+                    'receiver_lang': message_config.DEFAULT_LANG
                 }
             ]
         )
