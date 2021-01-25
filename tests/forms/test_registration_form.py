@@ -95,12 +95,12 @@ class TestRegistrationForm(TestCase):
         self.assertIn('passport_number', form.errors)
         self.assertIn(_('Only alphanumeric characters are allowed.'), form.errors['passport_number'])
 
-    def test_only_alphanumeric_characters_for_national_number(self):
-        wrong_id = '12-4894'
+    def test_only_numeric_characters_for_national_number(self):
+        wrong_id = '12KB4894'
         registration = AdmissionFactory(formation=self.formation)
         data = registration.__dict__
         data['national_registry_number'] = wrong_id
         form = RegistrationForm(data=data)
         self.assertFalse(form.is_valid())
         self.assertIn('national_registry_number', form.errors)
-        self.assertIn(_('Only alphanumeric characters are allowed.'), form.errors['national_registry_number'])
+        self.assertIn(_('Only numeric characters are allowed.'), form.errors['national_registry_number'])

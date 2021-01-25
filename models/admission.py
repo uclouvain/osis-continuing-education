@@ -38,6 +38,7 @@ from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.models.person_training import PersonTraining
+from osis_common.utils.validators import belgium_national_register_number_validator
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
 
@@ -73,6 +74,7 @@ class AdmissionAdmin(VersionAdmin, ModelAdmin):
 class Admission(Model):
     CONTINUING_EDUCATION_TYPE = 8
     alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', _('Only alphanumeric characters are allowed.'))
+    numeric = RegexValidator(r'^[0-9]*$', _('Only numeric characters are allowed.'))
 
     objects = Manager()
     admission_objects = AdmissionManager()
@@ -307,7 +309,7 @@ class Admission(Model):
         max_length=255,
         blank=True,
         verbose_name=_("National registry number"),
-        validators=[alphanumeric]
+        validators=[numeric, belgium_national_register_number_validator]
     )
     id_card_number = models.CharField(
         max_length=255,
