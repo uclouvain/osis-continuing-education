@@ -795,6 +795,9 @@ msgstr "En demande"
 msgid "Only alphanumeric characters are allowed."
 msgstr "Uniquement des caractères alphanumériques sont autorisés."
 
+msgid "Only numeric characters are allowed."
+msgstr "Uniquement des caractères numériques sont autorisés."
+
 msgid "Other"
 msgstr "Autre"
 

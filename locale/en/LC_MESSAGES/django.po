@@ -755,6 +755,9 @@ msgstr ""
 msgid "Only alphanumeric characters are allowed."
 msgstr ""
 
+msgid "Only numeric characters are allowed."
+msgstr ""
+
 msgid "Other"
 msgstr ""
 
