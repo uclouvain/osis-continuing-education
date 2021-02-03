@@ -250,6 +250,9 @@ def admission_form(request, admission_id=None):
         no_first_name_checked=request.POST.get('no_first_name', False)
     )
     base_person_form.fields.pop('email')
+    help_msg_first_letter_uppercase = _("Only the first letter uppercase.")
+    base_person_form.fields['first_name'].help_text = help_msg_first_letter_uppercase
+    base_person_form.fields['last_name'].help_text = help_msg_first_letter_uppercase
     person_information = ContinuingEducationPerson.objects.filter(person=base_person).first()
     # TODO :: get last admission address if it exists instead of None
     address = admission.address if admission else None
