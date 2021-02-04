@@ -212,7 +212,7 @@ class ViewAdmissionTestCase(TestCase):
             qs_to_find_new_admissions = qs_to_find_new_admissions.exclude(pk=a.id)
         self.client.post(reverse('admission_new'), data=admission)
         created_admission = qs_to_find_new_admissions.first()
-        self.assertNotEqual(created_admission.person_information.person.email, new_admission_email)
+        self.assertEqual(created_admission.person_information.person.email, new_admission_email)
 
     def test_admission_new_save_gender_required_if_new_person(self):
         admission = model_to_dict(self.admission)
@@ -276,6 +276,9 @@ class ViewAdmissionTestCase(TestCase):
         data_person_information_updated.update({'birth_location': 'namur'})
         data.update(data_person_information_updated.copy())
 
+        new_email = 'new_email@uclouvain.be'
+        data.update({'email': new_email})
+
         url = reverse('admission_edit', args=[self.admission.pk])
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
@@ -287,6 +290,10 @@ class ViewAdmissionTestCase(TestCase):
         self._check_update_correct(admission, self.admission)
         self._check_update_correct(data_person_updated, self.admission.person_information.person)
         self._check_update_correct(self.continuing_education_person_data, self.admission.person_information)
+
+        # Email must be updated in admission object but not in existing person object
+        self.assertEqual(self.admission.email, new_email)
+        self.assertNotEqual(self.admission.person_information.person.email, new_email)
 
     def _check_update_correct(self, data, db_obj):
         for key in data:
