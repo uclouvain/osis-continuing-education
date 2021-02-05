@@ -57,6 +57,8 @@ def save_state_changed_and_send_email(admission, connected_user=None):
     else:
         lower_state = 'other'
 
+    receivers = _build_participant_receivers(admission)
+
     send_email(
         template_references={
             'html': 'iufc_participant_state_changed_{}_html'.format(lower_state),
@@ -64,8 +66,8 @@ def save_state_changed_and_send_email(admission, connected_user=None):
         },
         data={
             'template': {
-                'first_name': admission.person_information.person.first_name,
-                'last_name': admission.person_information.person.last_name,
+                'first_name': person.first_name,
+                'last_name': person.last_name,
                 'formation': admission.formation,
                 'state': _(admission.state),
                 'reason': admission.state_reason if admission.state_reason else '-',
@@ -78,17 +80,11 @@ def save_state_changed_and_send_email(admission, connected_user=None):
                 'state': _(admission.state)
             }
         },
-        receivers=[
-            message_config.create_receiver(
-                person.id,
-                person.email,
-                None
-            )
-        ],
+        receivers=receivers,
         connected_user=connected_user
     )
 
-    MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)}
     save_and_create_revision(get_revision_messages(MAIL), admission, connected_user)
 
 
@@ -133,9 +129,7 @@ def send_submission_email_to_admission_managers(admission, connected_user):
         connected_user=connected_user
     )
 
-    MAIL['text'] = MAIL_MESSAGE % {
-        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]) if receivers else '',
-    }
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)}
 
     save_and_create_revision(get_revision_messages(MAIL) if receivers else '', admission, connected_user)
 
@@ -160,6 +154,7 @@ def _get_admission_managers_email_receivers(admission):
 def send_submission_email_to_participant(admission, connected_user):
     participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    receivers = _build_participant_receivers(admission)
     send_email(
         template_references={
             'html': _get_template_reference(admission, receiver='participant', suffix='html'),
@@ -174,16 +169,10 @@ def send_submission_email_to_participant(admission, connected_user):
             },
             'subject': {}
         },
-        receivers=[
-            message_config.create_receiver(
-                participant.id,
-                participant.email,
-                None
-            )
-        ],
+        receivers=receivers,
         connected_user=connected_user
     )
-    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email}
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)}
     save_and_create_revision(get_revision_messages(MAIL), admission, connected_user)
 
 
@@ -197,6 +186,7 @@ def _get_template_reference(admission, receiver, suffix):
 def send_invoice_uploaded_email(admission):
     participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    receivers = _build_participant_receivers(admission)
     send_email(
         template_references={
             'html': 'iufc_participant_invoice_uploaded_html',
@@ -209,15 +199,9 @@ def send_invoice_uploaded_email(admission):
             },
             'subject': {}
         },
-        receivers=[
-            message_config.create_receiver(
-                participant.id,
-                participant.email,
-                None
-            )
-        ],
+        receivers=receivers,
     )
-    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)} + ' : ' + _('Invoice')
     save_and_create_revision(get_revision_messages(MAIL), admission)
 
 
@@ -321,3 +305,22 @@ def _get_attachments(admission_id, max_size):
     if tot_size < max_size:
         return attachments
     return None
+
+
+def _build_participant_receivers(admission):
+    person = admission.person_information.person
+    receivers_emails = [mail for mail in [person.email, admission.email] if mail]
+    unique_receivers_emails = set(receivers_emails)
+    receivers = [
+        message_config.create_receiver(
+            person.id,
+            mail,
+            None
+        )
+        for mail in unique_receivers_emails
+    ]
+    return receivers
+
+
+def _get_receivers_emails_as_str(receivers):
+    return ", ".join([receiver.get('receiver_email') for receiver in receivers])

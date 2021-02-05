@@ -25,7 +25,6 @@
 ##############################################################################
 from unittest.mock import patch
 
-from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -39,7 +38,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
-    check_required_field_for_participant, _get_attachments
+    check_required_field_for_participant, _get_attachments, _build_participant_receivers
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
@@ -211,7 +210,7 @@ class SendEmailTest(TestCase):
             self.admission.state_reason if self.admission.state_reason else "-",
             args.get('data').get('template').get('reason')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     @patch('continuing_education.business.admission.send_email')
@@ -266,7 +265,7 @@ class SendEmailTest(TestCase):
             _get_formatted_admission_data(self.admission),
             args.get('data').get('template').get('admission_data')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     @patch('continuing_education.business.admission.send_email')
@@ -283,7 +282,7 @@ class SendEmailTest(TestCase):
             self.admission.formation.acronym,
             args.get('data').get('template').get('formation')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     def test_get_attachments_with_attachment_size_nok(self):
@@ -312,7 +311,7 @@ class SendEmailTest(TestCase):
             self.admission.condition_of_acceptance,
             args.get('data').get('template').get('condition_of_acceptance')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_admission_with_no_registration_required(self, mock_send):
@@ -328,7 +327,32 @@ class SendEmailTest(TestCase):
             self.admission.formation.registration_required,
             args.get('data').get('template').get('registration_required')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
+
+    def test_build_participant_receivers_2_different_emails(self):
+        receivers = _build_participant_receivers(self.admission)
+        excepted_receivers = [
+            message_config.create_receiver(
+                self.admission.person_information.person.id,
+                mail,
+                None
+            )
+            for mail in [self.admission.email, self.admission.person_information.person.email]
+        ]
+        self.assertCountEqual(receivers, excepted_receivers)
+
+    def test_build_participant_receivers_1_unique_email(self):
+        self.admission.email = self.admission.person_information.person.email
+        self.admission.save()
+        receivers = _build_participant_receivers(self.admission)
+        excepted_receivers = [
+            message_config.create_receiver(
+                self.admission.person_information.person.id,
+                self.admission.email,
+                None
+            )
+        ]
+        self.assertCountEqual(receivers, excepted_receivers)
 
 
 class SendEmailSettingsTest(TestCase):
