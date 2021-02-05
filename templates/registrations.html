@@ -150,7 +150,7 @@
                                 </a>
                             </td>
                             <td>{{ admission.person_information.person.first_name | default_if_none:'-' }}</td>
-                            <td>{{ admission.person_information.person.email | default_if_none:'-' }}</td>
+                            <td>{{ admission.email | default_if_none:'-' }}</td>
                             <td>{{ admission.formation }}</td>
                             <td>{{ admission.academic_year | default_if_none:'' }}</td>
                             <td title="{{ admission.faculty.title }}">{{ admission.get_faculty | default_if_none:'' }}</td>
