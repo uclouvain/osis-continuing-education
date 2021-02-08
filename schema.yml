@@ -606,6 +606,10 @@ components:
           type: string
           format: email
           example: jane.doe@provider.com
+        birth_date:
+          type: string
+          format: date
+          example: "1989-01-01"
 
     FormationBasicGet:
       type: object
