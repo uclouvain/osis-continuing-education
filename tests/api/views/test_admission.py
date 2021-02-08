@@ -400,9 +400,10 @@ class AdmissionDetailUpdateTestCase(APITestCase):
                     mock_call_args.get('template_references').get('html'),
                     'iufc_participant_state_changed_accepted_html'
                 )
-                self.assertEqual(
-                    mock_call_args.get('receivers')[0].get('receiver_email'),
-                    self.admission.person_information.person.email
+                receivers = mock_call_args.get('receivers')
+                self.assertCountEqual(
+                    [receiver.get('receiver_email') for receiver in receivers],
+                    [self.admission.email, self.admission.person_information.person.email]
                 )
                 self.assertEqual(
                     mock_call_args.get('connected_user'),
