@@ -520,9 +520,10 @@ class AdmissionStateChangedTestCase(TestCase):
             mock_call_args.get('template_references').get('html'),
             'iufc_participant_state_changed_other_html'
         )
-        self.assertEqual(
-            mock_call_args.get('receivers')[0].get('receiver_email'),
-            self.admission_submitted.person_information.person.email
+        receivers = mock_call_args.get('receivers')
+        self.assertCountEqual(
+            [receiver.get('receiver_email') for receiver in receivers],
+            [self.admission_submitted.email, self.admission_submitted.person_information.person.email]
         )
 
 
