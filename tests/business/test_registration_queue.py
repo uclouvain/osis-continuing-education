@@ -66,19 +66,52 @@ class PrepareJSONTestCase(TestCase):
             'telephone_number': self.admission.residence_phone,
             'private_email': self.admission.email,
             'private_address': {
-                'street': self.admission.residence_address.location,
-                'locality': self.admission.residence_address.city,
-                'postal_code': self.admission.residence_address.postal_code,
-                'country_name': self.admission.residence_address.country.name,
-                'country_iso_code': self.admission.residence_address.country.iso_code
-            },
-            'staying_address': {
                 'street': self.admission.address.location,
                 'locality': self.admission.address.city,
                 'postal_code': self.admission.address.postal_code,
                 'country_name': self.admission.address.country.name,
                 'country_iso_code': self.admission.address.country.iso_code
             },
+            'staying_address': {
+                'street': self.admission.residence_address.location,
+                'locality': self.admission.residence_address.city,
+                'postal_code': self.admission.residence_address.postal_code,
+                'country_name': self.admission.residence_address.country.name,
+                'country_iso_code': self.admission.residence_address.country.iso_code
+            },
+            'national_registry_number': self.admission.national_registry_number,
+            'id_card_number': self.admission.id_card_number,
+            'passport_number': self.admission.passport_number,
+            'formation_code': self.admission.formation.acronym,
+            'formation_academic_year': str(self.admission.academic_year.year),
+            'student_case_uuid': str(self.admission.uuid)
+        }
+        self.assertDictEqual(result, expected_result)
+
+    def test_get_json_for_epc_same_address(self):
+        self.admission.residence_address = self.admission.address
+        self.admission.save()
+        result = get_json_for_epc(self.admission)
+        expected_result = {
+            'name': self.admission.person_information.person.last_name,
+            'first_name': self.admission.person_information.person.first_name,
+            'birth_date': self.admission.person_information.birth_date.strftime("%d/%m/%Y"),
+            'birth_location': self.admission.person_information.birth_location,
+            'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
+            'sex': self.admission.person_information.person.gender,
+            'civil_state': self.admission.marital_status,
+            'nationality_iso_code': self.admission.citizenship.iso_code,
+            'mobile_number': self.admission.phone_mobile,
+            'telephone_number': self.admission.residence_phone,
+            'private_email': self.admission.email,
+            'private_address': {
+                'street': self.admission.address.location,
+                'locality': self.admission.address.city,
+                'postal_code': self.admission.address.postal_code,
+                'country_name': self.admission.address.country.name,
+                'country_iso_code': self.admission.address.country.iso_code
+            },
+            'staying_address': {},
             'national_registry_number': self.admission.national_registry_number,
             'id_card_number': self.admission.id_card_number,
             'passport_number': self.admission.passport_number,

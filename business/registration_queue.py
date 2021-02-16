@@ -47,6 +47,7 @@ logger = logging.getLogger(settings.DEFAULT_LOGGER)
 
 
 def get_json_for_epc(admission):
+    addresses_are_different = admission.address != admission.residence_address
     return {
         'name': admission.person_information.person.last_name,
         'first_name': admission.person_information.person.first_name,
@@ -59,8 +60,8 @@ def get_json_for_epc(admission):
         'mobile_number': admission.phone_mobile,
         'telephone_number': admission.residence_phone,
         'private_email': admission.email,
-        'private_address': format_address_for_json(admission.residence_address),
-        'staying_address': format_address_for_json(admission.address),
+        'private_address': format_address_for_json(admission.address),
+        'staying_address': format_address_for_json(admission.residence_address) if addresses_are_different else {},
         'national_registry_number': admission.national_registry_number,
         'id_card_number': admission.id_card_number,
         'passport_number': admission.passport_number,
