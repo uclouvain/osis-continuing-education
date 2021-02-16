@@ -280,10 +280,12 @@ def admission_form(request, admission_id=None):
             address = Address(**address_form.cleaned_data)
             address.save()
 
-        person = person_form.save(commit=False)
-        base_person = base_person_form.save()
-        person.person_id = base_person.pk
-        person.save()
+        person_must_be_saved = not selected_person or admission_id
+        if person_must_be_saved:
+            person = person_form.save(commit=False)
+            base_person = base_person_form.save()
+            person.person_id = base_person.pk
+            person.save()
 
         admission = adm_form.save(commit=False)
         admission.address = address
