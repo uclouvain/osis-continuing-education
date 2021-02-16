@@ -40,6 +40,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
+from base.models.person import Person
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
@@ -48,6 +49,7 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
@@ -279,6 +281,9 @@ class ViewAdmissionTestCase(TestCase):
         new_email = 'new_email@uclouvain.be'
         data.update({'email': new_email})
 
+        person_objects_quantity = Person.objects.all().count()
+        continuing_education_person_objects_quantity = ContinuingEducationPerson.objects.all().count()
+
         url = reverse('admission_edit', args=[self.admission.pk])
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
@@ -294,6 +299,10 @@ class ViewAdmissionTestCase(TestCase):
         # Email must be updated in admission object but not in existing person object
         self.assertEqual(self.admission.email, new_email)
         self.assertNotEqual(self.admission.person_information.person.email, new_email)
+
+        # Assert that we did not create new person and continuing_education_person
+        self.assertEqual(person_objects_quantity, Person.objects.all().count())
+        self.assertEqual(continuing_education_person_objects_quantity, ContinuingEducationPerson.objects.all().count())
 
     def _check_update_correct(self, data, db_obj):
         for key in data:
