@@ -36,7 +36,7 @@ from continuing_education.models.enums.admission_state_choices import ACCEPTED, 
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import save_and_create_revision, MAIL_MESSAGE, MAIL, \
-    get_valid_state_change_message, get_revision_messages
+    get_valid_state_change_message, get_revision_messages, get_versions
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -77,6 +77,7 @@ def save_state_changed_and_send_email(admission, connected_user=None):
                 'condition_of_acceptance': condition_of_acceptance,
                 'registration_required': registration_required,
                 'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
+                'participant_created_admission': _participant_created_admission(admission),
             },
             'subject': {
                 'state': _(admission.state)
@@ -169,6 +170,7 @@ def send_submission_email_to_participant(admission, connected_user):
                 'admission_data': _get_formatted_admission_data(admission),
                 'mails': mails,
                 'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
+                'participant_created_admission': _participant_created_admission(admission),
             },
             'subject': {}
         },
@@ -199,6 +201,7 @@ def send_invoice_uploaded_email(admission):
                 'formation': admission.formation.acronym,
                 'mails': mails,
                 'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
+                'participant_created_admission': _participant_created_admission(admission),
             },
             'subject': {}
         },
@@ -327,3 +330,8 @@ def _build_participant_receivers(admission):
 
 def _get_receivers_emails_as_str(receivers):
     return ", ".join([receiver.get('receiver_email') for receiver in receivers])
+
+
+def _participant_created_admission(admission):
+    adm_first_version = get_versions(admission).last()
+    return adm_first_version.revision.user == admission.person_information.person.user
