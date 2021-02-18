@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 from django.urls import reverse
@@ -74,7 +75,8 @@ def save_state_changed_and_send_email(admission, connected_user=None):
                 'mails': mails,
                 'original_state': _(admission._original_state),
                 'condition_of_acceptance': condition_of_acceptance,
-                'registration_required': registration_required
+                'registration_required': registration_required,
+                'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
             },
             'subject': {
                 'state': _(admission.state)
@@ -165,7 +167,8 @@ def send_submission_email_to_participant(admission, connected_user):
                 'name': admission.person_information.person.last_name,
                 'formation': admission.formation.title,
                 'admission_data': _get_formatted_admission_data(admission),
-                'mails': mails
+                'mails': mails,
+                'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
             },
             'subject': {}
         },
@@ -184,7 +187,6 @@ def _get_template_reference(admission, receiver, suffix):
 
 
 def send_invoice_uploaded_email(admission):
-    participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     receivers = _build_participant_receivers(admission)
     send_email(
@@ -195,7 +197,8 @@ def send_invoice_uploaded_email(admission):
         data={
             'template': {
                 'formation': admission.formation.acronym,
-                'mails': mails
+                'mails': mails,
+                'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
             },
             'subject': {}
         },
