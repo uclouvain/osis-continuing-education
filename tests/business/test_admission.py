@@ -31,6 +31,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from reversion.models import Version
 
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
@@ -38,7 +39,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
-    check_required_field_for_participant, _get_attachments, _build_participant_receivers
+    check_required_field_for_participant, _get_attachments, _build_participant_receivers, _participant_created_admission
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
@@ -53,6 +54,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.views.common import save_and_create_revision, get_revision_messages, ADMISSION_CREATION
 from osis_common.messaging import message_config
 from reference.tests.factories.country import CountryFactory
 
@@ -445,3 +447,27 @@ class SendEmailSettingsTest(TestCase):
                 },
             ]
         )
+
+    def test_participant_created_admission_true(self):
+        Version.objects.all().delete()
+        self.assertFalse(_participant_created_admission(self.admission))
+
+        save_and_create_revision(
+            get_revision_messages(ADMISSION_CREATION),
+            self.admission,
+            self.admission.person_information.person.user
+        )
+
+        self.assertTrue(_participant_created_admission(self.admission))
+
+    def test_participant_created_admission_false(self):
+        Version.objects.all().delete()
+        self.assertFalse(_participant_created_admission(self.admission))
+
+        save_and_create_revision(
+            get_revision_messages(ADMISSION_CREATION),
+            self.admission,
+            self.manager.user
+        )
+
+        self.assertFalse(_participant_created_admission(self.admission))

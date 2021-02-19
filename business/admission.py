@@ -333,5 +333,8 @@ def _get_receivers_emails_as_str(receivers):
 
 
 def _participant_created_admission(admission):
-    adm_first_version = get_versions(admission).last()
-    return adm_first_version.revision.user == admission.person_information.person.user
+    versions_in_reverse_order = get_versions(admission)
+    adm_first_version = versions_in_reverse_order.last()
+    if adm_first_version:
+        return adm_first_version.revision.user == admission.person_information.person.user
+    return False
