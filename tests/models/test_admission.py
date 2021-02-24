@@ -102,7 +102,7 @@ class TestAdmission(TestCase):
         result = Admission.objects.all().values_list(
             'person_information__person__first_name', flat=True
         )
-        self.assertEquals(list(result), expected_order)
+        self.assertEqual(list(result), expected_order)
 
 
 class TestAdmissionGetProperties(TestCase):
