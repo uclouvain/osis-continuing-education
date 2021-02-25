@@ -122,7 +122,7 @@ class TestAdmissionForm(TestCase):
         ]
         for required_field in admission_participant_required_fields:
             with self.subTest(required_field=required_field):
-                self.assertEquals(
+                self.assertEqual(
                     form.fields[required_field].widget.attrs['class'],
                     'participant_required'
                 )

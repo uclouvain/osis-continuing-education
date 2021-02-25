@@ -79,4 +79,4 @@ class TestContinuingEducationTraining(TestCase):
         )
         ced_b = ContinuingEducationTrainingFactory(education_group=ed_b)
         result = ContinuingEducationTraining.objects.all()
-        self.assertEquals(list(result), [ced_a, ced_b])
+        self.assertEqual(list(result), [ced_a, ced_b])
