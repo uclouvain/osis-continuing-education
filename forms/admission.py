@@ -20,7 +20,7 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
 
-CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 6, "day": 1}
+CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 9, "day": 15}
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
@@ -291,7 +291,7 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
     def __init__(self, data, **kwargs):
         super().__init__(data, **kwargs)
 
-        self.fields['academic_year'].queryset = get_academic_year_to_link_qs()
+        self.fields['academic_year'].queryset = get_academic_years_to_link_qs()
 
         if data is None:
             # GET
@@ -338,7 +338,7 @@ class CancelAdmissionForm(ModelForm):
         return instance
 
 
-def get_academic_year_to_link_qs():
+def get_academic_years_to_link_qs():
     # TODO : Use academic_calendar instead of fixed date
     today = date.today()
     switch_date = date(
@@ -346,5 +346,6 @@ def get_academic_year_to_link_qs():
         CONTINUING_EDUCATION_YEAR_SWITCH_DATE.get("month"),
         CONTINUING_EDUCATION_YEAR_SWITCH_DATE.get("day")
     )
-    year_to_choose = today.year - 1 if today < switch_date else today.year
-    return AcademicYear.objects.filter(year=year_to_choose)
+    this_year = today.year - 1 if today < switch_date else today.year
+    linkable_years = [this_year, this_year + 1]
+    return AcademicYear.objects.filter(year__in=linkable_years)
