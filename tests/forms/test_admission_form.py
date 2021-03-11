@@ -242,11 +242,11 @@ class TestAcceptedAdmissionForm(TestCase):
             mock.Mock(wraps=datetime.date)
         )
         mocked_date = date_patcher.start()
-        mocked_date.today.return_value = datetime.date(2020, 5, 31)
+        mocked_date.today.return_value = datetime.date(2020, 9, 14)
         form = ConditionAcceptanceAdmissionForm(None)
         self.assertCountEqual(
             form.fields['academic_year'].choices.queryset,
-            AcademicYear.objects.filter(year=2019)
+            AcademicYear.objects.filter(year__in=[2019, 2020])
         )
         self.addCleanup(date_patcher.stop)
 
@@ -256,11 +256,11 @@ class TestAcceptedAdmissionForm(TestCase):
             mock.Mock(wraps=datetime.date)
         )
         mocked_date = date_patcher.start()
-        mocked_date.today.return_value = datetime.date(2020, 6, 1)
+        mocked_date.today.return_value = datetime.date(2020, 9, 15)
         form = ConditionAcceptanceAdmissionForm(None)
         self.assertCountEqual(
             form.fields['academic_year'].choices.queryset,
-            AcademicYear.objects.filter(year=2020)
+            AcademicYear.objects.filter(year__in=[2020, 2021])
         )
         self.addCleanup(date_patcher.stop)
 

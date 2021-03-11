@@ -20,7 +20,7 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
 
-CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 6, "day": 1}
+CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 9, "day": 15}
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
