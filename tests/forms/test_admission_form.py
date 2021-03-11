@@ -39,7 +39,7 @@ from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm, \
-    get_academic_year_to_link_qs
+    get_academic_years_to_link_qs
 from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED
 from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -276,7 +276,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
         data['condition_of_acceptance_existing'] = True
         data['condition_of_acceptance'] = 'New Condition'
-        data['academic_year'] = get_academic_year_to_link_qs().get().pk
+        data['academic_year'] = get_academic_years_to_link_qs().first().pk
 
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_with_condition)
         obj_updated = form.save()
@@ -288,7 +288,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
         data['condition_of_acceptance_existing'] = False
         data['condition_of_acceptance'] = 'If false before no condition possible'
-        data['academic_year'] = get_academic_year_to_link_qs().get().pk
+        data['academic_year'] = get_academic_years_to_link_qs().first().pk
 
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_without_condition)
         obj_updated = form.save()
