@@ -320,6 +320,7 @@ class SendEmailTest(TestCase):
         self.admission.state = admission_state_choices.ACCEPTED
         self.admission._original_state = self.admission.state
         self.admission.formation.registration_required = False
+        self.admission.condition_of_acceptance = 'CONDITION'
         self.admission.formation.save()
         self.admission.save()
         admission.save_state_changed_and_send_email(self.admission)
@@ -328,6 +329,10 @@ class SendEmailTest(TestCase):
         self.assertEqual(
             self.admission.formation.registration_required,
             args.get('data').get('template').get('registration_required')
+        )
+        self.assertEqual(
+            self.admission.condition_of_acceptance,
+            args.get('data').get('template').get('condition_of_acceptance')
         )
         self.assertEqual(len(args.get('receivers')), 2)
 
