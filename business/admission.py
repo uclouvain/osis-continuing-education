@@ -93,12 +93,12 @@ def save_state_changed_and_send_email(admission, connected_user=None):
 
 def _get_datas_from_admission(admission):
     condition_of_acceptance, registration_required = None, None
-    lower_state = ACCEPTED.lower() if admission.state == ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state.lower()
-    if admission.state == ACCEPTED:
+    state = ACCEPTED if admission.state == ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state
+    if state == ACCEPTED:
         registration_required = admission.formation.registration_required
         if admission.condition_of_acceptance != '':
             condition_of_acceptance = admission.condition_of_acceptance
-    return condition_of_acceptance, lower_state, registration_required
+    return condition_of_acceptance, state.lower(), registration_required
 
 
 def send_submission_email_to_admission_managers(admission, connected_user):
@@ -155,7 +155,6 @@ def _get_admission_managers_email_receivers(admission):
 
 
 def send_submission_email_to_participant(admission, connected_user):
-    participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
     receivers = _build_participant_receivers(admission)
     send_email(
