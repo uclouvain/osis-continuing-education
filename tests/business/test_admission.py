@@ -53,7 +53,6 @@ from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.roles.continuing_education_training_manager import \
     ContinuingEducationTrainingManagerFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, ADMISSION_CREATION
 from osis_common.messaging import message_config
 from reference.tests.factories.country import CountryFactory
@@ -161,7 +160,7 @@ class TestAdmission(TestCase):
 class SendEmailTest(TestCase):
     def setUp(self):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         cet = ContinuingEducationTrainingFactory(education_group=ed)
         self.manager = ContinuingEducationTrainingManagerFactory(training=cet)
         self.other_manager = ContinuingEducationTrainingManagerFactory(
@@ -367,7 +366,7 @@ class SendEmailSettingsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         cls.cet = ContinuingEducationTrainingFactory(education_group=ed)
         cls.manager = ContinuingEducationTrainingManagerFactory(training=cls.cet)
         cls.admission = AdmissionFactory(formation=cls.cet)
@@ -472,7 +471,7 @@ class SendEmailSettingsTest(TestCase):
         save_and_create_revision(
             get_revision_messages(ADMISSION_CREATION),
             self.admission,
-            self.manager.user
+            self.manager.person.user
         )
 
         self.assertFalse(_participant_created_admission(self.admission))

@@ -29,6 +29,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
@@ -36,7 +37,8 @@ from continuing_education.api.serializers.continuing_education_training import C
     ContinuingEducationTrainingPostSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class ContinuingEducationTrainingListCreateTestCase(APITestCase):

@@ -106,8 +106,8 @@ class TestAdmissionForm(TestCase):
         )
 
     def test_participant_required_fields(self):
-        self.client.force_login(self.manager.user)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.client.force_login(self.manager.person.user)
+        form = AdmissionForm(data=self.data, user=self.manager.person.user)
         admission_participant_required_fields = [
             'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
             'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
@@ -122,8 +122,8 @@ class TestAdmissionForm(TestCase):
                 )
 
     def test_manager_email_field_required(self):
-        self.client.force_login(self.manager.user)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.client.force_login(self.manager.person.user)
+        form = AdmissionForm(data=self.data, user=self.manager.person.user)
         self.assertTrue(form.fields['email'].required)
 
 

@@ -637,7 +637,7 @@ class TestFormationFilterForm(TestCase):
 class TestContinuingEducationManagerFilterForm(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         cls.start_date = date.today().replace(year=2010)
         cls.faculty = EntityVersionFactory(

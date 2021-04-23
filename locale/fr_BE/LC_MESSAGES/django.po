@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-03 09:51+0100\n"
+"POT-Creation-Date: 2021-04-23 15:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -300,11 +300,29 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr "Liste des formations continues"
 
+msgid "Continuing education manager"
+msgstr "Gestionnaire central IUFC"
+
+msgid "Continuing education managers"
+msgstr "Gestionnaires centraux IUFC"
+
 msgid ""
 "Continuing education managers and student workers only are allowed to "
 "validate a registration"
 msgstr ""
 "Seuls les gestionnaires IUFC et les jobistes peuvent valider une inscription"
+
+msgid "Continuing education student worker"
+msgstr "Jobiste IUFC"
+
+msgid "Continuing education student workers"
+msgstr "Jobistes IUFC"
+
+msgid "Continuing education training manager"
+msgstr "Gestionnaire de formation continue"
+
+msgid "Continuing education training managers"
+msgstr "Gestionnaires de formation continue"
 
 #, python-format
 msgid "Could not send admission json with uuid %(uuid)s in queue"
@@ -1354,9 +1372,6 @@ msgstr "Oui, désarchiver les archives sélectionnées."
 msgid "Yes, update all selected registrations"
 msgstr "Oui, modifier les inscriptions sélectionnées."
 
-msgid "You are not authorized to edit this training"
-msgstr "Vous n'êtes pas autorisé à modifier cette formation"
-
 msgid "You can enter a condition of acceptance"
 msgstr "Condition d'acceptation"
 
@@ -1439,3 +1454,6 @@ msgstr "état"
 
 msgid "unarchived"
 msgstr "non-archivé"
+
+#~ msgid "You are not authorized to edit this training"
+#~ msgstr "Vous n'êtes pas autorisé à modifier cette formation"
