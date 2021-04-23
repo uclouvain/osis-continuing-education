@@ -29,7 +29,7 @@ from django.test import TestCase
 from django.utils.translation import gettext as _
 
 from base.models.enums.entity_type import SCHOOL
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.business.entities import create_entities_hierarchy
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
@@ -47,7 +47,7 @@ from continuing_education.tests.factories.person import ContinuingEducationPerso
 class TestAdmission(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -102,7 +102,7 @@ class TestAdmission(TestCase):
         result = Admission.objects.all().values_list(
             'person_information__person__first_name', flat=True
         )
-        self.assertEquals(list(result), expected_order)
+        self.assertEqual(list(result), expected_order)
 
 
 class TestAdmissionGetProperties(TestCase):
@@ -117,7 +117,7 @@ class TestAdmissionGetProperties(TestCase):
                                                         end_date=None,
                                                         entity=cls.child_entity,
                                                         start_date=entities['start_date'])
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

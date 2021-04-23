@@ -30,6 +30,7 @@ from django.http import HttpResponseRedirect
 from django.test import TestCase, override_settings, RequestFactory
 from django.urls import reverse
 
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
@@ -49,7 +50,10 @@ from continuing_education.views.common import UCL_REGISTRATION_REGISTERED, UCL_R
 class PrepareJSONTestCase(TestCase):
     def setUp(self):
         self.admission = AdmissionFactory()
-        EducationGroupYearFactory(education_group=self.admission.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=self.admission.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
 
     def test_get_json_for_epc(self):
         result = get_json_for_epc(self.admission)
@@ -61,24 +65,57 @@ class PrepareJSONTestCase(TestCase):
             'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
             'sex': self.admission.person_information.person.gender,
             'civil_state': self.admission.marital_status,
-            'nationality_iso_code': self.admission.citizenship.name,
+            'nationality_iso_code': self.admission.citizenship.iso_code,
             'mobile_number': self.admission.phone_mobile,
             'telephone_number': self.admission.residence_phone,
             'private_email': self.admission.email,
             'private_address': {
-                'street': self.admission.residence_address.location,
-                'locality': self.admission.residence_address.city,
-                'postal_code': self.admission.residence_address.postal_code,
-                'country_name': self.admission.residence_address.country.name,
-                'country_iso_code': self.admission.residence_address.country.iso_code
-            },
-            'staying_address': {
                 'street': self.admission.address.location,
                 'locality': self.admission.address.city,
                 'postal_code': self.admission.address.postal_code,
                 'country_name': self.admission.address.country.name,
                 'country_iso_code': self.admission.address.country.iso_code
             },
+            'staying_address': {
+                'street': self.admission.residence_address.location,
+                'locality': self.admission.residence_address.city,
+                'postal_code': self.admission.residence_address.postal_code,
+                'country_name': self.admission.residence_address.country.name,
+                'country_iso_code': self.admission.residence_address.country.iso_code
+            },
+            'national_registry_number': self.admission.national_registry_number,
+            'id_card_number': self.admission.id_card_number,
+            'passport_number': self.admission.passport_number,
+            'formation_code': self.admission.formation.acronym,
+            'formation_academic_year': str(self.admission.academic_year.year),
+            'student_case_uuid': str(self.admission.uuid)
+        }
+        self.assertDictEqual(result, expected_result)
+
+    def test_get_json_for_epc_same_address(self):
+        self.admission.residence_address = self.admission.address
+        self.admission.save()
+        result = get_json_for_epc(self.admission)
+        expected_result = {
+            'name': self.admission.person_information.person.last_name,
+            'first_name': self.admission.person_information.person.first_name,
+            'birth_date': self.admission.person_information.birth_date.strftime("%d/%m/%Y"),
+            'birth_location': self.admission.person_information.birth_location,
+            'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
+            'sex': self.admission.person_information.person.gender,
+            'civil_state': self.admission.marital_status,
+            'nationality_iso_code': self.admission.citizenship.iso_code,
+            'mobile_number': self.admission.phone_mobile,
+            'telephone_number': self.admission.residence_phone,
+            'private_email': self.admission.email,
+            'private_address': {
+                'street': self.admission.address.location,
+                'locality': self.admission.address.city,
+                'postal_code': self.admission.address.postal_code,
+                'country_name': self.admission.address.country.name,
+                'country_iso_code': self.admission.address.country.iso_code
+            },
+            'staying_address': {},
             'national_registry_number': self.admission.national_registry_number,
             'id_card_number': self.admission.id_card_number,
             'passport_number': self.admission.passport_number,
@@ -131,31 +168,33 @@ class SaveRoleRegisteredTestCase(TestCase):
             'message': 'IUFC_NO_ERROR',
             'success': True,
             'student_case_uuid': str(self.admission.uuid),
-            'registration_id': self.admission.id,
+            'registration_id': '123456789',
             'registration_status': 'INSCRIT'
         }
 
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_if_queue_success(self, mock_get):
-        data = json.dumps(self.basic_response)
+        data = json.dumps(self.basic_response).encode('utf-8')
         save_role_registered_in_admission(data)
         mock_get.assert_called_once_with(UCL_REGISTRATION_REGISTERED)
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.INSCRIT.name)
+        self.assertEqual(self.admission.noma, '123456789')
 
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_if_queue_success_and_other_statut(self, mock_get):
         self.basic_response['registration_status'] = 'DECES'
-        data = json.dumps(self.basic_response)
+        data = json.dumps(self.basic_response).encode('utf-8')
         save_role_registered_in_admission(data)
         mock_get.assert_called_once_with(UCL_REGISTRATION_STATE_CHANGED)
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.ucl_registration_complete, UCLRegistrationState.DECES.name)
+        self.assertEqual(self.admission.noma, '123456789')
 
     @mock.patch('continuing_education.business.registration_queue.get_revision_messages', return_value='')
     def test_save_role_registered_in_admission_no_change_if_queue_fail(self, mock_get):
         self.basic_response['success'] = False
-        data = json.dumps(self.basic_response)
+        data = json.dumps(self.basic_response).encode('utf-8')
         save_role_registered_in_admission(data)
         self.admission.refresh_from_db()
         mock_get.assert_called_once_with(UCL_REGISTRATION_REJECTED)
@@ -179,7 +218,10 @@ class SendAdmissionToQueueTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.admission = AdmissionFactory()
-        EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.admission.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
 
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
@@ -211,7 +253,10 @@ class SendingAdmissionViewTestCase(TestCase):
     def setUpTestData(cls):
         cls.continuing_education_manager = ContinuingEducationManagerFactory()
         cls.admission = AdmissionFactory(state=VALIDATED)
-        EducationGroupYearFactory(education_group=cls.admission.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.admission.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
         cls.url = reverse('injection_to_epc', args=[cls.admission.pk])
 
     def setUp(self):

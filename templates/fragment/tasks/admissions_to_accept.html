@@ -17,24 +17,24 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
                     <li>
-                        <a id="btn_registrations_accept" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                        <a id="btn_registrations_accept" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#condition_acceptance_modal">
                             {% trans 'Accepted' %}
                         </a>
-                        <a id="btn_registrations_reject" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                        <a id="btn_registrations_reject" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#rejected_reason_modal">
                             {% trans 'Rejected' %}
                         </a>
-                        <a id="btn_registrations_wait" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                        <a id="btn_registrations_wait" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#waiting_reason_modal">
                             {% trans 'Waiting' %}
                         </a>
-                        <a id="btn_registrations_draft" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                        <a id="btn_registrations_draft" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#modalWarningDraft">
                             {% trans 'Draft' %}
                         </a>
-                        <a id="btn_registrations_cancel" style="margin-right:10px;"
-                           data-toggle="modal" data-target="#admissions_to_process_modal">
+                        <a id="btn_registrations_cancel" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#cancel_reason_modal">
                             {% trans 'Cancelled' %}
                         </a>
                     </li>
@@ -96,9 +96,8 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include "fragment/tasks/admissions_to_accept_modal.html" %}
 </form>
-
-{% include "fragment/tasks/admissions_to_accept_modal.html" %}
 
 {% block script %}
     <script>
@@ -123,57 +122,31 @@
             } ]
         } );
 
-        const lbTitle = "#spn_admissions_to_process_title";
-        const lbBody = "#spn_admissions_to_process_body";
-        const lbButton = "#spn_admissions_to_process_btn";
-
         $("#btn_registrations_accept").click(function(){
             $('#hdn_new_state').val('Accepted');
-            empty_labels();
-            $(lbTitle).append("{%  trans 'Accept all selected admissions ?' %}");
-            $(lbBody).append("{% trans 'This will accept all selected admissions. Are you sure ?' %}");
-            $(lbButton).append("{% trans 'Yes, accept all selected admissions' %}");
         });
 
         $("#btn_registrations_reject").click(function(){
             $('#hdn_new_state').val('Rejected');
-            empty_labels();
-            $(lbTitle).append("{%  trans 'Reject all selected admissions ?' %}");
-            $(lbBody).append("{% trans 'This will reject all selected admissions. Are you sure ?' %}");
-            $(lbButton).append("{% trans 'Yes, reject all selected admissions' %}");
         });
 
         $("#btn_registrations_wait").click(function(){
             $('#hdn_new_state').val('Waiting');
-            empty_labels();
-            $(lbTitle).append("{%  trans 'Change state to WAITING for all selected admissions ?'%}");
-            $(lbBody).append("{% trans 'This will change the state to WAITING for all selected admissions. Are you sure ?' %}");
-            $(lbButton).append("{% trans 'Yes, change state to WAITING for all selected admissions' %}");
         });
 
 
         $("#btn_registrations_draft").click(function(){
             $('#hdn_new_state').val('Draft');
-            empty_labels();
-            $(lbTitle).append("{%  trans 'Change state to DRAFT for all selected admissions ?'%}");
-            $(lbBody).append("{% trans 'This will change the state to DRAFT for all selected admissions. Are you sure ?' %}");
-            $(lbButton).append("{% trans 'Yes, change state to DRAFT for all selected admissions' %}");
         });
 
         $("#btn_registrations_cancel").click(function(){
             $('#hdn_new_state').val('Cancelled');
-            empty_labels();
-            $(lbTitle).append("{%  trans 'Cancel all selected admissions ?'%}");
-            $(lbBody).append("{% trans 'This will cancel all selected admissions. Are you sure ?' %}");
-            $(lbButton).append("{% trans 'Yes, cancel all selected admissions' %}");
         });
-        function empty_labels(){
-            $(lbTitle).empty();
-            $(lbBody).empty();
-            $(lbButton).empty();
-        }
 
     </script>
     <script src="{% static 'js/task_admission_menu.js' %}"></script>
+    <script src="{% static 'js/rejected_waiting_admission.js' %}"></script>
+    <script src="{% static 'js/condition_acceptance_admission.js' %}"></script>
+    <script src="{% static 'js/cancel_admission.js' %}"></script>
 {% endblock %}
 

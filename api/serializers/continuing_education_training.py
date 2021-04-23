@@ -29,6 +29,7 @@ from base.models.education_group import EducationGroup
 from continuing_education.api.serializers.address import AddressSerializer
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from education_group.api.serializers.training import TrainingListSerializer
+from program_management.ddd.domain.program_tree_version import NOT_A_TRANSITION
 
 
 class PersonTrainingListField(serializers.RelatedField):
@@ -68,8 +69,18 @@ class ContinuingEducationTrainingSerializer(serializers.HyperlinkedModelSerializ
 
     def get_education_group(self, obj):
         # return last education_group_year
+        education_group = obj.get_current_education_group_year()
+        standard_version = education_group.educationgroupversion_set.filter(
+            version_name='',
+            transition_name=NOT_A_TRANSITION
+        ).select_related(
+            'offer',
+            'offer__academic_year',
+            'offer__administration_entity',
+            'offer__management_entity'
+        ).first()
         return TrainingListSerializer(
-            obj.get_most_recent_education_group_year(),
+            standard_version,
             context={'request': self.context['request']}
         ).data
 

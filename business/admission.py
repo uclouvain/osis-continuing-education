@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from django.conf import settings
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
 from django.urls import reverse
@@ -35,7 +36,7 @@ from continuing_education.models.enums.admission_state_choices import ACCEPTED, 
 from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import save_and_create_revision, MAIL_MESSAGE, MAIL, \
-    get_valid_state_change_message, get_revision_messages
+    get_valid_state_change_message, get_revision_messages, get_versions
 from osis_common.messaging import message_config
 from osis_common.messaging import send_message as message_service
 
@@ -57,6 +58,8 @@ def save_state_changed_and_send_email(admission, connected_user=None):
     else:
         lower_state = 'other'
 
+    receivers = _build_participant_receivers(admission)
+
     send_email(
         template_references={
             'html': 'iufc_participant_state_changed_{}_html'.format(lower_state),
@@ -64,42 +67,38 @@ def save_state_changed_and_send_email(admission, connected_user=None):
         },
         data={
             'template': {
-                'first_name': admission.person_information.person.first_name,
-                'last_name': admission.person_information.person.last_name,
+                'first_name': person.first_name,
+                'last_name': person.last_name,
                 'formation': admission.formation,
                 'state': _(admission.state),
                 'reason': admission.state_reason if admission.state_reason else '-',
                 'mails': mails,
                 'original_state': _(admission._original_state),
                 'condition_of_acceptance': condition_of_acceptance,
-                'registration_required': registration_required
+                'registration_required': registration_required,
+                'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
+                'participant_created_admission': _participant_created_admission(admission),
             },
             'subject': {
                 'state': _(admission.state)
             }
         },
-        receivers=[
-            message_config.create_receiver(
-                person.id,
-                person.email,
-                None
-            )
-        ],
+        receivers=receivers,
         connected_user=connected_user
     )
 
-    MAIL['text'] = MAIL_MESSAGE % {'receiver': person.email}
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)}
     save_and_create_revision(get_revision_messages(MAIL), admission, connected_user)
 
 
 def _get_datas_from_admission(admission):
     condition_of_acceptance, registration_required = None, None
-    lower_state = ACCEPTED.lower() if admission.state == ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state.lower()
-    if admission.state == ACCEPTED:
+    state = ACCEPTED if admission.state == ACCEPTED_NO_REGISTRATION_REQUIRED else admission.state
+    if state == ACCEPTED:
         registration_required = admission.formation.registration_required
         if admission.condition_of_acceptance != '':
             condition_of_acceptance = admission.condition_of_acceptance
-    return condition_of_acceptance, lower_state, registration_required
+    return condition_of_acceptance, state.lower(), registration_required
 
 
 def send_submission_email_to_admission_managers(admission, connected_user):
@@ -133,9 +132,7 @@ def send_submission_email_to_admission_managers(admission, connected_user):
         connected_user=connected_user
     )
 
-    MAIL['text'] = MAIL_MESSAGE % {
-        'receiver': ', '.join([receiver['receiver_email'] for receiver in receivers]) if receivers else '',
-    }
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)}
 
     save_and_create_revision(get_revision_messages(MAIL) if receivers else '', admission, connected_user)
 
@@ -158,8 +155,8 @@ def _get_admission_managers_email_receivers(admission):
 
 
 def send_submission_email_to_participant(admission, connected_user):
-    participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    receivers = _build_participant_receivers(admission)
     send_email(
         template_references={
             'html': _get_template_reference(admission, receiver='participant', suffix='html'),
@@ -170,20 +167,16 @@ def send_submission_email_to_participant(admission, connected_user):
                 'name': admission.person_information.person.last_name,
                 'formation': admission.formation.title,
                 'admission_data': _get_formatted_admission_data(admission),
-                'mails': mails
+                'mails': mails,
+                'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
+                'participant_created_admission': _participant_created_admission(admission),
             },
             'subject': {}
         },
-        receivers=[
-            message_config.create_receiver(
-                participant.id,
-                participant.email,
-                None
-            )
-        ],
+        receivers=receivers,
         connected_user=connected_user
     )
-    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email}
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)}
     save_and_create_revision(get_revision_messages(MAIL), admission, connected_user)
 
 
@@ -195,8 +188,8 @@ def _get_template_reference(admission, receiver, suffix):
 
 
 def send_invoice_uploaded_email(admission):
-    participant = admission.person_information.person
     mails = _get_managers_mails(admission.formation)
+    receivers = _build_participant_receivers(admission)
     send_email(
         template_references={
             'html': 'iufc_participant_invoice_uploaded_html',
@@ -205,19 +198,15 @@ def send_invoice_uploaded_email(admission):
         data={
             'template': {
                 'formation': admission.formation.acronym,
-                'mails': mails
+                'mails': mails,
+                'student_portal_url': settings.CONTINUING_EDUCATION_STUDENT_PORTAL_URL,
+                'participant_created_admission': _participant_created_admission(admission),
             },
             'subject': {}
         },
-        receivers=[
-            message_config.create_receiver(
-                participant.id,
-                participant.email,
-                None
-            )
-        ],
+        receivers=receivers,
     )
-    MAIL['text'] = MAIL_MESSAGE % {'receiver': participant.email} + ' : ' + _('Invoice')
+    MAIL['text'] = MAIL_MESSAGE % {'receiver': _get_receivers_emails_as_str(receivers)} + ' : ' + _('Invoice')
     save_and_create_revision(get_revision_messages(MAIL), admission)
 
 
@@ -321,3 +310,30 @@ def _get_attachments(admission_id, max_size):
     if tot_size < max_size:
         return attachments
     return None
+
+
+def _build_participant_receivers(admission):
+    person = admission.person_information.person
+    receivers_emails = [mail for mail in [person.email, admission.email] if mail]
+    unique_receivers_emails = set(receivers_emails)
+    receivers = [
+        message_config.create_receiver(
+            person.id,
+            mail,
+            None
+        )
+        for mail in unique_receivers_emails
+    ]
+    return receivers
+
+
+def _get_receivers_emails_as_str(receivers):
+    return ", ".join([receiver.get('receiver_email') for receiver in receivers])
+
+
+def _participant_created_admission(admission):
+    versions_in_reverse_order = get_versions(admission)
+    adm_first_version = versions_in_reverse_order.last()
+    if adm_first_version:
+        return adm_first_version.revision.user == admission.person_information.person.user
+    return False

@@ -40,6 +40,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
+from base.models.person import Person
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
@@ -47,6 +48,7 @@ from base.tests.factories.entity_version import EntityVersionFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
+from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
@@ -199,6 +201,45 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
         self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
 
+    def test_admission_new_save_email(self):
+        admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
+        admission.pop("person_information")
+        new_admission_email = 'toto@uclouvain.be'
+        admission['email'] = new_admission_email
+        admissions = Admission.objects.all()
+        qs_to_find_new_admissions = Admission.objects.all()
+        for a in admissions:
+            qs_to_find_new_admissions = qs_to_find_new_admissions.exclude(pk=a.id)
+        self.client.post(reverse('admission_new'), data=admission)
+        created_admission = qs_to_find_new_admissions.first()
+        self.assertEqual(created_admission.person_information.person.email, new_admission_email)
+
+    def test_admission_new_save_gender_required_if_new_person(self):
+        admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
+        admission.pop("person_information")
+        admission['gender'] = ""
+        response = self.client.post(reverse('admission_new'), data=admission)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'admission_form.html')
+
+    def test_admission_new_save_gender_not_required_if_existing_person(self):
+        admission = model_to_dict(self.admission)
+        admission.update(self.person_data)
+        admission.update(self.continuing_education_person_data)
+        admission['gender'] = ""
+        admissions = Admission.objects.all()
+        qs_to_find_new_admissions = Admission.objects.all()
+        for a in admissions:
+            qs_to_find_new_admissions = qs_to_find_new_admissions.exclude(pk=a.id)
+        response = self.client.post(reverse('admission_new'), data=admission)
+        created_admission = qs_to_find_new_admissions.first()
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+        self.assertRedirects(response, reverse('admission_detail', args=[created_admission.pk]))
+
     def test_admission_save_with_error(self):
         admission = model_to_dict(self.admission)
         admission['person_information'] = "no valid pk"
@@ -237,6 +278,12 @@ class ViewAdmissionTestCase(TestCase):
         data_person_information_updated.update({'birth_location': 'namur'})
         data.update(data_person_information_updated.copy())
 
+        new_email = 'new_email@uclouvain.be'
+        data.update({'email': new_email})
+
+        person_objects_quantity = Person.objects.all().count()
+        continuing_education_person_objects_quantity = ContinuingEducationPerson.objects.all().count()
+
         url = reverse('admission_edit', args=[self.admission.pk])
         response = self.client.post(url, data=data)
         self.assertRedirects(response, reverse('admission_detail', args=[self.admission.id]))
@@ -248,6 +295,14 @@ class ViewAdmissionTestCase(TestCase):
         self._check_update_correct(admission, self.admission)
         self._check_update_correct(data_person_updated, self.admission.person_information.person)
         self._check_update_correct(self.continuing_education_person_data, self.admission.person_information)
+
+        # Email must be updated in admission object but not in existing person object
+        self.assertEqual(self.admission.email, new_email)
+        self.assertNotEqual(self.admission.person_information.person.email, new_email)
+
+        # Assert that we did not create new person and continuing_education_person
+        self.assertEqual(person_objects_quantity, Person.objects.all().count())
+        self.assertEqual(continuing_education_person_objects_quantity, ContinuingEducationPerson.objects.all().count())
 
     def _check_update_correct(self, data, db_obj):
         for key in data:
@@ -433,7 +488,8 @@ class AdmissionStateChangedTestCase(TestCase):
         admission = {
             'state': new_state,
             'formation': self.formation.pk,
-            'person_information': self.admission.person_information.pk
+            'person_information': self.admission.person_information.pk,
+            'email': 'test@gmail.com'
         }
         data = admission
         if new_state == REJECTED:
@@ -451,7 +507,8 @@ class AdmissionStateChangedTestCase(TestCase):
         admission_draft = {
             'formation': self.formation.pk,
             'state': DRAFT,
-            'person_information': self.admission.person_information.pk
+            'person_information': self.admission.person_information.pk,
+            'email': 'test@gmail.com'
         }
         url = reverse('admission_detail', args=[self.admission_submitted.pk])
         response = self.client.post(url, data=admission_draft)
@@ -465,9 +522,10 @@ class AdmissionStateChangedTestCase(TestCase):
             mock_call_args.get('template_references').get('html'),
             'iufc_participant_state_changed_other_html'
         )
-        self.assertEqual(
-            mock_call_args.get('receivers')[0].get('receiver_email'),
-            self.admission_submitted.person_information.person.email
+        receivers = mock_call_args.get('receivers')
+        self.assertCountEqual(
+            [receiver.get('receiver_email') for receiver in receivers],
+            [self.admission_submitted.email, self.admission_submitted.person_information.person.email]
         )
 
 

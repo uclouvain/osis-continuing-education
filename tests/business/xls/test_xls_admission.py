@@ -37,7 +37,7 @@ from continuing_education.business.xls.xls_admission import XLS_DESCRIPTION, XLS
     WORKSHEET_TITLE, \
     create_xls, prepare_xls_content
 from continuing_education.business.xls.xls_common import get_titles_admission
-from continuing_education.forms.search import AdmissionFilterForm
+from continuing_education.forms.search import CommonFilterForm
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -53,7 +53,7 @@ class TestAdmissionXls(TestCase):
         current_acad_year = create_current_academic_year()
         cls.next_acad_year = AcademicYearFactory(year=current_acad_year.year + 1)
         cls.admission = AdmissionFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -77,7 +77,7 @@ class TestAdmissionXls(TestCase):
         self.assertEqual(prepare_xls_content([]), [])
 
     def test_generate_xls_data_with_an_admission(self):
-        a_form = AdmissionFilterForm({"faculty": self.entity_version.id})
+        a_form = CommonFilterForm({"faculty": self.entity_version.id})
         self.assertTrue(a_form.is_valid())
         found_admissions = a_form.get_admissions()
         create_xls(self.user, found_admissions, None)
@@ -111,6 +111,6 @@ def _generate_xls_build_parameter(xls_data, user):
             xls_build.HEADER_TITLES_KEY: get_titles_admission(),
             xls_build.WORKSHEET_TITLE_KEY: WORKSHEET_TITLE,
             xls_build.STYLED_CELLS: None,
-            xls_build.COLORED_ROWS: None,
+            xls_build.FONT_ROWS: None,
         }]
     }

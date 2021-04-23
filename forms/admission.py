@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
@@ -17,11 +19,13 @@ from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
 from reference.models.country import Country
 
+CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 9, "day": 15}
+
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
     'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
     'professional_status', 'current_occupation', 'current_employer', 'activity_sector', 'motivation',
-    'professional_personal_interests', 'formation',
+    'professional_personal_interests', 'formation', 'email',
 ]
 
 phone_regex = RegexValidator(
@@ -88,6 +92,7 @@ class AdmissionForm(ModelForm):
                 managers=user.person
             )
         set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
+        self.fields['email'].required = True
 
     class Meta:
         model = Admission
@@ -285,13 +290,7 @@ class ConditionAcceptanceAdmissionForm(ModelForm):
     def __init__(self, data, **kwargs):
         super().__init__(data, **kwargs)
 
-        try:
-            starting_year = AcademicYear.objects.current().year
-            self.fields['academic_year'].queryset = AcademicYear.objects.min_max_years(
-                starting_year - 1, starting_year + 6
-            ).order_by('year')
-        except AttributeError:
-            self.fields['academic_year'].queryset = AcademicYear.objects.none()
+        self.fields['academic_year'].queryset = get_academic_years_to_link_qs()
 
         if data is None:
             # GET
@@ -336,3 +335,16 @@ class CancelAdmissionForm(ModelForm):
         instance.condition_of_acceptance = ''
         instance.save()
         return instance
+
+
+def get_academic_years_to_link_qs():
+    # TODO : Use academic_calendar instead of fixed date
+    today = date.today()
+    switch_date = date(
+        today.year,
+        CONTINUING_EDUCATION_YEAR_SWITCH_DATE.get("month"),
+        CONTINUING_EDUCATION_YEAR_SWITCH_DATE.get("day")
+    )
+    this_year = today.year - 1 if today < switch_date else today.year
+    linkable_years = [this_year, this_year + 1]
+    return AcademicYear.objects.filter(year__in=linkable_years)

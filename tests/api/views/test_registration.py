@@ -34,7 +34,7 @@ from rest_framework import status
 from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -62,7 +62,7 @@ class RegistrationListTestCase(APITestCase):
         cls.person = ContinuingEducationPersonFactory()
         cls.address = AddressFactory()
 
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
@@ -82,7 +82,7 @@ class RegistrationListTestCase(APITestCase):
 
         for state in [VALIDATED, ACCEPTED, REGISTRATION_SUBMITTED]:
             cls.education_group = EducationGroupFactory()
-            EducationGroupYearFactory(education_group=cls.education_group)
+            EducationGroupYearFactory(education_group=cls.education_group, academic_year=cls.academic_year)
             AdmissionFactory(
                 person_information=cls.person,
                 state=state,
@@ -151,7 +151,7 @@ class RegistrationDetailUpdateTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
         GroupFactory(name='continuing_education_managers')
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         cls.user = UserFactory()
         EducationGroupYearFactory(
@@ -281,9 +281,10 @@ class RegistrationDetailUpdateTestCase(APITestCase):
             mock_call_args_participant_notification.get('template_references').get('html'),
             'iufc_participant_admission_registr_submitted_html'
         )
-        self.assertEqual(
-            mock_call_args_participant_notification.get('receivers')[0].get('receiver_email'),
-            self.admission.person_information.person.email
+        receivers = mock_call_args_participant_notification.get('receivers')
+        self.assertCountEqual(
+            [receiver.get('receiver_email') for receiver in receivers],
+            [self.admission.email, self.admission.person_information.person.email]
         )
         self.assertEqual(
             mock_call_args_participant_notification.get('connected_user'),

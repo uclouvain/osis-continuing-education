@@ -31,13 +31,14 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from reversion.models import Version
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
-    check_required_field_for_participant, _get_attachments
+    check_required_field_for_participant, _get_attachments, _build_participant_receivers, _participant_created_admission
 from continuing_education.forms.address import ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import ADMISSION_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.models.address import Address
@@ -52,6 +53,9 @@ from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.roles.continuing_education_training_manager import \
     ContinuingEducationTrainingManagerFactory
+from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.views.common import save_and_create_revision, get_revision_messages, ADMISSION_CREATION
+from osis_common.messaging import message_config
 from reference.tests.factories.country import CountryFactory
 
 CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
@@ -59,7 +63,7 @@ CONTINUING_EDUCATION_MANAGERS_GROUP = "continuing_education_managers"
 
 class TestAdmission(TestCase):
     def test_get_formatted_admission_data(self):
-        academic_year = AcademicYearFactory(year=2018)
+        academic_year = create_current_academic_year()
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,
@@ -94,7 +98,7 @@ class TestAdmission(TestCase):
 
     def test_get_managers_mail(self):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         manager = PersonFactory(last_name="AAA")
         manager_2 = PersonFactory(last_name="BBB")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
@@ -107,7 +111,7 @@ class TestAdmission(TestCase):
 
     def test_get_managers_mail_mail_missing(self):
         ed = EducationGroupFactory()
-        EducationGroupYearFactory(education_group=ed)
+        EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
         manager = PersonFactory(last_name="AAA", email="")
         manager_2 = PersonFactory(last_name="BBB", email="")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
@@ -209,7 +213,7 @@ class SendEmailTest(TestCase):
             self.admission.state_reason if self.admission.state_reason else "-",
             args.get('data').get('template').get('reason')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     @patch('continuing_education.business.admission.send_email')
@@ -264,7 +268,7 @@ class SendEmailTest(TestCase):
             _get_formatted_admission_data(self.admission),
             args.get('data').get('template').get('admission_data')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     @patch('continuing_education.business.admission.send_email')
@@ -281,7 +285,7 @@ class SendEmailTest(TestCase):
             self.admission.formation.acronym,
             args.get('data').get('template').get('formation')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
         self.assertIsNone(args.get('attachment'))
 
     def test_get_attachments_with_attachment_size_nok(self):
@@ -310,13 +314,14 @@ class SendEmailTest(TestCase):
             self.admission.condition_of_acceptance,
             args.get('data').get('template').get('condition_of_acceptance')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(len(args.get('receivers')), 2)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_admission_with_no_registration_required(self, mock_send):
         self.admission.state = admission_state_choices.ACCEPTED
         self.admission._original_state = self.admission.state
         self.admission.formation.registration_required = False
+        self.admission.condition_of_acceptance = 'CONDITION'
         self.admission.formation.save()
         self.admission.save()
         admission.save_state_changed_and_send_email(self.admission)
@@ -326,7 +331,36 @@ class SendEmailTest(TestCase):
             self.admission.formation.registration_required,
             args.get('data').get('template').get('registration_required')
         )
-        self.assertEqual(len(args.get('receivers')), 1)
+        self.assertEqual(
+            self.admission.condition_of_acceptance,
+            args.get('data').get('template').get('condition_of_acceptance')
+        )
+        self.assertEqual(len(args.get('receivers')), 2)
+
+    def test_build_participant_receivers_2_different_emails(self):
+        receivers = _build_participant_receivers(self.admission)
+        excepted_receivers = [
+            message_config.create_receiver(
+                self.admission.person_information.person.id,
+                mail,
+                None
+            )
+            for mail in [self.admission.email, self.admission.person_information.person.email]
+        ]
+        self.assertCountEqual(receivers, excepted_receivers)
+
+    def test_build_participant_receivers_1_unique_email(self):
+        self.admission.email = self.admission.person_information.person.email
+        self.admission.save()
+        receivers = _build_participant_receivers(self.admission)
+        excepted_receivers = [
+            message_config.create_receiver(
+                self.admission.person_information.person.id,
+                self.admission.email,
+                None
+            )
+        ]
+        self.assertCountEqual(receivers, excepted_receivers)
 
 
 class SendEmailSettingsTest(TestCase):
@@ -385,12 +419,12 @@ class SendEmailSettingsTest(TestCase):
                 {
                     'receiver_person_id': None,
                     'receiver_email': "jane.doe@test.be",
-                    'receiver_lang': None
+                    'receiver_lang': message_config.DEFAULT_LANG
                 },
                 {
                     'receiver_person_id': None,
                     'receiver_email': "test2@domain.com",
-                    'receiver_lang': None
+                    'receiver_lang': message_config.DEFAULT_LANG
                 }
             ]
         )
@@ -418,3 +452,27 @@ class SendEmailSettingsTest(TestCase):
                 },
             ]
         )
+
+    def test_participant_created_admission_true(self):
+        Version.objects.all().delete()
+        self.assertFalse(_participant_created_admission(self.admission))
+
+        save_and_create_revision(
+            get_revision_messages(ADMISSION_CREATION),
+            self.admission,
+            self.admission.person_information.person.user
+        )
+
+        self.assertTrue(_participant_created_admission(self.admission))
+
+    def test_participant_created_admission_false(self):
+        Version.objects.all().delete()
+        self.assertFalse(_participant_created_admission(self.admission))
+
+        save_and_create_revision(
+            get_revision_messages(ADMISSION_CREATION),
+            self.admission,
+            self.manager.user
+        )
+
+        self.assertFalse(_participant_created_admission(self.admission))

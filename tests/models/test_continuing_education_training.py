@@ -27,7 +27,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
@@ -48,7 +48,7 @@ class TestContinuingEducationTraining(TestCase):
             training.clean()
 
     def test_formation_administrators(self):
-        academic_year = AcademicYearFactory(year=2018)
+        academic_year = create_current_academic_year()
         EducationGroupYearFactory(
             education_group=self.education_group,
             academic_year=academic_year,
@@ -79,4 +79,4 @@ class TestContinuingEducationTraining(TestCase):
         )
         ced_b = ContinuingEducationTrainingFactory(education_group=ed_b)
         result = ContinuingEducationTraining.objects.all()
-        self.assertEquals(list(result), [ced_a, ced_b])
+        self.assertEqual(list(result), [ced_a, ced_b])

@@ -28,7 +28,7 @@ from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from rest_framework.utils.serializer_helpers import ReturnDict
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.api.serializers.continuing_education_training import ContinuingEducationTrainingSerializer, \
@@ -39,7 +39,7 @@ from continuing_education.tests.factories.continuing_education_training import C
 class ContinuingEducationTrainingSerializerTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

@@ -36,7 +36,7 @@ from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
 from base.models.person import Person
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.group import GroupFactory
@@ -62,12 +62,12 @@ class AdmissionListTestCase(APITestCase):
         cls.user = UserFactory()
 
         cls.citizenship = CountryFactory(iso_code='FR')
-        new_country = CountryFactory(iso_code='NL')
+        CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory(
             birth_country=cls.citizenship
         )
         cls.address = AddressFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
 
         cls.url = reverse('continuing_education_api_v1:admission-list', kwargs={'uuid': cls.person.uuid})
 
@@ -156,10 +156,10 @@ class AdmissionCreateTestCase(APITestCase):
         cls.user = UserFactory()
 
         cls.citizenship = CountryFactory(iso_code='FR')
-        new_country = CountryFactory(iso_code='NL')
+        CountryFactory(iso_code='NL')
         cls.person = ContinuingEducationPersonFactory(birth_country=cls.citizenship)
         cls.address = AddressFactory()
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
 
         cls.url = reverse('continuing_education_api_v1:admission-create')
 
@@ -278,7 +278,7 @@ class AdmissionDetailUpdateTestCase(APITestCase):
         GroupFactory(name='continuing_education_managers')
         self.citizenship = CountryFactory()
         self.user = UserFactory()
-        self.academic_year = AcademicYearFactory(year=2018)
+        self.academic_year = create_current_academic_year()
         education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=education_group,
@@ -373,9 +373,10 @@ class AdmissionDetailUpdateTestCase(APITestCase):
             mock_call_args_participant_notification.get('template_references').get('html'),
             'iufc_participant_admission_submitted_html'
         )
-        self.assertEqual(
-            mock_call_args_participant_notification.get('receivers')[0].get('receiver_email'),
-            self.admission.person_information.person.email
+        receivers = mock_call_args_participant_notification.get('receivers')
+        self.assertCountEqual(
+            [receiver.get('receiver_email') for receiver in receivers],
+            [self.admission.email, self.admission.person_information.person.email]
         )
         self.assertEqual(
             mock_call_args_participant_notification.get('connected_user'),
@@ -399,9 +400,10 @@ class AdmissionDetailUpdateTestCase(APITestCase):
                     mock_call_args.get('template_references').get('html'),
                     'iufc_participant_state_changed_accepted_html'
                 )
-                self.assertEqual(
-                    mock_call_args.get('receivers')[0].get('receiver_email'),
-                    self.admission.person_information.person.email
+                receivers = mock_call_args.get('receivers')
+                self.assertCountEqual(
+                    [receiver.get('receiver_email') for receiver in receivers],
+                    [self.admission.email, self.admission.person_information.person.email]
                 )
                 self.assertEqual(
                     mock_call_args.get('connected_user'),

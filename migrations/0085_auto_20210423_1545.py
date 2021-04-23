@@ -72,16 +72,6 @@ class Migration(migrations.Migration):
             options={'default_permissions': ['view'], 'permissions': (('export_prospect', 'Export a prospect into XLSX file'),)},
         ),
         migrations.AlterField(
-            model_name='admission',
-            name='use_address_for_billing',
-            field=models.BooleanField(default=True, verbose_name='Use address for billing'),
-        ),
-        migrations.AlterField(
-            model_name='admission',
-            name='use_address_for_post',
-            field=models.BooleanField(default=True, verbose_name='Use address for post'),
-        ),
-        migrations.AlterField(
             model_name='continuingeducationtraining',
             name='managers',
             field=models.ManyToManyField(through='continuing_education.ContinuingEducationTrainingManager', to='base.Person'),

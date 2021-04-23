@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.models.enums import file_category_choices, admission_state_choices
@@ -23,7 +23,7 @@ from continuing_education.tests.views.test_admission import FILE_CONTENT
 
 class UploadFileTestCase(TestCase):
     def setUp(self):
-        self.academic_year = AcademicYearFactory(year=2018)
+        self.academic_year = create_current_academic_year()
         self.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=self.education_group,
@@ -218,7 +218,7 @@ class UploadFileTestCase(TestCase):
 class DeleteFileTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,

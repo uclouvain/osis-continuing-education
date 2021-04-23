@@ -48,6 +48,7 @@ logger = logging.getLogger(settings.DEFAULT_LOGGER)
 
 
 def get_json_for_epc(admission):
+    addresses_are_different = admission.address != admission.residence_address
     return {
         'name': admission.person_information.person.last_name,
         'first_name': admission.person_information.person.first_name,
@@ -56,12 +57,12 @@ def get_json_for_epc(admission):
         'birth_country_iso_code': admission.person_information.birth_country.iso_code,
         'sex': admission.person_information.person.gender,
         'civil_state': admission.marital_status,
-        'nationality_iso_code': admission.citizenship.name,
+        'nationality_iso_code': admission.citizenship.iso_code if admission.citizenship else '',
         'mobile_number': admission.phone_mobile,
         'telephone_number': admission.residence_phone,
         'private_email': admission.email,
-        'private_address': format_address_for_json(admission.residence_address),
-        'staying_address': format_address_for_json(admission.address),
+        'private_address': format_address_for_json(admission.address),
+        'staying_address': format_address_for_json(admission.residence_address) if addresses_are_different else {},
         'national_registry_number': admission.national_registry_number,
         'id_card_number': admission.id_card_number,
         'passport_number': admission.passport_number,
@@ -87,11 +88,12 @@ def format_address_for_json(address):
 
 
 def save_role_registered_in_admission(data):
-    data = json.loads(data)
+    data = json.loads(data.decode("utf-8").replace("\'", "\""))
     admission = get_object_or_404(Admission, uuid=data['student_case_uuid'])
     if data['success']:
         registration_status = data.get('registration_status')
         admission.ucl_registration_complete = registration_status
+        admission.noma = data.get('registration_id')
         if registration_status == UCLRegistrationState.INSCRIT.name:
             message = UCL_REGISTRATION_REGISTERED
         else:

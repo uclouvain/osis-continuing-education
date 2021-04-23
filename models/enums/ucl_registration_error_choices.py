@@ -16,21 +16,8 @@ class UCLRegistrationError(ChoiceEnum):
     IUFC_PAYS_NAISSANCE_MANQUANT = _('Missing birth country')
     IUFC_INSCRIPTION_DEJA_TRAITEE = _('Registration already processed')
     IUFC_CREATION_NOMA_ECHOUEE = _('NOMA creation failed')
-
-
-def is_missing_data_error(ucl_registration_error):
-    return ucl_registration_error in [
-        UCLRegistrationError.IUFC_NOM_MANQUANT.name,
-        UCLRegistrationError.IUFC_PRENOM_MANQUANT.name,
-        UCLRegistrationError.IUFC_ANNEE_MANQUANTE.name,
-        UCLRegistrationError.IUFC_PROGRAMME_MANQUANT.name,
-        UCLRegistrationError.IUFC_NATIONALITE_MANQUANTE.name,
-    ]
-
-
-def is_too_long_error(ucl_registration_error):
-    return ucl_registration_error in [
-        UCLRegistrationError.IUFC_NOM_TROP_LONG.name,
-        UCLRegistrationError.IUFC_PRENOM_TROP_LONG.name,
-        UCLRegistrationError.IUFC_ADRESSE_TROP_LONGUE.name
-    ]
+    IUFC_ERREUR_INCONNUE = _(
+        'Unknown error: please contact'
+        ' <a class="error_msg_link" href="https://uclouvain.be/fr/decouvrir/service-desk.html">Service Desk</a>'
+        ' for further help'
+    )

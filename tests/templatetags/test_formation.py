@@ -26,7 +26,7 @@
 
 from django.test import TestCase
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.templatetags.formation import action_disabled, DISABLED
@@ -38,8 +38,8 @@ from continuing_education.tests.factories.roles.continuing_education_training_ma
 class TestFormation(TestCase):
     @classmethod
     def setUpTestData(cls):
-        academic_year = AcademicYearFactory()
-        academic_year_next = AcademicYearFactory(year=academic_year.year+1)
+        academic_year = create_current_academic_year()
+        academic_year_next = AcademicYearFactory(year=academic_year.year + 1)
         cls.ed = EducationGroupFactory()
         cls.education_group_year = EducationGroupYearFactory(education_group=cls.ed, academic_year=academic_year)
         cls.education_group_year_next_year = EducationGroupYearFactory(education_group=cls.ed,

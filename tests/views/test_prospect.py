@@ -27,7 +27,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -44,7 +44,7 @@ class ProspectListTestCase(TestCase):
         self.client.force_login(self.manager.person.user)
 
     def test_prospect_list_ordered_by_formation(self):
-        self.academic_year = AcademicYearFactory(year=2018)
+        self.academic_year = create_current_academic_year()
         self.education_groups = [EducationGroupFactory() for _ in range(1, 3)]
 
         acronyms = ['AAA', 'BBA', 'CAA']
@@ -89,7 +89,10 @@ class ProspectDetailsTestCase(TestCase):
     def setUpTestData(cls):
         cls.manager = ContinuingEducationManagerFactory()
         cls.prospect = ProspectFactory()
-        EducationGroupYearFactory(education_group=cls.prospect.formation.education_group)
+        EducationGroupYearFactory(
+            education_group=cls.prospect.formation.education_group,
+            academic_year=create_current_academic_year()
+        )
 
     def setUp(self):
         self.client.force_login(self.manager.person.user)
@@ -97,7 +100,7 @@ class ProspectDetailsTestCase(TestCase):
     def test_prospect_details(self):
         response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk}))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('prospect_details.html')
+        self.assertTemplateUsed(response, 'prospect_details.html')
         context = response.context[0].dicts[3]
         self.assertEqual(
             context.get('prospect'),

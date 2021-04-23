@@ -33,6 +33,7 @@
                 </h4>
             </div>
             <div class="modal-body">
+                {% include 'blocks/alert/warning.html' with msg=bulk_edit_msg %}
                 {% trans "You will set the state Draft to the admission. It will be visible and editable for the participant as well as not editable for you." %}
             </div>
             <div class="modal-footer">

@@ -39,6 +39,7 @@
                 </div>
 
                 <div class="panel-body">
+                    {% include 'blocks/alert/warning.html' with msg=bulk_edit_msg %}
                     {% bootstrap_field rejected_adm_form.rejected_reason form_group_class="form-group col-md-12" %}
                     {% bootstrap_field rejected_adm_form.other_reason form_group_class="form-group col-md-12" %}
                     <input type="hidden" id="old_rejected_other_reason">

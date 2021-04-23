@@ -27,7 +27,7 @@ import datetime
 
 from django.test import TestCase
 
-from base.tests.factories.academic_year import AcademicYearFactory
+from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.business.xls.xls_common import extract_xls_data_from_admission, \
@@ -52,7 +52,7 @@ class TestXlsCommon(TestCase):
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
             education_group=cls.education_group,
-            academic_year=AcademicYearFactory(year=2018)
+            academic_year=create_current_academic_year()
         )
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group

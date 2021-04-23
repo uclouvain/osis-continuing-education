@@ -24,9 +24,9 @@
 #
 ##############################################################################
 import uuid as uuid
-
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Manager, Model
 from django.utils.translation import gettext_lazy as _
@@ -37,6 +37,7 @@ from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from osis_common.utils.models import get_object_or_none
+from osis_common.utils.validators import belgium_national_register_number_validator
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
 
@@ -62,10 +63,17 @@ class AdmissionManager(models.Manager):
 
 class AdmissionAdmin(VersionAdmin, ModelAdmin):
     list_display = ('person_information', 'formation', 'state')
+    search_fields = ['person_information__person__first_name', 'person_information__person__last_name',
+                     'formation__education_group__educationgroupyear__acronym']
+    list_filter = ('state', 'academic_year', 'ucl_registration_complete')
+    raw_id_fields = ('person_information', 'formation', 'academic_year', 'citizenship', 'address',
+                     'billing_address', 'residence_address')
 
 
 class Admission(Model):
     CONTINUING_EDUCATION_TYPE = 8
+    alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', _('Only alphanumeric characters are allowed.'))
+    numeric = RegexValidator(r'^[0-9]*$', _('Only numeric characters are allowed.'))
 
     objects = Manager()
     admission_objects = AdmissionManager()
@@ -299,17 +307,20 @@ class Admission(Model):
     national_registry_number = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("National registry number")
+        verbose_name=_("National registry number"),
+        validators=[numeric, belgium_national_register_number_validator]
     )
     id_card_number = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("ID card number")
+        verbose_name=_("ID card number"),
+        validators=[alphanumeric]
     )
     passport_number = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Passport number")
+        verbose_name=_("Passport number"),
+        validators=[alphanumeric]
     )
     marital_status = models.CharField(
         max_length=255,
@@ -449,7 +460,7 @@ class Admission(Model):
 
     @property
     def formation_display(self):
-        education_group_year = self.formation.get_most_recent_education_group_year()
+        education_group_year = self.formation.get_current_education_group_year()
         return get_formation_display(
             education_group_year.partial_acronym,
             education_group_year.acronym,
@@ -527,7 +538,7 @@ class Admission(Model):
         return self.is_waiting() or self.is_rejected() or self.is_submitted()
 
     def get_faculty(self):
-        education_group_year = self.formation.get_most_recent_education_group_year()
+        education_group_year = self.formation.get_current_education_group_year()
         return education_group_year.management_entity
 
     class Meta:

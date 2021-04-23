@@ -54,6 +54,7 @@ def admission_directory_path(instance, filename):
 
 class AdmissionFileAdmin(ModelAdmin):
     list_display = ('admission', 'name', 'file_category', 'path', 'uploaded_by')
+    search_fields = ['admission__pk', 'name']
     raw_id_fields = ('uploaded_by',)
 
 

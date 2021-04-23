@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 11:41+0200\n"
+"POT-Creation-Date: 2021-02-03 09:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,9 +41,6 @@ msgstr "Un problème est survenu durant la suppression"
 
 msgid "Academic year"
 msgstr "Année académique"
-
-msgid "Accept all selected admissions ?"
-msgstr "Accepter les admissions sélectionnées ?"
 
 msgid "Accept the file"
 msgstr "Accepter le dossier"
@@ -224,9 +221,6 @@ msgstr "Par le bouche à oreille"
 msgid "Cancel"
 msgstr "Annuler"
 
-msgid "Cancel all selected admissions ?"
-msgstr "Annuler les admissions sélectionnées ?"
-
 msgid "Cancel state reason"
 msgstr "Motif d'état d'annulation"
 
@@ -250,12 +244,6 @@ msgstr "Changement effectué"
 
 msgid "Change state on selected admissions to ..."
 msgstr "Changer l'état des admissions sélectionnées par ..."
-
-msgid "Change state to DRAFT for all selected admissions ?"
-msgstr "Changer l'état par 'brouillon' pour les admissions sélectionnées ?"
-
-msgid "Change state to WAITING for all selected admissions ?"
-msgstr "Changer l'état par 'en attente' pour les admissions sélectionnées?"
 
 msgid "Check All"
 msgstr "Tout sélectionner"
@@ -422,7 +410,7 @@ msgid "EducationGroup must have at least one EducationGroupYear"
 msgstr "EducationGroup doit avoir au moins un EducationGroupYear"
 
 msgid "Email"
-msgstr "Email"
+msgstr "Courriel"
 
 msgid "Employee"
 msgstr "Employé"
@@ -507,8 +495,7 @@ msgstr ""
 "Injection du dossier dans EPC réussie : inscription UCLouvain en demande"
 
 msgid "Folder injection into EPC succeeded : UCLouvain registration state : "
-msgstr ""
-"Injection du dossier dans EPC réussie : statut de l'inscription : "
+msgstr "Injection du dossier dans EPC réussie : statut de l'inscription : "
 
 #, python-format
 msgid ""
@@ -612,6 +599,9 @@ msgstr "Dans tous les champs"
 
 msgid "Inactive"
 msgstr "Inactif"
+
+msgid "Incorrect state"
+msgstr "Etat non valide"
 
 msgid "Initial state"
 msgstr "Etat initial"
@@ -801,6 +791,15 @@ msgstr "Notifier le participant par email"
 
 msgid "On demand"
 msgstr "En demande"
+
+msgid "Only alphanumeric characters are allowed."
+msgstr "Uniquement des caractères alphanumériques sont autorisés."
+
+msgid "Only numeric characters are allowed."
+msgstr "Uniquement des caractères numériques sont autorisés."
+
+msgid "Only the first letter uppercase."
+msgstr "Seulement la première lettre en majuscule."
 
 msgid "Other"
 msgstr "Autre"
@@ -1002,9 +1001,6 @@ msgstr "Inscriptions à traiter"
 msgid "Registrations_list"
 msgstr "Liste_inscriptions"
 
-msgid "Reject all selected admissions ?"
-msgstr "Refuser les admissions sélectionnées ?"
-
 msgid "Rejected"
 msgstr "Refusé"
 
@@ -1159,6 +1155,9 @@ msgstr ""
 "Il n'y a pas de facture pour cette admission, l'email de notification n'a "
 "pas été envoyé"
 
+msgid "This action will be applied on all selected admissions"
+msgstr "Cette action sera appliquée sur toutes les admissions sélectionnées"
+
 msgid ""
 "This page contains the Registrations for which the diploma must be produced "
 "by IUFC."
@@ -1176,30 +1175,6 @@ msgstr ""
 msgid "This page contains the registrations submitted by the participants. "
 msgstr " Cette page reprend les inscriptions soumises par les participants. "
 
-msgid "This will accept all selected admissions. Are you sure ?"
-msgstr ""
-"Les admissions sélectionnées vont être acceptées. Êtes-vous certain·e de "
-"vouloir continuer ?"
-
-msgid "This will cancel all selected admissions. Are you sure ?"
-msgstr ""
-"Les admissions sélectionnées vont être annulées. Êtes-vous certain·e de "
-"vouloir continuer ?"
-
-msgid ""
-"This will change the state to DRAFT for all selected admissions. Are you "
-"sure ?"
-msgstr ""
-"Les admissions sélectionnées vont être mises en état 'brouillon'. Êtes-vous "
-"certain·e de vouloir continuer ?"
-
-msgid ""
-"This will change the state to WAITING for all selected admissions. Are you "
-"sure ?"
-msgstr ""
-"Les admissions sélectionnées vont être mises en état 'en attente'. Êtes-vous "
-"certain·e de vouloir continuer ?"
-
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
 "Are you sure ?"
@@ -1213,11 +1188,6 @@ msgid ""
 msgstr ""
 "Les inscriptions sélectionnées vont être traitées. Le champ 'dossier reçu' "
 "va être modifié comme 'oui'. Êtes-vous certain·e de vouloir continuer ?"
-
-msgid "This will reject all selected admissions. Are you sure ?"
-msgstr ""
-"Les admissions sélectionnées vont être refusées. Êtes-vous certain·e de "
-"vouloir continuer ?"
 
 msgid ""
 "This will send an notification email to the participant, saying that there "
@@ -1288,6 +1258,15 @@ msgstr "Non renseigné"
 
 msgid "Unknown birth place"
 msgstr "Lieu de naissance inconnu"
+
+msgid ""
+"Unknown error: please contact <a class=\"error_msg_link\" href=\"https://"
+"uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> for further "
+"help"
+msgstr ""
+"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" href="
+"\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> "
+"pour plus d'informations"
 
 msgid "Unreceived file"
 msgstr "Dossier d'inscription non reçu"
@@ -1364,25 +1343,10 @@ msgstr "Sera définie lors de l'acceptation de l'admission"
 msgid "Yes"
 msgstr "Oui"
 
-msgid "Yes, accept all selected admissions"
-msgstr "Oui, accepter les admissions sélectionnées."
-
-msgid "Yes, cancel all selected admissions"
-msgstr "Oui, annuler les admissions sélectionnées."
-
-msgid "Yes, change state to DRAFT for all selected admissions"
-msgstr "Oui, changer l'état en 'brouillon' pour les admissions sélectionnées."
-
-msgid "Yes, change state to WAITING for all selected admissions"
-msgstr "Oui, changer l'état en 'en attente' pour les admissions sélectionnées."
-
 msgid "Yes, mark diplomas produced for selected registrations"
 msgstr ""
 "Oui, marquer le diplôme comme \"produit\" pour les inscriptions "
 "sélectionnées."
-
-msgid "Yes, reject all selected admissions"
-msgstr "Oui, refuser les admissions sélectionnées."
 
 msgid "Yes, unarchive all selected archives"
 msgstr "Oui, désarchiver les archives sélectionnées."
@@ -1453,7 +1417,7 @@ msgid "archived"
 msgstr "archivé"
 
 msgid "extension"
-msgstr ""
+msgstr "extension"
 
 msgid "managers"
 msgstr "gestionnaires"
@@ -1469,6 +1433,9 @@ msgstr "reçu"
 
 msgid "residence address mentioned earlier"
 msgstr "l'adresse du domicile légal mentionnée précédemment"
+
+msgid "status"
+msgstr "état"
 
 msgid "unarchived"
 msgstr "non-archivé"

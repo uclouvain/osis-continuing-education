@@ -48,6 +48,7 @@ IUFC_GENDER_CHOICES = (
 class PersonForm(ModelForm):
     gender = forms.ChoiceField(
         choices=IUFC_GENDER_CHOICES,
+        required=False
     )
 
     def __init__(self, selected_person, no_first_name_checked, *args, **kwargs):

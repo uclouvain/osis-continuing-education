@@ -23,17 +23,21 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import datetime
 import random
+from unittest import mock
 
 from django.test import TestCase
 from django.utils.translation import gettext_lazy as _
 
+import continuing_education
 from base.models.academic_year import AcademicYear
 from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
-from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm
+from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm, \
+    get_academic_years_to_link_qs
 from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -100,6 +104,27 @@ class TestAdmissionForm(TestCase):
                 ],
             }
         )
+
+    def test_participant_required_fields(self):
+        self.client.force_login(self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
+        admission_participant_required_fields = [
+            'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
+            'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
+            'professional_status', 'current_occupation', 'current_employer', 'activity_sector', 'motivation',
+            'professional_personal_interests', 'formation', 'email',
+        ]
+        for required_field in admission_participant_required_fields:
+            with self.subTest(required_field=required_field):
+                self.assertEqual(
+                    form.fields[required_field].widget.attrs['class'],
+                    'participant_required'
+                )
+
+    def test_manager_email_field_required(self):
+        self.client.force_login(self.manager.user)
+        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.assertTrue(form.fields['email'].required)
 
 
 class TestRejectedAdmissionForm(TestCase):
@@ -176,6 +201,7 @@ class TestAcceptedAdmissionForm(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.academic_year = create_current_academic_year()
+        cls.next_academic_year = AcademicYearFactory(year=cls.academic_year.year+1)
         AcademicYearFactory.produce(base_year=cls.academic_year.year, number_past=10, number_future=10)
 
         cls.education_group = EducationGroupFactory()
@@ -204,14 +230,33 @@ class TestAcceptedAdmissionForm(TestCase):
         self.assertFalse(form.fields['condition_of_acceptance'].disabled)
         self.assertTrue(form.fields['condition_of_acceptance_existing'].initial)
 
-    def test_init_form_academic_year_choice_list(self):
+    def test_init_form_academic_year_choice_before_switch_date(self):
+        date_patcher = mock.patch.object(
+            continuing_education.forms.admission, 'date',
+            mock.Mock(wraps=datetime.date)
+        )
+        mocked_date = date_patcher.start()
+        mocked_date.today.return_value = datetime.date(2020, 9, 14)
         form = ConditionAcceptanceAdmissionForm(None)
-        starting_year = self.academic_year.year
-        academic_years = AcademicYear.objects.min_max_years(starting_year - 1, starting_year + 6)
         self.assertCountEqual(
             form.fields['academic_year'].choices.queryset,
-            academic_years
+            AcademicYear.objects.filter(year__in=[2019, 2020])
         )
+        self.addCleanup(date_patcher.stop)
+
+    def test_init_form_academic_year_choice_after_switch_date(self):
+        date_patcher = mock.patch.object(
+            continuing_education.forms.admission, 'date',
+            mock.Mock(wraps=datetime.date)
+        )
+        mocked_date = date_patcher.start()
+        mocked_date.today.return_value = datetime.date(2020, 9, 15)
+        form = ConditionAcceptanceAdmissionForm(None)
+        self.assertCountEqual(
+            form.fields['academic_year'].choices.queryset,
+            AcademicYear.objects.filter(year__in=[2020, 2021])
+        )
+        self.addCleanup(date_patcher.stop)
 
     def test_init_accepted_init_without_condition(self):
         form = ConditionAcceptanceAdmissionForm(None, instance=self.accepted_admission_without_condition)
@@ -225,7 +270,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
         data['condition_of_acceptance_existing'] = True
         data['condition_of_acceptance'] = 'New Condition'
-        data['academic_year'] = self.academic_year.pk
+        data['academic_year'] = get_academic_years_to_link_qs().first().pk
 
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_with_condition)
         obj_updated = form.save()
@@ -237,7 +282,7 @@ class TestAcceptedAdmissionForm(TestCase):
 
         data['condition_of_acceptance_existing'] = False
         data['condition_of_acceptance'] = 'If false before no condition possible'
-        data['academic_year'] = self.academic_year.pk
+        data['academic_year'] = get_academic_years_to_link_qs().first().pk
 
         form = ConditionAcceptanceAdmissionForm(data, instance=self.accepted_admission_without_condition)
         obj_updated = form.save()

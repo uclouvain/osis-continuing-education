@@ -25,32 +25,17 @@
     * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-<div class="modal fade" id="admissions_to_process_modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">
-                <span id="spn_admissions_to_process_title"></span>
-            </h4>
-        </div>
-        <div class="panel-default">
-            <div class="panel-body">
-                <span id="spn_admissions_to_process_body"></span>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" id="btn_cancel_validate_admission" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
-            <button type="button" id="btn_confirm_accept_admission" class="btn btn-primary">
-                <span id="spn_admissions_to_process_btn"></span>
-            </button>
-        </div>
-    </div>
-  </div>
-</div>
+{% trans 'This action will be applied on all selected admissions' as msg %}
+
+{% include "fragment/condition_acceptance_modal.html" with bulk_edit_msg=msg %}
+{% include "fragment/waiting_reason_modal.html" with bulk_edit_msg=msg %}
+{% include "fragment/warning_modal.html" with bulk_edit_msg=msg %}
+{% include "fragment/rejected_reason_modal.html" with bulk_edit_msg=msg %}
+{% include "fragment/cancel_reason_modal.html" with bulk_edit_msg=msg %}
 
 {% block script %}
     <script>
-        $("#btn_confirm_accept_admission").click(function(){
+        $(".btn-primary").click(function(){
             $("#admissions_to_process_form").submit();
         });
     </script>
