@@ -20,9 +20,9 @@ class Migration(migrations.Migration):
         )
         db_alias = schema_editor.connection.alias
         data = PersonTraining.objects.using(db_alias).all()
-        ContinuingEducationTrainingManager.objects.using(db_alias).bulk_create([
-            ContinuingEducationTrainingManager(person=d.person, training=d.training)
-        ] for d in data)
+        ContinuingEducationTrainingManager.objects.using(db_alias).bulk_create(
+            [ContinuingEducationTrainingManager(person=d.person, training=d.training) for d in data]
+        )
 
     operations = [
         migrations.CreateModel(
