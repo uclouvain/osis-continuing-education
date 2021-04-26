@@ -34,7 +34,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
-from rules.contrib.views import permission_required, objectgetter
+from rules.contrib.views import permission_required
 
 from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
@@ -102,7 +102,7 @@ def export_admissions(request, admission_list, search_form):
 @login_required
 @permission_required(
     'continuing_education.view_admission',
-    fn=objectgetter(Admission, 'admission_id'),
+    fn=admission_getter,
     raise_exception=True
 )
 def admission_detail(request, admission_id):
@@ -163,6 +163,7 @@ def admission_detail(request, admission_id):
         return _change_state(request, forms, accepted_states, admission)
 
     _display_adapted_ucl_registration_message(admission, request)
+
 
     return render(
         request, "admission_detail.html",
@@ -366,8 +367,7 @@ def _validate_admission(request, admission, adm_form):
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission", fn=objectgetter(Admission, 'admission_id'),
-                     raise_exception=True)
+@permission_required("continuing_education.change_admission", fn=admission_getter, raise_exception=True)
 def validate_field(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     response = {}
@@ -391,15 +391,26 @@ def validate_field(request, admission_id):
 
 
 def _get_states_choices(accepted_states, admission, request):
-    if not request.user.has_perm('continuing_education.validate_registration', admission):
-        return []
-    else:
-        return [] if admission and admission.is_draft() else accepted_states.get('choices', ())
+
+    can_change_state = request.user.has_perm('continuing_education.change_admission_state', admission)
+    cannot_validate_registration = not request.user.has_perm('continuing_education.validate_registration', admission)
+    admission_is_draft = admission and admission.is_draft()
+    registration_is_submitted = admission.is_registration_submitted()
+    registration_is_validated = admission.is_validated()
+
+    if can_change_state:
+        if admission_is_draft:
+            return []
+        elif cannot_validate_registration and registration_is_submitted or registration_is_validated:
+            return []
+        else:
+            return accepted_states.get('choices', ())
+
+    return []
 
 
 @ajax_required
 @login_required
-@permission_required('continuing_education.change_admission', raise_exception=True)
 @require_GET
 def get_formation_information(request):
     formation_id = request.GET.get('formation_id', None)
@@ -408,8 +419,7 @@ def get_formation_information(request):
 
 
 @login_required
-@permission_required('continuing_education.change_admission', fn=objectgetter(Admission, 'admission_id'),
-                     raise_exception=True)
+@permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 def billing_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     can_access_admission(request.user, admission)

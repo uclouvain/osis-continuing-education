@@ -40,6 +40,7 @@ class ContinuingEducationManager(osis_role_models.RoleModel):
             'continuing_education.change_continuingeducationtraining': rules.always_allow,
             'continuing_education.view_prospect': rules.always_allow,
             'continuing_education.export_prospect': rules.always_allow,
+            'continuing_education.view_admission_archives': rules.always_allow,
         })
 
 

@@ -42,7 +42,7 @@ from continuing_education.views.common import get_object_list, FILE_ARCHIVED, sa
 
 
 @login_required
-@permission_required('continuing_education.archive_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission_archives', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_archives(request):
     search_form = ArchiveFilterForm(data=request.GET, user=request.user)
@@ -64,7 +64,7 @@ def list_archives(request):
 
 
 @login_required
-@permission_required('continuing_education.export_admission')
+@permission_required('continuing_education.export_admission_archives')
 def export_archives(request, archive_list, search_form):
     return create_xls(request.user, archive_list, search_form)
 
