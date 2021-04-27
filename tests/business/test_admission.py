@@ -36,7 +36,6 @@ from reversion.models import Version
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.group import GroupFactory
 from continuing_education.business import admission
 from continuing_education.business.admission import _get_formatted_admission_data, _get_managers_mails, \
     check_required_field_for_participant, _get_attachments, _build_participant_receivers, _participant_created_admission
@@ -46,14 +45,14 @@ from continuing_education.models.address import Address
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import SUBMITTED
-from continuing_education.models.enums.groups import MANAGERS_GROUP
 from continuing_education.models.file import AdmissionFile
 from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, ADMISSION_CREATION
 from osis_common.messaging import message_config
 from reference.tests.factories.country import CountryFactory
@@ -102,8 +101,8 @@ class TestAdmission(TestCase):
         manager = PersonFactory(last_name="AAA")
         manager_2 = PersonFactory(last_name="BBB")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=manager, training=cet)
-        PersonTrainingFactory(person=manager_2, training=cet)
+        ContinuingEducationTrainingManagerFactory(person=manager, training=cet)
+        ContinuingEducationTrainingManagerFactory(person=manager_2, training=cet)
         admission = AdmissionFactory(formation=cet)
         expected_mails = "{}{}{}".format(manager.email, _(" or "), manager_2.email)
 
@@ -115,8 +114,8 @@ class TestAdmission(TestCase):
         manager = PersonFactory(last_name="AAA", email="")
         manager_2 = PersonFactory(last_name="BBB", email="")
         cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=manager, training=cet)
-        PersonTrainingFactory(person=manager_2, training=cet)
+        ContinuingEducationTrainingManagerFactory(person=manager, training=cet)
+        ContinuingEducationTrainingManagerFactory(person=manager_2, training=cet)
         admission = AdmissionFactory(formation=cet)
         expected_mails = "{}".format(manager_2.email)
 
@@ -162,11 +161,12 @@ class SendEmailTest(TestCase):
     def setUp(self):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
-        self.manager = PersonFactory(last_name="AAA")
-        self.manager.user.groups.add(GroupFactory(name=MANAGERS_GROUP))
         cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=self.manager, training=cet)
-        PersonTrainingFactory(person=PersonFactory(last_name="BBB"), training=cet)
+        self.manager = ContinuingEducationTrainingManagerFactory(training=cet)
+        self.other_manager = ContinuingEducationTrainingManagerFactory(
+            person=PersonFactory(last_name="BBB"),
+            training=cet
+        )
         self.admission = AdmissionFactory(formation=cet)
         uploaded_file = SimpleUploadedFile(
             name='upload_test.pdf',
@@ -367,10 +367,8 @@ class SendEmailSettingsTest(TestCase):
     def setUpTestData(cls):
         ed = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed, academic_year=create_current_academic_year())
-        cls.manager = PersonFactory(last_name="AAA")
-        cls.manager.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
         cls.cet = ContinuingEducationTrainingFactory(education_group=ed)
-        PersonTrainingFactory(person=cls.manager, training=cls.cet)
+        cls.manager = ContinuingEducationTrainingManagerFactory(training=cls.cet)
         cls.admission = AdmissionFactory(formation=cls.cet)
 
     @patch('continuing_education.business.admission.send_email')
@@ -397,9 +395,9 @@ class SendEmailSettingsTest(TestCase):
             receivers,
             [
                 {
-                    'receiver_person_id': self.manager.id,
-                    'receiver_email': self.manager.email,
-                    'receiver_lang': self.manager.language
+                    'receiver_person_id': self.manager.person.id,
+                    'receiver_email': self.manager.person.email,
+                    'receiver_lang': self.manager.person.language
                 }
             ]
         )
@@ -432,9 +430,10 @@ class SendEmailSettingsTest(TestCase):
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_email_email_missing(self, mock_send_mail):
-        self.manager_without_email = PersonFactory(last_name="AAA", email="")
-        self.manager_without_email.user.groups.add(GroupFactory(name=CONTINUING_EDUCATION_MANAGERS_GROUP))
-        PersonTrainingFactory(person=self.manager_without_email, training=self.cet)
+        self.manager_without_email = ContinuingEducationTrainingManagerFactory(
+            person=PersonFactory(last_name="AAA", email=""),
+            training=self.cet
+        )
 
         self.cet.send_notification_emails = True
         self.cet.save()
@@ -446,9 +445,9 @@ class SendEmailSettingsTest(TestCase):
             receivers,
             [
                 {
-                    'receiver_person_id': self.manager.id,
-                    'receiver_email': self.manager.email,
-                    'receiver_lang': self.manager.language
+                    'receiver_person_id': self.manager.person.id,
+                    'receiver_email': self.manager.person.email,
+                    'receiver_lang': self.manager.person.language
                 },
             ]
         )
@@ -472,7 +471,7 @@ class SendEmailSettingsTest(TestCase):
         save_and_create_revision(
             get_revision_messages(ADMISSION_CREATION),
             self.admission,
-            self.manager.user
+            self.manager.person.user
         )
 
         self.assertFalse(_participant_created_admission(self.admission))

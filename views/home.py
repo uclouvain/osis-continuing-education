@@ -23,16 +23,29 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required
+from functools import wraps
+
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 
-from continuing_education.business.perms import is_continuing_education_training_manager
-from continuing_education.models.admission import is_continuing_education_manager
-from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
+from continuing_education.auth.roles.continuing_education_manager import is_continuing_education_manager
+from continuing_education.auth.roles.continuing_education_student_worker import is_continuing_education_student_worker
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
+
+
+def can_access_continuing_education(f):
+    @wraps(f)
+    def inner(request, *args, **kwargs):
+        if not request.user.has_module_perms('continuing_education'):
+            raise PermissionDenied()
+        return f(request, *args, **kwargs)
+    return inner
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
+@can_access_continuing_education
 def main_view(request):
     continuing_education_manager = is_continuing_education_manager(request.user)
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
@@ -41,7 +54,3 @@ def main_view(request):
         'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
         'continuing_education_training_manager': is_continuing_education_training_manager(request.user)
     })
-
-
-def is_continuing_education_student_worker(user):
-    return user.groups.filter(name=STUDENT_WORKERS_GROUP).exists()

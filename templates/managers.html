@@ -109,7 +109,7 @@
                                     {% else %}
                                         {% for training in manager.trainings %}
                                             <li>
-                                                <a href="{% url 'delete_person_training' training=training.pk manager=manager.pk %}">
+                                                <a href="{% url 'delete_continuing_education_training_manager' training=training.pk manager=manager.pk %}">
                                                     <i class="fa fa-times"></i></a>
                                                 {{ training }} - {{ training.management_entity }}</li>
                                         {% endfor %}

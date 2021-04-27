@@ -24,7 +24,6 @@
 #
 ##############################################################################
 import uuid as uuid
-
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.core.validators import RegexValidator
@@ -33,11 +32,11 @@ from django.db.models import Manager, Model
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
-from continuing_education.business.perms import is_continuing_education_manager
+from continuing_education.auth.roles.continuing_education_training_manager import ContinuingEducationTrainingManager
 from continuing_education.models.enums import admission_state_choices, enums
 from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
-from continuing_education.models.person_training import PersonTraining
+from osis_common.utils.models import get_object_or_none
 from osis_common.utils.validators import belgium_national_register_number_validator
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
@@ -519,7 +518,9 @@ class Admission(Model):
         return self.state == admission_state_choices.WAITING
 
     def is_registration_submitted(self):
-        return self.state == admission_state_choices.REGISTRATION_SUBMITTED
+        return self.state == admission_state_choices.REGISTRATION_SUBMITTED or \
+               hasattr(self, '_original_state') and \
+               getattr(self, '_original_state') == admission_state_choices.REGISTRATION_SUBMITTED
 
     def is_validated(self):
         return self.state == admission_state_choices.VALIDATED
@@ -541,11 +542,18 @@ class Admission(Model):
         return education_group_year.management_entity
 
     class Meta:
-        default_permissions = ['view', 'change', ]
+        default_permissions = ['view', 'change']
         ordering = ('formation', 'person_information',)
         permissions = (
             ("validate_registration", "Validate IUFC registration file"),
             ("change_received_file_state", "Change received file state"),
+            ("link_admission_to_academic_year", "Link an admission to an academic year"),
+            ("inject_admission_to_epc", "Inject an admission to EPC"),
+            ("mark_diploma_produced", "Mark an admission diploma has been produced"),
+            ("send_notification", "Send a notification related to an admission"),
+            ("archive_admission", "Archive an admission"),
+            ("export_admission", "Export an admission into XLSX file"),
+            ("cancel_admission", "Cancel an admission"),
         )
 
 
@@ -572,8 +580,10 @@ def get_formation_display(partial_acronym, acronym, title, academic_year):
 
 
 def filter_authorized_admissions(user, admission_list):
-    if not is_continuing_education_manager(user):
-        person_trainings = PersonTraining.objects.filter(person=user.person).values_list('training', flat=True)
+    if not user.has_perm('continuing_education.manage_all_trainings'):
+        person_trainings = ContinuingEducationTrainingManager.objects.filter(
+            person=user.person
+        ).values_list('training', flat=True)
         admission_list = admission_list.filter(formation_id__in=person_trainings)
     return admission_list
 
@@ -590,3 +600,7 @@ def _build_address(address):
                                       address.city.upper() if address.city else '',
                                       "- {}".format(address.country.name.upper()) if address.country else '')
     return ''
+
+
+def admission_getter(request, *view_args, **view_kwargs):
+    return get_object_or_none(Admission, id=view_kwargs.get('admission_id'))

@@ -25,15 +25,17 @@
 ##############################################################################
 import mimetypes
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from rules.contrib.views import permission_required
 
 from base.models.person import Person
 from base.views.common import display_success_messages, display_error_messages
 from continuing_education.business.admission import send_invoice_uploaded_email
+from continuing_education.models.admission import admission_getter
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.exceptions import ManagerFileUploadExceptions
 from continuing_education.models.file import AdmissionFile
@@ -80,7 +82,7 @@ def _upload_file(request, admission):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
+@permission_required('continuing_education.view_admission', fn=admission_getter, raise_exception=True)
 @set_download_cookie
 def download_file(request, admission_id, file_id):
     file = AdmissionFile.objects.get(pk=file_id)
@@ -91,7 +93,7 @@ def download_file(request, admission_id, file_id):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
+@permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 def delete_file(request, admission_id, file_id):
     file = AdmissionFile.objects.filter(id=file_id)
     try:

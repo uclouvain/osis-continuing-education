@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2020 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,18 +25,12 @@
 ##############################################################################
 import factory
 
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from osis_role.contrib.tests.factories import RoleModelFactory
 
 
-class PersonTrainingFactory(factory.django.DjangoModelFactory):
+class ContinuingEducationTrainingManagerFactory(RoleModelFactory):
     class Meta:
-        model = PersonTraining
+        model = 'continuing_education.ContinuingEducationTrainingManager'
 
-    person = factory.SubFactory(PersonFactory)
     training = factory.SubFactory(ContinuingEducationTrainingFactory)
-
-
-class PersonWithTraining(PersonFactory):
-    training = factory.RelatedFactory(PersonTrainingFactory, 'training')

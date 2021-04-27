@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-03 09:51+0100\n"
+"POT-Creation-Date: 2021-04-23 15:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -291,9 +291,27 @@ msgctxt "continuing_education"
 msgid "Continuing education list"
 msgstr ""
 
+msgid "Continuing education manager"
+msgstr ""
+
+msgid "Continuing education managers"
+msgstr ""
+
 msgid ""
 "Continuing education managers and student workers only are allowed to "
 "validate a registration"
+msgstr ""
+
+msgid "Continuing education student worker"
+msgstr ""
+
+msgid "Continuing education student workers"
+msgstr ""
+
+msgid "Continuing education training manager"
+msgstr ""
+
+msgid "Continuing education training managers"
 msgstr ""
 
 #, python-format
@@ -1273,9 +1291,6 @@ msgid "Yes, unarchive all selected archives"
 msgstr ""
 
 msgid "Yes, update all selected registrations"
-msgstr ""
-
-msgid "You are not authorized to edit this training"
 msgstr ""
 
 msgid "You can enter a condition of acceptance"
