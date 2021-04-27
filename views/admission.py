@@ -95,8 +95,7 @@ def list_admissions(request):
 @login_required
 @permission_required('continuing_education.export_admission')
 def export_admissions(request, admission_list, search_form):
-    if request.GET.get('xls_status') == "xls_admissions":
-        return create_xls(request.user, admission_list, search_form)
+    return create_xls(request.user, admission_list, search_form)
 
 
 @login_required
