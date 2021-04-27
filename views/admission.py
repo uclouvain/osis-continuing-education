@@ -406,7 +406,7 @@ def _get_states_choices(accepted_states, admission, request):
     if can_change_state:
         if admission_is_draft:
             return []
-        elif cannot_validate_registration and registration_is_submitted or registration_is_validated:
+        elif cannot_validate_registration and (registration_is_submitted or registration_is_validated):
             return []
         else:
             return accepted_states.get('choices', ())
