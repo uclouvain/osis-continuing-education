@@ -164,7 +164,6 @@ def admission_detail(request, admission_id):
 
     _display_adapted_ucl_registration_message(admission, request)
 
-
     return render(
         request, "admission_detail.html",
         {
