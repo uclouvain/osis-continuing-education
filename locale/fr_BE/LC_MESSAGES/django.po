@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-23 15:55+0200\n"
+"POT-Creation-Date: 2021-04-28 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1063,6 +1063,9 @@ msgstr "Célibataire"
 
 msgid "Size"
 msgstr "Taille"
+
+msgid "Some errors in form prevents state from being changed:"
+msgstr "Des erreurs présentes dans le formulaire rendent impossible le changement d'état:"
 
 msgid "Spouse name"
 msgstr "Nom du conjoint"
