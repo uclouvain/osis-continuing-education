@@ -23,25 +23,26 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
+from rules.contrib.views import permission_required
 
 from base.views.common import display_error_messages, display_success_messages
+from continuing_education.auth.roles.continuing_education_manager import is_continuing_education_manager
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
 from continuing_education.business.admission import save_state_changed_and_send_email
-from continuing_education.business.perms import is_not_student_worker, is_student_worker, \
-    is_continuing_education_training_manager, is_iufc_manager, can_edit_paper_registration_received
 from continuing_education.forms.admission import RejectedAdmissionForm, WaitingAdmissionForm, \
     ConditionAcceptanceAdmissionForm, CancelAdmissionForm
-from continuing_education.models.admission import Admission, filter_authorized_admissions, \
-    is_continuing_education_manager
+from continuing_education.models.admission import Admission, filter_authorized_admissions
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED, \
-    CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED, REJECTED, WAITING
+    REJECTED, WAITING, CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.views.common import save_and_create_revision, get_revision_messages, \
     REGISTRATION_FILE_RECEIVED
 from continuing_education.views.home import is_continuing_education_student_worker
@@ -53,12 +54,12 @@ def list_tasks(request):
     is_continuing_education_mgr = is_continuing_education_manager(request.user)
     is_continuing_education_training_mgr = is_continuing_education_training_manager(request.user)
     if not is_continuing_education_mgr and not is_continuing_education_training_mgr \
-            and not is_student_worker(request.user):
+            and not is_continuing_education_student_worker(request.user):
         raise PermissionDenied
     all_admissions = Admission.objects.select_related(
         'person_information__person', 'formation__education_group'
     )
-    if not is_student_worker(request.user):
+    if not is_continuing_education_student_worker(request.user):
         all_admissions = filter_authorized_admissions(request.user, all_admissions)
 
     registrations_to_validate = all_admissions.filter(
@@ -112,11 +113,8 @@ def list_tasks(request):
 
 @login_required
 @require_http_methods(['POST'])
-@permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.mark_diploma_produced', raise_exception=True)
 def mark_diplomas_produced(request):
-    if not is_iufc_manager(request.user):
-        raise PermissionDenied
     selected_registration_ids = request.POST.getlist("selected_diplomas_to_produce", default=[])
     if selected_registration_ids:
         _mark_diplomas_produced_list(selected_registration_ids)
@@ -140,7 +138,6 @@ def _mark_diplomas_produced_list(registrations_ids_list):
 @login_required
 @require_http_methods(['POST'])
 @permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
 def process_admissions(request):
     if not is_continuing_education_training_manager(request.user):
         raise PermissionDenied
@@ -195,7 +192,7 @@ def _update_admission(request, admission, new_status, reason_by_state):
 
 @require_http_methods(['POST'])
 @login_required
-@user_passes_test(can_edit_paper_registration_received)
+@permission_required('continuing_education.change_received_file_state')
 def paper_registrations_file_received(request):
     selected_registration_ids = request.POST.getlist("selected_registrations_to_validate", default=[])
     if selected_registration_ids:

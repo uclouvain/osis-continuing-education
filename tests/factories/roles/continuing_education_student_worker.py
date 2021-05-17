@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2021 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@
 #
 ##############################################################################
 
-from continuing_education.models import address
-from continuing_education.models import admission
-from continuing_education.models import continuing_education_person
-from continuing_education.models import continuing_education_training
-from continuing_education.models import file
-from continuing_education.models import prospect
+from osis_role.contrib.tests.factories import RoleModelFactory
+
+
+class ContinuingEducationStudentWorkerFactory(RoleModelFactory):
+    class Meta:
+        model = 'continuing_education.ContinuingEducationStudentWorker'

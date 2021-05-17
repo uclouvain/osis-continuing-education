@@ -30,18 +30,18 @@ from django.urls import reverse
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 
 
 class ProspectListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_prospect_list_ordered_by_formation(self):
         self.academic_year = create_current_academic_year()
@@ -87,7 +87,7 @@ class ProspectListTestCase(TestCase):
 class ProspectDetailsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.manager = ContinuingEducationManagerFactory()
         cls.prospect = ProspectFactory()
         EducationGroupYearFactory(
             education_group=cls.prospect.formation.education_group,
@@ -95,7 +95,7 @@ class ProspectDetailsTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_prospect_details(self):
         response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk}))

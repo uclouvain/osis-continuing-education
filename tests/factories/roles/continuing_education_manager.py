@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2020 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,31 +23,10 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-import uuid as uuid
 
-from django.contrib.admin import ModelAdmin
-from django.db import models
-from django.db.models import Model
+from osis_role.contrib.tests.factories import RoleModelFactory
 
 
-class PersonTrainingAdmin(ModelAdmin):
-    list_display = ('person', 'training',)
-    search_fields = ['person__first_name', 'person__last_name']
-    raw_id_fields = ('person', 'training',)
-
-
-class PersonTraining(Model):
-    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    person = models.ForeignKey(
-        'base.Person',
-        on_delete=models.CASCADE
-    )
-
-    training = models.ForeignKey(
-        'continuing_education.ContinuingEducationTraining',
-        on_delete=models.CASCADE
-    )
-
+class ContinuingEducationManagerFactory(RoleModelFactory):
     class Meta:
-        unique_together = ("person", "training")
-        default_permissions = ['view', 'add', 'delete']
+        model = 'continuing_education.ContinuingEducationManager'

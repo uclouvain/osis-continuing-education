@@ -31,6 +31,7 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.forms.formation import ContinuingEducationTrainingForm
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 
 
 class TestContinuingEducationTrainingFormForm(TestCase):
@@ -47,11 +48,11 @@ class TestContinuingEducationTrainingFormForm(TestCase):
         )
 
     def test_valid_form_for_continuing_education_managers(self):
-        self.manager = PersonWithPermissionsFactory(groups='continuing_education_managers')
-        self.client.force_login(self.manager.user)
+        self.manager = ContinuingEducationManagerFactory()
+        self.client.force_login(self.manager.person.user)
         data = self.formation.__dict__
         data['formation'] = self.formation.pk
-        form = ContinuingEducationTrainingForm(data=data, user=self.manager.user)
+        form = ContinuingEducationTrainingForm(data=data, user=self.manager.person.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_disabled_fields_for_training_managers(self):

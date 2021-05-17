@@ -26,7 +26,6 @@
 
 from rest_framework.test import APIRequestFactory, APITestCase
 
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.api.views.perms.perms import HasAdmissionAccess, CanSubmit, CanSendFiles, \
     CanSubmitAdmission
@@ -35,6 +34,7 @@ from continuing_education.models.enums.admission_state_choices import ACCEPTED, 
     WAITING, SUBMITTED, VALIDATED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
 
 
