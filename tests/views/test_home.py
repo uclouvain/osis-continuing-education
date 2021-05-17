@@ -28,17 +28,17 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from base.tests.factories.person import PersonWithPermissionsFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 
 
 class ViewHomeTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.manager = ContinuingEducationManagerFactory()
         cls.url = reverse('continuing_education')
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_admin_view(self):
         response = self.client.get(self.url)

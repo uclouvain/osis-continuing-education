@@ -83,8 +83,10 @@ urlpatterns = [
     url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
     url(r'^managers/', include([
         url(r'^$', managers.list_managers, name='list_managers'),
+        url(r'^add/', managers.add_continuing_education_training_manager,
+            name='add_continuing_education_training_manager'),
         url(r'^delete/(?P<training>[0-9]+)/(?P<manager>[0-9]+)',
-            managers.delete_person_training, name='delete_person_training')
+            managers.delete_continuing_education_training_manager, name='delete_continuing_education_training_manager')
     ])),
     url(r'^injection/(?P<admission_id>[0-9]+)/', registration_queue.inject_admission_to_epc, name='injection_to_epc')
 ]

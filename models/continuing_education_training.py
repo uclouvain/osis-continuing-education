@@ -84,7 +84,7 @@ class ContinuingEducationTraining(Model):
         help_text=_("Comma-separated addresses - Leave empty if no address"),
     )
 
-    managers = models.ManyToManyField(Person, through='PersonTraining')
+    managers = models.ManyToManyField(Person, through='ContinuingEducationTrainingManager')
 
     postal_address = models.ForeignKey(Address, default=None, blank=True, null=True, on_delete=models.CASCADE)
 
@@ -158,4 +158,8 @@ class ContinuingEducationTraining(Model):
 
     class Meta:
         ordering = ('education_group', )
-        default_permissions = []
+        default_permissions = ['view', 'change']
+        permissions = (
+            ("manage_all_trainings", "Manage all continuing education trainings"),
+            ("set_training_active", "Set a continuing education training as active"),
+        )

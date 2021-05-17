@@ -32,13 +32,17 @@ from django.urls import reverse
 
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
     save_role_registered_in_admission, send_admission_to_queue
-from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
+from continuing_education.models.enums.admission_state_choices import VALIDATED
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.tests.factories.admission import AdmissionFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_student_worker import \
+    ContinuingEducationStudentWorkerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 from continuing_education.views.common import UCL_REGISTRATION_REGISTERED, UCL_REGISTRATION_REJECTED, \
     UCL_REGISTRATION_STATE_CHANGED
 
@@ -247,13 +251,8 @@ class SendAdmissionToQueueTestCase(TestCase):
 class SendingAdmissionViewTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.continuing_education_manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration',
-            groups=[MANAGERS_GROUP]
-        )
-        cls.admission = AdmissionFactory()
+        cls.continuing_education_manager = ContinuingEducationManagerFactory()
+        cls.admission = AdmissionFactory(state=VALIDATED)
         EducationGroupYearFactory(
             education_group=cls.admission.formation.education_group,
             academic_year=create_current_academic_year()
@@ -261,7 +260,7 @@ class SendingAdmissionViewTestCase(TestCase):
         cls.url = reverse('injection_to_epc', args=[cls.admission.pk])
 
     def setUp(self):
-        self.client.force_login(self.continuing_education_manager.user)
+        self.client.force_login(self.continuing_education_manager.person.user)
 
     @mock.patch('continuing_education.business.registration_queue.pika.BlockingConnection')
     @mock.patch('continuing_education.business.registration_queue.send_message')
@@ -278,13 +277,14 @@ class SendingAdmissionViewTestCase(TestCase):
         response = self.client.get(self.url)
         self.assertRedirects(response, "/login/?next={}".format(self.url))
 
-    def test_inject_admission_to_epc_but_no_iufc_manager(self):
-        continuing_education_training_manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration',
-            groups=[TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP]
-        )
-        self.client.force_login(continuing_education_training_manager.user)
+    def test_inject_admission_to_epc_refused_to_training_manager(self):
+        continuing_education_training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(continuing_education_training_manager.person.user)
+        response = self.client.get(self.url)
+        self.assertRedirects(response, "/login/?next={}".format(self.url))
+
+    def test_inject_admission_to_epc_refused_to_student_worker(self):
+        student_worker = ContinuingEducationStudentWorkerFactory()
+        self.client.force_login(student_worker.person.user)
         response = self.client.get(self.url)
         self.assertRedirects(response, "/login/?next={}".format(self.url))

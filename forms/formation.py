@@ -1,7 +1,6 @@
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
@@ -31,5 +30,5 @@ class ContinuingEducationTrainingForm(ModelForm):
             "1. What is your pedagogical title ? \n"
             "2. ..."
         )
-        if user and not is_continuing_education_manager(user):
+        if user and not user.has_perm('continuing_education.set_training_active'):
             self.fields['active'].disabled = True

@@ -1,8 +1,8 @@
 from django.forms import model_to_dict
 from django.test import TestCase
 
-from continuing_education.tests.factories.iufc_person import IUFCPersonFactory
 from continuing_education.forms.person import PersonForm
+from continuing_education.tests.factories.iufc_person import IUFCPersonFactory
 
 
 class TestPersonForm(TestCase):

@@ -9,7 +9,6 @@ from base.models.academic_year import AcademicYear
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
 from continuing_education.business.enums.waiting_reason import WAITING_REASON_CHOICES, \
     WAITING_REASON_CHOICES_SHORTENED_DISPLAY
-from continuing_education.business.perms import is_continuing_education_manager
 from continuing_education.forms.account import ContinuingEducationPersonChoiceField
 from continuing_education.forms.common import CountryChoiceField
 from continuing_education.forms.common import set_participant_required_fields
@@ -81,14 +80,14 @@ class AdmissionForm(ModelForm):
         except AttributeError:
             self.fields['academic_year'].queryset = AcademicYear.objects.none()
 
-        if user and is_continuing_education_manager(user):
+        if user and user.has_perm('continuing_education.link_admission_to_academic_year', obj=self.instance):
             self.fields['academic_year'].disabled = False
             self.fields['academic_year'].required = True
         else:
             self.fields['academic_year'].disabled = True
             self.fields['academic_year'].required = False
 
-        if user and not user.groups.filter(name='continuing_education_managers').exists():
+        if user and not user.has_perm('continuing_education.manage_all_trainings'):
             self.fields['formation'].queryset = self.fields['formation'].queryset.filter(
                 managers=user.person
             )

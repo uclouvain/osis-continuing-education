@@ -31,7 +31,8 @@ from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.templatetags.formation import action_disabled, DISABLED
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
-from continuing_education.tests.factories.person_training import PersonTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class TestFormation(TestCase):
@@ -44,7 +45,7 @@ class TestFormation(TestCase):
         cls.education_group_year_next_year = EducationGroupYearFactory(education_group=cls.ed,
                                                                        academic_year=academic_year_next)
         cls.active_formation = ContinuingEducationTrainingFactory(education_group=cls.ed, active=True)
-        cls.person_training = PersonTrainingFactory(training=cls.active_formation)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.active_formation)
 
         ed2 = EducationGroupFactory()
         EducationGroupYearFactory(education_group=ed2)
