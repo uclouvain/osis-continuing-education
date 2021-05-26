@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
             name='continuingeducationtrainingmanager',
             unique_together={('person', 'training')},
         ),
-        migrations.RunPython(migrate_person_training_into_continuing_education_training_manager),
+        migrations.RunPython(migrate_person_training_into_continuing_education_training_manager, elidable=True),
         migrations.DeleteModel(
             name='PersonTraining',
         ),
