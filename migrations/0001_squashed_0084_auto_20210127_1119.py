@@ -87,14 +87,11 @@ class Migration(migrations.Migration):
                 ('continuing_education', '0081_auto_20201013_1024'),
                 ('continuing_education', '0082_auto_20201013_1545'),
                 ('continuing_education', '0083_auto_20201027_1424'),
-                ('continuing_education', '0084_auto_20210127_1119'),
-                ('continuing_education', '0085_auto_20210423_1545'),
-                ('continuing_education', '0086_auto_20210428_1409')]
+                ('continuing_education', '0084_auto_20210127_1119')]
 
     initial = True
 
     dependencies = [
-        ('base', '0583_auto_20210324_0954'),
         ('base', '0358_auto_20180921_1059'),
         ('reference', '0017_language_changed'),
         ('base', '0433_auto_20190305_1329'),
