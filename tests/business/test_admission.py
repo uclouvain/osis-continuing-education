@@ -73,6 +73,11 @@ class TestAdmission(TestCase):
         expected_list = [
             "{} : {}".format(_('Last name'), admission.person_information.person.last_name),
             "{} : {}".format(_('First name'), admission.person_information.person.first_name),
+            "{} : {} / {}".format(
+                _('Email'),
+                admission.email,
+                admission.person_information.person.email
+            ),
             "{} : {}".format(_('Formation'), admission.formation.acronym),
             "{} : {}".format(_('High school diploma'), _('Yes') if admission.high_school_diploma else _('No')),
             "{} : {}".format(_('High school graduation year'), admission.high_school_graduation_year),
@@ -89,6 +94,11 @@ class TestAdmission(TestCase):
             "{} : {}".format(_('Motivation'), admission.motivation),
             "{} : {}".format(_('Professional and personal interests'), admission.professional_personal_interests),
             "{} : {}".format(_('State'), _(admission.state)),
+            "{} \n {} \n {}".format(
+                _('Additional information'),
+                admission.formation.additional_information_label,
+                admission.additional_information
+            ),
         ]
         self.assertListEqual(
             _get_formatted_admission_data(admission),
