@@ -256,11 +256,9 @@ def _get_formatted_admission_data(admission):
         "{} : {}".format(_('Professional and personal interests'),
                          _value_or_empty(admission.professional_personal_interests)),
         "{} : {}".format(_('State'), _value_or_empty(_(admission.state))),
-        "{} : \n{} \n{}".format(
-            _('Additional information'),
-            _value_or_slash(admission.formation.additional_information_label),
-            _value_or_slash(admission.additional_information)
-        ),
+        "{} : ".format(_('Additional information')),
+        "{}".format(_value_or_slash(admission.formation.additional_information_label)),
+        "{}".format(_value_or_slash(admission.additional_information)),
     ]
 
 
