@@ -256,16 +256,20 @@ def _get_formatted_admission_data(admission):
         "{} : {}".format(_('Professional and personal interests'),
                          _value_or_empty(admission.professional_personal_interests)),
         "{} : {}".format(_('State'), _value_or_empty(_(admission.state))),
-        "{} \n {} \n {}".format(
+        "{} : \n{} \n{}".format(
             _('Additional information'),
-            _value_or_empty(admission.formation.additional_information_label),
-            _value_or_empty(admission.additional_information)
+            _value_or_slash(admission.formation.additional_information_label),
+            _value_or_slash(admission.additional_information)
         ),
     ]
 
 
 def _value_or_empty(value):
     return value or ''
+
+
+def _value_or_slash(value):
+    return value or '/'
 
 
 def get_management_faculty(education_group_yr):

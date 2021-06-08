@@ -94,10 +94,10 @@ class TestAdmission(TestCase):
             "{} : {}".format(_('Motivation'), admission.motivation),
             "{} : {}".format(_('Professional and personal interests'), admission.professional_personal_interests),
             "{} : {}".format(_('State'), _(admission.state)),
-            "{} \n {} \n {}".format(
+            "{} : \n{} \n{}".format(
                 _('Additional information'),
-                admission.formation.additional_information_label,
-                admission.additional_information
+                admission.formation.additional_information_label or '/',
+                admission.additional_information or '/'
             ),
         ]
         self.assertListEqual(
