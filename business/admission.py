@@ -234,6 +234,11 @@ def _get_formatted_admission_data(admission):
     return [
         "{} : {}".format(_('Last name'), _value_or_empty(admission.person_information.person.last_name)),
         "{} : {}".format(_('First name'), _value_or_empty(admission.person_information.person.first_name)),
+        "{} : {} / {}".format(
+            _('Email'),
+            _value_or_empty(admission.email),
+            _value_or_empty(admission.person_information.person.email)
+        ),
         "{} : {}".format(_('Formation'), _value_or_empty(admission.formation.acronym)),
         "{} : {}".format(_('High school diploma'), _('Yes') if admission.high_school_diploma else _('No')),
         "{} : {}".format(_('High school graduation year'), _value_or_empty(admission.high_school_graduation_year)),
@@ -251,11 +256,18 @@ def _get_formatted_admission_data(admission):
         "{} : {}".format(_('Professional and personal interests'),
                          _value_or_empty(admission.professional_personal_interests)),
         "{} : {}".format(_('State'), _value_or_empty(_(admission.state))),
+        "{} : ".format(_('Additional information')),
+        "{}".format(_value_or_slash(admission.formation.additional_information_label)),
+        "{}".format(_value_or_slash(admission.additional_information)),
     ]
 
 
 def _value_or_empty(value):
     return value or ''
+
+
+def _value_or_slash(value):
+    return value or '/'
 
 
 def get_management_faculty(education_group_yr):
