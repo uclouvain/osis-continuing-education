@@ -337,5 +337,5 @@ class Migration(migrations.Migration):
             name='size',
             field=models.IntegerField(null=True, verbose_name='Size'),
         ),
-        migrations.RunSQL('UPDATE continuing_education_admission SET state=initcap(state)')
+        migrations.RunSQL('UPDATE continuing_education_admission SET state=initcap(state)', elidable=True)
     ]

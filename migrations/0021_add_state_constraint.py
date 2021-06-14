@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(add_state_constraint, reverse_code=remove_state_constraint),
+        migrations.RunPython(add_state_constraint, reverse_code=remove_state_constraint, elidable=True),
         migrations.AlterField(
             model_name='admission',
             name='state',
