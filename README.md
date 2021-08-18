@@ -14,3 +14,4 @@ it depends on the applications [base](base), [reference](reference) and
 [base]: https://github.com/uclouvain/osis/tree/dev/base
 [reference]: https://github.com/uclouvain/osis/tree/dev/reference
 [osis-common]: https://github.com/uclouvain/osis-common
+
