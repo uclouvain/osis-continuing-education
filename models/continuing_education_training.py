@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import uuid as uuid
+from functools import lru_cache
 
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
@@ -105,6 +106,7 @@ class ContinuingEducationTraining(Model):
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()
 
+    @lru_cache
     def get_current_education_group_year(self):
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk,
