@@ -19,11 +19,6 @@ MARITAL_STATUS_CHOICES = (
     ('LEGAL_COHABITANT', _('Legal cohabitant')),
 )
 
-GENDER_CHOICES = (
-    ('F', _('Female')),
-    ('H', _('Male')),
-)
-
 STATUS_CHOICES = (
     ('EMPLOYEE', _('Employee')),
     ('SELF_EMPLOYED', _('Self employed')),
