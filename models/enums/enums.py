@@ -21,7 +21,7 @@ MARITAL_STATUS_CHOICES = (
 
 GENDER_CHOICES = (
     ('F', _('Female')),
-    ('M', _('Male')),
+    ('H', _('Male')),
 )
 
 STATUS_CHOICES = (
