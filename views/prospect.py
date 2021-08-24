@@ -32,7 +32,6 @@ from continuing_education.business.prospect import get_prospects_by_user
 from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
-from osis_common.decorators.download import set_download_cookie
 
 
 @login_required
@@ -58,7 +57,6 @@ def prospect_details(request, prospect_id):
     })
 
 
-@set_download_cookie
 @login_required
 @permission_required('continuing_education.export_prospect', raise_exception=True)
 def prospect_xls(request):
