@@ -28,6 +28,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from rules.contrib.views import permission_required, objectgetter
 
+from continuing_education.business.prospect import get_prospects_by_user
 from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
@@ -36,7 +37,7 @@ from continuing_education.views.common import get_object_list
 @login_required
 @permission_required('continuing_education.view_prospect', raise_exception=True)
 def list_prospects(request):
-    prospects_list = list(Prospect.objects.all())
+    prospects_list = get_prospects_by_user(request.user)
     return render(request, "prospects.html", {
         'prospects': get_object_list(request, prospects_list),
         'prospects_count': len(prospects_list)
