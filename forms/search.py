@@ -377,7 +377,8 @@ def _build_active_parameter(qs, state):
 
 
 def _get_formation_filter_entity_management(qs, requirement_entity_acronym, with_entity_subordinated):
-    entity_ids = get_entities_ids(requirement_entity_acronym, with_entity_subordinated)
+    exact_requirement_entity_acronym = "^{}$".format(requirement_entity_acronym)
+    entity_ids = get_entities_ids(exact_requirement_entity_acronym, with_entity_subordinated)
     return qs.filter(educationgroupyear__management_entity__in=entity_ids)
 
 

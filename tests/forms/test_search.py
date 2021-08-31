@@ -538,6 +538,7 @@ class TestFormationFilterForm(TestCase):
 
         cls.academic_year = AcademicYearFactory(year=2018)
         cls.entity_version = create_entity_version("ENTITY_PREV")
+        similar_entity_version = create_entity_version("abc_ENTITY_PREV_xyz")
         entity_version_2 = create_entity_version("FAC2")
 
         cls.iufc_education_group_yr_ACRO_10 = EducationGroupYearFactory(
@@ -573,20 +574,26 @@ class TestFormationFilterForm(TestCase):
             active=False,
         )
 
+        cls.education_group_yr_not_organized_2 = EducationGroupYearFactory(
+            education_group_type=cls.continuing_education_group_type,
+            management_entity=similar_entity_version.entity,
+            academic_year=cls.academic_year
+        )
+
     def test_get_state_choices(self):
         form = FormationFilterForm(data={})
         self.assertTrue(form.is_valid())
         self.assertCountEqual(form.fields['state'].choices, FORMATION_STATE_CHOICES)
 
     def test_formation_filter_by_state(self):
-
         self._assert_results_count_equal({'state': ACTIVE},
                                          [self.active_continuing_education_training.education_group])
         self._assert_results_count_equal({'state': INACTIVE},
                                          [self.inactive_continuing_education_training.education_group])
 
         self._assert_results_count_equal({'state': NOT_ORGANIZED},
-                                         [self.education_group_yr_not_organized.education_group])
+                                         [self.education_group_yr_not_organized.education_group,
+                                          self.education_group_yr_not_organized_2.education_group])
 
     def test_formation_filter_by_acronym(self):
         self._assert_results_count_equal({'acronym': 'ACRO'},
