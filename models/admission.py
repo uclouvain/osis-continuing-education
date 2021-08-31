@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import uuid as uuid
+
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.core.validators import RegexValidator
@@ -486,7 +487,7 @@ class Admission(Model):
             self._get_awareness_values(field)
             for field in Admission._meta.get_fields()
             if 'awareness_' in field.name and self._get_awareness_values(field)
-            ]
+        ]
         return ", ".join(list_awareness)
 
     def _get_awareness_values(self, field):
@@ -603,4 +604,4 @@ def _build_address(address):
 
 
 def admission_getter(request, *view_args, **view_kwargs):
-    return get_object_or_none(Admission, id=view_kwargs.get('admission_id'))
+    return get_object_or_none(Admission.objects.select_related('formation'), id=view_kwargs.get('admission_id'))
