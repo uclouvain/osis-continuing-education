@@ -25,7 +25,7 @@
 ##############################################################################
 from django.contrib import messages
 from django.core.cache import cache
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext
@@ -33,24 +33,19 @@ from django.utils.translation import gettext
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
-from continuing_education.models.person_training import PersonTraining
+from continuing_education.auth.roles.continuing_education_training_manager import ContinuingEducationTrainingManager
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class ManagerListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration'
-        )
-        cls.manager.employee = True
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
+        cls.manager.person.employee = True
         cls.academic_year = create_current_academic_year()
         cls.education_group = EducationGroupFactory()
         EducationGroupYearFactory(
@@ -61,29 +56,27 @@ class ManagerListTestCase(TestCase):
             education_group=cls.education_group,
             active=True
         )
-        cls.training_manager = PersonWithPermissionsFactory(employee=True)
-        cls.training_manager_group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager.user.groups.add(cls.training_manager_group)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.formation)
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_managers_list(self):
         response = self.client.get(reverse('list_managers'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertEqual(response.context['managers'].object_list, [self.training_manager])
+        self.assertEqual(response.context['managers'].object_list, [self.training_manager.person])
         self.assertTemplateUsed(response, 'managers.html')
 
     def test_assign_manager_to_training(self):
         employee = PersonFactory(employee=True)
-        self.assertEqual(PersonTraining.objects.count(), 0)
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 1)
         data = {
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('list_managers'), data=data)
-        self.assertEqual(PersonTraining.objects.count(), 1)
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data=data)
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 2)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
         messages_list = list(messages.get_messages(response.wsgi_request))
         success_msg = gettext('Successfully assigned %(manager)s to the training %(training)s') % {
@@ -91,7 +84,7 @@ class ManagerListTestCase(TestCase):
             "training": self.formation.acronym
         }
         self.assertIn(success_msg, str(messages_list[0]))
-        self.assertEqual(list(employee.user.groups.all()), [self.training_manager_group])
+        self.assertEqual(list(employee.user.groups.values_list('name', flat=True)), [self.training_manager.group_name])
 
     def test_add_employee_to_training_managers_group(self):
         employee = PersonFactory(employee=True)
@@ -100,20 +93,19 @@ class ManagerListTestCase(TestCase):
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('list_managers'), data=data)
-        self.assertEqual(list(employee.user.groups.all()), [self.training_manager_group])
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data=data)
+        self.assertEqual(list(employee.user.groups.values_list('name', flat=True)), [self.training_manager.group_name])
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
 
     def test_manager_already_assigned_to_training(self):
-        PersonTraining(person=self.training_manager, training=self.formation).save()
-        self.assertEqual(PersonTraining.objects.count(), 1)
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 1)
         data = {
             'training': self.formation.pk,
-            'person': self.training_manager.pk
+            'person': self.training_manager.person.pk
         }
-        response = self.client.post(reverse('list_managers'), data)
-        self.assertEqual(PersonTraining.objects.count(), 1)
-        self.assertEqual(response.status_code, HttpResponse.status_code)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data)
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 1)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertIn(
             gettext("Manager is already assigned on this training"),
@@ -122,14 +114,15 @@ class ManagerListTestCase(TestCase):
 
     def test_manager_person_with_no_user(self):
         employee = PersonFactory(employee=True, user=None)
-        self.assertEqual(PersonTraining.objects.count(), 0)
+        training = ContinuingEducationTrainingFactory()
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=training).count(), 0)
         data = {
             'training': self.formation.pk,
             'person': employee.pk
         }
-        response = self.client.post(reverse('list_managers'), data)
-        self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertEqual(PersonTraining.objects.count(), 0)
+        response = self.client.post(reverse('add_continuing_education_training_manager'), data)
+        self.assertEqual(response.status_code, HttpResponseRedirect.status_code)
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=training).count(), 0)
         messages_list = list(messages.get_messages(response.wsgi_request))
         self.assertIn(
             gettext("Manager person has no user"),
@@ -137,17 +130,16 @@ class ManagerListTestCase(TestCase):
         )
 
     def test_desassign_manager_from_training(self):
-        PersonTraining(person=self.training_manager, training=self.formation).save()
-        self.assertEqual(PersonTraining.objects.count(), 1)
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 1)
         args = [
             self.formation.pk,
-            self.training_manager.pk
+            self.training_manager.person.pk
         ]
-        response = self.client.get(reverse('delete_person_training', args=args))
-        self.assertEqual(PersonTraining.objects.count(), 0)
+        response = self.client.get(reverse('delete_continuing_education_training_manager', args=args))
+        self.assertEqual(ContinuingEducationTrainingManager.objects.filter(training=self.formation).count(), 0)
         messages_list = list(messages.get_messages(response.wsgi_request))
         success_msg = gettext('Successfully desassigned %(manager)s from the training %(training)s') % {
-            "manager": self.training_manager,
+            "manager": self.training_manager.person,
             "training": self.formation.acronym
         }
         self.assertIn(success_msg, str(messages_list[0]))
@@ -156,14 +148,10 @@ class ManagerListTestCase(TestCase):
 class ViewManagerCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory(
-            'view_admission', 'change_admission', 'validate_registration'
-        )
-        cls.manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         self.addCleanup(cache.clear)
 
     def test_cached_filters(self):

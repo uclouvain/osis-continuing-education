@@ -2,7 +2,8 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
-from continuing_education.business.perms import is_continuing_education_training_manager
+from continuing_education.auth.roles.continuing_education_training_manager import \
+    is_continuing_education_training_manager
 from continuing_education.forms.admission import phone_regex
 from continuing_education.models.admission import Admission
 from continuing_education.models.enums.enums import YES_NO_CHOICES

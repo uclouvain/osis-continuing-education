@@ -45,7 +45,6 @@ from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from base.tests.factories.group import GroupFactory
 from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISSION_REQUIREMENTS
 from continuing_education.models.admission import Admission
@@ -53,12 +52,15 @@ from continuing_education.models.continuing_education_person import ContinuingEd
 from continuing_education.models.enums import file_category_choices, admission_state_choices
 from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
     ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
-from continuing_education.models.enums.groups import MANAGERS_GROUP, TRAINING_MANAGERS_GROUP, STUDENT_WORKERS_GROUP
-from continuing_education.models.person_training import PersonTraining
+from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.file import AdmissionFileFactory
 from continuing_education.tests.factories.person import ContinuingEducationPersonFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
+from continuing_education.views.admission import admission_detail
 from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
     get_revision_messages
 from reference.tests.factories.country import CountryFactory
@@ -89,12 +91,8 @@ class ViewAdmissionTestCase(TestCase):
             education_group=cls.education_group_no_registration_required,
             registration_required=False
         )
-        group = GroupFactory(name=MANAGERS_GROUP)
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
-        group = GroupFactory(name=TRAINING_MANAGERS_GROUP)
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.training_manager.user.groups.add(group)
+        cls.manager = ContinuingEducationManagerFactory()
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.formation)
         EntityVersionFactory(
             entity=cls.formation.management_entity
         )
@@ -131,7 +129,7 @@ class ViewAdmissionTestCase(TestCase):
         }
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_list_admissions(self):
         url = reverse('admission')
@@ -141,7 +139,8 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(len(response.context['admissions'].object_list), 2)
 
     def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
-        self.client.force_login(self.training_manager.user)
+        other_training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(other_training_manager.person.user)
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -149,8 +148,8 @@ class ViewAdmissionTestCase(TestCase):
         self.assertTemplateUsed(response, 'admissions.html')
 
     def test_list_admissions_filtered_by_training_manager_with_admission(self):
-        PersonTraining(person=self.training_manager, training=self.formation).save()
-        self.client.force_login(self.training_manager.user)
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.formation)
+        self.client.force_login(training_manager.person.user)
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -176,7 +175,8 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_admission_detail_access_denied(self):
-        self.client.force_login(self.training_manager.user)
+        other_training_manager = ContinuingEducationTrainingManagerFactory()
+        self.client.force_login(other_training_manager.person.user)
         url = reverse('admission_detail', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -364,7 +364,7 @@ class ViewAdmissionTestCase(TestCase):
             save_and_create_revision(
                 get_revision_messages({'icon': '', 'text': msg}),
                 self.admission,
-                self.training_manager.user
+                self.training_manager.person.user
             )
             version_list = get_versions(self.admission)
             self.assertEqual(len(version_list), i)
@@ -392,9 +392,8 @@ class InvoiceNotificationEmailTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+
+        cls.manager = ContinuingEducationManagerFactory()
 
         cls.admission = AdmissionFactory(
             formation=cls.formation,
@@ -407,7 +406,7 @@ class InvoiceNotificationEmailTestCase(TestCase):
         cls.url = reverse('send_invoice_notification_mail', args=[cls.admission.pk])
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     @patch('continuing_education.business.admission.send_email')
     def test_send_mail_with_invoice(self, mock_send_mail):
@@ -458,13 +457,7 @@ class AdmissionStateChangedTestCase(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        cls.manager = PersonWithPermissionsFactory(
-            'view_admission',
-            'change_admission',
-            'validate_registration'
-        )
-        group = GroupFactory(name='continuing_education_managers')
-        group.user_set.add(cls.manager.user)
+        cls.manager = ContinuingEducationManagerFactory()
         EntityVersionFactory(
             entity=education_group_year.management_entity
         )
@@ -480,7 +473,7 @@ class AdmissionStateChangedTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     @patch('continuing_education.views.admission.send_admission_to_queue')
     @patch('continuing_education.business.admission._get_continuing_education_managers')
@@ -503,7 +496,7 @@ class AdmissionStateChangedTestCase(TestCase):
             data['rejected_reason'] = DONT_MEET_ADMISSION_REQUIREMENTS
         url = reverse('admission_detail', args=[self.admission.pk])
         response = self.client.post(url, data=data)
-        self.assertRedirects(response, reverse('admission_detail', args=[self.admission.pk]))
+        self.assertRedirects(response, reverse(admission_detail, args=[self.admission.pk]))
         self.admission.refresh_from_db()
         self.assertEqual(self.admission.state, admission['state'], 'state')
         if self.admission.state == admission_state_choices.VALIDATED:
@@ -539,12 +532,11 @@ class AdmissionStateChangedTestCase(TestCase):
 class ViewAdmissionCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        group = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.manager.user.groups.add(group)
+
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
         self.addCleanup(cache.clear)
 
     def test_cached_filters(self):
@@ -568,7 +560,7 @@ class BillingEditTestCase(TestCase):
             education_group=cls.education_group,
             registration_required=False
         )
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission', groups=[MANAGERS_GROUP])
+        cls.manager = ContinuingEducationManagerFactory()
         cls.student_worker = PersonWithPermissionsFactory('view_admission', groups=[STUDENT_WORKERS_GROUP])
         EntityVersionFactory(
             entity=cls.formation.management_entity
@@ -581,7 +573,7 @@ class BillingEditTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_billing_edit(self):
         url = reverse('billing_edit', args=[self.admission.id])

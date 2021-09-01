@@ -30,38 +30,36 @@ from django.urls import reverse
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 
 
 class ProspectListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.manager = ContinuingEducationTrainingManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_prospect_list_ordered_by_formation(self):
         self.academic_year = create_current_academic_year()
         self.education_groups = [EducationGroupFactory() for _ in range(1, 3)]
 
         acronyms = ['AAA', 'BBA', 'CAA']
+        prospects = []
         for index, education_group in enumerate(self.education_groups):
             EducationGroupYearFactory(
                 acronym=acronyms[index],
                 education_group=education_group,
                 academic_year=self.academic_year
             )
-
-        prospects = [
-            ProspectFactory(
-                formation=ContinuingEducationTrainingFactory(
-                    education_group=education_group
-                )
-            ) for education_group in self.education_groups
-        ]
+            training = ContinuingEducationTrainingFactory(education_group=education_group)
+            ContinuingEducationTrainingManagerFactory(training=training, person=self.manager.person)
+            prospects.append(ProspectFactory(formation=training))
 
         response = self.client.get(reverse('prospects'))
         self.assertEqual(response.status_code, 200)
@@ -87,7 +85,7 @@ class ProspectListTestCase(TestCase):
 class ProspectDetailsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
+        cls.manager = ContinuingEducationManagerFactory()
         cls.prospect = ProspectFactory()
         EducationGroupYearFactory(
             education_group=cls.prospect.formation.education_group,
@@ -95,7 +93,7 @@ class ProspectDetailsTestCase(TestCase):
         )
 
     def setUp(self):
-        self.client.force_login(self.manager.user)
+        self.client.force_login(self.manager.person.user)
 
     def test_prospect_details(self):
         response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk}))

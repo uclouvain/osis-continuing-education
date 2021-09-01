@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import uuid as uuid
+from functools import lru_cache
 
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
@@ -84,7 +85,7 @@ class ContinuingEducationTraining(Model):
         help_text=_("Comma-separated addresses - Leave empty if no address"),
     )
 
-    managers = models.ManyToManyField(Person, through='PersonTraining')
+    managers = models.ManyToManyField(Person, through='ContinuingEducationTrainingManager')
 
     postal_address = models.ForeignKey(Address, default=None, blank=True, null=True, on_delete=models.CASCADE)
 
@@ -105,6 +106,7 @@ class ContinuingEducationTraining(Model):
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()
 
+    @lru_cache()
     def get_current_education_group_year(self):
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk,
@@ -158,4 +160,8 @@ class ContinuingEducationTraining(Model):
 
     class Meta:
         ordering = ('education_group', )
-        default_permissions = []
+        default_permissions = ['view', 'change']
+        permissions = (
+            ("manage_all_trainings", "Manage all continuing education trainings"),
+            ("set_training_active", "Set a continuing education training as active"),
+        )

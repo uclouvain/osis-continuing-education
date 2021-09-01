@@ -35,15 +35,15 @@ from base.models.academic_year import AcademicYear
 from base.tests.factories.academic_year import AcademicYearFactory, create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from base.tests.factories.group import GroupFactory
-from base.tests.factories.person import PersonWithPermissionsFactory
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm, \
     get_academic_years_to_link_qs
 from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED
-from continuing_education.models.person_training import PersonTraining
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
+from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
+from continuing_education.tests.factories.roles.continuing_education_training_manager import \
+    ContinuingEducationTrainingManagerFactory
 from reference.models import country
 
 ANY_REASON = 'Anything'
@@ -61,17 +61,11 @@ class TestAdmissionForm(TestCase):
         cls.formation = ContinuingEducationTrainingFactory(
             education_group=cls.education_group
         )
-        group = GroupFactory(name='continuing_education_training_managers')
-        cls.training_manager = PersonWithPermissionsFactory('view_admission', 'change_admission')
-        cls.training_manager.user.groups.add(group)
-        PersonTraining(person=cls.training_manager, training=cls.formation).save()
-
-        group_manager = GroupFactory(name='continuing_education_managers')
-        cls.manager = PersonWithPermissionsFactory('view_admission', 'change_admission', 'validate_registration')
-        cls.manager.user.groups.add(group_manager)
+        cls.training_manager = ContinuingEducationTrainingManagerFactory(training=cls.formation)
+        cls.manager = ContinuingEducationManagerFactory()
 
     def setUp(self):
-        self.client.force_login(self.training_manager.user)
+        self.client.force_login(self.training_manager.person.user)
         admission = AdmissionFactory(formation=self.formation,
                                      academic_year=self.current_academic_year)
         self.data = admission.__dict__
@@ -79,12 +73,12 @@ class TestAdmissionForm(TestCase):
         self.data['academic_year'] = admission.academic_year.pk
 
     def test_valid_form_for_managers(self):
-        self.client.force_login(self.manager.user)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.client.force_login(self.manager.person.user)
+        form = AdmissionForm(data=self.data, user=self.manager.person.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_valid_form_for_training_managers(self):
-        form = AdmissionForm(data=self.data, user=self.training_manager.user)
+        form = AdmissionForm(data=self.data, user=self.training_manager.person.user)
         self.assertTrue(form.is_valid(), form.errors)
 
     def test_not_valid_wrong_phone_format(self):
@@ -99,7 +93,7 @@ class TestAdmissionForm(TestCase):
         short_numbers = ['0032123', '+321234', '0123456']
         long_numbers = ['003212345678912456', '+3212345678912345', '01234567891234567']
         self.data['phone_mobile'] = random.choice(wrong_numbers + short_numbers + long_numbers)
-        form = AdmissionForm(data=self.data, user=self.training_manager.user)
+        form = AdmissionForm(data=self.data, user=self.training_manager.person.user)
         self.assertFalse(form.is_valid(), form.errors)
         self.assertDictEqual(
             form.errors,
@@ -112,8 +106,8 @@ class TestAdmissionForm(TestCase):
         )
 
     def test_participant_required_fields(self):
-        self.client.force_login(self.manager.user)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.client.force_login(self.manager.person.user)
+        form = AdmissionForm(data=self.data, user=self.manager.person.user)
         admission_participant_required_fields = [
             'citizenship', 'phone_mobile', 'high_school_diploma', 'last_degree_level',
             'last_degree_field', 'last_degree_institution', 'last_degree_graduation_year',
@@ -128,8 +122,8 @@ class TestAdmissionForm(TestCase):
                 )
 
     def test_manager_email_field_required(self):
-        self.client.force_login(self.manager.user)
-        form = AdmissionForm(data=self.data, user=self.manager.user)
+        self.client.force_login(self.manager.person.user)
+        form = AdmissionForm(data=self.data, user=self.manager.person.user)
         self.assertTrue(form.fields['email'].required)
 
 

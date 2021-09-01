@@ -24,6 +24,7 @@
 #
 ##############################################################################
 import datetime
+
 import factory
 
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory

@@ -26,7 +26,7 @@
 import itertools
 from collections import OrderedDict
 
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -34,6 +34,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET
+from rules.contrib.views import permission_required
 
 from backoffice.settings.base import MAX_UPLOAD_SIZE
 from base.utils.cache import cache_filter
@@ -41,7 +42,6 @@ from base.views.common import display_success_messages, display_error_messages, 
     display_warning_messages
 from continuing_education.business.admission import send_invoice_uploaded_email, save_state_changed_and_send_email, \
     check_required_field_for_participant
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.registration_queue import send_admission_to_queue
 from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
@@ -52,12 +52,13 @@ from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
 from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    admission_getter
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices, file_category_choices
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, DRAFT, VALIDATED, \
-    REGISTRATION_SUBMITTED, ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
+    ACCEPTED, CANCELLED, ACCEPTED_NO_REGISTRATION_REQUIRED, CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.models.file import AdmissionFile
 from continuing_education.views.common import display_errors, save_and_create_revision, get_versions, \
@@ -70,8 +71,7 @@ from osis_common.decorators.ajax import ajax_required
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.export_admission', raise_exception=True)
 @cache_filter(exclude_params=['xls_status'])
 def list_admissions(request):
     search_form = AdmissionFilterForm(request.GET)
@@ -83,7 +83,7 @@ def list_admissions(request):
         admission_list = []
 
     if request.GET.get('xls_status') == "xls_admissions":
-        return create_xls(request.user, admission_list, search_form)
+        return export_admissions(request, admission_list, search_form)
 
     return render(request, "admissions.html", {
         'admissions': get_object_list(request, admission_list),
@@ -93,10 +93,19 @@ def list_admissions(request):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
+@permission_required('continuing_education.export_admission')
+def export_admissions(request, admission_list, search_form):
+    return create_xls(request.user, admission_list, search_form)
+
+
+@login_required
+@permission_required(
+    'continuing_education.view_admission',
+    fn=admission_getter,
+    raise_exception=True
+)
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-
     admission = get_object_or_404(
         Admission.objects.select_related(
             'billing_address__country',
@@ -105,7 +114,10 @@ def admission_detail(request, admission_id):
             'person_information__birth_country',
             'citizenship',
             'formation__education_group',
-        ).prefetch_related('formation__managers'),
+        ).prefetch_related(
+            'formation__managers',
+            'formation__education_group__educationgroupyear_set__educationgroupversion_set',
+        ),
         pk=admission_id
     )
     if not user_is_continuing_education_student_worker:
@@ -147,9 +159,16 @@ def admission_detail(request, admission_id):
     )
 
     admission._original_state = admission.state
+
     if adm_form.is_valid():
         forms = (adm_form, waiting_adm_form, rejected_adm_form, condition_acceptance_adm_form, cancel_adm_form)
         return _change_state(request, forms, accepted_states, admission)
+
+    if adm_form.errors:
+        display_error_messages(request, _('Some errors in form prevents state from being changed:'))
+        display_error_messages(request, adm_form.errors)
+        admission.state = admission._original_state
+        return redirect(request.META['HTTP_REFERER'])
 
     _display_adapted_ucl_registration_message(admission, request)
 
@@ -214,8 +233,7 @@ def _change_state(request, forms, accepted_states, admission):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.send_notification', raise_exception=True)
 def send_invoice_notification_mail(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     if _invoice_file_exists_for_admission(admission):
@@ -232,8 +250,7 @@ def _invoice_file_exists_for_admission(admission):
 
 
 @login_required
-@permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 def admission_form(request, admission_id=None):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     if admission:
@@ -325,8 +342,7 @@ def _new_state_management(request, adm_form, admission, new_state):
     if new_state != VALIDATED:
         save_state_changed_and_send_email(adm_form.instance, request.user)
     else:
-        _validate_admission(request, adm_form)
-        send_admission_to_queue(request, admission)
+        _validate_admission(request, admission, adm_form)
     query_param = ('?opened_tab=' + request.POST.get('opened_tab')) if request.POST.get('opened_tab') else ''
     return redirect(
         reverse('admission_detail', kwargs={'admission_id': admission.pk}) + query_param
@@ -345,9 +361,10 @@ def _save_form_with_provided_reason(waiting_adm_form, rejected_adm_form, new_sta
         cancel_adm_form.save()
 
 
-def _validate_admission(request, adm_form):
-    if request.user.has_perm("continuing_education.validate_registration"):
+def _validate_admission(request, admission, adm_form):
+    if request.user.has_perm("continuing_education.validate_registration", adm_form.instance):
         save_state_changed_and_send_email(adm_form.instance, request.user)
+        send_admission_to_queue(request, admission)
     else:
         display_error_messages(
             request,
@@ -357,8 +374,7 @@ def _validate_admission(request, adm_form):
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission", raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required("continuing_education.change_admission", fn=admission_getter, raise_exception=True)
 def validate_field(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id) if admission_id else None
     response = {}
@@ -382,17 +398,25 @@ def validate_field(request, admission_id):
 
 
 def _get_states_choices(accepted_states, admission, request):
-    if not request.user.has_perm('continuing_education.validate_registration') \
-            and admission.state in [REGISTRATION_SUBMITTED, VALIDATED]:
-        return []
-    else:
-        return [] if admission and admission.is_draft() else accepted_states.get('choices', ())
+    can_change_state = request.user.has_perm('continuing_education.change_admission_state', admission)
+    cannot_validate_registration = not request.user.has_perm('continuing_education.validate_registration', admission)
+    admission_is_draft = admission and admission.is_draft()
+    registration_is_submitted = admission.is_registration_submitted()
+    registration_is_validated = admission.is_validated()
+
+    if can_change_state:
+        if admission_is_draft:
+            return []
+        elif cannot_validate_registration and (registration_is_submitted or registration_is_validated):
+            return []
+        else:
+            return accepted_states.get('choices', ())
+
+    return []
 
 
 @ajax_required
 @login_required
-@permission_required("continuing_education.change_admission", raise_exception=True)
-@user_passes_test(is_not_student_worker)
 @require_GET
 def get_formation_information(request):
     formation_id = request.GET.get('formation_id', None)
@@ -401,8 +425,7 @@ def get_formation_information(request):
 
 
 @login_required
-@permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 def billing_edit(request, admission_id):
     admission = get_object_or_404(Admission, pk=admission_id)
     can_access_admission(request.user, admission)

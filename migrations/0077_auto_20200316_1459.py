@@ -85,6 +85,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             remove_unused_permissions,
-            migrations.RunPython.noop
+            migrations.RunPython.noop,
+            elidable=True
         )
     ]

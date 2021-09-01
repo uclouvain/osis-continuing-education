@@ -23,22 +23,23 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from rules.contrib.views import permission_required
 
 from base.utils.cache import cache_filter
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business.perms import is_not_student_worker
 from continuing_education.business.xls.xls_registration import create_xls_registration
 from continuing_education.forms.address import AddressForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import RegistrationFilterForm
 from continuing_education.models.address import Address
-from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission
+from continuing_education.models.admission import Admission, filter_authorized_admissions, can_access_admission, \
+    admission_getter
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.views.common import get_object_list, save_and_create_revision, \
@@ -60,7 +61,7 @@ def list_registrations(request):
         admission_list = filter_authorized_admissions(request.user, admission_list)
 
     if request.GET.get('xls_status') == "xls_registrations":
-        return create_xls_registration(request.user, admission_list, search_form)
+        return export_registrations(request, admission_list, search_form)
 
     return render(request, "registrations.html", {
         'admissions': get_object_list(request, admission_list),
@@ -72,10 +73,23 @@ def list_registrations(request):
 
 
 @login_required
-@permission_required('continuing_education.change_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.export_admission')
+def export_registrations(request, admission_list, search_form):
+    if request.GET.get('xls_status') == "xls_registrations":
+        return create_xls_registration(request.user, admission_list, search_form)
+
+
+@login_required
+@permission_required('continuing_education.change_admission', fn=admission_getter, raise_exception=True)
 def registration_edit(request, admission_id):
-    admission = get_object_or_404(Admission, pk=admission_id)
+    admission = get_object_or_404(
+        Admission.objects.select_related(
+            'billing_address',
+            'residence_address',
+            'address'
+        ),
+        pk=admission_id
+    )
     can_access_admission(request.user, admission)
 
     if admission.is_draft():
@@ -191,8 +205,7 @@ def _switch_received_file_state(admission_id):
 
 
 @login_required
-@permission_required('continuing_education.view_admission', raise_exception=True)
-@user_passes_test(is_not_student_worker)
+@permission_required('continuing_education.cancel_admission', raise_exception=True)
 def list_cancelled(request):
     admission_list = Admission.objects.filter(state__in=[
         admission_state_choices.CANCELLED,
