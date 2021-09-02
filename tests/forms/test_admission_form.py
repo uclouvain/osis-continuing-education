@@ -38,7 +38,9 @@ from base.tests.factories.education_group_year import EducationGroupYearFactory
 from continuing_education.business.enums.rejected_reason import NOT_ENOUGH_EXPERIENCE, OTHER
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, ConditionAcceptanceAdmissionForm, \
     get_academic_years_to_link_qs
-from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED
+from continuing_education.models.enums.admission_state_choices import REJECTED, ACCEPTED, \
+    ACCEPTED_NO_REGISTRATION_REQUIRED, REGISTRATION_SUBMITTED, VALIDATED, WAITING, DRAFT, SUBMITTED, CANCELLED, \
+    CANCELLED_NO_REGISTRATION_REQUIRED
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
@@ -66,11 +68,11 @@ class TestAdmissionForm(TestCase):
 
     def setUp(self):
         self.client.force_login(self.training_manager.person.user)
-        admission = AdmissionFactory(formation=self.formation,
+        self.admission = AdmissionFactory(formation=self.formation,
                                      academic_year=self.current_academic_year)
-        self.data = admission.__dict__
-        self.data['formation'] = admission.formation.pk
-        self.data['academic_year'] = admission.academic_year.pk
+        self.data = self.admission.__dict__
+        self.data['formation'] = self.admission.formation.pk
+        self.data['academic_year'] = self.admission.academic_year.pk
 
     def test_valid_form_for_managers(self):
         self.client.force_login(self.manager.person.user)
@@ -125,6 +127,24 @@ class TestAdmissionForm(TestCase):
         self.client.force_login(self.manager.person.user)
         form = AdmissionForm(data=self.data, user=self.manager.person.user)
         self.assertTrue(form.fields['email'].required)
+
+    def test_academic_year_field_required(self):
+        self.client.force_login(self.manager.person.user)
+        for state in [ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED, REGISTRATION_SUBMITTED, VALIDATED]:
+            with self.subTest(state=state):
+                self.admission.state = state
+                self.admission.save()
+                form = AdmissionForm(data=self.data, user=self.manager.person.user, instance=self.admission)
+                self.assertTrue(form.fields['academic_year'].required)
+
+    def test_academic_year_field_not_required(self):
+        self.client.force_login(self.manager.person.user)
+        for state in [REJECTED, WAITING, DRAFT, SUBMITTED, CANCELLED, CANCELLED_NO_REGISTRATION_REQUIRED]:
+            with self.subTest(state=state):
+                self.admission.state = state
+                self.admission.save()
+                form = AdmissionForm(data=self.data, user=self.manager.person.user, instance=self.admission)
+                self.assertFalse(form.fields['academic_year'].required)
 
 
 class TestRejectedAdmissionForm(TestCase):
