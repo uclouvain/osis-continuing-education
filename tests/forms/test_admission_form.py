@@ -68,8 +68,7 @@ class TestAdmissionForm(TestCase):
 
     def setUp(self):
         self.client.force_login(self.training_manager.person.user)
-        self.admission = AdmissionFactory(formation=self.formation,
-                                     academic_year=self.current_academic_year)
+        self.admission = AdmissionFactory(formation=self.formation, academic_year=self.current_academic_year)
         self.data = self.admission.__dict__
         self.data['formation'] = self.admission.formation.pk
         self.data['academic_year'] = self.admission.academic_year.pk
