@@ -17,6 +17,7 @@ from continuing_education.models.continuing_education_person import ContinuingEd
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums import enums
+from continuing_education.models.enums.admission_state_choices import STATES_ACADEMIC_YEAR_MANDATORY
 from reference.models.country import Country
 
 CONTINUING_EDUCATION_YEAR_SWITCH_DATE = {"month": 9, "day": 15}
@@ -85,6 +86,9 @@ class AdmissionForm(ModelForm):
             self.fields['academic_year'].required = True
         else:
             self.fields['academic_year'].disabled = True
+            self.fields['academic_year'].required = False
+
+        if self.instance and self.instance.state not in STATES_ACADEMIC_YEAR_MANDATORY:
             self.fields['academic_year'].required = False
 
         if user and not user.has_perm('continuing_education.manage_all_trainings'):
