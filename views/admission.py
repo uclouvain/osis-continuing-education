@@ -106,7 +106,6 @@ def export_admissions(request, admission_list, search_form):
 )
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-
     admission = get_object_or_404(
         Admission.objects.select_related(
             'billing_address__country',
@@ -115,7 +114,10 @@ def admission_detail(request, admission_id):
             'person_information__birth_country',
             'citizenship',
             'formation__education_group',
-        ).prefetch_related('formation__managers'),
+        ).prefetch_related(
+            'formation__managers',
+            'formation__education_group__educationgroupyear_set__educationgroupversion_set',
+        ),
         pk=admission_id
     )
     if not user_is_continuing_education_student_worker:
@@ -396,7 +398,6 @@ def validate_field(request, admission_id):
 
 
 def _get_states_choices(accepted_states, admission, request):
-
     can_change_state = request.user.has_perm('continuing_education.change_admission_state', admission)
     cannot_validate_registration = not request.user.has_perm('continuing_education.validate_registration', admission)
     admission_is_draft = admission and admission.is_draft()

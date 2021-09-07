@@ -26,7 +26,7 @@
 from django.utils.translation import gettext_lazy as _
 
 from base.business.xls import get_name_or_username
-from continuing_education.models.prospect import Prospect
+from continuing_education.business.prospect import get_prospects_by_user
 from osis_common.document import xls_build
 
 XLS_DESCRIPTION = _('Prospects list')
@@ -35,7 +35,8 @@ WORKSHEET_TITLE = _('Prospects list')
 
 
 def create_xls(user):
-    working_sheets_data = _prepare_xls_content(Prospect.objects.all())
+    prospects_list = get_prospects_by_user(user)
+    working_sheets_data = _prepare_xls_content(prospects_list)
     parameters = {xls_build.DESCRIPTION: XLS_DESCRIPTION,
                   xls_build.USER: get_name_or_username(user),
                   xls_build.FILENAME: XLS_FILENAME,
