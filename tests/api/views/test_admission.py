@@ -233,7 +233,7 @@ class AdmissionCreateTestCase(APITestCase):
                 'person': {
                     'first_name': 'Benjamin',
                     'last_name': 'Dau',
-                    'gender': 'M',
+                    'gender': 'H',
                     'email': 'b@d.be'
                 },
             },
