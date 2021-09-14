@@ -33,6 +33,7 @@ from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
 from base.models.academic_year import current_academic_year
+from base.models.education_group_year import EducationGroupYear
 from base.models.enums.education_group_types import TrainingType
 from base.models.person import Person
 from continuing_education.models.address import Address
@@ -106,16 +107,27 @@ class ContinuingEducationTraining(Model):
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
         super().clean()
 
-    @lru_cache()
-    def get_current_education_group_year(self):
+    def __get_education_group_year_with_delta(self, delta):
         return self.education_group.educationgroupyear_set.filter(
             education_group_id=self.education_group.pk,
-            academic_year__year__gte=current_academic_year().year
+            academic_year__year__lte=current_academic_year().year + delta
         ).select_related(
             'academic_year',
             'administration_entity',
             'management_entity'
-        ).prefetch_related('educationgroupversion_set').earliest('academic_year__year')
+        ).prefetch_related('educationgroupversion_set').latest('academic_year__year')
+
+    @lru_cache()
+    def get_current_education_group_year(self):
+        """
+        First, try to get the education_group_year in current or past academic_years
+        If no education_group_year is found, try to get it in the next academic_year
+        (admissions can be linked to egy of the next academic_year)
+        """
+        try:
+            return self.__get_education_group_year_with_delta(0)
+        except EducationGroupYear.DoesNotExist:
+            return self.__get_education_group_year_with_delta(1)
 
     @property
     def acronym(self):
