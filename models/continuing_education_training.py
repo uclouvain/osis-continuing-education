@@ -119,6 +119,11 @@ class ContinuingEducationTraining(Model):
 
     @lru_cache()
     def get_current_education_group_year(self):
+        """
+        First, try to get the education_group_year in current or past academic_years
+        If no education_group_year is found, try to get it in the next academic_year
+        (admissions can be linked to egy of the next academic_year)
+        """
         try:
             return self.__get_education_group_year_with_delta(0)
         except EducationGroupYear.DoesNotExist:
