@@ -117,7 +117,6 @@ class ContinuingEducationTraining(Model):
             'management_entity'
         ).prefetch_related('educationgroupversion_set').latest('academic_year__year')
 
-    @lru_cache()
     def get_current_education_group_year(self):
         """
         First, try to get the education_group_year in current or past academic_years
