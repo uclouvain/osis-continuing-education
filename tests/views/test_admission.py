@@ -99,10 +99,10 @@ class ViewAdmissionTestCase(TestCase):
         cls.admission = AdmissionFactory(
             formation=cls.formation,
             state=SUBMITTED,
-            person_information__person__gender='M',
+            person_information__person__gender='H',
             academic_year=cls.academic_year,
         )
-        a_person_information = ContinuingEducationPersonFactory(person__gender='M')
+        a_person_information = ContinuingEducationPersonFactory(person__gender='H')
         cls.admission_no_admission_required = AdmissionFactory(
             formation=cls.formation_no_registration_required,
             state=ACCEPTED_NO_REGISTRATION_REQUIRED,
@@ -565,7 +565,7 @@ class BillingEditTestCase(TestCase):
         EntityVersionFactory(
             entity=cls.formation.management_entity
         )
-        a_person_information = ContinuingEducationPersonFactory(person__gender='M')
+        a_person_information = ContinuingEducationPersonFactory(person__gender='H')
         cls.admission = AdmissionFactory(
             formation=cls.formation,
             state=SUBMITTED,
