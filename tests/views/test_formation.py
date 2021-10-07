@@ -70,7 +70,7 @@ class ViewFormationTestCase(TestCase):
         cls.formation_AAAA = EducationGroupYearFactory(
             acronym="AAAA",
             partial_acronym="AAAA",
-            academic_year=cls.next_acad_year,
+            academic_year=current_acad_year,
             education_group_type=continuing_education_group_type
         )
         cls.formation_BBBB = EducationGroupYearFactory(

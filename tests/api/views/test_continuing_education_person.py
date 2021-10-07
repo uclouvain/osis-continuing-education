@@ -110,7 +110,7 @@ class ContinuingEducationPersonListCreateTestCase(APITestCase):
             "person": {
                 'first_name': "Ben",
                 'last_name': "Total",
-                'gender': "M",
+                'gender': "H",
                 'email': "a@b.be"
             },
             'birth_date': datetime.date.today(),
