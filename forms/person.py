@@ -32,7 +32,7 @@ from base.models.person import Person
 from continuing_education.forms.common import set_participant_required_fields
 
 FEMALE = 'F'
-MALE = 'M'
+MALE = 'H'
 
 ADMISSION_PARTICIPANT_REQUIRED_FIELDS = [
     'first_name', 'last_name', 'gender',
