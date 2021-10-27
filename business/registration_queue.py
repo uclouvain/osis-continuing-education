@@ -55,7 +55,8 @@ def get_json_for_epc(admission):
         'birth_date': admission.person_information.birth_date.strftime("%d/%m/%Y"),
         'birth_location': admission.person_information.birth_location,
         'birth_country_iso_code': admission.person_information.birth_country.iso_code,
-        'sex': admission.person_information.person.gender,
+        # TODO:: Fix continuing_education to manage gender/sex correctly, then inject sex instead of gender
+        'sex': _gender_to_sex(admission.person_information.person.gender),
         'civil_state': admission.marital_status,
         'nationality_iso_code': admission.citizenship.iso_code if admission.citizenship else '',
         'mobile_number': admission.phone_mobile,
@@ -70,6 +71,15 @@ def get_json_for_epc(admission):
         'formation_academic_year': str(admission.academic_year.year),
         'student_case_uuid': str(admission.uuid)
     }
+
+
+def _gender_to_sex(gender):
+    if gender == "H":
+        return "M"
+    elif gender == "F":
+        return "F"
+    else:
+        raise ValueError("Gender for continuing_education must be H or F.")
 
 
 def format_address_for_json(address):
