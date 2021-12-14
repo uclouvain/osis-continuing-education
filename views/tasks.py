@@ -64,11 +64,11 @@ def list_tasks(request):
 
     registrations_to_validate = all_admissions.filter(
         state=admission_state_choices.REGISTRATION_SUBMITTED,
-    ).filter(registration_file_received=False)
+    ).formations()
 
     admissions_to_accept = all_admissions.filter(
         Q(state=admission_state_choices.SUBMITTED) | Q(state=admission_state_choices.WAITING)
-    )
+    ).formations()
 
     admissions_diploma_to_produce = all_admissions.filter(
         diploma_produced=False,

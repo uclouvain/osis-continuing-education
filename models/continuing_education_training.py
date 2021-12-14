@@ -24,12 +24,11 @@
 #
 ##############################################################################
 import uuid as uuid
-from functools import lru_cache
 
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Model
+from django.db.models import Model, Prefetch, Case, When, Value, IntegerField
 from django.utils.translation import gettext_lazy as _
 
 from base.models.academic_year import current_academic_year
@@ -53,6 +52,34 @@ class ContinuingEducationTrainingAdmin(ModelAdmin):
     search_fields = ['education_group__educationgroupyear__acronym']
     list_filter = ('active', 'training_aid', 'send_notification_emails',)
     raw_id_fields = ('education_group',)
+
+
+class ContinuingEducationTrainingQuerySet(models.QuerySet):
+    def formations(self):
+        return self.prefetch_education_group_years(self, "education_group__educationgroupyear_set")
+
+    @staticmethod
+    def prefetch_education_group_years(qs, prefetch_path: str):
+        academic_year = current_academic_year()
+        return qs.prefetch_related(
+            Prefetch(
+                prefetch_path,
+                queryset=EducationGroupYear.objects.filter(
+                    academic_year__year__in=(academic_year.year, academic_year.year - 1, academic_year.year + 1)
+                ).annotate(
+                    ordering=Case(
+                        When(academic_year__year=academic_year.year, then=Value(1)),
+                        When(academic_year__year__lt=academic_year.year, then=Value(2)),
+                        default=Value(3),
+                        output_field=IntegerField()
+                    )
+                ).order_by("ordering"),
+                to_attr="prefetched_education_group_years"
+            )
+        )
+
+
+ContinuingEducationTrainingManager = models.Manager.from_queryset(ContinuingEducationTrainingQuerySet)
 
 
 class ContinuingEducationTraining(Model):
@@ -102,6 +129,8 @@ class ContinuingEducationTraining(Model):
         verbose_name=_("Registration required")
     )
 
+    objects = ContinuingEducationTrainingManager()
+
     def clean(self):
         if self.education_group_id and not self.education_group.educationgroupyear_set.exists():
             raise ValidationError(_('EducationGroup must have at least one EducationGroupYear'))
@@ -123,6 +152,8 @@ class ContinuingEducationTraining(Model):
         If no education_group_year is found, try to get it in the next academic_year
         (admissions can be linked to egy of the next academic_year)
         """
+        if hasattr(self.education_group, "prefetched_education_group_years"):
+            return self.education_group.prefetched_education_group_years[0]
         try:
             return self.__get_education_group_year_with_delta(0)
         except EducationGroupYear.DoesNotExist:

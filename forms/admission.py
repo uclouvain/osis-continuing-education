@@ -43,7 +43,7 @@ class AdmissionForm(ModelForm):
         widget=forms.TextInput(attrs={'placeholder': '0474123456 - 0032474123456 - +32474123456'})
     )
     formation = forms.ModelChoiceField(
-        queryset=ContinuingEducationTraining.objects.all().select_related('education_group')
+        queryset=ContinuingEducationTraining.objects.formations().select_related('education_group')
     )
     state = ChoiceField(
         choices=admission_state_choices.STATE_CHOICES,

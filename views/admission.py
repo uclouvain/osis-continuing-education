@@ -87,7 +87,7 @@ def list_admissions(request):
 
     return render(request, "admissions.html", {
         'admissions': get_object_list(request, admission_list),
-        'admissions_number': len(admission_list),
+        'admissions_number': admission_list.count(),
         'search_form': search_form,
     })
 
