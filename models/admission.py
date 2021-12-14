@@ -590,7 +590,7 @@ def filter_authorized_admissions(user, admission_list):
 
 
 def can_access_admission(user, admission):
-    if admission not in filter_authorized_admissions(user, Admission.objects.all()):
+    if not filter_authorized_admissions(user, Admission.objects.filter(id=admission.id)).exists():
         raise PermissionDenied
 
 
