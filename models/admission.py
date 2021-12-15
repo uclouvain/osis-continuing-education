@@ -29,7 +29,7 @@ from django.contrib.admin import ModelAdmin
 from django.core.exceptions import PermissionDenied
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import Manager, Model
+from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
@@ -41,6 +41,15 @@ from osis_common.utils.models import get_object_or_none
 from osis_common.utils.validators import belgium_national_register_number_validator
 
 NEWLY_CREATED_STATE = "NEWLY_CREATED"
+
+
+class AdmissionQuerySet(models.QuerySet):
+    def formations(self):
+        from continuing_education.models.continuing_education_training import ContinuingEducationTrainingQuerySet
+        return ContinuingEducationTrainingQuerySet.prefetch_education_group_years(
+            self,
+            "formation__education_group__educationgroupyear_set"
+        )
 
 
 class RegistrationManager(models.Manager):
@@ -76,9 +85,9 @@ class Admission(Model):
     alphanumeric = RegexValidator(r'^[0-9a-zA-Z]*$', _('Only alphanumeric characters are allowed.'))
     numeric = RegexValidator(r'^[0-9]*$', _('Only numeric characters are allowed.'))
 
-    objects = Manager()
-    admission_objects = AdmissionManager()
-    registration_objects = RegistrationManager()
+    objects = models.Manager.from_queryset(AdmissionQuerySet)()
+    admission_objects = AdmissionManager.from_queryset(AdmissionQuerySet)()
+    registration_objects = RegistrationManager.from_queryset(AdmissionQuerySet)()
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     person_information = models.ForeignKey(
@@ -590,7 +599,7 @@ def filter_authorized_admissions(user, admission_list):
 
 
 def can_access_admission(user, admission):
-    if admission not in filter_authorized_admissions(user, Admission.objects.all()):
+    if not filter_authorized_admissions(user, Admission.objects.filter(id=admission.id)).exists():
         raise PermissionDenied
 
 

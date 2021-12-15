@@ -536,7 +536,7 @@ class TestFormationFilterForm(TestCase):
             name=random.choice(CONTINUING_EDUCATION_TRAINING_TYPES)
         )
 
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = AcademicYearFactory(current=True)
         cls.entity_version = create_entity_version("ENTITY_PREV")
         similar_entity_version = create_entity_version("abc_ENTITY_PREV_xyz")
         entity_version_2 = create_entity_version("FAC2")
