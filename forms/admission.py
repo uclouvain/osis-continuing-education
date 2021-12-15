@@ -35,6 +35,15 @@ phone_regex = RegexValidator(
 )
 
 
+class AdmissionChangeStateForm(ModelForm):
+    class Meta:
+        model = Admission
+        fields = [
+            'state',
+            'state_reason',
+        ]
+
+
 class AdmissionForm(ModelForm):
     phone_mobile = forms.CharField(
         validators=[phone_regex],

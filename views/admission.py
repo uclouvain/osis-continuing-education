@@ -47,7 +47,8 @@ from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
-    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
+    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm, \
+    AdmissionChangeStateForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
@@ -123,7 +124,7 @@ def admission_detail(request, admission_id):
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     states = _get_states_choices(accepted_states, admission, request)
 
-    adm_form = AdmissionForm(
+    adm_form = AdmissionChangeStateForm(
         request.POST or None,
         instance=admission,
     )
