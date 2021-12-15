@@ -73,6 +73,8 @@ class ContinuingEducationTrainingQuerySet(models.QuerySet):
                         default=Value(3),
                         output_field=IntegerField()
                     )
+                ).select_related(
+                    'academic_year',
                 ).order_by("ordering"),
                 to_attr="prefetched_education_group_years"
             )

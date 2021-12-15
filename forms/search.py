@@ -131,7 +131,7 @@ class CommonFilterForm(BootstrapForm):
         return qs.select_related(
             'person_information__person',
             'formation__education_group'
-        ).formations()
+        )
 
 
 def search_admissions_with_free_text(free_text, qs):
@@ -229,7 +229,7 @@ class RegistrationFilterForm(CommonFilterForm):
             'person_information__person',
             'formation__education_group',
             'academic_year',
-        ).formations()
+        )
 
 
 class ArchiveFilterForm(CommonFilterForm):
@@ -266,7 +266,10 @@ class ArchiveFilterForm(CommonFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
-        return qs
+        return qs.select_related(
+            'person_information__person',
+            'formation'
+        )
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
@@ -297,7 +300,7 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
     if received_file:
         qs = qs.filter(registration_file_received=received_file)
 
-    return qs
+    return qs.formations()
 
 
 def _build_formation_choices(field, states, archived_status=False):
