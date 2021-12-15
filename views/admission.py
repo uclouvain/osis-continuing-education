@@ -99,15 +99,11 @@ def export_admissions(request, admission_list, search_form):
 
 
 @login_required
-@permission_required(
-    'continuing_education.view_admission',
-    fn=admission_getter,
-    raise_exception=True
-)
+@permission_required('continuing_education.view_admission', fn=admission_getter, raise_exception=True)
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
     admission = get_object_or_404(
-        Admission.objects.select_related(
+        Admission.objects.formations().select_related(
             'billing_address__country',
             'address__country',
             'person_information__person',
