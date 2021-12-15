@@ -64,6 +64,7 @@ def list_tasks(request):
 
     registrations_to_validate = all_admissions.filter(
         state=admission_state_choices.REGISTRATION_SUBMITTED,
+        registration_file_received=False
     ).formations()
 
     admissions_to_accept = all_admissions.filter(
