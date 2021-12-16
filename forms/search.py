@@ -227,7 +227,8 @@ class RegistrationFilterForm(CommonFilterForm):
 
         return qs.select_related(
             'person_information__person',
-            'formation__education_group'
+            'formation__education_group',
+            'academic_year',
         )
 
 
@@ -265,7 +266,10 @@ class ArchiveFilterForm(CommonFilterForm):
         if free_text:
             qs = search_admissions_with_free_text(free_text, qs)
 
-        return qs
+        return qs.select_related(
+            'person_information__person',
+            'formation'
+        )
 
 
 def get_queryset_by_faculty_formation(faculty, formation, states, archived_status, received_file=None):
@@ -296,11 +300,11 @@ def get_queryset_by_faculty_formation(faculty, formation, states, archived_statu
     if received_file:
         qs = qs.filter(registration_file_received=received_file)
 
-    return qs
+    return qs.formations()
 
 
 def _build_formation_choices(field, states, archived_status=False):
-    field.queryset = ContinuingEducationTraining.objects.filter(
+    field.queryset = ContinuingEducationTraining.objects.formations().filter(
         id__in=Admission.objects.filter(
             state__in=states,
             archived=archived_status
