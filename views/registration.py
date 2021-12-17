@@ -65,7 +65,7 @@ def list_registrations(request):
 
     return render(request, "registrations.html", {
         'admissions': get_object_list(request, admission_list),
-        'admissions_number': len(admission_list),
+        'admissions_number': admission_list.count(),
         'search_form': search_form,
         'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
         'ucl_registration_state_choices': UCLRegistrationState.__members__
