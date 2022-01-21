@@ -80,7 +80,7 @@ def list_admissions(request):
         admission_list = search_form.get_admissions()
         admission_list = filter_authorized_admissions(request.user, admission_list)
     else:
-        admission_list = []
+        admission_list = Admission.objects.none()
 
     if request.GET.get('xls_status') == "xls_admissions":
         return export_admissions(request, admission_list, search_form)
