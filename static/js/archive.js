@@ -3,6 +3,8 @@ $("#id_check_all").click(function(){
 });
 
 $("#btn_archive").click(function(e) {
+    var url = $(this).attr('data-url');
+    $("#admissions_form").attr("action", url);
     $("#admissions_form").submit();
 });
 
