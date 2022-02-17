@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ from collections import OrderedDict
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -462,3 +462,25 @@ def billing_edit(request, admission_id):
             'errors': errors,
         }
     )
+
+
+@login_required
+@permission_required('continuing_education.cancel_draft', raise_exception=True)
+def delete_draft(request):
+    selected_admission_ids = request.POST.getlist("selected_draft_action", default=[])
+
+    if not selected_admission_ids:
+        display_error_messages(request, _("Please select at least one admission in 'draft' status"))
+
+    for admission_id in selected_admission_ids:
+        admission = Admission.objects.get(id=admission_id)
+        can_access_admission(request.user, admission)
+    redirection = request.META.get('HTTP_REFERER')
+
+    if selected_admission_ids:
+        Admission.objects.filter(id__in=selected_admission_ids).delete()
+        msg = _("Admission(s) deleted")
+        display_success_messages(request, msg)
+        return redirect(reverse('admission'))
+
+    return HttpResponseRedirect(redirection)

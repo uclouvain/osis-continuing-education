@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-28 09:57+0200\n"
+"POT-Creation-Date: 2022-02-17 10:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,6 +95,9 @@ msgid "Admission submitted"
 msgstr ""
 
 msgid "Admission to process"
+msgstr ""
+
+msgid "Admission(s) deleted"
 msgstr ""
 
 msgid "Admissions"
@@ -340,6 +343,9 @@ msgid "Death"
 msgstr ""
 
 msgid "Delete document"
+msgstr ""
+
+msgid "Delete draft"
 msgstr ""
 
 msgid ""
@@ -830,6 +836,9 @@ msgid ""
 msgstr ""
 
 msgid "Please ensure that you have made the necessary corrections."
+msgstr ""
+
+msgid "Please select at least one admission in 'draft' status"
 msgstr ""
 
 msgid "Please select at least one admission to process."
