@@ -407,14 +407,6 @@ class ViewAdmissionTestCase(TestCase):
         )
         self.assertFalse(Admission.objects.filter(id=draf_admission.id).exists())
 
-        # _mark_as_archived(self.manager.person.user, self.registration_1_unarchived.id)
-        # ad = Admission.objects.get(id=self.registration_1_unarchived.id)
-        # self.assertTrue(ad.archived)
-        #
-        # _mark_as_archived(self.manager.person.user, self.admission_archived.id)
-        # ad = Admission.objects.get(id=self.admission_archived.id)
-        # self.assertTrue(ad.archived)
-
 
 class InvoiceNotificationEmailTestCase(TestCase):
     @classmethod
