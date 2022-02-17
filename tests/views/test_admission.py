@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
@@ -378,6 +379,33 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'additional_information_label': 'additional_information'}
                          )
+
+    def test_error_message_no_draft_admission_selected(self):
+        response = self.client.post(
+            reverse('admission_delete_draft'),
+            data={},
+            follow=True,
+            HTTP_REFERER=reverse('admission', args=[])
+        )
+        self.assertEqual(response.status_code, 200)
+
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        self.assertEqual(len(msg), 1)
+        self.assertIn(messages.ERROR, msg_level)
+        self.assertEqual(msg[0], _("Please select at least one admission in 'draft' status"))
+
+    def test_draft_deleted(self):
+        draf_admission = AdmissionFactory(
+            state=DRAFT,
+            archived=False
+        )
+        self.assertTrue(Admission.objects.filter(id=draf_admission.id).exists())
+        response = self.client.post(
+            reverse('admission_delete_draft'),
+            data={'selected_draft_action': draf_admission.id},
+        )
+        self.assertFalse(Admission.objects.filter(id=draf_admission.id).exists())
 
 
 class InvoiceNotificationEmailTestCase(TestCase):
