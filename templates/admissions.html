@@ -88,12 +88,12 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
                 <li>
-                    <a id="btn_new" style="margin-right:10px;"href="{% url 'admission_new'%}">
+                    <a id="btn_new" style="margin-right:10px;" data-url="{% url 'admission_new'%}">
                         {% trans 'New admission' %}
                     </a>
                 </li>
                 <li>
-                    <a id="btn_delete_draft" style="margin-right:10px;" href="{% url 'admission_delete_draft' %}">
+                    <a id="btn_delete_draft" style="margin-right:10px;" data-url="{% url 'admission_delete_draft' %}">
                         {% trans 'Delete draft' %}
                     </a>
                 </li>
@@ -117,7 +117,7 @@
         {% endif %}
         <div class="panel panel-body">
 
-            <form id="admissions_form" method="post">
+            <form id="admissions_form" method="post" action="">
                 {% csrf_token %}
                  <table class="table table-striped table-hover" id="order_student">
                     <thead>
@@ -151,7 +151,7 @@
                                     <input type="checkbox" name="selected_action" class="selected_object"
                                            value="{{ admission.id }}"/>
                                 {% else %}
-                                    <input type="checkbox" name="selected_draft_action" class="selected_draft_object"
+                                    <input type="checkbox" name="selected_draft_action" class="selected_object"
                                            value="{{ admission.id }}"/>
                                 {% endif %}
                             </td>
@@ -219,7 +219,7 @@
         });
 
         $("#btn_delete_draft").click(function(e) {
-            var url = $(this).attr('href');
+            var url = $(this).attr('data-url');
             $("#admissions_form").attr("action", url);
             $("#admissions_form").submit();
         });
