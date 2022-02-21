@@ -1,3 +1,4 @@
+from django import forms
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 
@@ -10,6 +11,20 @@ ADDRESS_PARTICIPANT_REQUIRED_FIELDS = ['location', 'postal_code', 'city', 'count
 
 
 class AddressForm(ModelForm):
+
+    location = forms.CharField(
+        max_length=50,
+        required=False,
+    )
+    postal_code = forms.CharField(
+        max_length=12,
+        required=False,
+    )
+    city = forms.CharField(
+        max_length=40,
+        required=False,
+    )
+
     country = CountryChoiceField(
         queryset=Country.objects.all(),
         label=_("Country"),

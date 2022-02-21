@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -43,6 +43,10 @@ from continuing_education.views.common import save_and_create_revision, get_revi
     UCL_REGISTRATION_SENDED, UCL_REGISTRATION_REJECTED, UCL_REGISTRATION_STATE_CHANGED, \
     UCL_REGISTRATION_REGISTERED
 from osis_common.queue.queue_sender import send_message
+
+MAX_LENGTH_FOR_STREET_FIELD_IN_EPC = 50
+MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC = 12
+MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC = 40
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
 
@@ -85,9 +89,9 @@ def _gender_to_sex(gender):
 def format_address_for_json(address):
     if address:
         return {
-            'street': address.location,
-            'locality': address.city,
-            'postal_code': address.postal_code,
+            'street': address.location[0:MAX_LENGTH_FOR_STREET_FIELD_IN_EPC],
+            'locality': address.city[0:MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC],
+            'postal_code': address.postal_code[0:MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC],
             'country_name': address.country.name if address.country else '',
             'country_iso_code': address.country.iso_code if address.country else ''
         }
