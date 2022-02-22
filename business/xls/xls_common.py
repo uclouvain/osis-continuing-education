@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,7 +23,46 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from typing import List
+
 from django.utils.translation import gettext_lazy as _
+
+from continuing_education.models.admission import Admission
+
+ADMISSION_HEADERS = [
+    str(_('Name')),
+    str(_('First name')),
+    str(_('Email')),
+    str(_('State')),
+    str(_('Gender')),
+    str(_('Citizenship')),
+    str(_('Birth date')),
+    str(_('Birth location')),
+    str(_('Birth country')),
+    str(_('Mobile phone')),
+    str(_('Contact address')),
+    str(_('High school diploma')),
+    str(_('High school graduation year')),
+    str(_('Last degree level')),
+    str(_('Last degree field')),
+    str(_('Last degree institution')),
+    str(_('Last degree graduation year')),
+    str(_('Other educational background')),
+    str(_('Professional status')),
+    str(_('Current occupation')),
+    str(_('Current employer')),
+    str(_('Activity sector')),
+    str(_('Past professional activities')),
+    str(_('Motivation')),
+    str(_('Professional and personal interests')),
+    str(_('Formation')),
+    str(_('Registration required')),
+    str(_('Additional information')),
+    str(_('Training aid')),
+    str(_('Faculty')),
+    str(_('Formation administrator(s)')),
+    str(_('Awareness')),
+]
 
 
 def form_filters(form):
@@ -35,43 +74,7 @@ def form_filters(form):
     return criteria
 
 
-def get_titles_admission():
-    return [
-        str(_('Name')),
-        str(_('First name')),
-        str(_('Email')),
-        str(_('State')),
-        str(_('Gender')),
-        str(_('Citizenship')),
-        str(_('Birth date')),
-        str(_('Birth location')),
-        str(_('Birth country')),
-        str(_('Mobile phone')),
-        str(_('Contact address')),
-        str(_('High school diploma')),
-        str(_('High school graduation year')),
-        str(_('Last degree level')),
-        str(_('Last degree institution')),
-        str(_('Last degree graduation year')),
-        str(_('Other educational background')),
-        str(_('Professional status')),
-        str(_('Current occupation')),
-        str(_('Current employer')),
-        str(_('Activity sector')),
-        str(_('Past professional activities')),
-        str(_('Motivation')),
-        str(_('Professional and personal interests')),
-        str(_('Formation')),
-        str(_('Registration required')),
-        str(_('Additional information')),
-        str(_('Training aid')),
-        str(_('Faculty')),
-        str(_('Formation administrator(s)')),
-        str(_('Awareness')),
-    ]
-
-
-def extract_xls_data_from_admission(admission):
+def extract_xls_data_from_admission(admission: Admission) -> List[str]:
     return [
         admission.person_information.person.last_name,
         admission.person_information.person.first_name,
@@ -87,6 +90,7 @@ def extract_xls_data_from_admission(admission):
         _('Yes') if admission.high_school_diploma else _('No'),
         admission.high_school_graduation_year,
         admission.last_degree_level,
+        admission.last_degree_field or '',
         admission.last_degree_institution,
         admission.last_degree_graduation_year,
         admission.other_educational_background if admission.other_educational_background else '',
