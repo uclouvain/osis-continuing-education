@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-17 10:09+0100\n"
+"POT-Creation-Date: 2022-02-24 09:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -665,6 +665,9 @@ msgstr "Dernières modifications"
 
 msgid "Last name"
 msgstr "Nom"
+
+msgid "Last name and first name can't be encoded only in capital letters"
+msgstr "Les nom/prénom ne peuvent pas être encodés uniquement en lettres majuscules"
 
 msgid "Last update"
 msgstr "Dernière modification"
