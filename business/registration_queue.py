@@ -44,9 +44,13 @@ from continuing_education.views.common import save_and_create_revision, get_revi
     UCL_REGISTRATION_REGISTERED
 from osis_common.queue.queue_sender import send_message
 
+
+MAX_LENGTH_FOR_LAST_NAME_FIELD_IN_EPC = 40
+MAX_LENGTH_FOR_FIRST_NAME_FIELD_IN_EPC = 20
 MAX_LENGTH_FOR_STREET_FIELD_IN_EPC = 50
 MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC = 12
 MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC = 40
+
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
 
@@ -54,8 +58,8 @@ logger = logging.getLogger(settings.DEFAULT_LOGGER)
 def get_json_for_epc(admission):
     addresses_are_different = admission.address != admission.residence_address
     return {
-        'name': admission.person_information.person.last_name,
-        'first_name': admission.person_information.person.first_name,
+        'name': admission.person_information.person.last_name[0:MAX_LENGTH_FOR_LAST_NAME_FIELD_IN_EPC],
+        'first_name': admission.person_information.person.first_name[0:MAX_LENGTH_FOR_FIRST_NAME_FIELD_IN_EPC],
         'birth_date': admission.person_information.birth_date.strftime("%d/%m/%Y"),
         'birth_location': admission.person_information.birth_location,
         'birth_country_iso_code': admission.person_information.birth_country.iso_code,
