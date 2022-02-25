@@ -44,8 +44,13 @@ from continuing_education.views.common import save_and_create_revision, get_revi
     UCL_REGISTRATION_REGISTERED
 from osis_common.queue.queue_sender import send_message
 
+
 MAX_LENGTH_FOR_LAST_NAME_FIELD_IN_EPC = 40
 MAX_LENGTH_FOR_FIRST_NAME_FIELD_IN_EPC = 20
+MAX_LENGTH_FOR_STREET_FIELD_IN_EPC = 50
+MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC = 12
+MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC = 40
+
 
 logger = logging.getLogger(settings.DEFAULT_LOGGER)
 
@@ -88,9 +93,9 @@ def _gender_to_sex(gender):
 def format_address_for_json(address):
     if address:
         return {
-            'street': address.location,
-            'locality': address.city,
-            'postal_code': address.postal_code,
+            'street': address.location[0:MAX_LENGTH_FOR_STREET_FIELD_IN_EPC],
+            'locality': address.city[0:MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC],
+            'postal_code': address.postal_code[0:MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC],
             'country_name': address.country.name if address.country else '',
             'country_iso_code': address.country.iso_code if address.country else ''
         }
