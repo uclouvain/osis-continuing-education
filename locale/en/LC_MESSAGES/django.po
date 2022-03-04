@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-24 09:22+0100\n"
+"POT-Creation-Date: 2022-03-04 12:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -252,6 +252,12 @@ msgstr ""
 msgid ""
 "Choose here the academic year during which the participant will follow the "
 "formation."
+msgstr ""
+
+#, python-format
+msgid ""
+"Cities available for this belgian postal code %(postal_code)s are : "
+"%(possible_cities)s"
 msgstr ""
 
 msgid "Citizenship"
@@ -1148,6 +1154,10 @@ msgid ""
 msgstr ""
 
 msgid "This page contains the registrations submitted by the participants. "
+msgstr ""
+
+#, python-format
+msgid "This postal code (%(postal_code)s) is not a belgian one!"
 msgstr ""
 
 msgid ""

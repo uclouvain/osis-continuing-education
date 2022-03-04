@@ -9,6 +9,7 @@ if (typeof(residence_address) !== 'undefined') addresses_variables.push(
 for(let {using, address_type, address_instance} of addresses_variables) {
     $("[name=" + using + "]:radio").change(function () {
         if (this.value === "True") {
+            reset_error_in_address(address_type);
             copy_address(address_type);
         } else {
             empty_address(address_type, address_instance)
@@ -47,5 +48,24 @@ $("#btn_confirm_fields").click(function () {
 function enableFields(fields) {
     for (var field of fields) {
         $("#id_" + field).prop("disabled", false);
+    }
+}
+
+function reset_error_in_address(address_type){
+    const classToRemove = 'has-error';
+    const classOfDivToBeRemoved = 'help-block';
+    var divAddress = document.getElementById(address_type+'_address');
+    var divChildren = divAddress.getElementsByTagName("DIV");
+    for (var i=0;i<divChildren.length;i++) {
+        if (divChildren[i].classList.contains(classToRemove)) {
+            divChildren[i].classList.remove(classToRemove);
+            var elt_help_block = divChildren[i].getElementsByTagName("DIV");
+            for (var j = 0; j < elt_help_block.length; j++) {
+                if (elt_help_block[j].classList.contains(classOfDivToBeRemoved)) {
+                    elt_help_block[j].remove();
+                }
+            }
+
+        }
     }
 }

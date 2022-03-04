@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-24 09:22+0100\n"
+"POT-Creation-Date: 2022-03-04 12:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -260,6 +260,12 @@ msgid ""
 msgstr ""
 "Choisissez ici l'année académique durant laquelle le participant suivra la "
 "formation."
+
+#, python-format
+msgid ""
+"Cities available for this belgian postal code %(postal_code)s are : "
+"%(possible_cities)s"
+msgstr "Les localités possibles pour ce code postal %(postal_code)s sont les suivantes : %(possible_cities)s"
 
 msgid "Citizenship"
 msgstr "Nationalité"
@@ -667,7 +673,8 @@ msgid "Last name"
 msgstr "Nom"
 
 msgid "Last name and first name can't be encoded only in capital letters"
-msgstr "Les nom/prénom ne peuvent pas être encodés uniquement en lettres majuscules"
+msgstr ""
+"Les nom/prénom ne peuvent pas être encodés uniquement en lettres majuscules"
 
 msgid "Last update"
 msgstr "Dernière modification"
@@ -1209,6 +1216,10 @@ msgstr ""
 
 msgid "This page contains the registrations submitted by the participants. "
 msgstr " Cette page reprend les inscriptions soumises par les participants. "
+
+#, python-format
+msgid "This postal code (%(postal_code)s) is not a belgian one!"
+msgstr "Ce code postal %(postal_code)s n'est pas belge!"
 
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
