@@ -57,13 +57,8 @@ class AddressForm(ModelForm):
     def clean(self):
 
         cleaned_data = super().clean()
-        print('clean *{}/{}*'.format(cleaned_data.get('country').iso_code, BELGIUM_ISO_CODE))
-        print(cleaned_data.get('country') == BELGIUM_ISO_CODE)
-        print(cleaned_data.get('country'))
         if cleaned_data.get('country') and cleaned_data.get('country').iso_code == BELGIUM_ISO_CODE:
-            print('if1')
             if cleaned_data.get('postal_code') and cleaned_data.get('city'):
-                print('if2')
                 cities = ZipCode.objects.filter(country__iso_code=BELGIUM_ISO_CODE, zip_code=cleaned_data.get('postal_code')).order_by('municipality')
                 if cities:
                     if not are_postal_code_and_city_compatible(cities, cleaned_data.get('city').lower()):
