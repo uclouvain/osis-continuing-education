@@ -15,7 +15,6 @@ for(let {using, address_type, address_instance} of addresses_variables) {
             empty_address(address_type, address_instance)
         }
     });
-    $("[name=" + using + "]:radio").prop('checked') ? copy_address(address_type) : empty_address(address_type, address_instance);
 }
 let fields_to_enable = ["birth_country", "billing-country", "residence-country", "gender"];
 //re-enable disabled field on form submit
@@ -52,20 +51,19 @@ function enableFields(fields) {
 }
 
 function reset_error_in_address(address_type){
-    const classToRemove = 'has-error';
-    const classOfDivToBeRemoved = 'help-block';
-    var divAddress = document.getElementById(address_type+'_address');
-    var divChildren = divAddress.getElementsByTagName("DIV");
-    for (var i=0;i<divChildren.length;i++) {
-        if (divChildren[i].classList.contains(classToRemove)) {
-            divChildren[i].classList.remove(classToRemove);
-            var elt_help_block = divChildren[i].getElementsByTagName("DIV");
-            for (var j = 0; j < elt_help_block.length; j++) {
-                if (elt_help_block[j].classList.contains(classOfDivToBeRemoved)) {
-                    elt_help_block[j].remove();
-                }
-            }
+    const help_block = document.querySelectorAll(`#${address_type}_address .has-error .help-block`);
+    help_block.forEach((el) => el.remove());
 
+    const with_error = document.querySelectorAll(`#${address_type}_address .has-error`);
+    with_error.forEach((el) => el.classList.remove('has-error'));
+}
+
+$(document).ready(function () {
+    for(let {using, address_type, address_instance} of addresses_variables) {
+        var with_error = document.querySelectorAll(`#`+ address_type + `_address .has-error`);
+        if(! with_error) {
+            $("[name=" + using + "]:radio").prop('checked') ? copy_address(address_type) : empty_address(address_type, address_instance);
         }
     }
-}
+})
+

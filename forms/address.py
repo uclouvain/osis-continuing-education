@@ -57,7 +57,7 @@ class AddressForm(ModelForm):
     def clean(self):
 
         cleaned_data = super().clean()
-        if cleaned_data.get('country') and cleaned_data.get('country').iso_code == BELGIUM_ISO_CODE:
+        if cleaned_data.get('country').iso_code == BELGIUM_ISO_CODE:
             if cleaned_data.get('postal_code') and cleaned_data.get('city'):
                 cities = ZipCode.objects.filter(
                     country__iso_code=BELGIUM_ISO_CODE,
@@ -74,7 +74,7 @@ class AddressForm(ModelForm):
 
                 else:
                     self.add_error('postal_code',
-                                   _('This postal code (%(postal_code)s) is not a belgian one!') % {
+                                   _('Postal code (%(postal_code)s) not found in Belgium') % {
                                        'postal_code': str(cleaned_data.get('postal_code'))
                                    }
                                    )

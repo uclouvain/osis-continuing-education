@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-04 12:19+0100\n"
+"POT-Creation-Date: 2022-03-07 08:33+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -265,7 +265,9 @@ msgstr ""
 msgid ""
 "Cities available for this belgian postal code %(postal_code)s are : "
 "%(possible_cities)s"
-msgstr "Les localités possibles pour ce code postal %(postal_code)s sont les suivantes : %(possible_cities)s"
+msgstr ""
+"Les localités possibles pour ce code postal %(postal_code)s sont les "
+"suivantes : %(possible_cities)s"
 
 msgid "Citizenship"
 msgstr "Nationalité"
@@ -922,6 +924,10 @@ msgstr "Courrier"
 msgid "Postal code"
 msgstr "Code postal"
 
+#, python-format
+msgid "Postal code (%(postal_code)s) not found in Belgium"
+msgstr "Ce code postal %(postal_code)s n'est pas belge!"
+
 msgid "Predefined reason"
 msgstr "Motif prédéfini"
 
@@ -1216,10 +1222,6 @@ msgstr ""
 
 msgid "This page contains the registrations submitted by the participants. "
 msgstr " Cette page reprend les inscriptions soumises par les participants. "
-
-#, python-format
-msgid "This postal code (%(postal_code)s) is not a belgian one!"
-msgstr "Ce code postal %(postal_code)s n'est pas belge!"
 
 msgid ""
 "This will check the \"diploma produced\" box for all selected registrations. "
