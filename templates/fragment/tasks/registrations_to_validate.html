@@ -81,7 +81,7 @@
                         <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
                     {% endif %}
                 </td>
-                <td>{{ admission.created_at | default_if_none:'' }}</td>
+                <td>{{ admission.created_at | date:"d/m/Y" | default_if_none:'' }}</td>
             </tr>
         {% endfor %}
         </tbody>
