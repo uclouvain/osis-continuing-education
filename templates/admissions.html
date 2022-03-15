@@ -135,6 +135,7 @@
                             <th class="searchable">{% trans 'Registration required' %}</th>
                             <th class="searchable">{% trans 'Faculty' %}</th>
                             <th class="searchable">{% trans 'State' %}</th>
+                            <th class="searchable">{% trans 'Creation date' %}</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -186,6 +187,7 @@
                                     </span>
                                 {% endif %}
                             </td>
+                            <td>{{ admission.created_at | default_if_none:''}}</td>
                         </tr>
                     {% endfor %}
                 </table>

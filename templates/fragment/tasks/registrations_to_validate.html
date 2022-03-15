@@ -56,6 +56,7 @@
             <th>{% trans 'Email' %}</th>
             <th>{% trans 'Formation' %}</th>
             <th>{% trans 'Registration file received' %}</th>
+            <th>{% trans 'Creation date' %}</th>
         </tr>
         </thead>
         <tbody>
@@ -80,6 +81,7 @@
                         <span class="badge fixed_width danger-color">{% trans 'No' %}</span>
                     {% endif %}
                 </td>
+                <td>{{ admission.created_at | default_if_none:'' }}</td>
             </tr>
         {% endfor %}
         </tbody>
