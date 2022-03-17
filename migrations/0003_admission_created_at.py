@@ -13,23 +13,26 @@ logger = logging.getLogger(settings.DEFAULT_LOGGER)
 def populate_created_at(apps, schema_editor):
     logger.info('Updating new admission.create_at with information from reversion')
     Admission = apps.get_model('continuing_education', 'Admission')
-    Version = apps.get_model('reversion', 'Version')
+    try:
+        Version = apps.get_model('reversion', 'Version')
 
-    admissions = Admission.objects.filter(created_at__isnull=True)
-    filter_by_comment = Q(revision__comment__contains="Création de l'admission") | Q(revision__comment__contains="Creation of the admission")
-    for admission in admissions:
-        versions = Version.objects\
-            .annotate(object_id_casted=Cast('object_id', models.CharField()))\
-            .filter(
-                content_type__model='admission',
-                object_id_casted=Cast(admission.pk, models.CharField()))\
-            .filter(filter_by_comment).select_related(
-                "revision",
-            )
-        if versions:
-            logger.info(versions[0].revision.date_created)
-            admission.created_at = versions[0].revision.date_created
-            admission.save()
+        admissions = Admission.objects.filter(created_at__isnull=True)
+        filter_by_comment = Q(revision__comment__contains="Création de l'admission") | Q(revision__comment__contains="Creation of the admission")
+        for admission in admissions:
+            versions = Version.objects\
+                .annotate(object_id_casted=Cast('object_id', models.CharField()))\
+                .filter(
+                    content_type__model='admission',
+                    object_id_casted=Cast(admission.pk, models.CharField()))\
+                .filter(filter_by_comment).select_related(
+                    "revision",
+                )
+            if versions:
+                logger.info(versions[0].revision.date_created)
+                admission.created_at = versions[0].revision.date_created
+                admission.save()
+    except LookupError:
+        pass
 
 
 class Migration(migrations.Migration):
