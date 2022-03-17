@@ -69,6 +69,7 @@
             <th>{% trans 'Email' %}</th>
             <th>{% trans 'Formation' %}</th>
             <th>{% trans 'State' %}</th>
+            <th>{% trans 'Creation date' %}</th>
         </tr>
         </thead>
         <tbody>
@@ -92,6 +93,7 @@
                             <span class="label label-info show">{% trans admission.state %}</span>
                         {% endif %}
                     </td>
+                    <td>{{ admission.created_at | date:"d/m/Y" | default_if_none:''}}</td>
                 </tr>
             {% endfor %}
         </tbody>
