@@ -51,6 +51,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='admission',
             name='created_at',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='Creation date'),
+            field=models.DateTimeField(auto_now_add=True, null=True, verbose_name='Creation date'),
         ),
     ]
