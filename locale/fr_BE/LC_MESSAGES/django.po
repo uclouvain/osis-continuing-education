@@ -344,7 +344,7 @@ msgid "Country"
 msgstr "Pays"
 
 msgid "Creation date"
-msgstr "Cessation"
+msgstr "Date de création"
 
 msgid "Creation of the admission"
 msgstr "Création de l'admission"
