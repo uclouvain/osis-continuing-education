@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-07 08:33+0100\n"
+"POT-Creation-Date: 2022-03-22 16:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -328,6 +328,9 @@ msgid "Could not send admission json with uuid %(uuid)s in queue"
 msgstr ""
 
 msgid "Country"
+msgstr ""
+
+msgid "Creation date"
 msgstr ""
 
 msgid "Creation of the admission"
