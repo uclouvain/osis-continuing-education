@@ -343,8 +343,6 @@ msgstr ""
 msgid "Country"
 msgstr "Pays"
 
-#, fuzzy
-#| msgid "Cessation"
 msgid "Creation date"
 msgstr "Cessation"
 
