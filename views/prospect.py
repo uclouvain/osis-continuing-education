@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,9 +25,13 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_http_methods
 from rules.contrib.views import permission_required, objectgetter
 
+from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business.prospect import get_prospects_by_user
 from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.models.prospect import Prospect
@@ -61,3 +65,20 @@ def prospect_details(request, prospect_id):
 @permission_required('continuing_education.export_prospect', raise_exception=True)
 def prospect_xls(request):
     return create_xls(request.user)
+
+
+@login_required
+@require_http_methods(['POST'])
+@permission_required('continuing_education.cancel_prospect', raise_exception=True)
+def delete(request):
+    selected_prospects_ids = request.POST.getlist("selected_action", default=[])
+
+    if not selected_prospects_ids:
+        display_error_messages(request, _("Please select at least one prospect"))
+
+    if selected_prospects_ids:
+        Prospect.objects.filter(id__in=selected_prospects_ids).delete()
+        msg = _("Prospect(s) deleted")
+        display_success_messages(request, msg)
+
+    return redirect(reverse('prospects'))

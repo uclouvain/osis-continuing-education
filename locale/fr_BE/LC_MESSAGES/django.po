@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-22 16:47+0100\n"
+"POT-Creation-Date: 2022-03-24 10:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -369,6 +369,9 @@ msgstr "Supprimer le document"
 
 msgid "Delete draft"
 msgstr "Supprimer brouillon(s)"
+
+msgid "Delete prospect"
+msgstr "Supprimer prospect"
 
 msgid ""
 "Describe here additional information that will be asked to the participant:\n"
@@ -910,6 +913,9 @@ msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
 msgid "Please select at least one formation"
 msgstr "Veuillez sélectionner au moins une formation"
 
+msgid "Please select at least one prospect"
+msgstr "Veuillez sélectionner au moins un prospect"
+
 msgid "Please select at least one registration to validate."
 msgstr "Veuillez sélectionner au moins une inscription à valider"
 
@@ -963,6 +969,9 @@ msgstr "Parcours professionnel"
 
 msgid "Professional status"
 msgstr "Statut professionnel"
+
+msgid "Prospect(s) deleted"
+msgstr "Prospect(s) supprimé(s)"
 
 msgid "Prospects"
 msgstr "Prospects"
