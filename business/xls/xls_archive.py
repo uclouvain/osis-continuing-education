@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@
 from django.utils.translation import gettext_lazy as _
 
 from base.business.xls import get_name_or_username
-from continuing_education.business.xls.xls_common import form_filters
-from continuing_education.business.xls.xls_common import get_titles_admission, get_titles_registration, \
-    extract_xls_data_from_registration
+from continuing_education.business.xls.xls_common import form_filters, ADMISSION_HEADERS
+from continuing_education.business.xls.xls_common import get_titles_registration, extract_xls_data_from_registration
 from osis_common.document import xls_build
 
 ARCHIVE_TITLES = [
@@ -67,4 +66,4 @@ def extract_xls_data_from_archive(archive):
 
 
 def _get_titles():
-    return get_titles_admission() + get_titles_registration()
+    return ADMISSION_HEADERS + get_titles_registration()

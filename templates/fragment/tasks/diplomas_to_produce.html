@@ -34,6 +34,7 @@
             <th>{% trans 'First name' %}</th>
             <th>{% trans 'Email' %}</th>
             <th>{% trans 'Formation' %}</th>
+            <th>{% trans 'Creation date' %}</th>
         </tr>
         </thead>
         <tbody>
@@ -50,6 +51,7 @@
                     <td>{{ admission.person_information.person.first_name }}</td>
                     <td>{{ admission.person_information.person.email }}</td>
                     <td>{{ admission.formation }}</td>
+                    <td>{{ admission.created_at| date:"d/m/Y" | default_if_none:''}}</td>
                 </tr>
             {% endfor %}
         </tbody>

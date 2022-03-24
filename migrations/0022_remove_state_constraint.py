@@ -16,5 +16,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(remove_state_constraint, elidable=True),
+        migrations.RunPython(remove_state_constraint, migrations.RunPython.noop, elidable=True),
     ]
