@@ -43,6 +43,7 @@ class ContinuingEducationManager(osis_role_models.RoleModel):
             'continuing_education.view_admission_archives': rules.always_allow,
             'continuing_education.change_admission_state': rules.always_allow,
             'continuing_education.cancel_draft': rules.always_allow,
+            'continuing_education.cancel_prospect': rules.always_allow,
         })
 
 
