@@ -38,7 +38,7 @@ from continuing_education.views.common import get_object_list
 @permission_required('continuing_education.view_prospect', raise_exception=True)
 def list_prospects(request):
     prospects_list = get_prospects_by_user(request.user)
-    return render(request, "prospects.html", {
+    return render(request, "continuing_education/prospects.html", {
         'prospects': get_object_list(request, prospects_list),
         'prospects_count': len(prospects_list)
     })
@@ -52,7 +52,7 @@ def list_prospects(request):
 )
 def prospect_details(request, prospect_id):
     prospect = get_object_or_404(Prospect, pk=prospect_id)
-    return render(request, "prospect_details.html", {
+    return render(request, "continuing_education/prospect_details.html", {
         'prospect': prospect
     })
 

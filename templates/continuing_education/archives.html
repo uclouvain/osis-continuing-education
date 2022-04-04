@@ -72,9 +72,9 @@
                         {{ search_form.free_text }}
                     </div>
                 </div>
-                {% include 'blocks/button/xls_hidden.html' %}
+                {% include 'continuing_education/blocks/button/xls_hidden.html' %}
             </form>
-            {% include 'blocks/form/search_form_reset.html' %}
+            {% include 'continuing_education/blocks/form/search_form_reset.html' %}
         </div>
         {% trans 'Produce xls' as button_title %}
         <div class="panel panel-body">
@@ -86,7 +86,7 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
                     <li>
-                        {% include "blocks/button/xls.html" with button_title=button_title %}
+                        {% include "continuing_education/blocks/button/xls.html" with button_title=button_title %}
                     </li>
                     <li role="separator" class="divider"></li>
                     <li>
@@ -181,7 +181,7 @@
             </form>
         </div>
     </div>
-    {% include "fragment/archives/unarchive_modal.html" %}
+    {% include "continuing_education/fragment/archives/unarchive_modal.html" %}
 {% endblock %}
 
 {% block script %}

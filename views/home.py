@@ -49,7 +49,7 @@ def can_access_continuing_education(f):
 def main_view(request):
     continuing_education_manager = is_continuing_education_manager(request.user)
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
-    return render(request, "admin_home.html", {
+    return render(request, "continuing_education/admin_home.html", {
         'continuing_education_manager': continuing_education_manager,
         'user_is_continuing_education_student_worker': user_is_continuing_education_student_worker,
         'continuing_education_training_manager': is_continuing_education_training_manager(request.user)
