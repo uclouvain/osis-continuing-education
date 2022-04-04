@@ -148,9 +148,8 @@ class ViewRegistrationTestCase(TestCase):
         training_manager = ContinuingEducationTrainingManagerFactory(training=self.admission_accepted.formation)
         self.client.force_login(user=training_manager.person.user)
 
-        registration_file_received = self.admission_accepted.registration_file_received
         data = {
-            'registration_file_received': not registration_file_received,
+            'registration_file_received': True,
             'ucl_registration_complete': "INSCRIT",
             'previous_ucl_registration': True,
         }
@@ -165,7 +164,7 @@ class ViewRegistrationTestCase(TestCase):
         self.admission_accepted.refresh_from_db()
 
         self.assertEqual(self.admission_accepted.ucl_registration_complete, "INIT_STATE")
-        self.assertEqual(self.admission_accepted.registration_file_received, registration_file_received)
+        self.assertEqual(self.admission_accepted.registration_file_received, False)
 
     def test_uclouvain_registration_rejected(self):
         self.admission_validated.ucl_registration_complete = UCLRegistrationState.REJECTED.name
