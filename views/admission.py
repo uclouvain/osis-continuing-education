@@ -86,7 +86,7 @@ def list_admissions(request):
     if request.GET.get('xls_status') == "xls_admissions":
         return export_admissions(request, admission_list, search_form)
 
-    return render(request, "admissions.html", {
+    return render(request, "continuing_education/admissions.html", {
         'admissions': get_object_list(request, admission_list),
         'admissions_number': admission_list.count(),
         'search_form': search_form,
@@ -170,7 +170,7 @@ def admission_detail(request, admission_id):
     _display_adapted_ucl_registration_message(admission, request)
 
     return render(
-        request, "admission_detail.html",
+        request, "continuing_education/admission_detail.html",
         {
             'admission': admission,
             'files': files,
@@ -321,7 +321,7 @@ def admission_form(request, admission_id=None):
 
     return render(
         request,
-        'admission_form.html',
+        'continuing_education/admission_form.html',
         {
             'admission': admission,
             'admission_form': adm_form,
@@ -454,7 +454,7 @@ def billing_edit(request, admission_id):
 
     return render(
         request,
-        'admission_billing_form.html',
+        'continuing_education/admission_billing_form.html',
         {
             'admission': admission,
             'registration_form': registration_form,

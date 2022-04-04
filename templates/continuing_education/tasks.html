@@ -65,20 +65,20 @@
                 <div role="tabpanel"
                      class="tab-pane {% if not continuing_education_training_manager %}active{% endif %}"
                      id="registration_to_validate">
-                    {% include "fragment/tasks/registrations_to_validate.html" %}
+                    {% include "continuing_education/fragment/tasks/registrations_to_validate.html" %}
                 </div>
             {% endif %}
             {% if continuing_education_manager or continuing_education_training_manager %}
                 <!-- Hidden before being sure it won't be used anymore -->
                 <div role="tabpanel" class="tab-pane" id="diploma_to_produce"
                      style="visibility: hidden; display: none;">
-                    {% include "fragment/tasks/diplomas_to_produce.html" %}
+                    {% include "continuing_education/fragment/tasks/diplomas_to_produce.html" %}
                 </div>
             {% endif %}
             {% if continuing_education_training_manager %}
                 <div role="tabpanel" class="tab-pane {% if continuing_education_training_manager %}active{% endif %}"
                      id="admissions_to_validate">
-                    {% include "fragment/tasks/admissions_to_accept.html" %}
+                    {% include "continuing_education/fragment/tasks/admissions_to_accept.html" %}
                 </div>
             {% endif %}
         </div>

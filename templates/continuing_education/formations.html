@@ -81,9 +81,9 @@
                         {{ search_form.free_text }}
                     </div>
                 </div>
-                {% include 'blocks/button/xls_hidden.html' %}
+                {% include 'continuing_education/blocks/button/xls_hidden.html' %}
             </form>
-            {% include 'blocks/form/search_form_reset.html' %}
+            {% include 'continuing_education/blocks/form/search_form_reset.html' %}
         </div>
         <div class="dropdown  text-right" style="margin-right: 10px;">
             <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
@@ -118,7 +118,7 @@
                 <li role="separator" class="divider"></li>
                 <li>
                     {% trans 'Produce xls' as title_xls_trans %}
-                    {% include "blocks/button/xls.html" with button_title=title_xls_trans %}
+                    {% include "continuing_education/blocks/button/xls.html" with button_title=title_xls_trans %}
                 </li>
             </ul>
         </div>

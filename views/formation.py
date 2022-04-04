@@ -65,7 +65,7 @@ def list_formations(request):
             'training')
     ) if continuing_education_training_manager else None
     return render(
-        request, "formations.html",
+        request, "continuing_education/formations.html",
         {
             'formations': get_object_list(request, formation_list),
             'formations_number': len(formation_list),
@@ -176,7 +176,7 @@ def formation_detail(request, formation_id):
             'continuing_education.change_continuingeducationtraining', obj=formation
         )
         return render(
-            request, "formation_detail.html",
+            request, "continuing_education/formation_detail.html",
             {
                 'formation': formation,
                 'can_edit_formation': can_edit_formation,
@@ -207,7 +207,7 @@ def formation_edit(request, formation_id):
         return redirect(reverse('formation_detail', kwargs={'formation_id': formation.education_group.id}))
     return render(
         request,
-        "formation_form.html",
+        "continuing_education/formation_form.html",
         {
             'formation': formation,
             'form': form,

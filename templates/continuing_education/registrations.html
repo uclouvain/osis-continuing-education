@@ -88,13 +88,13 @@
                         {% include 'blocks/button/button_filter_refresh.html' %}
                     </div>
                 </div>
-                {% include 'blocks/button/xls_hidden.html' %}
+                {% include 'continuing_education/blocks/button/xls_hidden.html' %}
             </form>
-            {% include 'blocks/form/search_form_reset.html' %}
+            {% include 'continuing_education/blocks/form/search_form_reset.html' %}
         </div>
         <div class="panel panel-body">
             {% trans 'Produce xls' as title_xls_trans %}
-            {% include 'blocks/dropdown/list_actions.html' with button_title=title_xls_trans %}
+            {% include 'continuing_education/blocks/dropdown/list_actions.html' with button_title=title_xls_trans %}
             {% if admissions %}
                 <div class="row">
                     <div class="col-md-6">

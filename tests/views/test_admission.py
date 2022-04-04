@@ -136,7 +136,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
         self.assertEqual(len(response.context['admissions'].object_list), 2)
 
     def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
@@ -146,7 +146,7 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.context['admissions'].object_list), 0)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
 
     def test_list_admissions_filtered_by_training_manager_with_admission(self):
         training_manager = ContinuingEducationTrainingManagerFactory(training=self.formation)
@@ -155,19 +155,19 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.context['admissions'].object_list), 1)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
 
     def test_list_admissions_pagination_empty_page(self):
         url = reverse('admission')
         response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
 
     def test_admission_detail(self):
         url = reverse('admission_detail', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_detail.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_detail.html')
 
     def test_admission_detail_not_found(self):
         response = self.client.get(reverse('admission_detail', kwargs={
@@ -187,7 +187,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_new')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_admission_new_save(self):
         admission = model_to_dict(self.admission)
@@ -225,7 +225,7 @@ class ViewAdmissionTestCase(TestCase):
         admission['gender'] = ""
         response = self.client.post(reverse('admission_new'), data=admission)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_admission_new_save_gender_not_required_if_existing_person(self):
         admission = model_to_dict(self.admission)
@@ -246,7 +246,7 @@ class ViewAdmissionTestCase(TestCase):
         admission['person_information'] = "no valid pk"
         response = self.client.post(reverse('admission_new'), data=admission)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_admission_edit_not_found(self):
         response = self.client.get(reverse('admission_edit', kwargs={
@@ -258,7 +258,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_edit', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_edit_post_admission_found(self):
         admission = {
@@ -608,7 +608,7 @@ class BillingEditTestCase(TestCase):
         url = reverse('billing_edit', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_billing_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_billing_form.html')
 
     def test_billing_edit_not_found(self):
         response = self.client.get(reverse('billing_edit', kwargs={

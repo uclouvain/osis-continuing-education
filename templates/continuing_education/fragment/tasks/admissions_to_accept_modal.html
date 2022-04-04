@@ -27,11 +27,11 @@
 
 {% trans 'This action will be applied on all selected admissions' as msg %}
 
-{% include "fragment/condition_acceptance_modal.html" with bulk_edit_msg=msg %}
-{% include "fragment/waiting_reason_modal.html" with bulk_edit_msg=msg %}
-{% include "fragment/warning_modal.html" with bulk_edit_msg=msg %}
-{% include "fragment/rejected_reason_modal.html" with bulk_edit_msg=msg %}
-{% include "fragment/cancel_reason_modal.html" with bulk_edit_msg=msg %}
+{% include "continuing_education/fragment/condition_acceptance_modal.html" with bulk_edit_msg=msg %}
+{% include "continuing_education/fragment/waiting_reason_modal.html" with bulk_edit_msg=msg %}
+{% include "continuing_education/fragment/warning_modal.html" with bulk_edit_msg=msg %}
+{% include "continuing_education/fragment/rejected_reason_modal.html" with bulk_edit_msg=msg %}
+{% include "continuing_education/fragment/cancel_reason_modal.html" with bulk_edit_msg=msg %}
 
 {% block script %}
     <script>

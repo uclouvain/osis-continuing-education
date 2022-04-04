@@ -25,32 +25,28 @@
     * see http://www.gnu.org/licenses/.
 {% endcomment %}
 
-<div class="modal fade" id="condition_acceptance_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal fade" id="cancel_reason_modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    {% trans 'Condition of acceptance' %}
+                    {% trans 'Reason for cancelling' %}
                 </h4>
             </div>
             <div class="panel-default">
                 <div class="panel-heading">
-                    {% trans 'You can enter a condition of acceptance' %}
+                    {% trans 'You can enter a reason to cancel this admission' %}
                 </div>
                 <div class="panel-body">
-                    {% include 'blocks/alert/warning.html' with msg=bulk_edit_msg %}
-                    {% bootstrap_field condition_acceptance_adm_form.condition_of_acceptance_existing form_group_class="form-group col-md-12" %}
-                    {% bootstrap_field condition_acceptance_adm_form.condition_of_acceptance form_group_class="form-group col-md-12" %}
-                    {% bootstrap_field condition_acceptance_adm_form.academic_year form_group_class="form-group col-md-12" field_class="accept_anac" %}
-                    <input type="hidden" id="old_condition_of_acceptance">
+                    {% include 'continuing_education/blocks/alert/warning.html' with msg=bulk_edit_msg %}
+                    {% bootstrap_field cancel_adm_form.state_reason form_group_class="form-group col-md-12" %}
+                    <input type="hidden" id="old_cancel_reason">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancel_condition_acceptance" class="btn btn-default text-capitalize"
-                        data-dismiss="modal">{% trans 'Cancel' %}</button>
-                <button type="button" id="add_condition_acceptance" class="btn btn-primary"
-                >{% trans 'Confirm' %}</button>
+                <button type="button" id="cancel_cancel_waiting_reason" class="btn btn-default text-capitalize" data-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" id="add_cancel_reason" class="btn btn-primary">{% trans 'Confirm' %}</button>
             </div>
         </div>
+      </div>
     </div>
-</div>

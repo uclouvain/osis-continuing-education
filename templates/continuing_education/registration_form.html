@@ -41,8 +41,8 @@
     <form id="form" method="POST" class="post-form">
         {% csrf_token %}
 
-        {% include "fragment/registration_form_header.html" with anchor='registration' %}
-        {% include "fragment/billing_form.html" %}
+        {% include "continuing_education/fragment/registration_form_header.html" with anchor='registration' %}
+        {% include "continuing_education/fragment/billing_form.html" %}
 
         <div class="panel panel-default">
             <div class="panel-heading"><h4>{% trans 'Registration' %}</h4></div>
@@ -130,7 +130,7 @@
             <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
         </button>
         {% trans 'Do you confirm you want to save?' as confirm_msg_extra %}
-        {% include "fragment/submit_confirm_modal.html" with confirm_msg=confirm_msg_extra %}
+        {% include "continuing_education/fragment/submit_confirm_modal.html" with confirm_msg=confirm_msg_extra %}
 
     </form>
 {% endblock %}
