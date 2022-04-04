@@ -56,7 +56,7 @@ def list_archives(request):
     if request.GET.get('xls_status') == "xls_archives":
         return export_archives(request, archive_list, search_form)
 
-    return render(request, "archives.html", {
+    return render(request, "continuing_education/archives.html", {
         'archives': get_object_list(request, archive_list),
         'archives_number': len(archive_list),
         'search_form': search_form

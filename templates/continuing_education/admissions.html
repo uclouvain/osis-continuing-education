@@ -74,9 +74,9 @@
                         {% include 'blocks/button/button_filter_refresh.html' %}
                     </div>
                 </div>
-                {% include 'blocks/button/xls_hidden.html' %}
+                {% include 'continuing_education/blocks/button/xls_hidden.html' %}
             </form>
-            {% include 'blocks/form/search_form_reset.html' %}
+            {% include 'continuing_education/blocks/form/search_form_reset.html' %}
 
         </div>
         {% trans 'Produce xls' as button_title %}
@@ -99,11 +99,11 @@
                 </li>
                 <li role="separator" class="divider"></li>
                 <li>
-                    {% include 'blocks/button/archive.html' %}
+                    {% include 'continuing_education/blocks/button/archive.html' %}
                 </li>
                 <li role="separator" class="divider"></li>
                 <li>
-                    {% include "blocks/button/xls.html" with button_title=button_title %}
+                    {% include "continuing_education/blocks/button/xls.html" with button_title=button_title %}
                 </li>
             </ul>
         </div>
