@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 from django.utils.translation import gettext_lazy as _
 
 from base.business.xls import get_name_or_username
-from continuing_education.business.xls.xls_common import form_filters, get_titles_admission, \
-    extract_xls_data_from_admission
+from continuing_education.business.xls.xls_common import form_filters, extract_xls_data_from_admission, \
+    ADMISSION_HEADERS
 from osis_common.document import xls_build
 
 XLS_DESCRIPTION = _('Admissions list')
@@ -42,7 +42,7 @@ def create_xls(user, admission_list, form):
     parameters = {xls_build.DESCRIPTION: XLS_DESCRIPTION,
                   xls_build.USER: get_name_or_username(user),
                   xls_build.FILENAME: XLS_FILENAME,
-                  xls_build.HEADER_TITLES: get_titles_admission(),
+                  xls_build.HEADER_TITLES: ADMISSION_HEADERS,
                   xls_build.WS_TITLE: WORKSHEET_TITLE}
 
     return xls_build.generate_xls(xls_build.prepare_xls_parameters_list(working_sheets_data, parameters), filters)

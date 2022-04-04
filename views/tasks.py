@@ -96,7 +96,7 @@ def list_tasks(request):
         request.POST or None,
     )
 
-    return render(request, "tasks.html", {
+    return render(request, "continuing_education/tasks.html", {
         'registrations_to_validate': registrations_to_validate,
         'to_validate_count': registrations_to_validate.count(),
         'admissions_diploma_to_produce': admissions_diploma_to_produce,

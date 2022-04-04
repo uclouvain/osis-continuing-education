@@ -63,7 +63,7 @@ class ProspectListTestCase(TestCase):
 
         response = self.client.get(reverse('prospects'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'prospects.html')
+        self.assertTemplateUsed(response, 'continuing_education/prospects.html')
 
         for index, object in enumerate(response.context['prospects'].object_list):
             self.assertEqual(response.context['prospects'].object_list[index], prospects[index])
@@ -73,7 +73,7 @@ class ProspectListTestCase(TestCase):
         response = self.client.post(reverse('prospects'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['prospects'].object_list, [])
-        self.assertTemplateUsed(response, 'prospects.html')
+        self.assertTemplateUsed(response, 'continuing_education/prospects.html')
 
     def test_prospect_list_logout_unauthorized(self):
         self.client.logout()
@@ -98,7 +98,7 @@ class ProspectDetailsTestCase(TestCase):
     def test_prospect_details(self):
         response = self.client.get(reverse('prospect_details', kwargs={'prospect_id': self.prospect.pk}))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'prospect_details.html')
+        self.assertTemplateUsed(response, 'continuing_education/prospect_details.html')
         context = response.context[0].dicts[3]
         self.assertEqual(
             context.get('prospect'),

@@ -63,7 +63,7 @@ def list_registrations(request):
     if request.GET.get('xls_status') == "xls_registrations":
         return export_registrations(request, admission_list, search_form)
 
-    return render(request, "registrations.html", {
+    return render(request, "continuing_education/registrations.html", {
         'admissions': get_object_list(request, admission_list),
         'admissions_number': admission_list.count(),
         'search_form': search_form,
@@ -129,7 +129,7 @@ def registration_edit(request, admission_id):
 
     return render(
         request,
-        'registration_form.html',
+        'continuing_education/registration_form.html',
         {
             'admission': admission,
             'registration_form': registration_form,
@@ -213,6 +213,6 @@ def list_cancelled(request):
     ])
     admission_list = filter_authorized_admissions(request.user, admission_list)
 
-    return render(request, "cancellations.html", {
+    return render(request, "continuing_education/cancellations.html", {
         'admissions': get_object_list(request, admission_list)
     })

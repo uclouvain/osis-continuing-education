@@ -119,7 +119,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     vat_number = factory.Faker('ssn')
 
     # Registration
-    national_registry_number = '123453546'
+    national_registry_number = ''
     id_card_number = '7897675467'
     passport_number = '375375375'
 
@@ -133,7 +133,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     # Post
     use_address_for_post = factory.fuzzy.FuzzyChoice([True, False])
     residence_address = factory.SubFactory(AddressFactory)
-    residence_phone = _get_fake_phone_number(),
+    residence_phone = _get_fake_phone_number()
 
     # Student Sheet
     ucl_registration_complete = UCLRegistrationState.INIT_STATE.name

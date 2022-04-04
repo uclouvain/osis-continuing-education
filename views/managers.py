@@ -59,7 +59,7 @@ def list_managers(request):
     for manager in managers:
         manager.trainings = trainings.filter(managers=manager).distinct()
 
-    return render(request, "managers.html", {
+    return render(request, "continuing_education/managers.html", {
         'managers': get_object_list(request, managers),
         'search_form': search_form,
         'person_training_form': person_training_form

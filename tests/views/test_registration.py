@@ -30,7 +30,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.core.cache import cache
-from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import reverse
 from django.test import TestCase
@@ -41,12 +40,12 @@ from base.tests.factories.academic_year import create_current_academic_year, Aca
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.forms.registration import RegistrationForm, \
-    UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
+from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
+from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
@@ -92,13 +91,13 @@ class ViewRegistrationTestCase(TestCase):
         for admission in admissions:
             self.assertIn(admission.state, [admission_state_choices.ACCEPTED, admission_state_choices.VALIDATED])
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registrations.html')
+        self.assertTemplateUsed(response, 'continuing_education/registrations.html')
 
     def test_list_registrations_pagination_empty_page(self):
         url = reverse('registration')
         response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registrations.html')
+        self.assertTemplateUsed(response, 'continuing_education/registrations.html')
 
     def test_registration_edit_not_found(self):
         response = self.client.get(reverse('registration_edit', kwargs={
@@ -110,30 +109,64 @@ class ViewRegistrationTestCase(TestCase):
         url = reverse('registration_edit', args=[self.admission_accepted.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'registration_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/registration_form.html')
 
     def test_edit_post_registration_found(self):
-        admission = AdmissionFactory(formation=self.formation)
-        admission_dict = model_to_dict(admission)
-        admission_dict['billing_address'] = admission.billing_address
-        admission_dict['residence_address'] = admission.residence_address
-        admission_dict['citizenship'] = admission.citizenship
-        admission_dict['address'] = admission.address
+        new_address = AddressFactory()
+
+        previous_ucl_registration = self.admission_accepted.previous_ucl_registration
+
+        data = {
+            'billing_address': new_address.pk,
+            'billing-city': new_address.city,
+            'use_address_for_billing': False,
+            'residence_address': new_address.pk,
+            'residence-city': new_address.city,
+            'use_address_for_post': False,
+            'children_number': 2,
+            'previous_ucl_registration': not previous_ucl_registration,
+            'ucl_registration_complete': "INSCRIT",
+            'registration_file_received': True
+        }
+
+        form = RegistrationForm(data, instance=self.admission_accepted)
+
         url = reverse('registration_edit', args=[self.admission_accepted.id])
-        form = RegistrationForm(admission_dict)
-        form.is_valid()
-        response = self.client.post(url, data=form.cleaned_data)
+
+        response = self.client.post(url, data=data)
         self.assertRedirects(
             response,
             reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
         )
+
         self.admission_accepted.refresh_from_db()
 
-        # verifying that fields are correctly updated
-        for key in form.cleaned_data.keys():
-            field_value = self.admission_accepted.__getattribute__(key)
-            if key not in UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
-                self.assertEqual(field_value, admission_dict[key])
+        self.assertEqual(self.admission_accepted.children_number, 2)
+        self.assertEqual(self.admission_accepted.residence_address.city, new_address.city)
+        self.assertEqual(self.admission_accepted.billing_address.city, new_address.city)
+
+    def test_training_manager_should_not_update_unupdatable_fields(self):
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.admission_accepted.formation)
+        self.client.force_login(user=training_manager.person.user)
+
+        registration_file_received = self.admission_accepted.registration_file_received
+        data = {
+            'registration_file_received': not registration_file_received,
+            'ucl_registration_complete': "INSCRIT",
+            'previous_ucl_registration': True,
+        }
+        url = reverse('registration_edit', args=[self.admission_accepted.id])
+
+        response = self.client.post(url, data=data)
+        self.assertRedirects(
+            response,
+            reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
+        )
+
+        self.admission_accepted.refresh_from_db()
+
+        self.assertEqual(self.admission_accepted.ucl_registration_complete, "INIT_STATE")
+        self.assertEqual(self.admission_accepted.registration_file_received, registration_file_received)
 
     def test_uclouvain_registration_rejected(self):
         self.admission_validated.ucl_registration_complete = UCLRegistrationState.REJECTED.name
@@ -228,13 +261,13 @@ class ViewRegistrationTestCase(TestCase):
         for admission in admissions:
             self.assertEqual(admission.state, admission_state_choices.CANCELLED)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'cancellations.html')
+        self.assertTemplateUsed(response, 'continuing_education/cancellations.html')
 
     def test_list_cancellations_pagination_empty_page(self):
         url = reverse('cancelled_files')
         response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'cancellations.html')
+        self.assertTemplateUsed(response, 'continuing_education/cancellations.html')
 
     def test_registration_list_unauthorized_cancelled_files(self):
         self.client.force_login(_build_unauthorized_user())
@@ -311,7 +344,7 @@ class RegistrationStateChangedTestCase(TestCase):
             self.client.force_login(self.continuing_education_manager.person.user)
             url = reverse('admission_detail', args=[registration.pk])
             response = self.client.get(url)
-            self.assertTemplateUsed(response, 'admission_detail.html')
+            self.assertTemplateUsed(response, 'continuing_education/admission_detail.html')
             self.assertGreaterEqual(len(response.context['states']), 0)
 
     def test_registration_detail_empty_unauthorized_state_choices(self):
@@ -319,7 +352,7 @@ class RegistrationStateChangedTestCase(TestCase):
             self.client.force_login(self.faculty_manager.person.user)
             url = reverse('admission_detail', args=[registration.pk])
             response = self.client.get(url)
-            self.assertTemplateUsed(response, 'admission_detail.html')
+            self.assertTemplateUsed(response, 'continuing_education/admission_detail.html')
             self.assertEqual(len(response.context['states']), 0)
 
     def _data_form_to_validate(self):
@@ -371,7 +404,7 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['admissions'], [])
-        self.assertTemplateUsed(response, 'registrations.html')
+        self.assertTemplateUsed(response, 'continuing_education/registrations.html')
 
     def test_list_with_registrations(self):
         url = reverse('registration')
@@ -379,7 +412,7 @@ class ViewRegistrationsTrainingManagerTestCase(TestCase):
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertCountEqual(response.context['admissions'], self.registrations)
         self.assertEqual(response.context['admissions_number'], 3)
-        self.assertTemplateUsed(response, 'registrations.html')
+        self.assertTemplateUsed(response, 'continuing_education/registrations.html')
 
 
 class ViewRegistrationCacheTestCase(TestCase):
