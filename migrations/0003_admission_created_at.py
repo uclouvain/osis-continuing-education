@@ -17,7 +17,9 @@ def populate_created_at(apps, schema_editor):
         Version = apps.get_model('reversion', 'Version')
 
         admissions = Admission.objects.filter(created_at__isnull=True)
-        filter_by_comment = Q(revision__comment__contains="Création de l'admission") | Q(revision__comment__contains="Creation of the admission")
+        filter_by_comment = Q(revision__comment__contains="Création de l'admission") | Q(
+            revision__comment__contains="Creation of the admission"
+        )
         for admission in admissions:
             versions = Version.objects\
                 .annotate(object_id_casted=Cast('object_id', models.CharField()))\
