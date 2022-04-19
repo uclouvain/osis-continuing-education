@@ -1,0 +1,154 @@
+{% load static %}
+{% load i18n %}
+{% load bootstrap3 %}
+<div style="padding: 0.5em;">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="alert alert-info" style="display:inline-block;">
+                <i class="fa fa-info-circle"></i> {% trans 'This page contains the admissions submitted by the participants or waiting. These must be processed by the manager.' %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dropdown  text-right" style="margin-right: 10px;" id="div_admission_actions_btn">
+                <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" id="btn_tasks_admissions_actions">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Change state on selected admissions to ...' %}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                    <li>
+                        <a id="btn_registrations_accept" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#condition_acceptance_modal">
+                            {% trans 'Accepted' %}
+                        </a>
+                        <a id="btn_registrations_reject" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#rejected_reason_modal">
+                            {% trans 'Rejected' %}
+                        </a>
+                        <a id="btn_registrations_wait" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#waiting_reason_modal">
+                            {% trans 'Waiting' %}
+                        </a>
+                        <a id="btn_registrations_draft" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#modalWarningDraft">
+                            {% trans 'Draft' %}
+                        </a>
+                        <a id="btn_registrations_cancel" href="#" style="margin-right:10px;"
+                           data-toggle="modal" data-target="#cancel_reason_modal">
+                            {% trans 'Cancelled' %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% if admissions_to_accept %}
+        <div class="row">
+            <div class="col-md-6">
+                <strong style="margin-left:10px;color:grey;"> {{ admissions_to_accept|length }} {% if admissions_to_accept.count > 1 %}{% trans 'Admissions to process'|lower %}{% else %}{% trans 'Admission to process'|lower %}{% endif %}</strong>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<form id="admissions_to_process_form" method="post" action="{% url 'process_admissions' %}">
+    {% csrf_token %}
+    <input type="hidden" id="hdn_new_state" name="new_state"/>
+    <table class="table table-striped table-hover" id="tab_admissions_to_accept" style="width: 100%;">
+        <thead>
+        <tr>
+            <th>
+                {% if admissions_to_accept %}
+                    <input id="id_check_all_admissions_to_accept" type="checkbox" name="check_all"
+                           title="{% trans 'Check All' %}"/>
+                {% endif %}
+            </th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'First name' %}</th>
+            <th>{% trans 'Email' %}</th>
+            <th>{% trans 'Formation' %}</th>
+            <th>{% trans 'State' %}</th>
+            <th>{% trans 'Creation date' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for admission in admissions_to_accept %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selected_admissions_to_accept" class="selected_admissions_to_accept" value="{{ admission.id }}" />
+                    </td>
+                    <td>
+                        <a href="{% url 'admission_detail' admission_id=admission.id %}#admission">
+                            {{ admission.person_information.person.last_name | default_if_none:'-' }}
+                        </a>
+                    </td>
+                    <td>{{ admission.person_information.person.first_name | default_if_none:'-'}}</td>
+                    <td>{{ admission.person_information.person.email | default_if_none:'-' }}</td>
+                    <td>{{ admission.formation }}</td>
+                    <td style="vertical-align: middle;" class="admission-state">
+                        {% if admission.is_waiting %}
+                            <span class="label label-primary show">{% trans admission.state %}</span>
+                            {% elif admission.is_submitted %}
+                            <span class="label label-info show">{% trans admission.state %}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ admission.created_at | date:"d/m/Y" | default_if_none:''}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "continuing_education/fragment/tasks/admissions_to_accept_modal.html" %}
+</form>
+
+{% block script %}
+    <script>
+        $("#id_check_all_admissions_to_accept").click(function(){
+            $('input:checkbox.selected_admissions_to_accept').not(this).prop('checked', this.checked);
+        });
+
+
+        $('#tab_admissions_to_accept').DataTable( {
+            "order": [[ 1, "asc" ]],
+            "paging": false,
+            "info": false,
+            "bFilter": false,
+            "language":
+            {
+                "sEmptyTable": "{% trans 'No data' %}",
+            },
+            // Disable sorting on the first column
+            "aoColumnDefs" : [ {
+                'bSortable' : false,
+                'aTargets' : [ 0 ]
+            } ]
+        } );
+
+        $("#btn_registrations_accept").click(function(){
+            $('#hdn_new_state').val('Accepted');
+        });
+
+        $("#btn_registrations_reject").click(function(){
+            $('#hdn_new_state').val('Rejected');
+        });
+
+        $("#btn_registrations_wait").click(function(){
+            $('#hdn_new_state').val('Waiting');
+        });
+
+
+        $("#btn_registrations_draft").click(function(){
+            $('#hdn_new_state').val('Draft');
+        });
+
+        $("#btn_registrations_cancel").click(function(){
+            $('#hdn_new_state').val('Cancelled');
+        });
+
+    </script>
+    <script src="{% static 'js/task_admission_menu.js' %}"></script>
+    <script src="{% static 'js/rejected_waiting_admission.js' %}"></script>
+    <script src="{% static 'js/condition_acceptance_admission.js' %}"></script>
+    <script src="{% static 'js/cancel_admission.js' %}"></script>
+{% endblock %}
+

@@ -124,7 +124,7 @@ class ViewFormationTestCase(TestCase):
         url = reverse('formation_detail', args=[self.continuing_education_training.education_group.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'formation_detail.html')
+        self.assertTemplateUsed(response, 'continuing_education/formation_detail.html')
 
     def test_formation_detail_not_found(self):
         response = self.client.get(reverse('formation_detail', kwargs={
@@ -143,7 +143,7 @@ class ViewFormationTestCase(TestCase):
         url = reverse('formation_edit', args=[self.continuing_education_training.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'formation_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/formation_form.html')
 
     def test_formation_edit_unauthorized(self):
         unauthorized_user = User.objects.create_user('unauthorized', 'unauth@demo.org', 'passtest')
@@ -181,7 +181,7 @@ class ViewFormationTestCase(TestCase):
         url = reverse('formation_edit', args=[self.continuing_education_training.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, HttpResponseBase.status_code)
-        self.assertTemplateUsed(response, 'formation_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/formation_form.html')
 
     def test_training_manager_cannot_edit_training(self):
         self.client.force_login(self.training_manager.person.user)

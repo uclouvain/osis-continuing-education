@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ class TestXlsCommon(TestCase):
         result = extract_xls_data_from_registration(self.registration)
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
-        self.assertEqual(result[35], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
+        self.assertEqual(result[36], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))
         self.assertEqual(result[10], "{} - {} {} - {}".format(self.address.location, self.address.postal_code,
                                                               self.address.city.upper(), COUNTRY_NAME.upper()))

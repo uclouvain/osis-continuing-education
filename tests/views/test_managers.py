@@ -65,7 +65,7 @@ class ManagerListTestCase(TestCase):
         response = self.client.get(reverse('list_managers'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
         self.assertEqual(response.context['managers'].object_list, [self.training_manager.person])
-        self.assertTemplateUsed(response, 'managers.html')
+        self.assertTemplateUsed(response, 'continuing_education/managers.html')
 
     def test_assign_manager_to_training(self):
         employee = PersonFactory(employee=True)

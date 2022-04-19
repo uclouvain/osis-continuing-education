@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+{% load static %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+    * OSIS stands for Open Student Information System. It's an application
+    * designed to manage the core business of higher education institutions,
+    * such as universities, faculties, institutes and professional schools.
+    * The core business involves the administration of students, teachers,
+    * courses, programs and so on.
+    *
+    * Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+    *
+    * This program is free software: you can redistribute it and/or modify
+    * it under the terms of the GNU General Public License as published by
+    * the Free Software Foundation, either version 3 of the License, or
+    * (at your option) any later version.
+    *
+    * This program is distributed in the hope that it will be useful,
+    * but WITHOUT ANY WARRANTY; without even the implied warranty of
+    * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    * GNU General Public License for more details.
+    *
+    * A copy of this license - GNU General Public License - is available
+    * at the root of the source code of this program.  If not,
+    * see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/continuing_education_style.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li class="active">{% trans 'Training Managers' %}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h2>{% trans 'Training Managers' %}</h2>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel panel-body">
+            <div class="row">
+                <form style="display: inline;" action="{% url 'list_managers' %}" method="get" class=""
+                      id="search_form">
+                    {% csrf_token %}
+                    <div class="col-md-2">
+                        <label for="training_id">{% trans 'Training' %}</label>
+                        {{ search_form.training }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="manager_id">{% trans 'Person' %}</label>
+                        {{ search_form.person }}
+                    </div>
+                    <div class="col-md-2">
+                        <label for="faculty_id">{% trans 'Faculty' %}</label>
+                        {{ search_form.faculty }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
+                    </div>
+                </form>
+                {% include 'continuing_education/blocks/form/search_form_reset.html' %}
+                <div class="pull-right">
+                    <button data-toggle="modal" data-target="#person_training_modal"
+                            style="margin-top: 26px; margin-right:10px;" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus"
+                              aria-hidden="true"></span> {% trans 'Assign manager to training' %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-body">
+            {% if managers %}
+                <p style="font-weight: bold; margin-left:10px;color:grey; margin-bottom: 20px;"> {{ managers.paginator.count }} {% trans 'managers'|lower %} </p>
+            {% endif %}
+            <form id="managers_form">
+                {% csrf_token %}
+                <table class="table table-striped table-hover" id="managers_table">
+                    <thead>
+                        <tr>
+                            <th class="searchable">{% trans 'Name' %}</th>
+                            <th class="searchable">{% trans 'First name' %}</th>
+                            <th class="searchable">{% trans 'Trainings' %}</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th colspan="3">
+                            {% bootstrap_pagination managers extra=request.GET.urlencode %}
+                        </th>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    {% for manager in managers %}
+                        <tr>
+                            <td>{{ manager.last_name }}</td>
+                            <td>{{ manager.first_name }}</td>
+                            <td>
+                                <ul style='list-style-type:none; padding-left: 0;'>
+                                    {% if not manager.trainings %}
+                                        <li>{% trans 'No assigned training' %}</li>
+                                    {% else %}
+                                        {% for training in manager.trainings %}
+                                            <li>
+                                                <a href="{% url 'delete_continuing_education_training_manager' training=training.pk manager=manager.pk %}">
+                                                    <i class="fa fa-times"></i></a>
+                                                {{ training }} - {{ training.management_entity }}</li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+    {% include "continuing_education/fragment/managers/person_training_modal.html" %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#managers_table').DataTable({
+            "order": [[0, "asc"]],
+            "paging": false,
+            "info": false,
+            "bFilter": false,
+            "language":
+                {
+                    "sEmptyTable": "{% trans 'No data' %}",
+                },
+        });
+    </script>
+{% endblock %}
