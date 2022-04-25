@@ -73,7 +73,6 @@ def delete_prospects(request):
         Prospect.objects.filter(id__in=selected_prospects_id).delete()
         msg = _("Prospect(s) deleted")
         display_success_messages(request, msg)
-
     else:
         _set_error_message(request)
     return redirect(reverse('prospects'))
