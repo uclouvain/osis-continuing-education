@@ -36,7 +36,6 @@ from continuing_education.tests.factories.roles.continuing_education_training_ma
 
 
 class TestProspect(TestCase):
-
     @classmethod
     def setUpTestData(cls):
         academic_year = create_current_academic_year()
@@ -45,7 +44,7 @@ class TestProspect(TestCase):
             education_group=education_group,
             academic_year=academic_year
         )
-        training_1 = ContinuingEducationTrainingFactory(education_group=education_group)
+        training_1 = ContinuingEducationTrainingFactory(education_group=education_group, active=True)
         cls.manager = ContinuingEducationTrainingManagerFactory(training=training_1)
         cls.prospect_1 = ProspectFactory(formation=training_1, name="Delwart")
         cls.prospect_2 = ProspectFactory(formation=training_1, name="Debouche")
@@ -58,7 +57,7 @@ class TestProspect(TestCase):
             [self.prospect_1, self.prospect_2]
         )
 
-    def test_get_prospects_by_user_and_free_texte(self):
+    def test_get_prospects_by_user_and_free_text(self):
         form = ProspectFilterForm(data={'free_text': 'wart'}, user=self.manager.person.user)
 
         self.assertTrue(form.is_valid())
