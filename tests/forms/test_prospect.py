@@ -23,6 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest import mock
+
 from django.test import TestCase
 
 from base.tests.factories.academic_year import create_current_academic_year
@@ -49,7 +51,8 @@ class TestProspect(TestCase):
         cls.prospect_1 = ProspectFactory(formation=training_1, name="Delwart")
         cls.prospect_2 = ProspectFactory(formation=training_1, name="Debouche")
 
-    def test_get_prospects_by_user(self):
+    @mock.patch('continuing_education.forms.search._build_prospects_formation_choices')
+    def test_get_prospects_by_user(self, mock_formation_dropdown):
         form = ProspectFilterForm(data={}, user=self.manager.person.user)
         self.assertTrue(form.is_valid())
         self.assertCountEqual(
@@ -57,9 +60,9 @@ class TestProspect(TestCase):
             [self.prospect_1, self.prospect_2]
         )
 
-    def test_get_prospects_by_user_and_free_text(self):
+    @mock.patch('continuing_education.forms.search._build_prospects_formation_choices')
+    def test_get_prospects_by_user_and_free_text(self, mock_formation_dropdown):
         form = ProspectFilterForm(data={'free_text': 'wart'}, user=self.manager.person.user)
-
         self.assertTrue(form.is_valid())
         self.assertCountEqual(
             form.get_propects_with_filter(),
