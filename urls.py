@@ -72,7 +72,6 @@ urlpatterns = [
     url(r'^prospects/', include([
         url(r'^$', prospect.list_prospects, name='prospects'),
         url(r'^(?P<prospect_id>[0-9]+)/', prospect.prospect_details, name='prospect_details'),
-        url(r'^reporting', prospect.prospect_xls, name='prospects_xls'),
         url(r'^delete', prospect.delete_prospects, name='prospects_delete'),
     ])),
     url(r'^tasks/', include([

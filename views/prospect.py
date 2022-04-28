@@ -25,24 +25,36 @@
 ##############################################################################
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, reverse, get_object_or_404
-from django.utils.translation import gettext_lazy as _
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from rules.contrib.views import permission_required, objectgetter
 
 from base.views.common import display_error_messages, display_success_messages
 from continuing_education.business.prospect import get_prospects_by_user
 from continuing_education.business.xls.xls_prospect import create_xls
+from continuing_education.forms.search import ProspectFilterForm
 from continuing_education.models.prospect import Prospect
 from continuing_education.views.common import get_object_list
+from django.utils.translation import gettext_lazy as _
 
 
 @login_required
 @permission_required('continuing_education.view_prospect', raise_exception=True)
 def list_prospects(request):
-    prospects_list = get_prospects_by_user(request.user)
+    search_form = ProspectFilterForm(data=request.GET, user=request.user)
+
+    if search_form.is_valid():
+        prospects_list = search_form.get_propects_with_filter()
+    else:
+        prospects_list = Prospect.objects.none()
+
+    if request.GET.get('xls_status') == "xls_prospects":
+        return prospect_xls(request, prospects_list, search_form)
+
     return render(request, "continuing_education/prospects.html", {
         'prospects': get_object_list(request, prospects_list),
-        'prospects_count': len(prospects_list)
+        'prospects_count': len(prospects_list),
+        'search_form': search_form
     })
 
 
@@ -61,8 +73,9 @@ def prospect_details(request, prospect_id):
 
 @login_required
 @permission_required('continuing_education.export_prospect', raise_exception=True)
-def prospect_xls(request):
-    return create_xls(request.user)
+def prospect_xls(request, prospects_list, search_form: ProspectFilterForm):
+    return create_xls(request.user, prospects_list, search_form)
+
 
 
 @login_required
