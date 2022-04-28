@@ -28,7 +28,6 @@ from django.test import TestCase
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
-from continuing_education.business.prospect import get_prospects_by_user
 from continuing_education.forms.search import ProspectFilterForm
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
@@ -51,9 +50,7 @@ class TestProspect(TestCase):
         cls.prospect_1 = ProspectFactory(formation=training_1, name="Delwart")
         cls.prospect_2 = ProspectFactory(formation=training_1, name="Debouche")
 
-
     def test_get_prospects_by_user(self):
-
         form = ProspectFilterForm(data={}, user=self.manager.person.user)
         self.assertTrue(form.is_valid())
         self.assertCountEqual(

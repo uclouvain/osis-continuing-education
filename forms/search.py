@@ -492,6 +492,5 @@ def _build_prospects_formation_choices(field, prospects_queryset):
     prospect_ids = [prospect.id for prospect in list(prospects_queryset)]
 
     field.queryset = ContinuingEducationTraining.objects.formations().filter(
-        id__in=Prospect.objects.filter(id__in=prospect_ids
-        ).values_list('formation', flat=False)
+        id__in=Prospect.objects.filter(id__in=prospect_ids).values_list('formation', flat=False)
     ).distinct().order_by('education_group__educationgroupyear__acronym')
