@@ -64,5 +64,5 @@ class TestProspect(TestCase):
         self.assertTrue(form.is_valid())
         self.assertCountEqual(
             form.get_propects_with_filter(),
-            [self.prospect_1, self.prospect_2]
+            [self.prospect_1]
         )
