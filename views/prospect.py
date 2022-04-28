@@ -30,7 +30,6 @@ from django.urls import reverse
 from rules.contrib.views import permission_required, objectgetter
 
 from base.views.common import display_error_messages, display_success_messages
-from continuing_education.business.prospect import get_prospects_by_user
 from continuing_education.business.xls.xls_prospect import create_xls
 from continuing_education.forms.search import ProspectFilterForm
 from continuing_education.models.prospect import Prospect
