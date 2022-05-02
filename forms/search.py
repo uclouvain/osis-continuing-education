@@ -483,7 +483,6 @@ class ProspectFilterForm(CommonFilterForm):
             ).distinct()
         return qs
 
-
     def _build_prospects_formation_choices(self):
         self.fields['formation'].queryset = ContinuingEducationTraining.objects.formations().filter(
             id__in=self.prospects_queryset.values_list('formation', flat=False)
