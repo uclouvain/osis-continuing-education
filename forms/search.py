@@ -458,10 +458,14 @@ class ProspectFilterForm(CommonFilterForm):
         self._build_prospects_formation_choices()
 
     def get_prospects_by_user(self, user):
-        person_trainings = ContinuingEducationTrainingManager.objects.filter(
-            person=user.person
-        ).values_list('training', flat=True)
-        return Prospect.objects.filter(formation_id__in=person_trainings)
+        return Prospect.objects.filter(
+            formation__continuingeducationtrainingmanager__person=user.person
+        ).select_related(
+            'formation__education_group'
+        ).prefetch_related(
+            'formation__education_group__educationgroupyear_set',
+            'formation__continuingeducationtrainingmanager_set'
+        )
 
     def get_propects_with_filter(self):
         qs = self.prospects_queryset
