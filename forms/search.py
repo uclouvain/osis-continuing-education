@@ -455,7 +455,7 @@ class ProspectFilterForm(CommonFilterForm):
     def __init__(self, data, user=None, *args, **kwargs):
         super(ProspectFilterForm, self).__init__(data, *args, **kwargs)
         self.prospects_queryset = self.get_prospects_by_user(user)
-        _build_prospects_formation_choices(self.fields['formation'], self.prospects_queryset)
+        self._build_prospects_formation_choices()
 
     def get_prospects_by_user(self, user):
         person_trainings = ContinuingEducationTrainingManager.objects.filter(
@@ -468,11 +468,7 @@ class ProspectFilterForm(CommonFilterForm):
         formation = self.cleaned_data.get('formation')
         free_text = self.cleaned_data.get('free_text')
         if formation:
-            qs = qs.filter(
-                id__in=Prospect.objects.filter(
-                    formation=formation
-                ).values_list('id')
-            )
+            qs = qs.filter(formation=formation)
 
         if free_text:
             qs = qs.filter(
@@ -488,9 +484,7 @@ class ProspectFilterForm(CommonFilterForm):
         return qs
 
 
-def _build_prospects_formation_choices(field, prospects_queryset):
-    prospect_ids = [prospect.id for prospect in list(prospects_queryset)]
-
-    field.queryset = ContinuingEducationTraining.objects.formations().filter(
-        id__in=Prospect.objects.filter(id__in=prospect_ids).values_list('formation', flat=False)
-    ).distinct().order_by('education_group__educationgroupyear__acronym')
+    def _build_prospects_formation_choices(self):
+        self.fields['formation'].queryset = ContinuingEducationTraining.objects.formations().filter(
+            id__in=self.prospects_queryset.values_list('formation', flat=False)
+        ).distinct().order_by('education_group__educationgroupyear__acronym')

@@ -32,7 +32,7 @@ from base.business.xls import get_name_or_username
 from continuing_education.forms.search import ProspectFilterForm
 from continuing_education.models.prospect import Prospect
 from osis_common.document import xls_build
-from program_management.views.search import _get_filter
+from program_management.views.search import get_filter
 
 XLS_DESCRIPTION = _('Prospects list')
 XLS_FILENAME = _('Prospects_list')
@@ -52,7 +52,7 @@ def create_xls(user, prospects_list: List[Prospect], prospect_filter_form: Prosp
     }
     return xls_build.generate_xls(
         list_parameters=xls_build.prepare_xls_parameters_list(working_sheets_data, parameters),
-        filters=_get_filter(prospect_filter_form)
+        filters=get_filter(prospect_filter_form)
     )
 
 
