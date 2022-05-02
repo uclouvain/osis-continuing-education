@@ -44,12 +44,13 @@ class ProspectListTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.manager = ContinuingEducationTrainingManagerFactory()
+        cls.academic_year = create_current_academic_year()
 
     def setUp(self):
         self.client.force_login(self.manager.person.user)
 
     def test_prospect_list_ordered_by_formation(self):
-        self.academic_year = create_current_academic_year()
+
         self.education_groups = [EducationGroupFactory() for _ in range(1, 3)]
 
         acronyms = ['AAA', 'BBA', 'CAA']
