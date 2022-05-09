@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest import skip
 from unittest.mock import patch
 
 from django.contrib import messages
@@ -36,7 +37,7 @@ from django.test import TestCase
 from django.utils.translation import gettext_lazy as _, gettext
 from rest_framework import status
 
-from base.tests.factories.academic_year import create_current_academic_year
+from base.tests.factories.academic_year import create_current_academic_year, AcademicYearFactory
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
@@ -385,6 +386,7 @@ class ViewRegistrationCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.manager = ContinuingEducationManagerFactory()
+        cls.academic_year = AcademicYearFactory(current=True)
 
     def setUp(self):
         self.client.force_login(self.manager.person.user)

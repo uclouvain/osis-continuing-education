@@ -50,7 +50,7 @@ class TestFormationXls(TestCase):
             entity_type=entity_type.FACULTY
 
         )
-        cls.academic_year = AcademicYearFactory(year=2018)
+        cls.academic_year = AcademicYearFactory(current=True)
         cls.education_group_yr = EducationGroupYearFactory(
             acronym="ACRO",
             management_entity=cls.entity_version.entity,

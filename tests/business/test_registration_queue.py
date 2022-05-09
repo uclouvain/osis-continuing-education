@@ -34,7 +34,7 @@ from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
-    save_role_registered_in_admission, send_admission_to_queue
+    save_role_registered_in_admission, send_admission_to_queue, _gender_to_sex
 from continuing_education.models.enums.admission_state_choices import VALIDATED
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
 from continuing_education.tests.factories.admission import AdmissionFactory
@@ -63,7 +63,7 @@ class PrepareJSONTestCase(TestCase):
             'birth_date': self.admission.person_information.birth_date.strftime("%d/%m/%Y"),
             'birth_location': self.admission.person_information.birth_location,
             'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
-            'sex': self.admission.person_information.person.gender,
+            'sex': "M" if self.admission.person_information.person.gender == "H" else "F",
             'civil_state': self.admission.marital_status,
             'nationality_iso_code': self.admission.citizenship.iso_code,
             'mobile_number': self.admission.phone_mobile,
@@ -102,7 +102,7 @@ class PrepareJSONTestCase(TestCase):
             'birth_date': self.admission.person_information.birth_date.strftime("%d/%m/%Y"),
             'birth_location': self.admission.person_information.birth_location,
             'birth_country_iso_code': self.admission.person_information.birth_country.iso_code,
-            'sex': self.admission.person_information.person.gender,
+            'sex': "M" if self.admission.person_information.person.gender == "H" else "F",
             'civil_state': self.admission.marital_status,
             'nationality_iso_code': self.admission.citizenship.iso_code,
             'mobile_number': self.admission.phone_mobile,
@@ -288,3 +288,13 @@ class SendingAdmissionViewTestCase(TestCase):
         self.client.force_login(student_worker.person.user)
         response = self.client.get(self.url)
         self.assertRedirects(response, "/login/?next={}".format(self.url))
+
+    def test_gender_to_sex(self):
+        self.assertEqual(
+            _gender_to_sex("H"), "M"
+        )
+        self.assertEqual(
+            _gender_to_sex("F"), "F"
+        )
+        with self.assertRaises(ValueError):
+            _gender_to_sex("X")

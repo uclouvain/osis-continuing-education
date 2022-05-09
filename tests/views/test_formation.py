@@ -396,6 +396,7 @@ class ViewFormationCacheTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.manager = ContinuingEducationManagerFactory()
+        cls.academic_year = AcademicYearFactory(current=True)
 
     def setUp(self):
         self.client.force_login(self.manager.person.user)

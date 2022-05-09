@@ -47,7 +47,8 @@ from continuing_education.business.xls.xls_admission import create_xls
 from continuing_education.forms.account import ContinuingEducationPersonForm
 from continuing_education.forms.address import AddressForm, ADDRESS_PARTICIPANT_REQUIRED_FIELDS
 from continuing_education.forms.admission import AdmissionForm, RejectedAdmissionForm, WaitingAdmissionForm, \
-    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm
+    ADMISSION_PARTICIPANT_REQUIRED_FIELDS, ConditionAcceptanceAdmissionForm, CancelAdmissionForm, \
+    AdmissionChangeStateForm
 from continuing_education.forms.person import PersonForm
 from continuing_education.forms.registration import RegistrationForm
 from continuing_education.forms.search import AdmissionFilterForm
@@ -80,14 +81,14 @@ def list_admissions(request):
         admission_list = search_form.get_admissions()
         admission_list = filter_authorized_admissions(request.user, admission_list)
     else:
-        admission_list = []
+        admission_list = Admission.objects.none()
 
     if request.GET.get('xls_status') == "xls_admissions":
         return export_admissions(request, admission_list, search_form)
 
     return render(request, "admissions.html", {
         'admissions': get_object_list(request, admission_list),
-        'admissions_number': len(admission_list),
+        'admissions_number': admission_list.count(),
         'search_form': search_form,
     })
 
@@ -99,15 +100,11 @@ def export_admissions(request, admission_list, search_form):
 
 
 @login_required
-@permission_required(
-    'continuing_education.view_admission',
-    fn=admission_getter,
-    raise_exception=True
-)
+@permission_required('continuing_education.view_admission', fn=admission_getter, raise_exception=True)
 def admission_detail(request, admission_id):
     user_is_continuing_education_student_worker = is_continuing_education_student_worker(request.user)
     admission = get_object_or_404(
-        Admission.objects.select_related(
+        Admission.objects.formations().select_related(
             'billing_address__country',
             'address__country',
             'person_information__person',
@@ -127,7 +124,7 @@ def admission_detail(request, admission_id):
     accepted_states = admission_state_choices.NEW_ADMIN_STATE[admission.state]
     states = _get_states_choices(accepted_states, admission, request)
 
-    adm_form = AdmissionForm(
+    adm_form = AdmissionChangeStateForm(
         request.POST or None,
         instance=admission,
     )

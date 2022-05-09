@@ -35,6 +35,15 @@ phone_regex = RegexValidator(
 )
 
 
+class AdmissionChangeStateForm(ModelForm):
+    class Meta:
+        model = Admission
+        fields = [
+            'state',
+            'state_reason',
+        ]
+
+
 class AdmissionForm(ModelForm):
     phone_mobile = forms.CharField(
         validators=[phone_regex],
@@ -43,7 +52,7 @@ class AdmissionForm(ModelForm):
         widget=forms.TextInput(attrs={'placeholder': '0474123456 - 0032474123456 - +32474123456'})
     )
     formation = forms.ModelChoiceField(
-        queryset=ContinuingEducationTraining.objects.all().select_related('education_group')
+        queryset=ContinuingEducationTraining.objects.none()
     )
     state = ChoiceField(
         choices=admission_state_choices.STATE_CHOICES,
@@ -97,6 +106,10 @@ class AdmissionForm(ModelForm):
             )
         set_participant_required_fields(self.fields, ADMISSION_PARTICIPANT_REQUIRED_FIELDS)
         self.fields['email'].required = True
+
+        self.fields['formation'].queryset = ContinuingEducationTraining.objects.formations().select_related(
+            'education_group'
+        )
 
     class Meta:
         model = Admission
