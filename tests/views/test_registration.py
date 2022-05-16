@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from unittest import skip
 from unittest.mock import patch
 
 from django.contrib import messages

@@ -3,6 +3,7 @@ from unittest.mock import patch
 import factory.fuzzy
 from django.contrib import messages
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.validators import FileExtensionValidator
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.translation import gettext, gettext_lazy as _
@@ -178,10 +179,7 @@ class UploadFileTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn(
             gettext(
-                _(
-                    "File extension '%(extension)s' is not allowed. "
-                    "Allowed extensions are: '%(allowed_extensions)s'."
-                ) % {
+                FileExtensionValidator.message % {
                     "extension": file_extension,
                     "allowed_extensions": ", ".join(ALLOWED_EXTENSIONS)
                     }
