@@ -108,6 +108,45 @@ class ViewRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'continuing_education/registration_form.html')
 
+    def test_edit_post_registration_found(self):
+        data = {
+            'children_number': 2,
+            'previous_ucl_registration': False,
+        }
+
+        url = reverse('registration_edit', args=[self.admission_accepted.id])
+        response = self.client.post(url, data=data)
+
+        self.assertRedirects(
+            response,
+            reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
+        )
+
+        self.admission_accepted.refresh_from_db()
+        self.assertEqual(self.admission_accepted.children_number, 2)
+
+    def test_training_manager_should_not_update_unupdatable_fields(self):
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.admission_accepted.formation)
+        self.client.force_login(user=training_manager.person.user)
+
+        data = {
+            'registration_file_received': True,
+            'ucl_registration_complete': "INSCRIT",
+            'previous_ucl_registration': True,
+        }
+        url = reverse('registration_edit', args=[self.admission_accepted.id])
+
+        response = self.client.post(url, data=data)
+        self.assertRedirects(
+            response,
+            reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
+        )
+
+        self.admission_accepted.refresh_from_db()
+
+        self.assertEqual(self.admission_accepted.ucl_registration_complete, "INIT_STATE")
+        self.assertEqual(self.admission_accepted.registration_file_received, False)
+
     def test_uclouvain_registration_rejected(self):
         self.admission_validated.ucl_registration_complete = UCLRegistrationState.REJECTED.name
         self.admission_validated.ucl_registration_error = UCLRegistrationError.IUFC_NOM_TROP_LONG.name
