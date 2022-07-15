@@ -39,12 +39,10 @@ from base.tests.factories.academic_year import create_current_academic_year, Aca
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.forms.registration import RegistrationForm
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
-from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
@@ -111,38 +109,21 @@ class ViewRegistrationTestCase(TestCase):
         self.assertTemplateUsed(response, 'continuing_education/registration_form.html')
 
     def test_edit_post_registration_found(self):
-        new_address = AddressFactory()
-
-        previous_ucl_registration = self.admission_accepted.previous_ucl_registration
-
         data = {
-            'billing_address': new_address.pk,
-            'billing-city': new_address.city,
-            'use_address_for_billing': False,
-            'residence_address': new_address.pk,
-            'residence-city': new_address.city,
-            'use_address_for_post': False,
             'children_number': 2,
-            'previous_ucl_registration': not previous_ucl_registration,
-            'ucl_registration_complete': "INSCRIT",
-            'registration_file_received': True
+            'previous_ucl_registration': False,
         }
 
-        form = RegistrationForm(data, instance=self.admission_accepted)
-
         url = reverse('registration_edit', args=[self.admission_accepted.id])
-
         response = self.client.post(url, data=data)
+
         self.assertRedirects(
             response,
             reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
         )
 
         self.admission_accepted.refresh_from_db()
-
         self.assertEqual(self.admission_accepted.children_number, 2)
-        self.assertEqual(self.admission_accepted.residence_address.city, new_address.city)
-        self.assertEqual(self.admission_accepted.billing_address.city, new_address.city)
 
     def test_training_manager_should_not_update_unupdatable_fields(self):
         training_manager = ContinuingEducationTrainingManagerFactory(training=self.admission_accepted.formation)
