@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,27 +23,37 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+from typing import List
+
 from django.utils.translation import gettext_lazy as _
+from openpyxl.styles import Font
 
 from base.business.xls import get_name_or_username
-from continuing_education.business.prospect import get_prospects_by_user
+from continuing_education.forms.search import ProspectFilterForm
+from continuing_education.models.prospect import Prospect
 from osis_common.document import xls_build
+from program_management.views.search import get_filter
 
 XLS_DESCRIPTION = _('Prospects list')
 XLS_FILENAME = _('Prospects_list')
 WORKSHEET_TITLE = _('Prospects list')
+BOLD_FONT = Font(bold=True)
 
 
-def create_xls(user):
-    prospects_list = get_prospects_by_user(user)
+def create_xls(user, prospects_list: List[Prospect], prospect_filter_form: ProspectFilterForm):
     working_sheets_data = _prepare_xls_content(prospects_list)
-    parameters = {xls_build.DESCRIPTION: XLS_DESCRIPTION,
-                  xls_build.USER: get_name_or_username(user),
-                  xls_build.FILENAME: XLS_FILENAME,
-                  xls_build.HEADER_TITLES: _get_titles(),
-                  xls_build.WS_TITLE: WORKSHEET_TITLE}
-
-    return xls_build.generate_xls(xls_build.prepare_xls_parameters_list(working_sheets_data, parameters))
+    parameters = {
+        xls_build.DESCRIPTION: XLS_DESCRIPTION,
+        xls_build.USER: get_name_or_username(user),
+        xls_build.FILENAME: XLS_FILENAME,
+        xls_build.HEADER_TITLES: _get_titles(),
+        xls_build.WS_TITLE: WORKSHEET_TITLE,
+        xls_build.FONT_ROWS: {BOLD_FONT: [0]},
+    }
+    return xls_build.generate_xls(
+        list_parameters=xls_build.prepare_xls_parameters_list(working_sheets_data, parameters),
+        filters=get_filter(prospect_filter_form)
+    )
 
 
 def _prepare_xls_content(prospect_list):

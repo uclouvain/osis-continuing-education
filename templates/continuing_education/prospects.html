@@ -43,6 +43,28 @@
     </div>
 
     <div class="panel panel-default">
+        <div class="panel panel-body">
+            <form style="display: inline;" action="{% url 'prospects' %}" method="get" class="" id="search_form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-5">
+                        <label for="formation_id">{% trans 'Formation' %}</label>
+                        {{ search_form.formation }}
+                    </div>
+                    <div class="col-md-5">
+                        <label for="free_text_id">{% trans 'In all fields' %}</label>
+                        {{ search_form.free_text }}
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
+                    </div>
+                </div>
+                {% include 'continuing_education/blocks/button/xls_hidden.html' %}
+            </form>
+        </div>
     <br>
         {% if prospects %}
             <div class="dropdown  text-right" style="margin-right: 10px;">
@@ -59,7 +81,7 @@
                         </a>
                     </li>
                     <li>
-                        <a id="btn_produce_xls" style="margin-right:10px;" href="{% url 'prospects_xls'  %}"
+                        <a id="btn_produce_prospects_xls" style="margin-right:10px;"
                            title="Produce xls" class="download">
                             &nbsp;{%  trans 'Produce xls' %}
                         </a>
@@ -96,7 +118,7 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 {% bootstrap_pagination prospects extra=request.GET.urlencode %}
                             </td>
                         </tr>
@@ -152,5 +174,11 @@
             $("#prospects_form").attr("action", url);
             $("#prospects_form").submit();
         });
+
+        $("#btn_produce_prospects_xls").click(function(e) {
+            prepare_xls(e, 'xls_prospects');
+        });
+
+
     </script>
 {% endblock %}
