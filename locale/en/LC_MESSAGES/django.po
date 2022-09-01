@@ -1061,7 +1061,7 @@ msgid "State"
 msgstr ""
 
 #, python-format
-msgid "State : %(old_state)s ► %(new_state)s"
+msgid "State : %(old_state)s -> %(new_state)s"
 msgstr ""
 
 msgid "State reason"
@@ -1280,7 +1280,7 @@ msgstr ""
 msgid "Validated"
 msgstr ""
 
-msgid "Valued crédits"
+msgid "Valued credits"
 msgstr ""
 
 msgid "Waiting"

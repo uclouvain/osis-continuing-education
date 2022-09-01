@@ -23,4 +23,4 @@ class UCLRegistrationState(ChoiceEnum):
     ANNULATION_IP = _("IP Cancellation")
     REFUS = _("Refusal")
     CYCLE = _("Cycle")
-    VALISE_CREDITS = _("Valued crédits")
+    VALISE_CREDITS = _("Valued credits")
