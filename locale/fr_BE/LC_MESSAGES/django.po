@@ -1107,9 +1107,8 @@ msgstr "Etalement des paiements"
 msgid "State"
 msgstr "Etat"
 
-#, python-format
-msgid "State : %(old_state)s ► %(new_state)s"
-msgstr "Etat : %(old_state)s ► %(new_state)s"
+msgid "State : %(old_state)s -> %(new_state)s"
+msgstr "Etat : %(old_state)s -> %(new_state)s"
 
 msgid "State reason"
 msgstr "Raison du changement d'état"
@@ -1316,9 +1315,9 @@ msgid ""
 "uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> for further "
 "help"
 msgstr ""
-"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" href="
-"\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> "
-"pour plus d'informations"
+"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" "
+"href=\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</"
+"a> pour plus d'informations"
 
 msgid "Unreceived file"
 msgstr "Dossier d'inscription non reçu"
@@ -1356,7 +1355,7 @@ msgstr "Numéro de TVA"
 msgid "Validated"
 msgstr "Validé"
 
-msgid "Valued crédits"
+msgid "Valued credits"
 msgstr "Crédits valorisés"
 
 msgid "Waiting"
