@@ -154,7 +154,8 @@ class ContinuingEducationTraining(Model):
         If no education_group_year is found, try to get it in the next academic_year
         (admissions can be linked to egy of the next academic_year)
         """
-        if hasattr(self.education_group, "prefetched_education_group_years"):
+        if hasattr(self.education_group, "prefetched_education_group_years") \
+                and self.education_group.prefetched_education_group_years:
             return self.education_group.prefetched_education_group_years[0]
         try:
             return self.__get_education_group_year_with_delta(0)
