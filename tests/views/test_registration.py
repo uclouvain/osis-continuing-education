@@ -23,14 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from unittest import skip
 from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.core.cache import cache
-from django.forms import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import reverse
 from django.test import TestCase
@@ -41,8 +39,6 @@ from base.tests.factories.academic_year import create_current_academic_year, Aca
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.entity_version import EntityVersionFactory
-from continuing_education.forms.registration import RegistrationForm, \
-    UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR
 from continuing_education.models.enums import admission_state_choices
 from continuing_education.models.enums.admission_state_choices import REGISTRATION_SUBMITTED, VALIDATED, ACCEPTED
 from continuing_education.models.enums.ucl_registration_error_choices import UCLRegistrationError
@@ -113,29 +109,43 @@ class ViewRegistrationTestCase(TestCase):
         self.assertTemplateUsed(response, 'continuing_education/registration_form.html')
 
     def test_edit_post_registration_found(self):
-        admission = AdmissionFactory(formation=self.formation)
-        admission_dict = model_to_dict(admission)
+        data = {
+            'children_number': 2,
+            'previous_ucl_registration': False,
+        }
 
-        admission_dict['billing_address'] = admission.billing_address
-        admission_dict['residence_address'] = admission.residence_address
-
-        admission_dict['citizenship'] = admission.citizenship
-        admission_dict['address'] = admission.address
         url = reverse('registration_edit', args=[self.admission_accepted.id])
-        form = RegistrationForm(admission_dict)
-        form.is_valid()
-        response = self.client.post(url, data=form.cleaned_data)
+        response = self.client.post(url, data=data)
+
         self.assertRedirects(
             response,
             reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
         )
+
+        self.admission_accepted.refresh_from_db()
+        self.assertEqual(self.admission_accepted.children_number, 2)
+
+    def test_training_manager_should_not_update_unupdatable_fields(self):
+        training_manager = ContinuingEducationTrainingManagerFactory(training=self.admission_accepted.formation)
+        self.client.force_login(user=training_manager.person.user)
+
+        data = {
+            'registration_file_received': True,
+            'ucl_registration_complete': "INSCRIT",
+            'previous_ucl_registration': True,
+        }
+        url = reverse('registration_edit', args=[self.admission_accepted.id])
+
+        response = self.client.post(url, data=data)
+        self.assertRedirects(
+            response,
+            reverse('admission_detail', args=[self.admission_accepted.id]) + "#registration"
+        )
+
         self.admission_accepted.refresh_from_db()
 
-        # verifying that fields are correctly updated
-        for key in form.cleaned_data.keys():
-            field_value = self.admission_accepted.__getattribute__(key)
-            if key not in UNUPDATABLE_FIELDS_FOR_CONTINUING_EDUCATION_TRAINING_MGR:
-                self.assertEqual(field_value, admission_dict[key])
+        self.assertEqual(self.admission_accepted.ucl_registration_complete, "INIT_STATE")
+        self.assertEqual(self.admission_accepted.registration_file_received, False)
 
     def test_uclouvain_registration_rejected(self):
         self.admission_validated.ucl_registration_complete = UCLRegistrationState.REJECTED.name
