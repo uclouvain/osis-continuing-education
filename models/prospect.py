@@ -74,6 +74,7 @@ class Prospect(Model):
         on_delete=models.PROTECT,
         verbose_name=_("Formation")
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         default_permissions = ['view']
