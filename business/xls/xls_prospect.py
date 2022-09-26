@@ -58,6 +58,7 @@ def _extract_xls_data(prospect):
         prospect.email,
         prospect.phone_number if prospect.phone_number else '',
         prospect.formation,
+        prospect.created_at if prospect.created_at else ''
     ]
 
 
@@ -69,4 +70,5 @@ def _get_titles():
         str(_('Email')),
         str(_('Phone number')),
         str(_('Formation')),
+        str(_('Creation date'))
     ]

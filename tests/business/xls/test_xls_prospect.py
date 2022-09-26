@@ -63,13 +63,16 @@ class TestProspectXls(TestCase):
             ]
 
         expected_data = [
-            [prospect.name,
-             prospect.first_name,
-             prospect.city,
-             prospect.email,
-             prospect.phone_number,
-             prospect.formation] for prospect in prospects
-            ]
+            [
+                prospect.name,
+                prospect.first_name,
+                prospect.city,
+                prospect.email,
+                prospect.phone_number,
+                prospect.formation,
+                prospect.created_at
+            ] for prospect in prospects
+        ]
 
         self.assertCountEqual(_prepare_xls_content(prospects), expected_data)
 
@@ -80,7 +83,8 @@ class TestProspectXls(TestCase):
                                               'City',
                                               'Email',
                                               'Phone number',
-                                              'Formation'])
+                                              'Formation',
+                                              'Creation date'])
 
     @override_settings(LANGUAGES=[('fr-be', 'French'), ], LANGUAGE_CODE='fr-be')
     def test_get_titles_fr(self):
@@ -89,4 +93,5 @@ class TestProspectXls(TestCase):
                                               'Ville',
                                               'Courriel',
                                               'Numéro de téléphone',
-                                              'Formation'])
+                                              'Formation',
+                                              'Date de création'])
