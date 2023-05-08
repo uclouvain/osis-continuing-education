@@ -104,23 +104,23 @@ class ViewUpdateTasksTestCase(TestCase):
     def test_list_tasks_html_content_for_iufc(self):
         response = self.client.get(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertTemplateUsed(response, 'tasks.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
+        self.assertTemplateUsed(response, 'continuing_education/tasks.html')
+        self.assertTemplateUsed(response, 'continuing_education/fragment/tasks/registrations_to_validate.html')
+        self.assertTemplateUsed(response, 'continuing_education/fragment/tasks/diplomas_to_produce.html')
 
     def test_list_tasks_html_content_for_manager(self):
         self.client.force_login(self.training_manager.person.user)
         response = self.client.get(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertTemplateUsed(response, 'tasks.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/admissions_to_accept.html')
+        self.assertTemplateUsed(response, 'continuing_education/tasks.html')
+        self.assertTemplateUsed(response, 'continuing_education/fragment/tasks/admissions_to_accept.html')
 
     def test_list_tasks(self):
         response = self.client.get(reverse('list_tasks'))
         self.assertEqual(response.status_code, HttpResponse.status_code)
-        self.assertTemplateUsed(response, 'tasks.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/registrations_to_validate.html')
-        self.assertTemplateUsed(response, 'fragment/tasks/diplomas_to_produce.html')
+        self.assertTemplateUsed(response, 'continuing_education/tasks.html')
+        self.assertTemplateUsed(response, 'continuing_education/fragment/tasks/registrations_to_validate.html')
+        self.assertTemplateUsed(response, 'continuing_education/fragment/tasks/diplomas_to_produce.html')
 
         self.assertCountEqual(
             response.context['registrations_to_validate'],

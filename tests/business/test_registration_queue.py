@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -34,9 +34,11 @@ from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group_year import EducationGroupYearFactory
 from base.tests.factories.user import UserFactory
 from continuing_education.business.registration_queue import get_json_for_epc, format_address_for_json, \
-    save_role_registered_in_admission, send_admission_to_queue, _gender_to_sex
+    save_role_registered_in_admission, send_admission_to_queue, _gender_to_sex, MAX_LENGTH_FOR_STREET_FIELD_IN_EPC, \
+    MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC, MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC
 from continuing_education.models.enums.admission_state_choices import VALIDATED
 from continuing_education.models.enums.ucl_registration_state_choices import UCLRegistrationState
+from continuing_education.tests.factories.address import AddressFactory
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
 from continuing_education.tests.factories.roles.continuing_education_student_worker import \
@@ -159,6 +161,26 @@ class PrepareJSONTestCase(TestCase):
             'country_iso_code': ''
         }
         self.assertDictEqual(result, expected_result)
+
+    def test_format_address_for_json_if_address_fields_too_long(self):
+        address_with_too_long_fields = AddressFactory(
+            location='Rue du nom plus long que le nombre de 50 caractères autorisés',
+            postal_code='01234567890123456',
+            city='Rue du ville plus long que le nombre de 40 caractères autorisés',
+        )
+        result = format_address_for_json(address_with_too_long_fields)
+        self.assertEqual(
+            result.get('street'),
+            address_with_too_long_fields.location[0:MAX_LENGTH_FOR_STREET_FIELD_IN_EPC]
+        )
+        self.assertEqual(
+            result.get('locality'),
+            address_with_too_long_fields.city[0:MAX_LENGTH_FOR_LOCALITY_FIELD_IN_EPC]
+        )
+        self.assertEqual(
+            result.get('postal_code'),
+            address_with_too_long_fields.postal_code[0:MAX_LENGTH_FOR_POSTAL_CODE_FIELD_IN_EPC]
+        )
 
 
 class SaveRoleRegisteredTestCase(TestCase):

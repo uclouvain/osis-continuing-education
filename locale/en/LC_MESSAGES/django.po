@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-28 09:57+0200\n"
+"POT-Creation-Date: 2022-04-25 08:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,6 +95,9 @@ msgid "Admission submitted"
 msgstr ""
 
 msgid "Admission to process"
+msgstr ""
+
+msgid "Admission(s) deleted"
 msgstr ""
 
 msgid "Admissions"
@@ -251,6 +254,12 @@ msgid ""
 "formation."
 msgstr ""
 
+#, python-format
+msgid ""
+"Cities available for this belgian postal code %(postal_code)s are : "
+"%(possible_cities)s"
+msgstr ""
+
 msgid "Citizenship"
 msgstr ""
 
@@ -321,6 +330,9 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
+msgid "Creation date"
+msgstr ""
+
 msgid "Creation of the admission"
 msgstr ""
 
@@ -340,6 +352,12 @@ msgid "Death"
 msgstr ""
 
 msgid "Delete document"
+msgstr ""
+
+msgid "Delete draft"
+msgstr ""
+
+msgid "Delete prospect(s)"
 msgstr ""
 
 msgid ""
@@ -436,12 +454,6 @@ msgid "File category"
 msgstr ""
 
 msgid "File correctly deleted"
-msgstr ""
-
-#, python-format
-msgid ""
-"File extension '%(extension)s' is not allowed. Allowed extensions are: "
-"'%(allowed_extensions)s'."
 msgstr ""
 
 msgid "File is now"
@@ -623,6 +635,9 @@ msgid "Last modifications"
 msgstr ""
 
 msgid "Last name"
+msgstr ""
+
+msgid "Last name and first name can't be encoded only in capital letters"
 msgstr ""
 
 msgid "Last update"
@@ -832,6 +847,9 @@ msgstr ""
 msgid "Please ensure that you have made the necessary corrections."
 msgstr ""
 
+msgid "Please select at least one admission in 'draft' status"
+msgstr ""
+
 msgid "Please select at least one admission to process."
 msgstr ""
 
@@ -842,6 +860,9 @@ msgid "Please select at least one file to mark as received"
 msgstr ""
 
 msgid "Please select at least one formation"
+msgstr ""
+
+msgid "Please select at least one prospect to delete"
 msgstr ""
 
 msgid "Please select at least one registration to validate."
@@ -857,6 +878,10 @@ msgid "Post"
 msgstr ""
 
 msgid "Postal code"
+msgstr ""
+
+#, python-format
+msgid "Postal code (%(postal_code)s) not found in Belgium"
 msgstr ""
 
 msgid "Predefined reason"
@@ -890,6 +915,9 @@ msgid "Professional background"
 msgstr ""
 
 msgid "Professional status"
+msgstr ""
+
+msgid "Prospect(s) deleted"
 msgstr ""
 
 msgid "Prospects"
@@ -1033,7 +1061,7 @@ msgid "State"
 msgstr ""
 
 #, python-format
-msgid "State : %(old_state)s ► %(new_state)s"
+msgid "State : %(old_state)s -> %(new_state)s"
 msgstr ""
 
 msgid "State reason"
@@ -1252,7 +1280,7 @@ msgstr ""
 msgid "Validated"
 msgstr ""
 
-msgid "Valued crédits"
+msgid "Valued credits"
 msgstr ""
 
 msgid "Waiting"

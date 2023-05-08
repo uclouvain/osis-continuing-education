@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-28 09:57+0200\n"
+"POT-Creation-Date: 2022-04-25 08:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,6 +99,9 @@ msgstr "Admission soumise"
 
 msgid "Admission to process"
 msgstr "Admission à traiter"
+
+msgid "Admission(s) deleted"
+msgstr "Admission(s) supprimée(s)"
 
 msgid "Admissions"
 msgstr "Admissions"
@@ -258,6 +261,14 @@ msgstr ""
 "Choisissez ici l'année académique durant laquelle le participant suivra la "
 "formation."
 
+#, python-format
+msgid ""
+"Cities available for this belgian postal code %(postal_code)s are : "
+"%(possible_cities)s"
+msgstr ""
+"Les localités possibles pour ce code postal %(postal_code)s sont les "
+"suivantes : %(possible_cities)s"
+
 msgid "Citizenship"
 msgstr "Nationalité"
 
@@ -332,6 +343,9 @@ msgstr ""
 msgid "Country"
 msgstr "Pays"
 
+msgid "Creation date"
+msgstr "Date de création"
+
 msgid "Creation of the admission"
 msgstr "Création de l'admission"
 
@@ -352,6 +366,12 @@ msgstr "Décès"
 
 msgid "Delete document"
 msgstr "Supprimer le document"
+
+msgid "Delete draft"
+msgstr "Supprimer brouillon(s)"
+
+msgid "Delete prospect(s)"
+msgstr "Supprimer prospect(s)"
 
 msgid ""
 "Describe here additional information that will be asked to the participant:\n"
@@ -459,14 +479,6 @@ msgstr "Catégorie de fichier"
 
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
-
-#, python-format
-msgid ""
-"File extension '%(extension)s' is not allowed. Allowed extensions are: "
-"'%(allowed_extensions)s'."
-msgstr ""
-"Extension de fichier '%(extension)s' non autorisée. Les extensions "
-"autorisées sont: '%(allowed_extensions)s'."
 
 msgid "File is now"
 msgstr "Le dossier est maintenant"
@@ -659,6 +671,10 @@ msgstr "Dernières modifications"
 
 msgid "Last name"
 msgstr "Nom"
+
+msgid "Last name and first name can't be encoded only in capital letters"
+msgstr ""
+"Les nom/prénom ne peuvent pas être encodés uniquement en lettres majuscules"
 
 msgid "Last update"
 msgstr "Dernière modification"
@@ -874,6 +890,9 @@ msgstr ""
 msgid "Please ensure that you have made the necessary corrections."
 msgstr "Veuillez vous assurer d'avoir fait les corrections nécessaires."
 
+msgid "Please select at least one admission in 'draft' status"
+msgstr "Veuillez sélectionner au moins une admission en état 'brouillon'"
+
 msgid "Please select at least one admission to process."
 msgstr "Veuillez sélectionner au moins une admission à traiter"
 
@@ -885,6 +904,9 @@ msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
 
 msgid "Please select at least one formation"
 msgstr "Veuillez sélectionner au moins une formation"
+
+msgid "Please select at least one prospect to delete"
+msgstr "Veuillez sélectionner au moins un prospect à supprimer"
 
 msgid "Please select at least one registration to validate."
 msgstr "Veuillez sélectionner au moins une inscription à valider"
@@ -902,6 +924,10 @@ msgstr "Courrier"
 
 msgid "Postal code"
 msgstr "Code postal"
+
+#, python-format
+msgid "Postal code (%(postal_code)s) not found in Belgium"
+msgstr "Ce code postal %(postal_code)s n'est pas belge!"
 
 msgid "Predefined reason"
 msgstr "Motif prédéfini"
@@ -935,6 +961,9 @@ msgstr "Parcours professionnel"
 
 msgid "Professional status"
 msgstr "Statut professionnel"
+
+msgid "Prospect(s) deleted"
+msgstr "Prospect(s) supprimé(s)"
 
 msgid "Prospects"
 msgstr "Prospects"
@@ -1065,7 +1094,9 @@ msgid "Size"
 msgstr "Taille"
 
 msgid "Some errors in form prevents state from being changed:"
-msgstr "Des erreurs présentes dans le formulaire rendent impossible le changement d'état:"
+msgstr ""
+"Des erreurs présentes dans le formulaire rendent impossible le changement "
+"d'état:"
 
 msgid "Spouse name"
 msgstr "Nom du conjoint"
@@ -1076,9 +1107,8 @@ msgstr "Etalement des paiements"
 msgid "State"
 msgstr "Etat"
 
-#, python-format
-msgid "State : %(old_state)s ► %(new_state)s"
-msgstr "Etat : %(old_state)s ► %(new_state)s"
+msgid "State : %(old_state)s -> %(new_state)s"
+msgstr "Etat : %(old_state)s -> %(new_state)s"
 
 msgid "State reason"
 msgstr "Raison du changement d'état"
@@ -1285,9 +1315,9 @@ msgid ""
 "uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> for further "
 "help"
 msgstr ""
-"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" href="
-"\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> "
-"pour plus d'informations"
+"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" "
+"href=\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</"
+"a> pour plus d'informations"
 
 msgid "Unreceived file"
 msgstr "Dossier d'inscription non reçu"
@@ -1325,7 +1355,7 @@ msgstr "Numéro de TVA"
 msgid "Validated"
 msgstr "Validé"
 
-msgid "Valued crédits"
+msgid "Valued credits"
 msgstr "Crédits valorisés"
 
 msgid "Waiting"
@@ -1457,6 +1487,3 @@ msgstr "état"
 
 msgid "unarchived"
 msgstr "non-archivé"
-
-#~ msgid "You are not authorized to edit this training"
-#~ msgstr "Vous n'êtes pas autorisé à modifier cette formation"

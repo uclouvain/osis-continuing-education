@@ -44,6 +44,8 @@ class ContinuingEducationTrainingManager(osis_role_models.RoleModel):
             'continuing_education.export_prospect': is_user_linked_to_prospect,
             'continuing_education.change_admission_state': is_user_linked_to_admission,
             'continuing_education.view_admission_archives': is_user_linked_to_admission,
+            'continuing_education.cancel_draft': is_user_linked_to_admission,
+            'continuing_education.delete_prospect': is_user_linked_to_prospect,
         })
 
 

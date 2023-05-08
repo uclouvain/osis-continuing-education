@@ -50,7 +50,7 @@ SUBMITTED_REGISTRATION = {'icon': 'far fa-paper-plane', 'text': _('Registration 
 SUBMITTED_ADMISSION = {'icon': 'far fa-paper-plane', 'text': _('Admission submitted')}
 
 STATE_CHANGED = {'icon': 'fas fa-exchange-alt', 'text': ''}
-STATE_CHANGED_MESSAGE = _('State : %(old_state)s ► %(new_state)s')
+STATE_CHANGED_MESSAGE = _('State : %(old_state)s -> %(new_state)s')
 
 MAIL = {'icon': 'far fa-envelope-open', 'text': ''}
 MAIL_MESSAGE = _('Mail sent to %(receiver)s')

@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ from unittest.mock import patch
 
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
@@ -135,7 +136,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
         self.assertEqual(len(response.context['admissions'].object_list), 2)
 
     def test_list_admissions_filtered_by_training_manager_with_no_admission(self):
@@ -145,7 +146,7 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.context['admissions'].object_list), 0)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
 
     def test_list_admissions_filtered_by_training_manager_with_admission(self):
         training_manager = ContinuingEducationTrainingManagerFactory(training=self.formation)
@@ -154,19 +155,19 @@ class ViewAdmissionTestCase(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.context['admissions'].object_list), 1)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
 
     def test_list_admissions_pagination_empty_page(self):
         url = reverse('admission')
         response = self.client.get(url, {'page': 0})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admissions.html')
+        self.assertTemplateUsed(response, 'continuing_education/admissions.html')
 
     def test_admission_detail(self):
         url = reverse('admission_detail', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_detail.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_detail.html')
 
     def test_admission_detail_not_found(self):
         response = self.client.get(reverse('admission_detail', kwargs={
@@ -186,7 +187,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_new')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_admission_new_save(self):
         admission = model_to_dict(self.admission)
@@ -224,7 +225,7 @@ class ViewAdmissionTestCase(TestCase):
         admission['gender'] = ""
         response = self.client.post(reverse('admission_new'), data=admission)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_admission_new_save_gender_not_required_if_existing_person(self):
         admission = model_to_dict(self.admission)
@@ -245,7 +246,7 @@ class ViewAdmissionTestCase(TestCase):
         admission['person_information'] = "no valid pk"
         response = self.client.post(reverse('admission_new'), data=admission)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_admission_edit_not_found(self):
         response = self.client.get(reverse('admission_edit', kwargs={
@@ -257,7 +258,7 @@ class ViewAdmissionTestCase(TestCase):
         url = reverse('admission_edit', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_form.html')
 
     def test_edit_post_admission_found(self):
         admission = {
@@ -378,6 +379,33 @@ class ViewAdmissionTestCase(TestCase):
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'additional_information_label': 'additional_information'}
                          )
+
+    def test_error_message_no_draft_admission_selected(self):
+        response = self.client.post(
+            reverse('admission_delete_draft'),
+            data={},
+            follow=True,
+            HTTP_REFERER=reverse('admission', args=[])
+        )
+        self.assertEqual(response.status_code, 200)
+
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        self.assertEqual(len(msg), 1)
+        self.assertIn(messages.ERROR, msg_level)
+        self.assertEqual(msg[0], _("Please select at least one admission in 'draft' status"))
+
+    def test_draft_deleted(self):
+        draf_admission = AdmissionFactory(
+            state=DRAFT,
+            archived=False
+        )
+        self.assertTrue(Admission.objects.filter(id=draf_admission.id).exists())
+        response = self.client.post(
+            reverse('admission_delete_draft'),
+            data={'selected_draft_action': draf_admission.id},
+        )
+        self.assertFalse(Admission.objects.filter(id=draf_admission.id).exists())
 
 
 class InvoiceNotificationEmailTestCase(TestCase):
@@ -580,7 +608,7 @@ class BillingEditTestCase(TestCase):
         url = reverse('billing_edit', args=[self.admission.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'admission_billing_form.html')
+        self.assertTemplateUsed(response, 'continuing_education/admission_billing_form.html')
 
     def test_billing_edit_not_found(self):
         response = self.client.get(reverse('billing_edit', kwargs={

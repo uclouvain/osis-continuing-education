@@ -83,11 +83,11 @@ class AdmissionFileListCreateTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertTrue('previous' in response.data)
-        self.assertTrue('next' in response.data)
-        self.assertTrue('results' in response.data)
+        self.assertIn('previous', response.data)
+        self.assertIn('next', response.data)
+        self.assertIn('results', response.data)
 
-        self.assertTrue('count' in response.data)
+        self.assertIn('count', response.data)
         expected_count = AdmissionFile.objects.filter(admission=self.admission).count()
         self.assertEqual(response.data['count'], expected_count)
 

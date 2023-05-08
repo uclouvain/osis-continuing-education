@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ urlpatterns = [
         url(r'^$', admission.list_admissions, name='admission'),
         url(r'^new/$', admission.admission_form, name='admission_new'),
         url(r'^edit/(?P<admission_id>[0-9]+)/', admission.admission_form, name='admission_edit'),
+        url(r'^delete_draft/', admission.delete_draft, name='admission_delete_draft'),
         url(r'^(?P<admission_id>[0-9]+)/', include([
             url(r'^$', admission.admission_detail, name='admission_detail'),
             url(r'^send_invoice_notification_mail/$', admission.send_invoice_notification_mail,
@@ -72,6 +73,7 @@ urlpatterns = [
         url(r'^$', prospect.list_prospects, name='prospects'),
         url(r'^(?P<prospect_id>[0-9]+)/', prospect.prospect_details, name='prospect_details'),
         url(r'^reporting', prospect.prospect_xls, name='prospects_xls'),
+        url(r'^delete', prospect.delete_prospects, name='prospects_delete'),
     ])),
     url(r'^tasks/', include([
         url(r'^$', tasks.list_tasks, name='list_tasks'),

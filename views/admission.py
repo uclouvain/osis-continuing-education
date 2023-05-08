@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_http_methods
 from rules.contrib.views import permission_required
 
 from backoffice.settings.base import MAX_UPLOAD_SIZE
@@ -86,7 +86,7 @@ def list_admissions(request):
     if request.GET.get('xls_status') == "xls_admissions":
         return export_admissions(request, admission_list, search_form)
 
-    return render(request, "admissions.html", {
+    return render(request, "continuing_education/admissions.html", {
         'admissions': get_object_list(request, admission_list),
         'admissions_number': admission_list.count(),
         'search_form': search_form,
@@ -170,7 +170,7 @@ def admission_detail(request, admission_id):
     _display_adapted_ucl_registration_message(admission, request)
 
     return render(
-        request, "admission_detail.html",
+        request, "continuing_education/admission_detail.html",
         {
             'admission': admission,
             'files': files,
@@ -321,7 +321,7 @@ def admission_form(request, admission_id=None):
 
     return render(
         request,
-        'admission_form.html',
+        'continuing_education/admission_form.html',
         {
             'admission': admission,
             'admission_form': adm_form,
@@ -454,7 +454,7 @@ def billing_edit(request, admission_id):
 
     return render(
         request,
-        'admission_billing_form.html',
+        'continuing_education/admission_billing_form.html',
         {
             'admission': admission,
             'registration_form': registration_form,
@@ -462,3 +462,24 @@ def billing_edit(request, admission_id):
             'errors': errors,
         }
     )
+
+
+@login_required
+@require_http_methods(['POST'])
+@permission_required('continuing_education.cancel_draft', raise_exception=True)
+def delete_draft(request):
+    selected_admission_ids = request.POST.getlist("selected_draft_action", default=[])
+
+    if not selected_admission_ids:
+        display_error_messages(request, _("Please select at least one admission in 'draft' status"))
+
+    for admission_id in selected_admission_ids:
+        admission = Admission.objects.get(id=admission_id)
+        can_access_admission(request.user, admission)
+
+    if selected_admission_ids:
+        Admission.objects.filter(id__in=selected_admission_ids).delete()
+        msg = _("Admission(s) deleted")
+        display_success_messages(request, msg)
+
+    return redirect(reverse('admission'))

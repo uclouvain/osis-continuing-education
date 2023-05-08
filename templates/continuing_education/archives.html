@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+{% load static %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% comment "License" %}
+* OSIS stands for Open Student Information System. It's an application
+* designed to manage the core business of higher education institutions,
+* such as universities, faculties, institutes and professional schools.
+* The core business involves the administration of students, teachers,
+* courses, programs and so on.
+*
+* Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* A copy of this license - GNU General Public License - is available
+* at the root of the source code of this program.  If not,
+* see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/continuing_education_style.css' %}">
+{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'studies' %}">{% trans 'Studies' %}</a></li>
+    <li><a href="{% url 'continuing_education' %}">{% trans 'Continuing Education' %}</a></li>
+    <li class="active">{% trans 'Archives' context 'continuing_education' %}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h2>{% trans 'Archives' context 'continuing_education' %}</h2>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel panel-body">
+            <form style="display: inline;" action="{% url 'archive' %}" method="get" class="" id="search_form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="faculty_id">{% trans 'Faculty' %}</label>
+                        {{ search_form.faculty }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="formation_id">{% trans 'Formation' %}</label>
+                        {{ search_form.formation }}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="state_id">{% trans 'State' %}</label>
+                        {{ search_form.state }}
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 26px;">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                        {% include 'blocks/button/button_filter_refresh.html' %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="free_text_id">{% trans 'In all fields' %}</label>
+                        {{ search_form.free_text }}
+                    </div>
+                </div>
+                {% include 'continuing_education/blocks/button/xls_hidden.html' %}
+            </form>
+            {% include 'continuing_education/blocks/form/search_form_reset.html' %}
+        </div>
+        {% trans 'Produce xls' as button_title %}
+        <div class="panel panel-body">
+            <div class="dropdown  text-right" style="margin-right: 10px;">
+                <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> {% trans 'Actions' %}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-large row text-right pull-right">
+                    <li>
+                        {% include "continuing_education/blocks/button/xls.html" with button_title=button_title %}
+                    </li>
+                    <li role="separator" class="divider"></li>
+                    <li>
+                        <a id="btn_archive" style="margin-right:10px;cursor: pointer;" data-toggle="modal" data-target="#unarchive_modal">
+                            &nbsp;{% trans 'Unarchive' %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% if archives %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong style="margin-left:10px;color:grey;"> {{ archives_number }} {% trans 'Archives'|lower %} </strong>
+                    </div>
+                </div>
+            {% endif %}
+            <form id="archives_form" method="post" action="{% url 'unarchives_procedure' %}">
+                {% csrf_token %}
+                 <table class="table table-striped table-hover" id="order_archive">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% if archives %}
+                                    <input id="id_check_all" type="checkbox" name="check_all"
+                                           title="{% trans 'Check All' %}"/>
+                                {% endif %}
+                            </th>
+                            <th class="searchable">{% trans 'Name' %}</th>
+                            <th class="searchable">{% trans 'First name' %}</th>
+                            <th class="searchable">{% trans 'Email' %}</th>
+                            <th class="searchable">{% trans 'Formation' %}</th>
+                            <th class="searchable">{% trans 'Faculty' %}</th>
+                            <th class="searchable">{% trans 'State' %}</th>
+                            <th class="searchable">{% trans 'Creation date' %}</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                {% bootstrap_pagination archives extra=request.GET.urlencode %}
+                            </td>
+                        </tr>
+                    </tfoot>
+                    {% for archive in archives %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selected_action" class="selected_object"
+                                       value="{{ archive.id }}"/>
+                            </td>
+                            <td>
+                                {% if archive.is_admission %}
+                                    <a href="{% url 'admission_detail' admission_id=archive.id %}">
+                                        {{ archive.person_information.person.last_name }}
+                                    </a>
+                                {% endif %}
+                                {% if archive.is_registration %}
+                                    <a href="{% url 'admission_detail' admission_id=archive.id %}#registration">
+                                        {{ archive.person_information.person.last_name }}
+                                    </a>
+                                {% endif %}
+                                {% if not archive.is_admission and not archive.is_registration %}
+                                    {{ archive.person_information.person.last_name }}
+                                {% endif %}
+                            </td>
+                            <td>{{ archive.person_information.person.first_name }}</td>
+                            <td>{{ archive.email | default_if_none:'' }}</td>
+                            <td title="{{archive.formation.title}}">{{ archive.formation_display }}</td>
+                            <td title="{{archive.faculty.title}}">{{ archive.get_faculty | default_if_none:''}}</td>
+                            <td style="vertical-align: middle;" class="admission-state">
+                                {% if archive.is_waiting %}
+                                    <span class="label label-primary show">{% trans archive.state %}</span>
+                                {% elif archive.is_rejected %}
+                                    <span class="label label-danger show">{% trans archive.state %}</span>
+                                {% elif archive.is_submitted %}
+                                    <span class="label label-info show">{% trans archive.state %}</span>
+                                {% elif archive.is_accepted %}
+                                    <span class="label label-default show">{% trans archive.state %}</span>
+                                {% elif archive.is_validated %}
+                                    <span class="label label-success show">{% trans archive.state %}</span>
+                                {% elif archive.is_registration_submitted %}
+                                    <span class="label label-info show">{% trans archive.state %}</span>
+                                {% elif archive.is_accepted_no_registration_required %}
+                                    <span class="label label-default show">{% trans 'Accepted' %}</span>
+                                {% else %}
+                                    {% if archive.state %}
+                                    {%  trans archive.state %}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>{{ archive.created_at| date:"d/m/Y" | default_if_none:''}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </form>
+        </div>
+    </div>
+    {% include "continuing_education/fragment/archives/unarchive_modal.html" %}
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $('#order_archive').DataTable( {
+                "order": [[ 5, "desc" ]],
+                "paging": false,
+                "info": false,
+                "bFilter": false,
+                "language":
+                    {
+                        "sEmptyTable": "{% trans 'No data' %}",
+                    }
+            } );
+        } );
+
+        $("#btn_produce_xls").click(function(e) {
+            prepare_xls(e, 'xls_archives');
+        });
+
+    </script>
+
+    <script src="{% static 'js/archive.js' %}"></script>
+
+{% endblock %}
