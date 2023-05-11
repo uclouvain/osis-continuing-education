@@ -6,7 +6,7 @@
 #    The core business involves the administration of students, teachers,
 #    courses, programs and so on.
 #
-#    Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+#    Copyright (C) 2015-2022 Université catholique de Louvain (http://www.uclouvain.be)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -23,13 +23,16 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from base.tests.factories.academic_year import create_current_academic_year
 from base.tests.factories.education_group import EducationGroupFactory
 from base.tests.factories.education_group_year import EducationGroupYearFactory
+from continuing_education.models.prospect import Prospect
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 from continuing_education.tests.factories.prospect import ProspectFactory
 from continuing_education.tests.factories.roles.continuing_education_manager import ContinuingEducationManagerFactory
@@ -80,6 +83,30 @@ class ProspectListTestCase(TestCase):
         url = reverse('prospects')
         response = self.client.get(url)
         self.assertRedirects(response, "/login/?next={}".format(url))
+
+    def test_error_message_no_prospect_selected(self):
+        response = self.client.post(
+            reverse('prospects_delete'),
+            data={},
+            follow=True,
+            HTTP_REFERER=reverse('prospects', args=[])
+        )
+        self.assertEqual(response.status_code, 200)
+
+        msg = [m.message for m in get_messages(response.wsgi_request)]
+        msg_level = [m.level for m in get_messages(response.wsgi_request)]
+        self.assertEqual(len(msg), 1)
+        self.assertIn(messages.ERROR, msg_level)
+        self.assertEqual(msg[0], _("Please select at least one prospect to delete"))
+
+    def test_prospect_deleted(self):
+        prospect_to_be_deleted = ProspectFactory()
+        self.assertTrue(Prospect.objects.filter(id=prospect_to_be_deleted.id).exists())
+        response = self.client.post(
+            reverse('prospects_delete'),
+            data={'selected_action': prospect_to_be_deleted.id},
+        )
+        self.assertFalse(Prospect.objects.filter(id=prospect_to_be_deleted.id).exists())
 
 
 class ProspectDetailsTestCase(TestCase):
