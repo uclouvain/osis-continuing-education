@@ -119,7 +119,7 @@ class AdmissionFactory(factory.DjangoModelFactory):
     vat_number = factory.Faker('ssn')
 
     # Registration
-    national_registry_number = '123453546'
+    national_registry_number = ''
     id_card_number = '7897675467'
     passport_number = '375375375'
 

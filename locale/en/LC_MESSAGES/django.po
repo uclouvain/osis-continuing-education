@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-22 16:47+0100\n"
+"POT-Creation-Date: 2022-04-25 08:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -357,6 +357,9 @@ msgstr ""
 msgid "Delete draft"
 msgstr ""
 
+msgid "Delete prospect(s)"
+msgstr ""
+
 msgid ""
 "Describe here additional information that will be asked to the participant:\n"
 "- as a list of question(s) - maximum 1 sentence by question \n"
@@ -451,12 +454,6 @@ msgid "File category"
 msgstr ""
 
 msgid "File correctly deleted"
-msgstr ""
-
-#, python-format
-msgid ""
-"File extension '%(extension)s' is not allowed. Allowed extensions are: "
-"'%(allowed_extensions)s'."
 msgstr ""
 
 msgid "File is now"
@@ -865,6 +862,9 @@ msgstr ""
 msgid "Please select at least one formation"
 msgstr ""
 
+msgid "Please select at least one prospect to delete"
+msgstr ""
+
 msgid "Please select at least one registration to validate."
 msgstr ""
 
@@ -915,6 +915,9 @@ msgid "Professional background"
 msgstr ""
 
 msgid "Professional status"
+msgstr ""
+
+msgid "Prospect(s) deleted"
 msgstr ""
 
 msgid "Prospects"
@@ -1058,7 +1061,7 @@ msgid "State"
 msgstr ""
 
 #, python-format
-msgid "State : %(old_state)s ► %(new_state)s"
+msgid "State : %(old_state)s -> %(new_state)s"
 msgstr ""
 
 msgid "State reason"
@@ -1277,7 +1280,7 @@ msgstr ""
 msgid "Validated"
 msgstr ""
 
-msgid "Valued crédits"
+msgid "Valued credits"
 msgstr ""
 
 msgid "Waiting"

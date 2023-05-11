@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-22 16:47+0100\n"
+"POT-Creation-Date: 2022-04-25 08:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -370,6 +370,9 @@ msgstr "Supprimer le document"
 msgid "Delete draft"
 msgstr "Supprimer brouillon(s)"
 
+msgid "Delete prospect(s)"
+msgstr "Supprimer prospect(s)"
+
 msgid ""
 "Describe here additional information that will be asked to the participant:\n"
 "- as a list of question(s) - maximum 1 sentence by question \n"
@@ -476,14 +479,6 @@ msgstr "Catégorie de fichier"
 
 msgid "File correctly deleted"
 msgstr "Le fichier a bien été supprimé"
-
-#, python-format
-msgid ""
-"File extension '%(extension)s' is not allowed. Allowed extensions are: "
-"'%(allowed_extensions)s'."
-msgstr ""
-"Extension de fichier '%(extension)s' non autorisée. Les extensions "
-"autorisées sont: '%(allowed_extensions)s'."
 
 msgid "File is now"
 msgstr "Le dossier est maintenant"
@@ -910,6 +905,9 @@ msgstr "Veuillez sélectionner au moins un dossier à noter comme reçu"
 msgid "Please select at least one formation"
 msgstr "Veuillez sélectionner au moins une formation"
 
+msgid "Please select at least one prospect to delete"
+msgstr "Veuillez sélectionner au moins un prospect à supprimer"
+
 msgid "Please select at least one registration to validate."
 msgstr "Veuillez sélectionner au moins une inscription à valider"
 
@@ -963,6 +961,9 @@ msgstr "Parcours professionnel"
 
 msgid "Professional status"
 msgstr "Statut professionnel"
+
+msgid "Prospect(s) deleted"
+msgstr "Prospect(s) supprimé(s)"
 
 msgid "Prospects"
 msgstr "Prospects"
@@ -1106,9 +1107,8 @@ msgstr "Etalement des paiements"
 msgid "State"
 msgstr "Etat"
 
-#, python-format
-msgid "State : %(old_state)s ► %(new_state)s"
-msgstr "Etat : %(old_state)s ► %(new_state)s"
+msgid "State : %(old_state)s -> %(new_state)s"
+msgstr "Etat : %(old_state)s -> %(new_state)s"
 
 msgid "State reason"
 msgstr "Raison du changement d'état"
@@ -1315,9 +1315,9 @@ msgid ""
 "uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> for further "
 "help"
 msgstr ""
-"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" href="
-"\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</a> "
-"pour plus d'informations"
+"Erreur inconnue: veuillez contacter le <a class=\"error_msg_link\" "
+"href=\"https://uclouvain.be/fr/decouvrir/service-desk.html\">Service Desk</"
+"a> pour plus d'informations"
 
 msgid "Unreceived file"
 msgstr "Dossier d'inscription non reçu"
@@ -1355,7 +1355,7 @@ msgstr "Numéro de TVA"
 msgid "Validated"
 msgstr "Validé"
 
-msgid "Valued crédits"
+msgid "Valued credits"
 msgstr "Crédits valorisés"
 
 msgid "Waiting"
