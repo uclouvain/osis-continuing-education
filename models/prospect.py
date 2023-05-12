@@ -76,12 +76,6 @@ class Prospect(Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        null=True,
-        verbose_name=_("Creation date")
-    )
-
     class Meta:
         default_permissions = ['view']
         permissions = (
