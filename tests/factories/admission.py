@@ -49,7 +49,7 @@ def _get_fake_phone_number():
     return fake
 
 
-class AdmissionFactory(factory.DjangoModelFactory):
+class AdmissionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.admission'
 
