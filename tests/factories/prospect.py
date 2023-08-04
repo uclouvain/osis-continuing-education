@@ -29,7 +29,7 @@ import factory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
 
 
-class ProspectFactory(factory.DjangoModelFactory):
+class ProspectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.prospect'
 

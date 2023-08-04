@@ -31,7 +31,7 @@ from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.iufc_person import IUFCPersonFactory as PersonFactory
 
 
-class AdmissionFileFactory(factory.DjangoModelFactory):
+class AdmissionFileFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.AdmissionFile'
 
