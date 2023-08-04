@@ -161,6 +161,8 @@ class RegistrationPostSerializer(RegistrationDetailSerializer):
                 instance,
                 not validated_data['use_address_for_post']
             )
+        else:
+            validated_data.pop("residence_address", "")
         instance._original_state = instance.state
         update_result = super().update(instance, validated_data)
         if instance.state != instance._original_state:

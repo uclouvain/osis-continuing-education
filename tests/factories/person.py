@@ -31,7 +31,7 @@ from continuing_education.tests.factories.iufc_person import IUFCPersonFactory a
 from reference.tests.factories.country import CountryFactory
 
 
-class ContinuingEducationPersonFactory(factory.DjangoModelFactory):
+class ContinuingEducationPersonFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.ContinuingEducationPerson'
 
