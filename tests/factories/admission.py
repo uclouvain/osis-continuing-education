@@ -26,6 +26,7 @@
 import random
 
 import factory
+from factory.faker import faker
 
 from base.tests.factories.academic_year import AcademicYearFactory
 from continuing_education.models.enums import admission_state_choices, enums
@@ -41,15 +42,13 @@ CONTINUING_EDUCATION_TYPE = 8
 
 
 def _get_fake_phone_number():
-    factory.Faker._DEFAULT_LOCALE = 'nl_BE'
-    fake = factory.Faker('phone_number').generate(extra_kwargs={})
+    fake = faker.Faker(locale='nl_BE').phone_number()
     for c in [" ", "(", ")", "-"]:
         fake = fake.replace(c, "")
-    factory.Faker._DEFAULT_LOCALE = 'en_US'
     return fake
 
 
-class AdmissionFactory(factory.DjangoModelFactory):
+class AdmissionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.admission'
 

@@ -31,7 +31,7 @@ from base.tests.factories.education_group import EducationGroupFactory
 from continuing_education.models.continuing_education_training import ContinuingEducationTraining
 
 
-class ContinuingEducationTrainingFactory(factory.DjangoModelFactory):
+class ContinuingEducationTrainingFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ContinuingEducationTraining
 

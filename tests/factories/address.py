@@ -29,7 +29,7 @@ import factory
 from reference.tests.factories.country import CountryFactory
 
 
-class AddressFactory(factory.DjangoModelFactory):
+class AddressFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = 'continuing_education.address'
 
