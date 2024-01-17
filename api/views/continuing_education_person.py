@@ -73,7 +73,8 @@ class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
 
     def get_object(self):
         try:
-            logger.warning(self.request.user.username)
+            print(self.request.user.username)
+            print(self.request.user)
             return ContinuingEducationPerson.objects.get(person__user=self.request.user)
         except ContinuingEducationPerson.DoesNotExist:
             person, _ = Person.objects.get_or_create(email=self.request.user.username)
