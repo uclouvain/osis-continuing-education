@@ -76,6 +76,7 @@ class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
             logger.warning(self.request.user.username)
             return ContinuingEducationPerson.objects.get(person__user=self.request.user)
         except ContinuingEducationPerson.DoesNotExist:
+            logger.warning(Person.objects.get(email=self.request.user.username).id)
             person, _ = Person.objects.get_or_create(email=self.request.user.username)
             person.user = self.request.user
             person.save()
