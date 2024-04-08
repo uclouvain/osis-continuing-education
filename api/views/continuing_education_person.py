@@ -23,12 +23,17 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
+import logging
+
+from django.conf import settings
 from rest_framework import generics
 
 from base.models.person import Person
 from continuing_education.api.serializers.continuing_education_person import ContinuingEducationPersonSerializer, \
     ContinuingEducationPersonPostSerializer
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
+
+logger = logging.getLogger(settings.DEFAULT_LOGGER)
 
 
 class ContinuingEducationPersonListCreate(generics.ListCreateAPIView):
@@ -68,6 +73,7 @@ class ContinuingEducationPersonDetail(generics.RetrieveAPIView):
 
     def get_object(self):
         try:
+            logger.warning(self.request.user.username)
             return ContinuingEducationPerson.objects.get(person__user=self.request.user)
         except ContinuingEducationPerson.DoesNotExist:
             person, _ = Person.objects.get_or_create(email=self.request.user.username)
