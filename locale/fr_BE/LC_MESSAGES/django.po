@@ -1107,6 +1107,7 @@ msgstr "Etalement des paiements"
 msgid "State"
 msgstr "Etat"
 
+#, python-format
 msgid "State : %(old_state)s -> %(new_state)s"
 msgstr "Etat : %(old_state)s -> %(new_state)s"
 
