@@ -52,7 +52,7 @@ msgid "Accepted (no registration required)"
 msgstr "Accepté"
 
 msgid "Acronym"
-msgstr "Acronyme"
+msgstr "Sigle"
 
 msgid "Actions"
 msgstr "Actions"
@@ -75,6 +75,7 @@ msgstr "Description des informations complémentaires"
 msgid "Address"
 msgstr "Adresse"
 
+msgctxt "continuing_education"
 msgid "Administrator"
 msgstr "Gestionnaire"
 
@@ -359,7 +360,7 @@ msgid "Cycle"
 msgstr "Cycle"
 
 msgid "Datetime"
-msgstr "Date/Heure"
+msgstr "Date/heure"
 
 msgid "Death"
 msgstr "Décès"
@@ -463,7 +464,7 @@ msgid "Faculty"
 msgstr "Faculté"
 
 msgid "Female"
-msgstr "Femme"
+msgstr "Féminin"
 
 msgid "Field required while participant fills out the form"
 msgstr "Champ requis quand le participant remplit le formulaire d'admission"
@@ -594,7 +595,7 @@ msgid "High school diploma"
 msgstr "Diplôme d'études secondaires"
 
 msgid "High school graduation year"
-msgstr "Année d'obtention (secondaire)"
+msgstr "Année d'obtention du diplôme d'études secondaires"
 
 msgid "History"
 msgstr "Historique"
@@ -697,7 +698,7 @@ msgid "Mail sent to %(receiver)s"
 msgstr "Mail envoyé à %(receiver)s"
 
 msgid "Male"
-msgstr "Homme"
+msgstr "Masculin"
 
 msgid "Manager"
 msgstr "Gestionnaire"
@@ -745,7 +746,7 @@ msgid "Missing year"
 msgstr "Année manquante"
 
 msgid "Mobile phone"
-msgstr "GSM"
+msgstr "Téléphone mobile (GSM)"
 
 msgid "Motivation"
 msgstr "Motivation"
@@ -778,7 +779,7 @@ msgid "No assigned training"
 msgstr "Aucune formation assignée"
 
 msgid "No data"
-msgstr "Pas de données"
+msgstr "Aucune donnée"
 
 msgid "No document available"
 msgstr "Aucun document disponible"
@@ -827,7 +828,7 @@ msgid "On demand"
 msgstr "En demande"
 
 msgid "Only alphanumeric characters are allowed."
-msgstr "Uniquement des caractères alphanumériques sont autorisés."
+msgstr "Seuls les caractères alphanumériques sont acceptés."
 
 msgid "Only numeric characters are allowed."
 msgstr "Uniquement des caractères numériques sont autorisés."
@@ -1017,7 +1018,7 @@ msgid "Registration file received"
 msgstr "Dossier d'inscription reçu"
 
 msgid "Registration required"
-msgstr "Inscription requise"
+msgstr "Inscription au rôle requise"
 
 msgid "Registration submitted"
 msgstr "Inscription soumise"
@@ -1061,7 +1062,7 @@ msgid "Residence phone"
 msgstr "Téléphone fixe"
 
 msgid "Save"
-msgstr "Sauver"
+msgstr "Enregistrer"
 
 msgid "Self employed"
 msgstr "Indépendant"
@@ -1105,7 +1106,7 @@ msgid "Spreading payments"
 msgstr "Etalement des paiements"
 
 msgid "State"
-msgstr "Etat"
+msgstr "État"
 
 #, python-format
 msgid "State : %(old_state)s -> %(new_state)s"
@@ -1256,6 +1257,7 @@ msgstr ""
 "Les archives sélectionnées vont être désarchivées. Êtes-vous certain·e de "
 "vouloir continuer ?"
 
+msgctxt "continuing_education"
 msgid "Title"
 msgstr "Titre"
 
@@ -1326,6 +1328,7 @@ msgstr "Dossier d'inscription non reçu"
 msgid "Update all selected registrations ?"
 msgstr "Modifier les inscriptions sélectionnées ?"
 
+msgctxt "iufc"
 msgid "Upload"
 msgstr "Envoyer"
 
@@ -1438,7 +1441,7 @@ msgstr ""
 "suivre ce programme"
 
 msgid "You do not meet the admission requirements"
-msgstr "Vous ne remplissez pas les conditions d’admission"
+msgstr "Vous ne remplissez pas les conditions d'admission"
 
 msgid "You don't have the permission to delete this file"
 msgstr "Vous n'avez pas la permission de supprimer ce fichier"
