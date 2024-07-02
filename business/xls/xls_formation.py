@@ -24,7 +24,7 @@
 #
 ##############################################################################
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from base.business.xls import get_name_or_username
 from continuing_education.business.xls.xls_common import form_filters
@@ -77,7 +77,7 @@ def _get_titles():
     return [
         str(_('Acronym')),
         str(_('Faculty')),
-        str(_('Title')),
+        str(pgettext_lazy('continuing_education', 'Title')),
         str(_('State')),
         str(_('Training aid')),
         str(_('Registration required')),

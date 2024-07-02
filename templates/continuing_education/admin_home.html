@@ -33,7 +33,7 @@
         {% if user_is_continuing_education_student_worker %}
             {% trans 'Student worker' %}
         {% else %}
-            {% trans 'Administrator' %}
+            {% trans 'Administrator' context 'continuing_education' %}
         {% endif %}
     </li>
 {% endblock %}
@@ -59,7 +59,7 @@
         </div>
     {% else %}
         <div class="page-header">
-            <h2 class="text-capitalize">{% trans 'Administrator' %}</h2>
+            <h2 class="text-capitalize">{% trans 'Administrator' context 'continuing_education' %}</h2>
         </div>
         <div class="panel panel-default">
         <div class="panel panel-body">

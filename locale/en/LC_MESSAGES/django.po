@@ -72,6 +72,7 @@ msgstr ""
 msgid "Address"
 msgstr ""
 
+msgctxt "continuing_education"
 msgid "Administrator"
 msgstr ""
 
@@ -1187,6 +1188,7 @@ msgstr ""
 msgid "This will unarchive all selected archives. Are you sure ?"
 msgstr ""
 
+msgctxt "continuing_education"
 msgid "Title"
 msgstr ""
 
@@ -1252,6 +1254,7 @@ msgstr ""
 msgid "Update all selected registrations ?"
 msgstr ""
 
+msgctxt "iufc"
 msgid "Upload"
 msgstr ""
 

@@ -323,7 +323,7 @@ def _get_filter_entity_management(qs, requirement_entity_acronym, with_entity_su
 
 class FormationFilterForm(CommonFilterForm):
     acronym = forms.CharField(max_length=40, required=False, label=_('Acronym'))
-    title = forms.CharField(max_length=50, required=False, label=_('Title'))
+    title = forms.CharField(max_length=50, required=False, label=pgettext_lazy('continuing_education', 'Title'))
     state = forms.ChoiceField(choices=FORMATION_STATE_CHOICES, required=False, label=_('State'))
     training_aid = forms.ChoiceField(choices=BOOLEAN_CHOICES, required=False, label=_('Training aid'))
     free_text = forms.CharField(max_length=100, required=False, label=_('In all fields'))
