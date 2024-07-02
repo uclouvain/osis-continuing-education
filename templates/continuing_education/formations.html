@@ -53,7 +53,7 @@
                         {{ search_form.acronym }}
                     </div>
                     <div class="col-md-3">
-                        <label for="title_id">{% trans 'Title' %}</label>
+                        <label for="title_id">{% trans 'Title' context 'continuing_education' %}</label>
                         {{ search_form.title }}
                     </div>
                     <div class="col-md-3">
@@ -145,7 +145,7 @@
                         </th>
                         <th class="searchable">{% trans 'Acronym' %}</th>
                         <th class="searchable">{% trans 'Faculty' %}</th>
-                        <th class="searchable">{% trans 'Title' %}</th>
+                        <th class="searchable">{% trans 'Title' context 'continuing_education' %}</th>
                         <th class="searchable">{% trans 'State' %}</th>
                         <th class="searchable">{% trans 'Training aid' %}</th>
                         <th class="searchable">{% trans 'Registration required' %}</th>
