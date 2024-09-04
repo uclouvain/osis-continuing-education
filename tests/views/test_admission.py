@@ -374,7 +374,7 @@ class ViewAdmissionTestCase(TestCase):
     def test_ajax_get_formation_information(self):
         response = self.client.get(reverse('get_formation_information'), data={
             'formation_id': self.formation.pk
-        }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        }, headers={"x-requested-with": 'XMLHttpRequest'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'additional_information_label': 'additional_information'}
@@ -385,7 +385,7 @@ class ViewAdmissionTestCase(TestCase):
             reverse('admission_delete_draft'),
             data={},
             follow=True,
-            HTTP_REFERER=reverse('admission', args=[])
+            headers={"referer": reverse('admission', args=[])}
         )
         self.assertEqual(response.status_code, 200)
 
