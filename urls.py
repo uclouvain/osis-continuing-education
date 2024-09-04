@@ -23,7 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 ##############################################################################
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import path
 
 import continuing_education.views.file
 from continuing_education.business import registration_queue
@@ -32,63 +33,63 @@ from continuing_education.views.autocomplete.continuing_education_training impor
     ContinuingEducationTrainingAutocomplete
 
 urlpatterns = [
-    url(r'^$', home.main_view, name='continuing_education'),
-    url(r'^admission/', include([
-        url(r'^$', admission.list_admissions, name='admission'),
-        url(r'^new/$', admission.admission_form, name='admission_new'),
-        url(r'^edit/(?P<admission_id>[0-9]+)/', admission.admission_form, name='admission_edit'),
-        url(r'^delete_draft/', admission.delete_draft, name='admission_delete_draft'),
-        url(r'^(?P<admission_id>[0-9]+)/', include([
-            url(r'^$', admission.admission_detail, name='admission_detail'),
-            url(r'^send_invoice_notification_mail/$', admission.send_invoice_notification_mail,
-                name='send_invoice_notification_mail'),
-            url(r'^file/(?P<file_id>[0-9]+)$', continuing_education.views.file.download_file, name='download_file'),
-            url(r'file/(?P<file_id>[0-9]+)/delete$', continuing_education.views.file.delete_file, name='delete_file'),
+    path('', home.main_view, name='continuing_education'),
+    path('admission/', include([
+        path('', admission.list_admissions, name='admission'),
+        path('new/', admission.admission_form, name='admission_new'),
+        path('edit/<int:admission_id>/', admission.admission_form, name='admission_edit'),
+        path('delete_draft/', admission.delete_draft, name='admission_delete_draft'),
+        path('<int:admission_id>/', include([
+            path('', admission.admission_detail, name='admission_detail'),
+            path('send_invoice_notification_mail/', admission.send_invoice_notification_mail,
+                 name='send_invoice_notification_mail'),
+            path('file/<int:file_id>', continuing_education.views.file.download_file, name='download_file'),
+            path('file/<int:file_id>/delete', continuing_education.views.file.delete_file, name='delete_file'),
         ])),
-        url(r'^validate_field/(?P<admission_id>[0-9]+)/$', admission.validate_field, name='validate_field'),
-        url(r'^ajax/formation/', admission.get_formation_information, name='get_formation_information'),
-        url(r'^billing_edit/(?P<admission_id>[0-9]+)/', admission.billing_edit, name='billing_edit'),
+        path('validate_field/<int:admission_id>/', admission.validate_field, name='validate_field'),
+        path('ajax/formation/', admission.get_formation_information, name='get_formation_information'),
+        path('billing_edit/<int:admission_id>/', admission.billing_edit, name='billing_edit'),
     ])),
-    url(r'^registration/', include([
-        url(r'^$', registration.list_registrations, name='registration'),
-        url(r'^edit/(?P<admission_id>[0-9]+)/', registration.registration_edit, name='registration_edit'),
-        url(r'^list/receive_files/', registration.receive_files_procedure, name='receive_files_procedure'),
-        url(r'^change_received_file_state/(?P<admission_id>[0-9]+)/', registration.receive_file_procedure,
-            name='receive_file_procedure'),
-        url(r'^cancelled/', registration.list_cancelled, name='cancelled_files'),
+    path('registration/', include([
+        path('', registration.list_registrations, name='registration'),
+        path('edit/<int:admission_id>/', registration.registration_edit, name='registration_edit'),
+        path('list/receive_files/', registration.receive_files_procedure, name='receive_files_procedure'),
+        path('change_received_file_state/<int:admission_id>/', registration.receive_file_procedure,
+             name='receive_file_procedure'),
+        path('cancelled/', registration.list_cancelled, name='cancelled_files'),
     ])),
-    url(r'^archive/', include([
-        url(r'^$', archive.list_archives, name='archive'),
-        url(r'^list/to_archive/', archive.archives_procedure, name='archives_procedure'),
-        url(r'^list/to_unarchive/', archive.unarchives_procedure, name='unarchives_procedure'),
-        url(r'^to_archive/(?P<admission_id>[0-9]+)/', archive.archive_procedure, name='archive_procedure'),
+    path('archive/', include([
+        path('', archive.list_archives, name='archive'),
+        path('list/to_archive/', archive.archives_procedure, name='archives_procedure'),
+        path('list/to_unarchive/', archive.unarchives_procedure, name='unarchives_procedure'),
+        path('to_archive/<int:admission_id>/', archive.archive_procedure, name='archive_procedure'),
     ])),
-    url(r'^formation/', include([
-        url(r'^$', formation.list_formations, name='formation'),
-        url(r'^list/update/', formation.update_formations, name='update_formations'),
-        url(r'^(?P<formation_id>[0-9]+)/', formation.formation_detail, name='formation_detail'),
-        url(r'^edit/(?P<formation_id>[0-9]+)/', formation.formation_edit, name='formation_edit'),
+    path('formation/', include([
+        path('', formation.list_formations, name='formation'),
+        path('list/update/', formation.update_formations, name='update_formations'),
+        path('<int:formation_id>/', formation.formation_detail, name='formation_detail'),
+        path('edit/<int:formation_id>/', formation.formation_edit, name='formation_edit'),
     ])),
-    url(r'^prospects/', include([
-        url(r'^$', prospect.list_prospects, name='prospects'),
-        url(r'^(?P<prospect_id>[0-9]+)/', prospect.prospect_details, name='prospect_details'),
-        url(r'^reporting', prospect.prospect_xls, name='prospects_xls'),
-        url(r'^delete', prospect.delete_prospects, name='prospects_delete'),
+    path('prospects/', include([
+        path('', prospect.list_prospects, name='prospects'),
+        path('<int:prospect_id>/', prospect.prospect_details, name='prospect_details'),
+        path('reporting', prospect.prospect_xls, name='prospects_xls'),
+        path('delete', prospect.delete_prospects, name='prospects_delete'),
     ])),
-    url(r'^tasks/', include([
-        url(r'^$', tasks.list_tasks, name='list_tasks'),
-        url(r'^paper_registrations_file_received', tasks.paper_registrations_file_received,
-            name='paper_registrations_file_received'),
-        url(r'^mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
-        url(r'^process_admissions', tasks.process_admissions, name='process_admissions'),
+    path('tasks/', include([
+        path('', tasks.list_tasks, name='list_tasks'),
+        path('paper_registrations_file_received', tasks.paper_registrations_file_received,
+             name='paper_registrations_file_received'),
+        path('mark_diplomas_produced', tasks.mark_diplomas_produced, name='mark_diplomas_produced'),
+        path('process_admissions', tasks.process_admissions, name='process_admissions'),
     ])),
-    url(r'^training-autocomplete/$', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
-    url(r'^managers/', include([
-        url(r'^$', managers.list_managers, name='list_managers'),
-        url(r'^add/', managers.add_continuing_education_training_manager,
-            name='add_continuing_education_training_manager'),
-        url(r'^delete/(?P<training>[0-9]+)/(?P<manager>[0-9]+)',
-            managers.delete_continuing_education_training_manager, name='delete_continuing_education_training_manager')
+    path('training-autocomplete/', ContinuingEducationTrainingAutocomplete.as_view(), name='training_autocomplete'),
+    path('managers/', include([
+        path('', managers.list_managers, name='list_managers'),
+        path('add/', managers.add_continuing_education_training_manager,
+             name='add_continuing_education_training_manager'),
+        path('delete/<int:training>/<int:manager>', managers.delete_continuing_education_training_manager,
+             name='delete_continuing_education_training_manager')
     ])),
-    url(r'^injection/(?P<admission_id>[0-9]+)/', registration_queue.inject_admission_to_epc, name='injection_to_epc')
+    path('injection/<int:admission_id>/', registration_queue.inject_admission_to_epc, name='injection_to_epc')
 ]
