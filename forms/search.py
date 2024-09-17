@@ -23,6 +23,7 @@ from continuing_education.models.enums.admission_state_choices import REGISTRATI
     ADMISSION_STATE_CHOICES
 from continuing_education.models.enums.admission_state_choices import REJECTED, SUBMITTED, WAITING, ACCEPTED, \
     REGISTRATION_SUBMITTED, VALIDATED, STATE_CHOICES, ARCHIVE_STATE_CHOICES, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED
+from continuing_education.models.prospect import Prospect
 
 STATE_TO_DISPLAY = [SUBMITTED, REJECTED, WAITING, DRAFT, ACCEPTED_NO_REGISTRATION_REQUIRED]
 STATE_FOR_REGISTRATION = [ACCEPTED, REGISTRATION_SUBMITTED, VALIDATED]
@@ -447,3 +448,46 @@ class ManagerFilterForm(BootstrapForm):
                 ).values_list('person__id')
             )
         return qs
+
+
+class ProspectFilterForm(CommonFilterForm):
+
+    def __init__(self, data, user=None, *args, **kwargs):
+        super(ProspectFilterForm, self).__init__(data, *args, **kwargs)
+        self.prospects_queryset = self.get_prospects_by_user(user)
+        self._build_prospects_formation_choices()
+
+    def get_prospects_by_user(self, user):
+        return Prospect.objects.filter(
+            formation__continuingeducationtrainingmanager__person=user.person
+        ).select_related(
+            'formation__education_group'
+        ).prefetch_related(
+            'formation__education_group__educationgroupyear_set',
+            'formation__continuingeducationtrainingmanager_set'
+        )
+
+    def get_propects_with_filter(self):
+        qs = self.prospects_queryset
+        formation = self.cleaned_data.get('formation')
+        free_text = self.cleaned_data.get('free_text')
+        if formation:
+            qs = qs.filter(formation=formation)
+
+        if free_text:
+            qs = qs.filter(
+                Q(first_name__unaccent__icontains=free_text) |
+                Q(name__unaccent__icontains=free_text) |
+                Q(email__icontains=free_text) |
+                Q(phone_number__icontains=free_text) |
+                Q(formation__education_group__educationgroupyear__acronym__icontains=free_text) |
+                Q(formation__education_group__educationgroupyear__title__unaccent__icontains=free_text) |
+                Q(postal_code__icontains=free_text) |
+                Q(city__unaccent__icontains=free_text)
+            ).distinct()
+        return qs
+
+    def _build_prospects_formation_choices(self):
+        self.fields['formation'].queryset = ContinuingEducationTraining.objects.formations().filter(
+            id__in=self.prospects_queryset.values_list('formation', flat=False)
+        ).distinct().order_by('education_group__educationgroupyear__acronym')
