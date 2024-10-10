@@ -51,8 +51,10 @@ from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISS
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import file_category_choices, admission_state_choices
-from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
-    ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
+from continuing_education.models.enums.admission_state_choices import (
+    NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED,
+    ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED,
+)
 from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -62,8 +64,10 @@ from continuing_education.tests.factories.roles.continuing_education_manager imp
 from continuing_education.tests.factories.roles.continuing_education_training_manager import \
     ContinuingEducationTrainingManagerFactory
 from continuing_education.views.admission import admission_detail
-from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
-    get_revision_messages
+from continuing_education.views.common import (
+    get_versions, save_and_create_revision, VERSION_MESSAGES,
+    get_revision_messages,
+)
 from reference.tests.factories.country import CountryFactory
 
 FILE_CONTENT = "test-content"
@@ -250,7 +254,7 @@ class ViewAdmissionTestCase(TestCase):
 
     def test_admission_edit_not_found(self):
         response = self.client.get(reverse('admission_edit', kwargs={
-            'admission_id': 0,
+            'admission_id': 1,
         }))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
