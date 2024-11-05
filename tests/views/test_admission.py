@@ -51,8 +51,10 @@ from continuing_education.business.enums.rejected_reason import DONT_MEET_ADMISS
 from continuing_education.models.admission import Admission
 from continuing_education.models.continuing_education_person import ContinuingEducationPerson
 from continuing_education.models.enums import file_category_choices, admission_state_choices
-from continuing_education.models.enums.admission_state_choices import NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED, \
-    ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED
+from continuing_education.models.enums.admission_state_choices import (
+    NEW_ADMIN_STATE, SUBMITTED, DRAFT, REJECTED,
+    ACCEPTED, ACCEPTED_NO_REGISTRATION_REQUIRED,
+)
 from continuing_education.models.enums.groups import STUDENT_WORKERS_GROUP
 from continuing_education.tests.factories.admission import AdmissionFactory
 from continuing_education.tests.factories.continuing_education_training import ContinuingEducationTrainingFactory
@@ -62,8 +64,10 @@ from continuing_education.tests.factories.roles.continuing_education_manager imp
 from continuing_education.tests.factories.roles.continuing_education_training_manager import \
     ContinuingEducationTrainingManagerFactory
 from continuing_education.views.admission import admission_detail
-from continuing_education.views.common import get_versions, save_and_create_revision, VERSION_MESSAGES, \
-    get_revision_messages
+from continuing_education.views.common import (
+    get_versions, save_and_create_revision, VERSION_MESSAGES,
+    get_revision_messages,
+)
 from reference.tests.factories.country import CountryFactory
 
 FILE_CONTENT = "test-content"
@@ -250,7 +254,7 @@ class ViewAdmissionTestCase(TestCase):
 
     def test_admission_edit_not_found(self):
         response = self.client.get(reverse('admission_edit', kwargs={
-            'admission_id': 0,
+            'admission_id': 1,
         }))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -374,7 +378,7 @@ class ViewAdmissionTestCase(TestCase):
     def test_ajax_get_formation_information(self):
         response = self.client.get(reverse('get_formation_information'), data={
             'formation_id': self.formation.pk
-        }, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        }, headers={"x-requested-with": 'XMLHttpRequest'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'additional_information_label': 'additional_information'}
@@ -385,7 +389,7 @@ class ViewAdmissionTestCase(TestCase):
             reverse('admission_delete_draft'),
             data={},
             follow=True,
-            HTTP_REFERER=reverse('admission', args=[])
+            headers={"referer": reverse('admission', args=[])}
         )
         self.assertEqual(response.status_code, 200)
 

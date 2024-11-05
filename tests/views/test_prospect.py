@@ -89,7 +89,7 @@ class ProspectListTestCase(TestCase):
             reverse('prospects_delete'),
             data={},
             follow=True,
-            HTTP_REFERER=reverse('prospects', args=[])
+            headers={"referer": reverse('prospects', args=[])}
         )
         self.assertEqual(response.status_code, 200)
 

@@ -107,7 +107,7 @@ class ViewArchiveTestCase(TestCase):
             reverse('archives_procedure'),
             data={},
             follow=True,
-            HTTP_REFERER=reverse('admission', args=[])
+            headers={"referer": reverse('admission', args=[])}
         )
         self.assertEqual(response.status_code, 200)
 
@@ -121,7 +121,7 @@ class ViewArchiveTestCase(TestCase):
         response = self.client.post(reverse('archives_procedure'),
                                     data={},
                                     follow=True,
-                                    HTTP_REFERER=reverse('registration', args=[])
+                                    headers={"referer": reverse('registration', args=[])}
                                     )
         self.assertEqual(response.status_code, 200)
 
@@ -147,7 +147,7 @@ class ViewArchiveTestCase(TestCase):
                                         str(self.registration_2_archived.id)
                                     ]},
                                     follow=True,
-                                    HTTP_REFERER=reverse('registration', args=[])
+                                    headers={"referer": reverse('registration', args=[])}
                                     )
         self.assertEqual(response.status_code, 200)
 
@@ -163,7 +163,7 @@ class ViewArchiveTestCase(TestCase):
         response = self.client.post(reverse('archives_procedure'),
                                     data={"selected_action": [str(self.registration_1_unarchived.id)]},
                                     follow=True,
-                                    HTTP_REFERER=reverse('registration', args=[])
+                                    headers={"referer": reverse('registration', args=[])}
                                     )
         self.assertEqual(response.status_code, 200)
 
@@ -179,7 +179,7 @@ class ViewArchiveTestCase(TestCase):
         response = self.client.post(reverse('archives_procedure'),
                                     data={"selected_action": [str(self.admission_archived.id)]},
                                     follow=True,
-                                    HTTP_REFERER=reverse('admission', args=[])
+                                    headers={"referer": reverse('admission', args=[])}
                                     )
         self.assertEqual(response.status_code, 200)
 

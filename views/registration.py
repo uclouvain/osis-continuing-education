@@ -156,7 +156,7 @@ def _update_or_create_specific_address(admission_address, specific_address, spec
 @permission_required('continuing_education.change_received_file_state', raise_exception=True)
 def receive_files_procedure(request):
     selected_admissions_id = request.POST.getlist("selected_action", default=[])
-    redirection = request.META.get('HTTP_REFERER')
+    redirection = request.headers.get('referer')
     if selected_admissions_id:
         _mark_folders_as_received(request, selected_admissions_id, True)
         return redirect(reverse('registration'))
@@ -187,7 +187,7 @@ def _set_success_message(request, is_plural, received_file_state=True):
 @login_required
 @permission_required('continuing_education.change_received_file_state', raise_exception=True)
 def receive_file_procedure(request, admission_id):
-    redirection = request.META.get('HTTP_REFERER')
+    redirection = request.headers.get('referer')
     admission = _switch_received_file_state(admission_id)
     _set_success_message(request, False, admission.registration_file_received)
     return HttpResponseRedirect(redirection)
