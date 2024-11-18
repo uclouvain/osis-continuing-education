@@ -76,7 +76,7 @@ def archive_procedure(request, admission_id):
     can_access_admission(request.user, admission)
     if admission.is_draft():
         raise PermissionDenied
-    redirection = request.META.get('HTTP_REFERER')
+    redirection = request.headers.get('referer')
     admission = _switch_archived_state(request.user, admission_id)
     _set_success_message(request, False, admission.archived)
     return HttpResponseRedirect(redirection)
@@ -94,7 +94,7 @@ def change_archive_status(new_archive_status, request):
     for admission_id in selected_admissions_id:
         admission = Admission.objects.get(id=admission_id)
         can_access_admission(request.user, admission)
-    redirection = request.META.get('HTTP_REFERER')
+    redirection = request.headers.get('referer')
     if selected_admissions_id:
         _mark_folders_as_archived(request, selected_admissions_id, new_archive_status)
         return redirect(reverse('archive'))

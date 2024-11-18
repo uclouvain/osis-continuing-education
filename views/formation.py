@@ -79,7 +79,7 @@ def list_formations(request):
 @login_required
 @permission_required('continuing_education.change_continuingeducationtraining', raise_exception=True)
 def update_formations(request):
-    redirect_url = request.META.get('HTTP_REFERER', reverse('formation'))
+    redirect_url = request.headers.get('referer', reverse('formation'))
 
     selected_formations_ids = request.GET.getlist("selected_action", default=[])
     if not selected_formations_ids:

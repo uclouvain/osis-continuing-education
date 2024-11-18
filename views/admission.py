@@ -165,7 +165,7 @@ def admission_detail(request, admission_id):
         display_error_messages(request, _('Some errors in form prevents state from being changed:'))
         display_error_messages(request, adm_form.errors)
         admission.state = admission._original_state
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.headers['referer'])
 
     _display_adapted_ucl_registration_message(admission, request)
 
