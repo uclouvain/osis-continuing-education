@@ -89,7 +89,7 @@ def add_continuing_education_training_manager(request):
 @login_required
 @permission_required('continuing_education.delete_continuingeducationtrainingmanager', raise_exception=True)
 def delete_continuing_education_training_manager(request, training, manager):
-    redirect_url = request.META.get('HTTP_REFERER', reverse('list_managers'))
+    redirect_url = request.headers.get('referer', reverse('list_managers'))
 
     person_training = get_object_or_404(
         ContinuingEducationTrainingManager.objects.select_related('person', 'training'),
