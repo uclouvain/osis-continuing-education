@@ -29,6 +29,7 @@ import logging
 import pika
 import pika.exceptions
 from django.conf import settings
+from osis_common.queue.queue_utils import get_pika_connexion_parameters
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -128,16 +129,11 @@ def save_role_registered_in_admission(data):
 
 def send_admission_to_queue(request, admission):
     data = get_json_for_epc(admission)
-    credentials = pika.PlainCredentials(settings.QUEUES.get('QUEUE_USER'),
-                                        settings.QUEUES.get('QUEUE_PASSWORD'))
-    rabbit_settings = pika.ConnectionParameters(settings.QUEUES.get('QUEUE_URL'),
-                                                settings.QUEUES.get('QUEUE_PORT'),
-                                                settings.QUEUES.get('QUEUE_CONTEXT_ROOT'),
-                                                credentials)
     try:
-        connect = pika.BlockingConnection(rabbit_settings)
-        channel = connect.channel()
         queue_name = settings.QUEUES.get('QUEUES_NAME').get('IUFC_TO_EPC')
+        conn_params = get_pika_connexion_parameters(queue_name=queue_name)
+        connect = pika.BlockingConnection(conn_params)
+        channel = connect.channel()
         send_message(queue_name, data, connect, channel)
         admission.ucl_registration_complete = UCLRegistrationState.SENDED.name
         save_and_create_revision(get_revision_messages(UCL_REGISTRATION_SENDED), admission, request.user)
