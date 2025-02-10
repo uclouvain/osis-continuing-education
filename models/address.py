@@ -3,7 +3,7 @@ import uuid as uuid
 from django.contrib.admin import ModelAdmin
 from django.db import models
 from django.db.models import Model
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 
 class AddressAdmin(ModelAdmin):
@@ -18,7 +18,7 @@ class Address(Model):
     location = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name=_("Location")
+        verbose_name=pgettext_lazy("continuing_education", "Location")
     )
     postal_code = models.CharField(
         max_length=20,

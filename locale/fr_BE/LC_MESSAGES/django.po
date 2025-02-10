@@ -687,6 +687,7 @@ msgstr ""
 msgid "Legal cohabitant"
 msgstr "Cohabitant légal"
 
+msgctxt "continuing_education"
 msgid "Location"
 msgstr "Ville"
 
@@ -875,6 +876,7 @@ msgstr "Personne"
 msgid "Person information"
 msgstr "Informations personnelles"
 
+msgctxt "continuing_education"
 msgid "Phone mobile"
 msgstr "Numéro de téléphone"
 
