@@ -3,7 +3,7 @@ from datetime import date
 from django import forms
 from django.core.validators import RegexValidator
 from django.forms import ModelForm, ChoiceField
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from base.models.academic_year import AcademicYear
 from continuing_education.business.enums.rejected_reason import REJECTED_REASON_CHOICES, OTHER
@@ -48,7 +48,7 @@ class AdmissionForm(ModelForm):
     phone_mobile = forms.CharField(
         validators=[phone_regex],
         required=False,
-        label=_("Phone mobile"),
+        label=pgettext_lazy("continuing_education", "Phone mobile"),
         widget=forms.TextInput(attrs={'placeholder': '0474123456 - 0032474123456 - +32474123456'})
     )
     formation = forms.ModelChoiceField(
