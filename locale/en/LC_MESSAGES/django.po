@@ -650,6 +650,7 @@ msgstr ""
 msgid "Legal cohabitant"
 msgstr ""
 
+msgctxt "continuing_education"
 msgid "Location"
 msgstr ""
 
@@ -834,6 +835,7 @@ msgstr ""
 msgid "Person information"
 msgstr ""
 
+msgctxt "continuing_education"
 msgid "Phone mobile"
 msgstr ""
 
